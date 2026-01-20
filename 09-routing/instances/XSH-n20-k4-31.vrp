@@ -1,0 +1,63 @@
+# This file is part of QOBLIB - Quantum Optimization Benchmarking Library
+# Licensed under the Creative Commons Attribution 4.0 International License.
+# You may obtain a copy of the License at
+# 
+#     https://creativecommons.org/licenses/by/4.0/
+# 
+# You are free to share and adapt the material for any purpose, even commercially,
+# as long as you give appropriate credit and indicate if changes were made.
+
+NAME : XSH-n20-k4-31
+COMMENT : "Queiroga and Uchoa (2024); Optimal cost: 445"
+TYPE : CVRP
+DIMENSION : 21
+EDGE_WEIGHT_TYPE : EUC_2D
+CAPACITY : 259
+NODE_COORD_SECTION
+1    50   50  
+2    67   44  
+3    67   64  
+4    58   41  
+5    5    54  
+6    88   64  
+7    85   55  
+8    63   34  
+9    28   64  
+10   86   61  
+11   80   56  
+12   59   35  
+13   84   55  
+14   77   59  
+15   48   49  
+16   63   40  
+17   56   50  
+18   47   62  
+19   64   37  
+20   80   15  
+21   62   25  
+DEMAND_SECTION
+1    0   
+2    33  
+3    22  
+4    74  
+5    87  
+6    80  
+7    73  
+8    71  
+9    91  
+10   55  
+11   97  
+12   82  
+13   37  
+14   7   
+15   22  
+16   1   
+17   25  
+18   55  
+19   71  
+20   42  
+21   11  
+DEPOT_SECTION
+1
+-1
+EOF

@@ -1,0 +1,6 @@
+Size: 20
+Layers: 2
+Terminals: 4
+Holes: 3
+Random Seed: 37235
+Net: 8

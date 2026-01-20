@@ -1,0 +1,64 @@
+# This file is part of QOBLIB - Quantum Optimization Benchmarking Library
+# Licensed under the Creative Commons Attribution 4.0 International License.
+# You may obtain a copy of the License at
+# 
+#     https://creativecommons.org/licenses/by/4.0/
+# 
+# You are free to share and adapt the material for any purpose, even commercially,
+# as long as you give appropriate credit and indicate if changes were made.
+
+# Node Net
+3330   1
+ 72   1
+2880   1
+ 88   1
+5311   1
+6931   2
+8051   2
+8031   2
+7650   2
+1891   2
+8032   3
+4411   3
+8042   3
+6480   3
+5760   3
+3420   4
+8054   4
+2611   4
+4951   4
+5131   4
+2881   5
+ 79   5
+7921   5
+8038   5
+8073   5
+7470   6
+2430   6
+180   6
+6750   6
+ 35   6
+7741   7
+8015   7
+8067   7
+ 22   8
+ 19   8
+ 25   8
+ 43   9
+2161   9
+811   9
+2610  10
+ 14  10
+8095  10
+541  11
+1621  11
+1170  11
+5130  12
+1620  12
+ 37  12
+8037  13
+8072  13
+1171  14
+8043  14
+3781  15
+8085  15

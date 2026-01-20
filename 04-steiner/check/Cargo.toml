@@ -1,0 +1,8 @@
+[package]
+name = "check_steiner"
+version = "0.1.0"
+edition = "2021"
+authors = ["Maximilian Schicker"]
+
+[dependencies]
+clap = { version = "4.5.31", features = ["derive"] }

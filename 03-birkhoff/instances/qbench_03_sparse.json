@@ -1,0 +1,91 @@
+{
+  "_license": "This file is part of QOBLIB - Quantum Optimization Benchmarking Library\nLicensed under the Creative Commons Attribution 4.0 International License.\nYou may obtain a copy of the License at\n\n    https://creativecommons.org/licenses/by/4.0/\n\nYou are free to share and adapt the material for any purpose, even commercially,\nas long as you give appropriate credit and indicate if changes were made.",
+  "5": {
+    "scaled_doubly_stochastic_matrix": [88, 313, 599, 0, 599, 401, 912, 88, 0],
+    "weights": [88, 599, 313],
+    "id": "B3_3_5",
+    "permutations": [1, 3, 2, 3, 2, 1, 2, 3, 1],
+    "scale": 1000,
+    "n": 3
+  },
+  "4": {
+    "scaled_doubly_stochastic_matrix": [
+      427, 345, 228, 345, 228, 427, 228, 427, 345
+    ],
+    "weights": [427, 228, 345],
+    "id": "B3_3_4",
+    "permutations": [1, 3, 2, 3, 2, 1, 2, 1, 3],
+    "scale": 1000,
+    "n": 3
+  },
+  "6": {
+    "scaled_doubly_stochastic_matrix": [
+      184, 605, 211, 816, 184, 0, 0, 211, 789
+    ],
+    "weights": [605, 184, 211],
+    "id": "B3_3_6",
+    "permutations": [2, 1, 3, 1, 2, 3, 3, 1, 2],
+    "scale": 1000,
+    "n": 3
+  },
+  "7": {
+    "scaled_doubly_stochastic_matrix": [0, 883, 117, 0, 117, 883, 1000, 0, 0],
+    "weights": [723, 117, 160],
+    "id": "B3_3_7",
+    "permutations": [2, 3, 1, 3, 2, 1, 2, 3, 1],
+    "scale": 1000,
+    "n": 3
+  },
+  "2": {
+    "scaled_doubly_stochastic_matrix": [698, 301, 1, 302, 698, 0, 0, 1, 999],
+    "weights": [1, 301, 698],
+    "id": "B3_3_2",
+    "permutations": [3, 1, 2, 2, 1, 3, 1, 2, 3],
+    "scale": 1000,
+    "n": 3
+  },
+  "10": {
+    "scaled_doubly_stochastic_matrix": [398, 0, 602, 602, 25, 373, 0, 975, 25],
+    "weights": [602, 25, 373],
+    "id": "B3_3_10",
+    "permutations": [3, 1, 2, 1, 2, 3, 1, 3, 2],
+    "scale": 1000,
+    "n": 3
+  },
+  "9": {
+    "scaled_doubly_stochastic_matrix": [54, 0, 946, 0, 1000, 0, 946, 0, 54],
+    "weights": [54, 309, 637],
+    "id": "B3_3_9",
+    "permutations": [1, 2, 3, 3, 2, 1, 3, 2, 1],
+    "scale": 1000,
+    "n": 3
+  },
+  "8": {
+    "scaled_doubly_stochastic_matrix": [
+      754, 246, 0, 246, 133, 621, 0, 621, 379
+    ],
+    "weights": [246, 621, 133],
+    "id": "B3_3_8",
+    "permutations": [2, 1, 3, 1, 3, 2, 1, 2, 3],
+    "scale": 1000,
+    "n": 3
+  },
+  "3": {
+    "scaled_doubly_stochastic_matrix": [
+      197, 0, 803, 416, 387, 197, 387, 613, 0
+    ],
+    "weights": [416, 387, 197],
+    "id": "B3_3_3",
+    "permutations": [3, 1, 2, 3, 2, 1, 1, 3, 2],
+    "scale": 1000,
+    "n": 3
+  },
+  "1": {
+    "scaled_doubly_stochastic_matrix": [0, 276, 724, 276, 724, 0, 724, 0, 276],
+    "weights": [73, 276, 651],
+    "id": "B3_3_1",
+    "permutations": [3, 2, 1, 2, 1, 3, 3, 2, 1],
+    "scale": 1000,
+    "n": 3
+  }
+}

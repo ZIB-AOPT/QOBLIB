@@ -1,0 +1,13 @@
+[package]
+name = "check_birkhoff"
+version = "0.1.0"
+edition = "2021"
+authors = ["Maximilian Schicker"]
+
+[[bin]]
+name = "check_birkhoff"
+path = "src/bin/check_birkhoff.rs"
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }

@@ -1,0 +1,21 @@
+# instance       status  value
+./network05      =opt=   65500  
+./network06      =opt=   101000  
+./network07      =opt=   142400  
+./network08      =opt=   170231 
+./network09      =opt=   196750
+./network10      =opt=   210800
+./network11      =best=  238334
+./network12      =best=  276474
+./network13      =best=  304116
+./network14      =best=  350173
+./network15      =best=  383000
+./network16      =best=  409067
+./network17      =best=  460182
+./network18      =best=  481950
+./network19      =best=  514625
+./network20      =best=  548536
+./network21      =best=  593000
+./network22      =best=  647594
+./network23      =best=  686453
+./network24      =best=  663688

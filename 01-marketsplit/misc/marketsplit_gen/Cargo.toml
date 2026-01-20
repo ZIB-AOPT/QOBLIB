@@ -1,0 +1,8 @@
+[package]
+name = "marketsplit_gen"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = "4.5.26"
+rand = "0.8.5"

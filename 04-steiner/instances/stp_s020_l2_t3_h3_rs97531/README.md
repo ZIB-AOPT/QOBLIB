@@ -1,0 +1,8 @@
+# Instance Description
+
+* Size: 20
+* Layers: 2
+* Terminals: 3
+* Holes: 3
+* Random Seed: 97531
+* Net: 12

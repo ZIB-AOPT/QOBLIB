@@ -1,0 +1,61 @@
+# This file is part of QOBLIB - Quantum Optimization Benchmarking Library
+# Licensed under the Creative Commons Attribution 4.0 International License.
+# You may obtain a copy of the License at
+# 
+#     https://creativecommons.org/licenses/by/4.0/
+# 
+# You are free to share and adapt the material for any purpose, even commercially,
+# as long as you give appropriate credit and indicate if changes were made.
+
+# Node Net
+9995   1
+5101   1
+2100   1
+8200   1
+9924   1
+7300   1
+ 53   2
+9501   2
+8201   2
+4301   2
+ 14   2
+2500   2
+6400   3
+ 45   3
+9901   3
+6200   3
+2600   3
+5400   4
+9948   4
+3701   4
+2001   4
+4800   4
+9959   5
+9916   5
+1801   5
+ 69   5
+9930   5
+9939   6
+ 91   6
+4901   6
+9936   6
+ 73   6
+ 17   7
+  8   7
+  9   7
+9933   7
+9979   7
+ 22   8
+9200   8
+ 48   8
+2400   8
+5700   8
+9997   9
+ 59   9
+9999   9
+9909  10
+3300  10
+9986  10
+9908  11
+9919  11
+7501  11
