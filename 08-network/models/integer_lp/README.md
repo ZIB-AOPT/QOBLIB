@@ -5,17 +5,17 @@ This directory contains the integer programming formulation for the Network Desi
 ## Model
 
 $$
-\begin{darray}{lll}
+\begin{array}{rll}
     \min & z & \\
-    \text{s.t.} & \sum_{a \in \delta^+(v)} x_{a} = 2 & \forall v \in V \\
-    & \sum_{a \in \delta^-(v)} x_{a} = 2 & \forall v \in V \\
-    & \sum_{a \in \delta^+(t)} f_{s,a} - \sum_{a \in \delta^-(t)} f_{s,a} = t_{s, t} & \forall s, t \in V, s \neq t \\
-    & \sum_{s \in V} f_{s, a} \leq z & \forall a \in A \\
+    \text{s.t.} & \displaystyle\sum_{a \in \delta^+(v)} x_{a} = 2 & \forall v \in V \\
+    & \displaystyle\sum_{a \in \delta^-(v)} x_{a} = 2 & \forall v \in V \\
+    & \displaystyle\sum_{a \in \delta^+(t)} f_{s,a} - \sum_{a \in \delta^-(t)} f_{s,a} = t_{s, t} & \forall s, t \in V, s \neq t \\
+    & \displaystyle\sum_{s \in V} f_{s, a} \leq z & \forall a \in A \\
     & f_{s, a} \leq M \cdot x_a & \forall s \in V, a \in A \\
     & f_{s,a} \geq 0 & \forall s \in V, a \in A \\
     & x_{a} \in \{0,1\} & \forall a \in A \\
     & z \geq 0 &
-\end{darray}
+\end{array}
 $$
 
 ## Variables and Parameters

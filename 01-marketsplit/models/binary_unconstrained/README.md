@@ -5,10 +5,10 @@ This directory contains the binary unconstrained programming formulation for the
 ## Model
 
 $$
-\begin{darray}{rll}
-    \min & \sum_{i \in I} \left(b_i - \sum_{j \in J} a_{ij} x_j\right)^2 & \\
+\begin{array}{rll}
+    \min & \displaystyle\sum_{i \in I} \left(b_i - \sum_{j \in J} a_{ij} x_j\right)^2 & \\
     \text{s.t.} & x_j \in \{0,1\} & \forall j \in J
-\end{darray}
+\end{array}
 $$
 
 ## Variables and Parameters

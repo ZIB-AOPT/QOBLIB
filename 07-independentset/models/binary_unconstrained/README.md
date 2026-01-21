@@ -5,10 +5,10 @@ This directory contains the unconstrained binary formulation for the Maximum Ind
 ## Model
 
 $$
-\begin{darray}{ll}
-    \max & \sum_{v \in V} x_v - 2 \sum_{(v,w) \in E} x_v x_w \\
+\begin{array}{rll}
+    \max & \displaystyle\sum_{v \in V} x_v - 2 \sum_{(v,w) \in E} x_v x_w \\
     \text{s.t.} & x_v \in \{0,1\} & \forall v \in V
-\end{darray}
+\end{array}
 $$
 
 ## Variables and Parameters

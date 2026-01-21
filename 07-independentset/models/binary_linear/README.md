@@ -5,11 +5,11 @@ This directory contains the standard binary linear programming formulation for t
 ## Model
 
 $$
-\begin{darray}{ll}
-    \max & \sum_{v \in V} x_v \\
+\begin{array}{rll}
+    \max & \displaystyle\sum_{v \in V} x_v \\
     \text{s.t.} & x_v + x_w \leq 1 & \forall (v,w) \in E \\
     & x_v \in \{0,1\} & \forall v \in V
-\end{darray}
+\end{array}
 $$
 
 ## Variables and Parameters

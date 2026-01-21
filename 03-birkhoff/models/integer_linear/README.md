@@ -5,13 +5,13 @@ This directory contains the integer linear programming formulation for the Birkh
 ## Model
 
 $$
-\begin{darray}{rll}
-    \min & \sum_{i \in I} z_i & \\
-    \text{s.t.} & \sum_{i \in I} \lambda_i = S & \\
-    & \sum_{i \in I} \lambda_i P_i = A & \\
+\begin{array}{rll}
+    \min & \displaystyle\sum_{i \in I} z_i & \\
+    \text{s.t.} & \displaystyle\sum_{i \in I} \lambda_i = S & \\
+    & \displaystyle\sum_{i \in I} \lambda_i P_i = A & \\
     & 0\leq \lambda_i \leq S \cdot z_i & \forall i \in I \\
     & z_i \in \{0,1\} & \forall i \in I
-\end{darray}
+\end{array}
 $$
 
 ## Variables and Parameters
