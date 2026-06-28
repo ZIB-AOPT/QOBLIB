@@ -1,0 +1,397 @@
+Problem,Status,Energy,Runtime,TTS,Checker
+labs100,ok,826,180.000112,38.427261,"Qbench LABS Solution Checker Version 1.0
+LABS k=100 E(S)=826 seq=43343872132222212122121115121113111313111211121111
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs099,ok,829,180.000166,135.284361,"Qbench LABS Solution Checker Version 1.0
+LABS k=99 E(S)=829 seq=121218121212222241232114433247412111112111111111111
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs098,ok,825,180.000242,37.326517,"Qbench LABS Solution Checker Version 1.0
+LABS k=98 E(S)=825 seq=11122112113111521111121121111a21222212371133322332
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs097,ok,780,180.0003,24.560332,"Qbench LABS Solution Checker Version 1.0
+LABS k=97 E(S)=780 seq=c52132211231221112113312221112213331111112112311121
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs096,ok,740,180.000226,17.718278,"Qbench LABS Solution Checker Version 1.0
+LABS k=96 E(S)=740 seq=211312221213121112111111311112c412211122114223344
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs095,ok,751,180.000567,34.104407,"Qbench LABS Solution Checker Version 1.0
+LABS k=95 E(S)=751 seq=1232417141222311143121311621114213112115113112
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs094,ok,683,180.000168,63.50397,"Qbench LABS Solution Checker Version 1.0
+LABS k=94 E(S)=683 seq=118132132111312312121111221111312122143115323341
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs093,ok,702,180.000131,20.595396,"Qbench LABS Solution Checker Version 1.0
+LABS k=93 E(S)=702 seq=412222212131113124122111242117334111112111211414
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs092,ok,682,180.000291,26.765001,"Qbench LABS Solution Checker Version 1.0
+LABS k=92 E(S)=682 seq=1111211112111b221321311113112212125311244124231
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs091,ok,705,180.000079,34.953299,"Qbench LABS Solution Checker Version 1.0
+LABS k=91 E(S)=705 seq=131311312212811111251311121236241111211224121111
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs090,ok,661,180.000368,49.512529,"Qbench LABS Solution Checker Version 1.0
+LABS k=90 E(S)=661 seq=34362311132315111111112151251131231211212111211
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs089,ok,648,180.000151,29.070776,"Qbench LABS Solution Checker Version 1.0
+LABS k=89 E(S)=648 seq=31331522331221512121411221312444411111211111
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs088,ok,612,180.000155,83.612684,"Qbench LABS Solution Checker Version 1.0
+LABS k=88 E(S)=612 seq=11513111111121114121121341541422146221321221
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs087,ok,623,180.000055,32.129779,"Qbench LABS Solution Checker Version 1.0
+LABS k=87 E(S)=623 seq=123242241133212211114111121621212111115112216
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs086,ok,615,180.000234,21.028214,"Qbench LABS Solution Checker Version 1.0
+LABS k=86 E(S)=615 seq=11121212112116212611111211111351522513322222
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs085,ok,574,180.000282,19.679106,"Qbench LABS Solution Checker Version 1.0
+LABS k=85 E(S)=574 seq=2343331111331252132121111211122121121311c
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs084,ok,526,180.000117,18.431928,"Qbench LABS Solution Checker Version 1.0
+LABS k=84 E(S)=526 seq=1121121212113211231123322132131113319373
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs083,ok,541,180.00036,24.712643,"Qbench LABS Solution Checker Version 1.0
+LABS k=83 E(S)=541 seq=545212225223224121241511111131112111112111
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs082,ok,521,180.000104,26.431351,"Qbench LABS Solution Checker Version 1.0
+LABS k=82 E(S)=521 seq=331333771326221121121122212211111121111111
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs081,ok,524,180.00016,33.351578,"Qbench LABS Solution Checker Version 1.0
+LABS k=81 E(S)=524 seq=14123212112123112311121334221111131311a22
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs080,ok,488,180.000331,12.890905,"Qbench LABS Solution Checker Version 1.0
+LABS k=80 E(S)=488 seq=2242212342212114312311412911121111111111111
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs079,ok,491,180.000205,15.146415,"Qbench LABS Solution Checker Version 1.0
+LABS k=79 E(S)=491 seq=12122213213634112211181141423111221113
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs078,ok,475,180.000327,23.99349,"Qbench LABS Solution Checker Version 1.0
+LABS k=78 E(S)=475 seq=1111111121111322111121211245221221739222
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs077,ok,474,180.000325,37.526187,"Qbench LABS Solution Checker Version 1.0
+LABS k=77 E(S)=474 seq=252233222213612115121215111112112411111
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs076,ok,470,180.000127,31.45415,"Qbench LABS Solution Checker Version 1.0
+LABS k=76 E(S)=470 seq=12122111222143131216221114211121111531114
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs075,ok,457,180.000109,14.932104,"Qbench LABS Solution Checker Version 1.0
+LABS k=75 E(S)=457 seq=11112112111211111111123222354421212212b
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs074,ok,405,180.000093,40.249742,"Qbench LABS Solution Checker Version 1.0
+LABS k=74 E(S)=405 seq=111112311453122111342321121213319121
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs073,ok,396,180.00027,16.922696,"Qbench LABS Solution Checker Version 1.0
+LABS k=73 E(S)=396 seq=1111151121151211231114215221252322222
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs072,ok,400,180.000071,32.311243,"Qbench LABS Solution Checker Version 1.0
+LABS k=72 E(S)=400 seq=2221222224124442111311211111121211911
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs071,ok,403,180.000121,27.377148,"Qbench LABS Solution Checker Version 1.0
+LABS k=71 E(S)=403 seq=111312222111122211211417111233313451
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs070,ok,391,180.000096,13.831653,"Qbench LABS Solution Checker Version 1.0
+LABS k=70 E(S)=391 seq=813122131365333112111321112211121
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs069,ok,358,180.000075,14.506453,"Qbench LABS Solution Checker Version 1.0
+LABS k=69 E(S)=358 seq=122212241133211112421441111421119
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs068,ok,370,180.000003,12.98103,"Qbench LABS Solution Checker Version 1.0
+LABS k=68 E(S)=370 seq=22222624224221211211121161111111115
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs067,ok,341,180.000208,14.998433,"Qbench LABS Solution Checker Version 1.0
+LABS k=67 E(S)=341 seq=127122712511143111112121132211132
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
+labs066,ok,321,180.000067,14.219937,"Qbench LABS Solution Checker Version 1.0
+LABS k=66 E(S)=321 seq=93111345211112122212111223232211
+NOT OPTIMAL, expected E(S)=257
+INVALID: Solution failed verification"
+labs065,ok,332,180.000273,14.977407,"Qbench LABS Solution Checker Version 1.0
+LABS k=65 E(S)=332 seq=1333222311331121212161114116114
+NOT OPTIMAL, expected E(S)=240
+INVALID: Solution failed verification"
+labs064,ok,328,180.000274,21.343023,"Qbench LABS Solution Checker Version 1.0
+LABS k=64 E(S)=328 seq=11111111121123221232312112251655
+NOT OPTIMAL, expected E(S)=208
+INVALID: Solution failed verification"
+labs063,ok,319,180.000276,9.889378,"Qbench LABS Solution Checker Version 1.0
+LABS k=63 E(S)=319 seq=1231211124133153221221161111161
+NOT OPTIMAL, expected E(S)=207
+INVALID: Solution failed verification"
+labs062,ok,299,180.000148,14.288482,"Qbench LABS Solution Checker Version 1.0
+LABS k=62 E(S)=299 seq=131131131123322312311211122112118
+NOT OPTIMAL, expected E(S)=235
+INVALID: Solution failed verification"
+labs061,ok,294,180.000209,7.700305,"Qbench LABS Solution Checker Version 1.0
+LABS k=61 E(S)=294 seq=121112112123333113213411312b
+NOT OPTIMAL, expected E(S)=226
+INVALID: Solution failed verification"
+labs060,ok,262,180.000171,10.628211,"Qbench LABS Solution Checker Version 1.0
+LABS k=60 E(S)=262 seq=1121221221111135411211121723232
+NOT OPTIMAL, expected E(S)=218
+INVALID: Solution failed verification"
+labs059,ok,257,180.000096,8.068377,"Qbench LABS Solution Checker Version 1.0
+LABS k=59 E(S)=257 seq=2222123242121121114114311111117
+NOT OPTIMAL, expected E(S)=205
+INVALID: Solution failed verification"
+labs058,ok,261,180.000199,12.3284,"Qbench LABS Solution Checker Version 1.0
+LABS k=58 E(S)=261 seq=241144171111113211322212112221
+NOT OPTIMAL, expected E(S)=197
+INVALID: Solution failed verification"
+labs057,ok,252,180.000159,9.142575,"Qbench LABS Solution Checker Version 1.0
+LABS k=57 E(S)=252 seq=12221122322211111311121141546
+NOT OPTIMAL, expected E(S)=188
+INVALID: Solution failed verification"
+labs056,ok,248,180.000104,12.854871,"Qbench LABS Solution Checker Version 1.0
+LABS k=56 E(S)=248 seq=32153133311331121111121512121
+NOT OPTIMAL, expected E(S)=192
+INVALID: Solution failed verification"
+labs055,ok,235,180.000038,8.315432,"Qbench LABS Solution Checker Version 1.0
+LABS k=55 E(S)=235 seq=22214212211712432411112111111
+NOT OPTIMAL, expected E(S)=171
+INVALID: Solution failed verification"
+labs054,ok,223,180.000237,6.144282,"Qbench LABS Solution Checker Version 1.0
+LABS k=54 E(S)=223 seq=11121111231221211221a1133331
+NOT OPTIMAL, expected E(S)=175
+INVALID: Solution failed verification"
+labs053,ok,210,180.000185,5.715408,"Qbench LABS Solution Checker Version 1.0
+LABS k=53 E(S)=210 seq=12412462122351511111121111
+NOT OPTIMAL, expected E(S)=170
+INVALID: Solution failed verification"
+labs052,ok,222,180.000215,5.438652,"Qbench LABS Solution Checker Version 1.0
+LABS k=52 E(S)=222 seq=122321235922112211111121111
+NOT OPTIMAL, expected E(S)=166
+INVALID: Solution failed verification"
+labs051,ok,173,180.000149,13.539383,"Qbench LABS Solution Checker Version 1.0
+LABS k=51 E(S)=173 seq=111221121211111123331132139
+NOT OPTIMAL, expected E(S)=153
+INVALID: Solution failed verification"
+labs050,ok,177,180.000083,12.334956,"Qbench LABS Solution Checker Version 1.0
+LABS k=50 E(S)=177 seq=13324111111112112121312265
+NOT OPTIMAL, expected E(S)=153
+INVALID: Solution failed verification"
+labs049,ok,180,180.00014,8.972549,"Qbench LABS Solution Checker Version 1.0
+LABS k=49 E(S)=180 seq=93112211221121111211322231
+NOT OPTIMAL, expected E(S)=136
+INVALID: Solution failed verification"
+labs048,ok,160,180.000181,7.644583,"Qbench LABS Solution Checker Version 1.0
+LABS k=48 E(S)=160 seq=11111111121312141214622421
+NOT OPTIMAL, expected E(S)=140
+INVALID: Solution failed verification"
+labs047,ok,167,180.000202,7.371435,"Qbench LABS Solution Checker Version 1.0
+LABS k=47 E(S)=167 seq=111243211213111731321311
+NOT OPTIMAL, expected E(S)=135
+INVALID: Solution failed verification"
+labs046,ok,155,180.000122,8.908526,"Qbench LABS Solution Checker Version 1.0
+LABS k=46 E(S)=155 seq=113113114113211242321412
+NOT OPTIMAL, expected E(S)=131
+INVALID: Solution failed verification"
+labs045,ok,138,180.00016,11.686737,"Qbench LABS Solution Checker Version 1.0
+LABS k=45 E(S)=138 seq=1223221122111111211359
+NOT OPTIMAL, expected E(S)=118
+INVALID: Solution failed verification"
+labs044,ok,126,180.000138,12.469595,"Qbench LABS Solution Checker Version 1.0
+LABS k=44 E(S)=126 seq=2122123133215111441112
+NOT OPTIMAL, expected E(S)=122
+INVALID: Solution failed verification"
+labs043,ok,133,180.000029,12.751119,"Qbench LABS Solution Checker Version 1.0
+LABS k=43 E(S)=133 seq=22233113113112111211a
+NOT OPTIMAL, expected E(S)=109
+INVALID: Solution failed verification"
+labs042,ok,125,180.000123,5.255949,"Qbench LABS Solution Checker Version 1.0
+LABS k=42 E(S)=125 seq=254111111312123141412
+NOT OPTIMAL, expected E(S)=101
+INVALID: Solution failed verification"
+labs041,ok,112,180.000004,6.402699,"Qbench LABS Solution Checker Version 1.0
+LABS k=41 E(S)=112 seq=131313121131211214441
+NOT OPTIMAL, expected E(S)=108
+INVALID: Solution failed verification"
+labs040,ok,116,180.000116,5.231259,"Qbench LABS Solution Checker Version 1.0
+LABS k=40 E(S)=116 seq=181221112211111213431
+NOT OPTIMAL, expected E(S)=108
+INVALID: Solution failed verification"
+labs039,ok,107,180.000039,4.90096,"Qbench LABS Solution Checker Version 1.0
+LABS k=39 E(S)=107 seq=82121232123321111111
+NOT OPTIMAL, expected E(S)=99
+INVALID: Solution failed verification"
+labs038,ok,87,180.000138,5.591669,"Qbench LABS Solution Checker Version 1.0
+LABS k=38 E(S)=87 seq=1222211111112112448
+OPTIMAL
+VALID: Solution successfully verified"
+labs037,ok,90,180.000144,7.356436,"Qbench LABS Solution Checker Version 1.0
+LABS k=37 E(S)=90 seq=3431612222111221111
+NOT OPTIMAL, expected E(S)=86
+INVALID: Solution failed verification"
+labs036,ok,94,180.000075,5.914795,"Qbench LABS Solution Checker Version 1.0
+LABS k=36 E(S)=94 seq=222221111111211249
+NOT OPTIMAL, expected E(S)=82
+INVALID: Solution failed verification"
+labs035,ok,85,180.000023,3.882592,"Qbench LABS Solution Checker Version 1.0
+LABS k=35 E(S)=85 seq=112111121221513352
+NOT OPTIMAL, expected E(S)=73
+INVALID: Solution failed verification"
+labs034,ok,65,180.000115,4.864106,"Qbench LABS Solution Checker Version 1.0
+LABS k=34 E(S)=65 seq=842112111111122221
+OPTIMAL
+VALID: Solution successfully verified"
+labs033,ok,64,180.000161,5.693007,"Qbench LABS Solution Checker Version 1.0
+LABS k=33 E(S)=64 seq=122221111111211247
+OPTIMAL
+VALID: Solution successfully verified"
+labs032,ok,64,180.000055,4.790146,"Qbench LABS Solution Checker Version 1.0
+LABS k=32 E(S)=64 seq=71112111133221221
+OPTIMAL
+VALID: Solution successfully verified"
+labs031,ok,67,180.000018,4.706371,"Qbench LABS Solution Checker Version 1.0
+LABS k=31 E(S)=67 seq=4623221212111111
+OPTIMAL
+VALID: Solution successfully verified"
+labs030,ok,59,180.000122,3.25561,"Qbench LABS Solution Checker Version 1.0
+LABS k=30 E(S)=59 seq=2122173311121111
+OPTIMAL
+VALID: Solution successfully verified"
+labs029,ok,62,180.000034,3.933556,"Qbench LABS Solution Checker Version 1.0
+LABS k=29 E(S)=62 seq=323711111212211
+OPTIMAL
+VALID: Solution successfully verified"
+labs028,ok,50,180.000073,3.437562,"Qbench LABS Solution Checker Version 1.0
+LABS k=28 E(S)=50 seq=112112131313431
+OPTIMAL
+VALID: Solution successfully verified"
+labs027,ok,37,180.000058,3.675193,"Qbench LABS Solution Checker Version 1.0
+LABS k=27 E(S)=37 seq=11211213131343
+OPTIMAL
+VALID: Solution successfully verified"
+labs026,ok,45,180.000108,2.971345,"Qbench LABS Solution Checker Version 1.0
+LABS k=26 E(S)=45 seq=1337111121221
+OPTIMAL
+VALID: Solution successfully verified"
+labs025,ok,36,180.000069,3.107725,"Qbench LABS Solution Checker Version 1.0
+LABS k=25 E(S)=36 seq=337111121221
+OPTIMAL
+VALID: Solution successfully verified"
+labs024,ok,36,180.000074,2.95805,"Qbench LABS Solution Checker Version 1.0
+LABS k=24 E(S)=36 seq=1212111116322
+OPTIMAL
+VALID: Solution successfully verified"
+labs023,ok,47,180.000057,0.762897,"Qbench LABS Solution Checker Version 1.0
+LABS k=23 E(S)=47 seq=1111111212623
+OPTIMAL
+VALID: Solution successfully verified"
+labs022,ok,39,180.00004,0.723677,"Qbench LABS Solution Checker Version 1.0
+LABS k=22 E(S)=39 seq=33211112215
+OPTIMAL
+VALID: Solution successfully verified"
+labs021,ok,26,180.000023,2.26028,"Qbench LABS Solution Checker Version 1.0
+LABS k=21 E(S)=26 seq=27221111121
+OPTIMAL
+VALID: Solution successfully verified"
+labs020,ok,26,180.000027,0.62411,"Qbench LABS Solution Checker Version 1.0
+LABS k=20 E(S)=26 seq=11114142122
+OPTIMAL
+VALID: Solution successfully verified"
+labs019,ok,29,180.000085,0.564155,"Qbench LABS Solution Checker Version 1.0
+LABS k=19 E(S)=29 seq=1322116111
+OPTIMAL
+VALID: Solution successfully verified"
+labs018,ok,25,180.000085,0.500662,"Qbench LABS Solution Checker Version 1.0
+LABS k=18 E(S)=25 seq=1112115222
+OPTIMAL
+VALID: Solution successfully verified"
+labs017,ok,32,180.000099,0.481331,"Qbench LABS Solution Checker Version 1.0
+LABS k=17 E(S)=32 seq=2313112112
+OPTIMAL
+VALID: Solution successfully verified"
+labs016,ok,24,180.000126,0.427335,"Qbench LABS Solution Checker Version 1.0
+LABS k=16 E(S)=24 seq=4221211111
+OPTIMAL
+VALID: Solution successfully verified"
+labs015,ok,15,180.000024,0.407695,"Qbench LABS Solution Checker Version 1.0
+LABS k=15 E(S)=15 seq=33131211
+OPTIMAL
+VALID: Solution successfully verified"
+labs014,ok,19,180.000089,0.387857,"Qbench LABS Solution Checker Version 1.0
+LABS k=14 E(S)=19 seq=5222111
+OPTIMAL
+VALID: Solution successfully verified"
+labs013,ok,6,180.00003,0.360809,"Qbench LABS Solution Checker Version 1.0
+LABS k=13 E(S)=6 seq=1111225
+OPTIMAL
+VALID: Solution successfully verified"
+labs012,ok,10,180.000133,0.33892,"Qbench LABS Solution Checker Version 1.0
+LABS k=12 E(S)=10 seq=4111221
+OPTIMAL
+VALID: Solution successfully verified"
+labs011,ok,5,180.00001,0.31899,"Qbench LABS Solution Checker Version 1.0
+LABS k=11 E(S)=5 seq=331211
+OPTIMAL
+VALID: Solution successfully verified"
+labs010,ok,13,180.000115,0.299985,"Qbench LABS Solution Checker Version 1.0
+LABS k=10 E(S)=13 seq=41122
+OPTIMAL
+VALID: Solution successfully verified"
+labs009,ok,12,180.000026,0.29037,"Qbench LABS Solution Checker Version 1.0
+LABS k=9 E(S)=12 seq=1152
+OPTIMAL
+VALID: Solution successfully verified"
+labs008,ok,8,180.000054,0.265179,"Qbench LABS Solution Checker Version 1.0
+LABS k=8 E(S)=8 seq=2411
+OPTIMAL
+VALID: Solution successfully verified"
+labs007,ok,3,180.000137,0.274491,"Qbench LABS Solution Checker Version 1.0
+LABS k=7 E(S)=3 seq=3211
+OPTIMAL
+VALID: Solution successfully verified"
+labs006,ok,7,180.000055,0.225076,"Qbench LABS Solution Checker Version 1.0
+LABS k=6 E(S)=7 seq=3111
+OPTIMAL
+VALID: Solution successfully verified"
+labs005,ok,2,180.000038,0.222412,"Qbench LABS Solution Checker Version 1.0
+LABS k=5 E(S)=2 seq=311
+OPTIMAL
+VALID: Solution successfully verified"
+labs004,ok,2,180.000007,0.190125,"Qbench LABS Solution Checker Version 1.0
+LABS k=4 E(S)=2 seq=211
+OPTIMAL
+VALID: Solution successfully verified"
+labs003,ok,1,180.000006,0.176954,"Qbench LABS Solution Checker Version 1.0
+LABS k=3 E(S)=1 seq=21
+OPTIMAL
+VALID: Solution successfully verified"
+labs002,ok,1,180.000041,0.0,"Qbench LABS Solution Checker Version 1.0
+LABS k=2 E(S)=1 seq=2
+Results for k<3 and k>=67 not known
+VALID: Solution successfully verified"
