@@ -5,7 +5,8 @@ This directory contains the submission for the problem **es60fst01**.
 | Field | Value 1 |
 | --- | --- |
 | Problem | es60fst01 |
-| Submitter | Kara Maller (Q-CTRL) |
+| Submitter | Kara Maller |
+| Affiliation | Q-CTRL |
 | Date | 2026-06-24 |
 | ====== |  |
 | Reference | https://docs.q-ctrl.com/fire-opal/execute/run-algorithms/solve-optimization-problems/fire-opal-qaoa-solver |
@@ -23,6 +24,7 @@ This directory contains the submission for the problem **es60fst01**.
 | ====== |  |
 | Workflow | QUBO mapping -> Q-CTRL Fire Opal SDK (solve_qaoa) |
 | Algorithm Type | stochastic |
+| Paradigm | Quantum Hardware |
 | # Runs | 1 |
 | # Feasible Runs | 1 |
 | # Successful Runs | 1 |
@@ -31,6 +33,7 @@ This directory contains the submission for the problem **es60fst01**.
 | Hardware Specifications | IBM QPU (ibm_boston) |
 | ====== |  |
 | Total Runtime | 8.75 |
+| Time to Solution | N/A |
 | CPU Runtime | 4.75 |
 | GPU Runtime | 0.0 |
 | QPU Runtime | 4.0 |
