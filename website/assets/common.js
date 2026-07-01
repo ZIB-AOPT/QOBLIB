@@ -405,9 +405,9 @@ function detailModelList(models) {
 // Problem summary card used by the home page and the Problems index page.
 // Two stacked progress bars summarise how much of the instance family each
 // paradigm has solved (counts are precomputed at build time, see build.py).
-// Both bars use the same four segments:
+// Both bars use the same three segments:
 //   solved (proven optimal) · best-known (matched the best value, unproven) ·
-//   found (some feasible solution, worse than best) · open (nothing feasible).
+//   open (everything else — no feasible solution, or only a worse feasible one).
 function problemCard(p) {
     const total = p.instance_count || 0;
     const pct = (n) => (total ? (100 * (n || 0)) / total : 0);
@@ -416,15 +416,15 @@ function problemCard(p) {
     // or a classical submission). Fall back to the method-agnostic solved_count
     // for older data payloads that predate solved_classical_count, and to the
     // instance-level best_known_count for ones predating classical_best_known_count.
+    // Anything not proven optimal or matching best-known counts as "open" (this
+    // folds the former "found a worse solution" tier into open).
     const solvedClassicalPct = pct(p.solved_classical_count ?? p.solved_count ?? 0);
     const bestKnownClassicalPct = pct(p.classical_best_known_count ?? p.best_known_count ?? 0);
-    const foundClassicalPct = pct(p.classical_found_count || 0);
-    const classicalOpenPct = Math.max(0, 100 - solvedClassicalPct - bestKnownClassicalPct - foundClassicalPct);
+    const classicalOpenPct = Math.max(0, 100 - solvedClassicalPct - bestKnownClassicalPct);
 
     const solvedQuantumPct = pct(p.quantum_solved_count || 0);
     const bestKnownQuantumPct = pct(p.quantum_best_known_count || 0);
-    const foundQuantumPct = pct(p.quantum_found_count || 0);
-    const quantumOpenPct = Math.max(0, 100 - solvedQuantumPct - bestKnownQuantumPct - foundQuantumPct);
+    const quantumOpenPct = Math.max(0, 100 - solvedQuantumPct - bestKnownQuantumPct);
 
     return `
         <a class="pcard" href="${problemUrl(p.id)}">
@@ -438,7 +438,6 @@ function problemCard(p) {
                     <div class="pcard-bar">
                         <div class="pcard-bar-fill solved-classical" style="width:${solvedClassicalPct}%"></div>
                         <div class="pcard-bar-fill best-known-classical" style="width:${bestKnownClassicalPct}%"></div>
-                        <div class="pcard-bar-fill found-classical" style="width:${foundClassicalPct}%"></div>
                         <div class="pcard-bar-fill open-classical" style="width:${classicalOpenPct}%"></div>
                     </div>
                 </div>
@@ -447,7 +446,6 @@ function problemCard(p) {
                     <div class="pcard-bar">
                         <div class="pcard-bar-fill solved-quantum" style="width:${solvedQuantumPct}%"></div>
                         <div class="pcard-bar-fill best-known-quantum" style="width:${bestKnownQuantumPct}%"></div>
-                        <div class="pcard-bar-fill found-quantum" style="width:${foundQuantumPct}%"></div>
                         <div class="pcard-bar-fill open-quantum" style="width:${quantumOpenPct}%"></div>
                     </div>
                 </div>

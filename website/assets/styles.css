@@ -42,19 +42,16 @@
     --cat-quantum-hw: #8d6fc9;
     --cat-quantum-sim: #c77d3a;
     /* Problem-card progress bars (index page). Each paradigm uses a colour-blind
-       safe sequential ramp (ColorBrewer Greens / Purples): the four tiers differ
+       safe sequential ramp (ColorBrewer Greens / Purples): the three tiers differ
        in *lightness*, so they stay distinguishable in greyscale and for all
-       colour-vision types. The "found" tier additionally carries a diagonal
-       stripe texture (see .pcard-bar-fill.found-*) so it never relies on hue. */
+       colour-vision types. */
     --bar-solved-classical: #006d2c;
     --bar-best-known-classical: #74c476;
-    --bar-found-classical: #bae4b3;
     --bar-solved-quantum: #54278f;
     --bar-best-known-quantum: #9e9ac8;
-    --bar-found-quantum: #cbc9e2;
     /* Open = "no progress", so a neutral grey (shared by both paradigms) keeps it
        clearly distinct from every tinted tier — including a best-known segment
-       sitting right next to it when the found tier is empty. */
+       sitting right next to it. */
     --bar-open-classical: #d4d8da;
     --bar-open-quantum: #d4d8da;
     /* "reaches the best-known objective" star marker (leaderboard / instance tables) */
@@ -703,29 +700,6 @@ body[data-nav="home"] .stats-bar {
 
 .pcard-bar-fill.open-quantum {
     background: var(--bar-open-quantum);
-}
-
-/* "Found a solution" tier — diagonal stripes (the tier's light fill striped with
-   its own optimal/darkest shade). Shared by the bar segment and legend swatch so
-   the texture, not just the hue, identifies the tier. */
-.pcard-bar-fill.found-classical,
-.bar-legend .swatch.found-classical {
-    background:
-        repeating-linear-gradient(
-            45deg,
-            var(--bar-solved-classical) 0 2px,
-            var(--bar-found-classical) 2px 5px
-        );
-}
-
-.pcard-bar-fill.found-quantum,
-.bar-legend .swatch.found-quantum {
-    background:
-        repeating-linear-gradient(
-            45deg,
-            var(--bar-solved-quantum) 0 2px,
-            var(--bar-found-quantum) 2px 5px
-        );
 }
 
 .pcard-bar-fill.best-known {
@@ -2194,13 +2168,11 @@ td.num {
     --cat-quantum-sim: #c2895e;
     /* Dark theme inverts the ramp: optimal is the *brightest* tier and open the
        darkest, so it stays lightness-monotonic (and colour-blind safe) against a
-       dark card. The found tier keeps its diagonal stripe texture. */
+       dark card. */
     --bar-solved-classical: #7ce295;
     --bar-best-known-classical: #2c8f4f;
-    --bar-found-classical: #1c5230;
     --bar-solved-quantum: #bca9ec;
     --bar-best-known-quantum: #6a52a0;
-    --bar-found-quantum: #3f3463;
     --star: #d9b15a;
     /* Neutral grey open tier (shared) — clearly distinct from the green/purple
        best-known segments on a dark card, including when they sit adjacent. */

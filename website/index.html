@@ -104,17 +104,15 @@
             <div class="bar-legend">
                 <div class="legend-row">
                     <span class="legend-label">Classical</span>
-                    <span class="legend-item"><span class="swatch" style="background:var(--bar-solved-classical)"></span>Solved (optimal)</span>
-                    <span class="legend-item"><span class="swatch" style="background:var(--bar-best-known-classical)"></span>Matches best-known</span>
-                    <span class="legend-item"><span class="swatch found-classical"></span>Found a solution</span>
-                    <span class="legend-item"><span class="swatch" style="background:var(--bar-open-classical)"></span>Open</span>
+                    <span class="legend-item" title="Optimal: the proven optimal objective value has been reached. This includes a heuristic that attains the optimal value without proving optimality itself — e.g., when the optimum was already proven by a different method."><span class="swatch" style="background:var(--bar-solved-classical)"></span>Solved (optimal)</span>
+                    <span class="legend-item" title="A solution matching the best-known objective value is known, but it is not proven to be optimal."><span class="swatch" style="background:var(--bar-best-known-classical)"></span>Matches best-known</span>
+                    <span class="legend-item" title="No solution reaching the best-known value yet — either no feasible solution is known, or only worse ones."><span class="swatch" style="background:var(--bar-open-classical)"></span>Open</span>
                 </div>
                 <div class="legend-row">
                     <span class="legend-label">Quantum</span>
-                    <span class="legend-item"><span class="swatch" style="background:var(--bar-solved-quantum)"></span>Solved (optimal)</span>
-                    <span class="legend-item"><span class="swatch" style="background:var(--bar-best-known-quantum)"></span>Matches best-known</span>
-                    <span class="legend-item"><span class="swatch found-quantum"></span>Found a solution</span>
-                    <span class="legend-item"><span class="swatch" style="background:var(--bar-open-quantum)"></span>Open</span>
+                    <span class="legend-item" title="Optimal: the proven optimal objective value has been reached. This includes a heuristic that attains the optimal value without proving optimality itself — e.g., when the optimum was already proven by a different method."><span class="swatch" style="background:var(--bar-solved-quantum)"></span>Solved (optimal)</span>
+                    <span class="legend-item" title="A solution matching the best-known objective value is known, but it is not proven to be optimal."><span class="swatch" style="background:var(--bar-best-known-quantum)"></span>Matches best-known</span>
+                    <span class="legend-item" title="No solution reaching the best-known value yet — either no feasible solution is known, or only worse ones."><span class="swatch" style="background:var(--bar-open-quantum)"></span>Open</span>
                 </div>
             </div>
             <div class="pgrid" id="pgrid">

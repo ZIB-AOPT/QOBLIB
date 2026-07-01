@@ -153,18 +153,23 @@ class TestBuildLandscape(unittest.TestCase):
         classical = _svgs(self.data["mip"])[1]
         self.assertIn("fill:var(--bar-solved-classical)", classical)      # ms_1 optimal
         self.assertIn("fill:var(--bar-best-known-classical)", classical)  # B1 best-known
-        # The colour key lists every tier.
+        # The colour key lists the three retained tiers; "found" was folded into open.
         self.assertIn("best-known", self.data["mip"])
-        self.assertIn("found", self.data["mip"])
-        self.assertIn("open", self.data["mip"])
+        self.assertIn(">open<", self.data["mip"])
+        self.assertNotIn("found", self.data["mip"])
 
-    def test_quantum_inset_uses_four_tier_ramp(self):
+    def test_quantum_inset_folds_found_into_open(self):
         quantum = _svgs(self.data["mip"])[2]
         self.assertEqual(quantum.count("fill:var(--bar-solved-quantum)"), 1)  # ms_1 optimal
-        self.assertIn("var(--bar-found-quantum)", quantum)                    # B1 found a solution
-        # The found dot carries a darker ring (its optimal shade) so the pale
-        # fill stays visible — mirroring the striped bar tier.
-        self.assertIn("stroke:var(--bar-solved-quantum)", quantum)
+        # B1 is only a (worse) feasible "found" result for quantum, so it is no
+        # longer a distinct tier — it renders as the grey "open" base.
+        self.assertNotIn("var(--bar-found-quantum)", quantum)
+        self.assertIn("fill:var(--border-mid)", quantum)
+
+    def test_tier_tooltips_present(self):
+        # The colour keys explain each retained tier via a native title tooltip.
+        for phrase in ("proven optimal objective value", "best-known objective value", "No solution reaching"):
+            self.assertIn(phrase, self.data["mip"])
 
     def test_legend_lists_problem(self):
         self.assertIn("Test Problem", self.data["mip"])

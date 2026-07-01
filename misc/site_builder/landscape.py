@@ -21,8 +21,8 @@ Each figure has:
   • a main scatter, one point per instance, coloured by problem class (the colours
     mirror ``PROBLEM_COLORS`` in ``assets/instances.js`` — keep the two in sync), and
   • two small insets re-plotting the same points, colouring each by how far
-    CLASSICAL vs QUANTUM methods got (optimal · best-known · found · open), in the
-    same four-tier ramps as the problem-card progress bars (``var(--bar-*)``).
+    CLASSICAL vs QUANTUM methods got (optimal · best-known · open), in the
+    same tier ramps as the problem-card progress bars (``var(--bar-*)``).
 
 The main plot and both insets share one pair of log axes so point positions line
 up. ``num_vars`` / ``density`` come from the repository's generated
@@ -57,31 +57,28 @@ PROBLEM_COLORS = {
 DEFAULT_COLOR = ("#1f6f6c", "#0e4f4d")
 
 # Inset tier colours: theme variables, matching the problem-card progress bars so
-# the home page reads consistently. Each paradigm uses its own four-tier ramp:
-# optimal · best-known (matched the best value) · found (some feasible solution) ·
-# open. The "found" tier mirrors the bars' striped texture — on the tiny scatter
-# dots that means the light fill plus a darker ring (its optimal shade); the
-# legend swatch reuses the same diagonal stripe gradient as the bar legend.
+# the home page reads consistently. Each paradigm uses its own tier ramp:
+# optimal · best-known (matched the best value) · open (everything else — no
+# feasible solution, or only a worse feasible one).
 CLASSICAL_OPTIMAL_FILL = "var(--bar-solved-classical)"
 CLASSICAL_BESTKNOWN_FILL = "var(--bar-best-known-classical)"
-CLASSICAL_FOUND_FILL = "var(--bar-found-classical)"
 QUANTUM_OPTIMAL_FILL = "var(--bar-solved-quantum)"
 QUANTUM_BESTKNOWN_FILL = "var(--bar-best-known-quantum)"
-QUANTUM_FOUND_FILL = "var(--bar-found-quantum)"
 GREY_FILL = "var(--border-mid)"                     # open / not solved (legend swatch)
 UNSOLVED_STYLE = f"fill:{GREY_FILL};fill-opacity:0.5"
 
-# Scatter-dot styles per tier (optimal/best-known = solid; found = light fill with
-# a darker ring so the pale colour stays visible on the card).
-CLASSICAL_FOUND_DOT = f"fill:{CLASSICAL_FOUND_FILL};stroke:{CLASSICAL_OPTIMAL_FILL};stroke-width:0.8"
-QUANTUM_FOUND_DOT = f"fill:{QUANTUM_FOUND_FILL};stroke:{QUANTUM_OPTIMAL_FILL};stroke-width:0.8"
-# Striped legend swatches for the found tier (matches .bar-legend .swatch.found-*).
-CLASSICAL_FOUND_SWATCH = (
-    f"repeating-linear-gradient(45deg, {CLASSICAL_OPTIMAL_FILL} 0 3px, {CLASSICAL_FOUND_FILL} 3px 6px)"
-)
-QUANTUM_FOUND_SWATCH = (
-    f"repeating-linear-gradient(45deg, {QUANTUM_OPTIMAL_FILL} 0 3px, {QUANTUM_FOUND_FILL} 3px 6px)"
-)
+# Plain-language definitions of the tiers, surfaced as native hover tooltips on
+# the inset colour keys (and mirrored in the bar legends on index/problems.html).
+TIER_TOOLTIPS = {
+    "optimal": "Optimal: the proven optimal objective value has been reached. This "
+               "includes a heuristic that attains the optimal value without proving "
+               "optimality itself — e.g., when the optimum was already proven by a "
+               "different method.",
+    "best-known": "A solution matching the best-known objective value is known, "
+                  "but it is not proven to be optimal.",
+    "open": "No solution reaching the best-known value yet — either no feasible "
+            "solution is known, or only worse ones.",
+}
 
 MAIN_DIMS = (720, 380)
 INSET_DIMS = (340, 220)
@@ -113,6 +110,12 @@ def _esc(value) -> str:
 
 def _f1(x) -> str:
     return f"{x:.1f}"
+
+
+def _tier_title(label) -> str:
+    """`` title="…"`` attribute (with a leading space) explaining a tier, or ""."""
+    tip = TIER_TOOLTIPS.get(str(label))
+    return f' title="{_esc(tip)}"' if tip else ""
 
 
 def _fmt_tick(power: int) -> str:
@@ -346,7 +349,7 @@ def _inset_block(svg, title, swatches) -> str:
     BELOW it. Keeping the key below the SVG means a taller (wrapped) key never
     pushes its scatter down, so the two insets stay top-aligned."""
     keys = "".join(
-        f'<span class="ls-inset-key"><span class="ls-leg-dot" '
+        f'<span class="ls-inset-key"{_tier_title(label)}><span class="ls-leg-dot" '
         f'style="background:{colour}"></span>{_esc(label)}</span>'
         for colour, label in swatches
     )
@@ -368,17 +371,16 @@ def _figure(points, caption) -> str:
         svg_class="landscape-svg landscape-main", with_labels=True,
         x_title="Number of variables (log)", y_title="Density (log)",
     )
-    # Both insets mirror the four-tier problem-card bars: optimal · best-known ·
-    # found · open (open = the grey base drawn for points matching no layer).
+    # Both insets mirror the problem-card bars: optimal · best-known · open. "Open"
+    # is the grey base drawn for points matching no layer — this now also absorbs
+    # instances where a paradigm only found a worse feasible solution.
     classical = _inset_svg(points, scale, [
         (lambda p: p["classical_tier"] == "optimal", f"fill:{CLASSICAL_OPTIMAL_FILL}"),
         (lambda p: p["classical_tier"] == "best_known", f"fill:{CLASSICAL_BESTKNOWN_FILL}"),
-        (lambda p: p["classical_tier"] == "found", CLASSICAL_FOUND_DOT),
     ])
     quantum = _inset_svg(points, scale, [
         (lambda p: p["quantum_tier"] == "optimal", f"fill:{QUANTUM_OPTIMAL_FILL}"),
         (lambda p: p["quantum_tier"] == "best_known", f"fill:{QUANTUM_BESTKNOWN_FILL}"),
-        (lambda p: p["quantum_tier"] == "found", QUANTUM_FOUND_DOT),
     ])
     # Direct children of the card (no wrapping <figure>) so the cards can use a
     # CSS subgrid to align main / legend / insets / caption across both columns.
@@ -388,11 +390,11 @@ def _figure(points, caption) -> str:
         + '<div class="landscape-insets">'
         + _inset_block(classical, "Classical", [
             (CLASSICAL_OPTIMAL_FILL, "optimal"), (CLASSICAL_BESTKNOWN_FILL, "best-known"),
-            (CLASSICAL_FOUND_SWATCH, "found"), (GREY_FILL, "open"),
+            (GREY_FILL, "open"),
         ])
         + _inset_block(quantum, "Quantum", [
             (QUANTUM_OPTIMAL_FILL, "optimal"), (QUANTUM_BESTKNOWN_FILL, "best-known"),
-            (QUANTUM_FOUND_SWATCH, "found"), (GREY_FILL, "open"),
+            (GREY_FILL, "open"),
         ])
         + '</div>'
         + f'<div class="plot-cap">{_esc(caption)}</div>'
@@ -401,9 +403,9 @@ def _figure(points, caption) -> str:
 
 _CAPTIONS = {
     "mip": "Mixed Integer Programming formulations — variables vs. density, with "
-           "classical / quantum insets (optimal · best-known · found · open)",
+           "classical / quantum insets (optimal · best-known · open)",
     "qubo": "QUBO formulations — variables vs. density, with "
-            "classical / quantum insets (optimal · best-known · found · open)",
+            "classical / quantum insets (optimal · best-known · open)",
 }
 
 
