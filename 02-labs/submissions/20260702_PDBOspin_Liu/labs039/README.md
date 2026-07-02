@@ -36,5 +36,4 @@ This directory contains the submission for the problem **labs039**.
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Time to solution | 2.336916 |
-| Remarks |  |
+| Remarks | Time to solution for the reported objective value: 2.336916s |
