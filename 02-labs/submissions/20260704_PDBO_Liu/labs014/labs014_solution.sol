@@ -1,0 +1,17 @@
+# Energy: 19
+# Source: PDBO
+# Selected from seed 4
+1
+0
+1
+0
+1
+1
+1
+1
+1
+0
+0
+1
+1
+0
