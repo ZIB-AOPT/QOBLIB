@@ -39,4 +39,4 @@ This directory contains the submission for the problem **chesapeake**.
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | Independent set sizes over seeds [42, 43, 44, 45, 46]: [17, 17, 17, 17, 17] (proven optimum 17). Feasibility guaranteed by deterministic repair postprocessing. Quantum-inspired constraint-preserving swap SA. |
+| Remarks | Independent set sizes over seeds [42, 43, 44, 45, 46]: [17, 17, 17, 17, 17] (proven optimum 17). Feasibility guaranteed by deterministic repair postprocessing. Quantum-inspired GPU-parallel SA (flip moves on the penalty QUBO). |

@@ -39,4 +39,4 @@ This directory contains the submission for the problem **C125-9**.
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | Independent set sizes over seeds [42, 43, 44, 45, 46]: [34, 34, 34, 34, 34] (proven optimum 34). Feasibility guaranteed by deterministic repair postprocessing. Quantum-inspired constraint-preserving swap SA. |
+| Remarks | Independent set sizes over seeds [42, 43, 44, 45, 46]: [34, 34, 34, 34, 34] (proven optimum 34). Feasibility guaranteed by deterministic repair postprocessing. Quantum-inspired GPU-parallel SA (flip moves on the penalty QUBO). |

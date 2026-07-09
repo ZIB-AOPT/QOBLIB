@@ -1,4 +1,4 @@
-# Q-Bridge constraint-preserving swap SA (best of 5 seeded runs)
+# Q-Bridge GPU-parallel SA, flip moves on penalty QUBO (best of 5 seeded runs)
 # Objective value = 12
 # Independent set size = 12
 27

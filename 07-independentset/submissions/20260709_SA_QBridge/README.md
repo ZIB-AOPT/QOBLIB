@@ -1,4 +1,4 @@
-# Q-Bridge — Constraint-Preserving Swap Simulated Annealing (SwapSA)
+# Q-Bridge — GPU-Parallel Simulated Annealing on the Penalty QUBO
 
 Submission by the Q-Bridge Team (South Korea) — contact: liveplex@gmail.com
 
@@ -8,6 +8,11 @@ Submission by the Q-Bridge Team (South Korea) — contact: liveplex@gmail.com
   reheat rounds, greedy-descent polish). Quantum-inspired, classical hardware.
 - Postprocessing: deterministic repair of any violated edge (remove the
   higher-degree endpoint) — feasibility of reported solutions is guaranteed.
+  Note: constraints are handled via the penalty term during the anneal and are
+  NOT enforced move-by-move; the repair step runs after the solve. (Our engine
+  also has a constraint-preserving swap mode for assignment-structured problems
+  with built-in exactly-one groups; that mode is not applicable to MIS and was
+  not used here.)
 - Stochastic protocol: 5 seeded runs per instance (seeds 42-46); per-run and
   aggregate statistics are reported unfiltered in each summary CSV.
 

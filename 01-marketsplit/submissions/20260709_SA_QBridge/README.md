@@ -1,4 +1,4 @@
-# Q-Bridge — SwapSA with Persistency Preprocessing
+# Q-Bridge — GPU-Parallel SA with Persistency Preprocessing
 
 Submission by the Q-Bridge Team (South Korea) — contact: liveplex@gmail.com
 
