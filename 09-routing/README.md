@@ -53,6 +53,25 @@ A CVRP-native hybrid of a Genetic Algorithm and graph-theoretic optimization. Ra
 - **Graph-based crossover.** Instead of exchanging contiguous segments, a combined graph is built from arcs of both parents (each tagged by origin); the shortest path assembles the offspring from the best-performing, possibly non-contiguous fragments of each parent — *recombination through optimization*, with feasibility guaranteed by construction.
 - **Parallelism.** Arc feasibility/cost computation, local-search evaluation, and per-individual decoding are multi-threaded (Java), scaling on multi-core hardware.
 
+#### Stopping criterion (adaptive stagnation)
+
+The search has **no fixed iteration or time budget** and **no known-optimum cutoff** — the best-known value is read only *after* solving, purely to report the gap. Each generation the main loop continues if *either* the generation improved the incumbent *or* an adaptive stagnation rule votes to keep going:
+
+```
+while ( runCrossovers() || nonStopCondition() ) { }
+```
+
+Let `stagnation = now − lastImprovementTime` and `elapsed = now − startTime`. The rule is:
+
+1. **Grace window** — while `stagnation ≤ StagnationMinTime`, always continue (no random draw). Every new incumbent resets `lastImprovementTime`, so each improvement buys a fresh grace window.
+2. **Probabilistic decay** — past the grace window, continue with probability `1 − p`, where `p = (stagnation − StagnationMinTime) / elapsed`. The longer the search stalls without a new best, the larger `p`, so termination becomes increasingly likely.
+
+`StagnationMinTime = max(100, 100·√n)` ms scales the grace window with instance size (≈ 447 ms for `n = 20`); population size is `max(20, 10·log₁₀ n)`.
+
+**Consequence for reported times.** Because the algorithm cannot detect that it has hit the optimum, the **time-to-solution** (timestamp of the last incumbent improvement) is strictly earlier than the **total runtime**: after the best solution is found, the run still spends the grace window plus the probabilistic tail before terminating. That difference *is* the stopping machinery winding down — using the known optimum as a cutoff would collapse the two.
+
+Both quantities are **stochastic**: the whole search (random initial population, randomized selection and crossover) *and* the probabilistic stopping rule are seeded from `ThreadLocalRandom`, so TTS and total runtime vary from run to run for the same instance — they are not deterministic properties of the instance. This is why the submission reports them over multiple runs rather than as single fixed numbers.
+
 ## References
 
 * **Sun, B., et al.** (2021). [Competitive algorithms for the online multiple knapsack problem with application to electric vehicle charging](https://doi.org/10.1145/3428336). Proc. ACM Meas. Anal. Comput. Syst. 4.
