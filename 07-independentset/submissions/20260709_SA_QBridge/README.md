@@ -32,3 +32,11 @@ on CuPy / NVIDIA RTX 5090; CPU numbers are reported here for reproducibility.
 The engine is proprietary (commercial product). The algorithm is summarized
 above and in the per-instance CSVs; we are happy to provide additional detail
 or a review under NDA on request.
+
+## Objective trajectory & TTS (added 2026-07-13, review follow-up)
+Each instance directory now includes `<instance>_objective_time_series.json`
+(list of 5 runs; each run a list of {Time, Incumbent} points recorded whenever
+the incumbent improved). Incumbent is the penalty-QUBO objective (at feasible incumbents this equals minus the independent-set size, e.g. -34 for C125-9).
+No optimality cutoff is used — the schedule always runs to completion; the
+"Time to Solution" column is computed post-hoc from the trajectory as the first
+time the final incumbent was reached (mean over the 5 runs).
