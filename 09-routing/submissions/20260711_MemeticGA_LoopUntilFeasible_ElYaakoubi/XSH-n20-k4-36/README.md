@@ -27,7 +27,7 @@ This directory contains the submission for the problem **XSH-n20-k4-36**.
 | # Runs | 5 |
 | # Feasible Runs | 5 |
 | # Successful Runs | 0 |
-| Success Threshold | 610 |
+| Success Threshold | 647 |
 | ====== |  |
 | Hardware Specifications | Intel Core i7-7700HQ @ 2.80GHz (4 cores / 8 threads); 16 GB RAM; Ubuntu 24.04 LTS; Java 21 (Oracle GraalVM 21.0.2), multi-threaded execution |
 | ====== |  |

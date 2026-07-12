@@ -27,7 +27,7 @@ This directory contains the submission for the problem **XSH-n20-k4-28**.
 | # Runs | 5 |
 | # Feasible Runs | 5 |
 | # Successful Runs | 0 |
-| Success Threshold | 669 |
+| Success Threshold | 676 |
 | ====== |  |
 | Hardware Specifications | Intel Core i7-7700HQ @ 2.80GHz (4 cores / 8 threads); 16 GB RAM; Ubuntu 24.04 LTS; Java 21 (Oracle GraalVM 21.0.2), multi-threaded execution |
 | ====== |  |
@@ -38,4 +38,4 @@ This directory contains the submission for the problem **XSH-n20-k4-28**.
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Loop-until-feasible variant: each run restarts from a fresh random population until it returns a capacity-feasible solution, so all runs are feasible by construction. Attempts to feasibility over the 5 runs: mean 1.4 (min 1, max 2). Known optimal = 669; best gap = 1.35%. Total Runtime and Time to Solution are wall-clock and include the failed-attempt retries; TTS is measured from the meta-run start to the last incumbent improvement. |
+| Remarks | Loop-until-feasible variant: each run restarts from a fresh random population until it returns a capacity-feasible solution, so all runs are feasible by construction. Attempts to feasibility over the 5 runs: mean 1.4 (min 1, max 2). Known optimal = 669; best gap = 1.05%. Total Runtime and Time to Solution are wall-clock and include the failed-attempt retries; TTS is measured from the meta-run start to the last incumbent improvement. |
