@@ -1,74 +1,89 @@
-# Miscellaneous
+# Steiner Tree Instance Generator
 
-This directory contains utility scripts for generating and working with Steiner tree problem instances and solutions.
+This script generates feasible instances for the Steiner tree problem on a grid. The grid can have multiple layers, random holes, and multiple terminals per net. The script uses ZIMPL and CPLEX for solving the instances. There are two versions of the script; the one called 'hard' makes additional effort to try to generate instances that cannot be solved by a simple decomposition heuristic, although this comes at the cost of additional computational effort and higher chance of failure. Nonetheless, the instances are not guaranteed to be difficult on the primal side.
 
-## Scripts
+## Prerequisites
 
-### generate_feasible_instance.py
+Before using this script, ensure the following tools and packages are installed:
 
-Generates feasible Steiner tree packing instances on a multi-layer grid with configurable parameters.
+### Tools
+1. **ZIMPL**: A modeling language for mathematical programming.
+   - ZIMPL is included in and can be downloaded from the [SCIP Optimization Suite](https://www.scipopt.org/#download).
+2. **CPLEX**: An optimization solver by IBM.
+   - Obtain from [IBM CPLEX official site](https://www.ibm.com/products/ilog-cplex-optimization-studio).
 
-**Prerequisites:**
-- **ZIMPL**: Modeling language for mathematical programming ([SCIP Optimization Suite](https://www.scipopt.org/#download))
-- **CPLEX**: IBM optimization solver ([IBM CPLEX](https://www.ibm.com/products/ilog-cplex-optimization-studio))
-- **Python packages**: `numpy` (install via `pip install numpy`)
+### Python Packages
+Install the required Python packages using `pip`:
 
-**Usage:**
 ```bash
-python3 generate_feasible_instance.py <size> <num_layers> <max_terminals> [options]
+pip install numpy
 ```
 
-**Arguments:**
+## Usage
 
-| Argument            | Description                                                          | Default  |
-| ------------------- | -------------------------------------------------------------------- | -------- |
-| `size`              | Grid size (for size=n, creates n×n grid)                             | Required |
-| `num_layers`        | Number of stacked grid layers                                        | Required |
-| `max_terminals`     | Max terminals per net (reduced iteratively until feasible)           | Required |
-| `--num_holes`       | Number of random holes in the grid                                   | `0`      |
-| `--randseed`        | Random seed for reproducibility                                      | `12345`  |
-| `--zimpl_path`      | Path to ZIMPL executable                                             | `zimpl`  |
-| `--cplex_path`      | Path to CPLEX executable                                             | `cplex`  |
-| `--force_diff_side` | Force second terminal of each net to be on different side from first | `False`  |
+### Command-Line Arguments
 
-**Example:**
+| Argument            | Description                                                                           | Default Value |
+| ------------------- | ------------------------------------------------------------------------------------- | ------------- |
+| `size`              | Grid size. For size=n, the final grid will be of size n*n.                            |               |
+| `num_layers`        | Number of stacked grid layers.                                                        |               |
+| `max_terminals`     | Maximum number of terminals per net, iteratively reduced until feasible net is found. |               |
+| `--num_holes`       | Number of random holes to generate.                                                   | `0`           |
+| `--randseed`        | Random seed for reproducibility.                                                      | `12345`       |
+| `--zimpl_path`      | Path to the ZIMPL executable.                                                         | `zimpl`       |
+| `--cplex_path`      | Path to the CPLEX executable.                                                         | `cplex`       |
+| `--force_diff_side` | Force the second terminal of each net to be on a different side from the first        | `False`       |
+
+### Example Usage
+
 ```bash
-python3 generate_feasible_instance.py 10 3 5 \
+python3 generate_feasible_instance.py \
+    10 \
+    3 \
+    5 \
     --num_holes 2 \
-    --randseed 123 \
+    --randsee 123 \
     --zimpl_path /path/to/zimpl \
     --cplex_path '/user/CPLEX_Studio2211/cplex/bin/x86-64_linux/cplex'
 ```
 
-**Output files:**
-- `arcs.dat`: Graph arcs
-- `terms.dat`: Terminal nodes for each net
-- `roots.dat`: Root node for each net
-- `param.dat`: Final number of nodes and nets
-- `partial_sol.txt`: Feasible Steiner tree packing (not necessarily optimal)
+```bash
+python3 generate_hard_feasible_instance.py \
+    10 \
+    3 \
+    5 \
+    --num_holes 2 \
+    --randsee 123 \
+    --zimpl_path /path/to/zimpl \
+    --cplex_path '/user/CPLEX_Studio2211/cplex/bin/x86-64_linux/cplex'
+```
 
-### get_instance_info.py
 
-Generates summary tables of all instances with best known solution information.
+### Output Files
 
-**Usage:**
+The script generates several files that describes the final feasible steiner tree packing instance: 
+- `arcs.dat`: Contains arcs of the final graph.
+- `terms.dat`: Specifies terminal nodes for each net.
+- `roots.dat`: Specifies the root node for each net.
+- `param.dat`: Give the final number of nodes and nets generated.
+- `partial_sol.txt`: Arcs in a feasible steiner tree packing constructed during generation; not necessarily optimal
+
+## Getting Instance Info
+
+Run
+
 ```bash
 python get_instance_info.py
 ```
 
-**Output:** Creates `.csv` and `.md` table files with instance information and best solutions.
+to generate a `.csv` and a `.md` table containing all the infromation on the provided instances with the best solutions.
 
-### convert_sol2arcs.py
+## Converting Gurobi to Arc sol
 
-Converts Gurobi solution files to arc-based solution format.
+Run
 
-**Usage:**
 ```bash
 python convert_sol2arcs.py <input_file> <output_file> <arcs_file>
 ```
 
-- `input_file`: Gurobi solution file
-- `output_file`: Output arc solution file
-- `arcs_file`: Instance arc file (needed to compute solution value)
-
-**Note:** This script recomputes the solution value based on the arc information.
+to convert the (Gurobi) solution `input_file` to an arc solution written to `output_file` where `arcs_file` has to be provided to (re)compute the value of the solution.
