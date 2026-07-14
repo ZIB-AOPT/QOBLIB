@@ -30,11 +30,11 @@ This directory contains the submission for the problem **sloane_1zc_128**
 | ====== |  |
 | Hardware Specifications | Quantum: ibm_fez, Classical: MacBook Pro M5 |
 | ====== |  |
-| Total Runtime | 3671.73 |
-| Time to Solution | N/A |
-| CPU Runtime | 423.13 |
+| Total Runtime | 312.27 |
+| Time to Solution | 52.87 |
+| CPU Runtime | 40.33 |
 | GPU Runtime | N/A |
 | QPU Runtime | 282.40 |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | Runtime in seconds. Averaged over 5 runs. QPU Runtime is session time. Idle CPU time (waiting for QPU) not counted in 'CPU Runtime'. |
+| Remarks | Runtime in seconds. Averaged over 5 runs. QPU Runtime is session time. Idle CPU time (waiting for QPU) not counted in 'CPU Runtime'. Average iterations to solution 1.00 (successful runs only). |

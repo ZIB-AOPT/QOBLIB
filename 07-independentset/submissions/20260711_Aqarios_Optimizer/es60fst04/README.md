@@ -30,11 +30,11 @@ This directory contains the submission for the problem **es60fst04**
 | ====== |  |
 | Hardware Specifications | Quantum: ibm_fez, Classical: MacBook Pro M5 |
 | ====== |  |
-| Total Runtime | 3359.46 |
-| Time to Solution | N/A |
-| CPU Runtime | 382.80 |
+| Total Runtime | 230.15 |
+| Time to Solution | 121.94 |
+| CPU Runtime | 19.64 |
 | GPU Runtime | N/A |
 | QPU Runtime | 187.40 |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | Runtime in seconds. Averaged over 5 runs. QPU Runtime is session time. Idle CPU time (waiting for QPU) not counted in 'CPU Runtime'. |
+| Remarks | Runtime in seconds. Averaged over 5 runs. QPU Runtime is session time. Idle CPU time (waiting for QPU) not counted in 'CPU Runtime'. Average iterations to solution 4.67 (successful runs only). |
