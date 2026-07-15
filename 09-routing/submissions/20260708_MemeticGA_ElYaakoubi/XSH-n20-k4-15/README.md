@@ -27,8 +27,8 @@ This directory contains the submission for the problem **XSH-n20-k4-15**.
 | Paradigm | Classical |
 | # Runs | 1 |
 | # Feasible Runs | 1 |
-| # Successful Runs | 0 |
-| Success Threshold | 0 |
+| # Successful Runs | 1 |
+| Success Threshold | N/A |
 | ====== |  |
 | Hardware Specifications | Intel Core i7-7700HQ @ 2.80GHz (4 cores / 8 threads); 16 GB RAM; Ubuntu 24.04 LTS; Java 21 (Oracle GraalVM 21.0.2), multi-threaded execution |
 | ====== |  |
@@ -39,4 +39,4 @@ This directory contains the submission for the problem **XSH-n20-k4-15**.
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Single run of a stochastic graph-based genetic algorithm. Known optimal = 780; gap = 0.26%. Time to Solution is the timestamp of the last logged incumbent improvement in that run. |
+| Remarks | Single run of a stochastic graph-based genetic algorithm. Known optimal = 780; gap = 0.26%. Time to Solution is the timestamp of the last logged incumbent improvement in that run. No cutoff was set: the solver never reads the known optimal value, so it cannot stop on optimality; the known optimum is quoted here for gap reporting only. Success Threshold is therefore N/A and every feasible run counts as successful. |

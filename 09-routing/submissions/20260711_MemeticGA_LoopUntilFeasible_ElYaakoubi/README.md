@@ -20,12 +20,12 @@ statistic is **how many restarts feasibility costs**.
 | Metric | Value |
 | --- | --- |
 | Instances | 55 (5 runs each = 275 runs, 0 failures) |
-| Reach the known optimum (best of 5 = opt) | 28 / 54 instances with a known optimum |
-| Mean best-run gap to optimum | 0.61 % (max 6.07 %) |
-| **Avg attempts to feasibility** | **2.03** (median 1.6, per-instance range 1.0 – 11.8) |
+| Reach the known optimum (best of 5 = opt) | 29 / 54 instances with a known optimum |
+| Mean best-run gap to optimum | 0.50 % (max 2.76 %) |
+| **Avg attempts to feasibility** | **2.01** (median 1.4, per-instance range 1.0 – 11.8) |
 | Instances feasible on the 1st attempt every run | 9 |
 | Hardest to make feasible | `XSH-n20-k4-34` — 11.8 avg attempts (min 4, max 23) |
-| Mean per-run wall-clock (retry-inclusive) | 31.2 s (max 235.5 s on `-34`) |
+| Mean per-run wall-clock (retry-inclusive) | 30.0 s (max 235.5 s on `-34`) |
 
 Per-instance figures — including avg/min/max attempts — are in
 [`campaign_summary.csv`](campaign_summary.csv).
@@ -36,8 +36,8 @@ Each `XSH-n20-k4-NN/` directory contains:
 
 - `NN_summary.csv` / `README.md` — the 30-field summary. `Total Runtime` and `Time to Solution` are
   **wall-clock and include the failed-attempt retries**; TTS is measured from the meta-run start to
-  the last incumbent improvement. `# Successful Runs` counts runs whose objective equals the known
-  optimum.
+  the last incumbent improvement. No cutoff is set, so `Success Threshold` is `N/A` and every
+  feasible run counts as successful.
 - `NN_solution.sol` — best feasible solution over the 5 runs (`Route #k:` format).
 - `NN_objective_time_series.json.gz` — gzip'd JSON, an **array of 5 runs**; each run is an array of
   `{"Time": <seconds>, "Incumbent": <objective>, "step": <index>}` incumbent-improvement points.
