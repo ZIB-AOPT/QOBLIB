@@ -20,12 +20,12 @@ statistic is **how many restarts feasibility costs**.
 | Metric | Value |
 | --- | --- |
 | Instances | 55 (5 runs each = 275 runs, 0 failures) |
-| Reach the known optimum (best of 5 = opt) | 29 / 54 instances with a known optimum |
-| Mean best-run gap to optimum | 0.50 % (max 2.76 %) |
-| **Avg attempts to feasibility** | **2.01** (median 1.4, per-instance range 1.0 – 11.8) |
-| Instances feasible on the 1st attempt every run | 9 |
-| Hardest to make feasible | `XSH-n20-k4-34` — 11.8 avg attempts (min 4, max 23) |
-| Mean per-run wall-clock (retry-inclusive) | 30.0 s (max 235.5 s on `-34`) |
+| Reach the known optimum (best of 5 = opt) | 39 / 54 instances with a known optimum |
+| Mean best-run gap to optimum | 0.28 % (max 2.47 %) |
+| **Avg attempts to feasibility** | **2.33** (median 1.6, per-instance range 1.0 – 21.4) |
+| Instances feasible on the 1st attempt every run | 6 |
+| Hardest to make feasible | `XSH-n20-k4-34` — 21.4 avg attempts (min 2, max 46) |
+| Mean per-run wall-clock (retry-inclusive) | 13.5 s (max 104.0 s on `-34`) |
 
 Per-instance figures — including avg/min/max attempts — are in
 [`campaign_summary.csv`](campaign_summary.csv).

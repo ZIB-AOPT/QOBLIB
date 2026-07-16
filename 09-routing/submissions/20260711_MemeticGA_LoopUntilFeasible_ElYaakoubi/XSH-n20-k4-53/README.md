@@ -32,9 +32,9 @@ This directory contains the submission for the problem **XSH-n20-k4-53**.
 | ====== |  |
 | Hardware Specifications | Intel Core i7-7700HQ @ 2.80GHz (4 cores / 8 threads); 16 GB RAM; Ubuntu 24.04 LTS; Java 21 (Oracle GraalVM 21.0.2), multi-threaded execution |
 | ====== |  |
-| Total Runtime | 34.785 |
-| Time to Solution | 29.251 |
-| CPU Runtime | 34.785 |
+| Total Runtime | 21.480 |
+| Time to Solution | 12.291 |
+| CPU Runtime | 21.480 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |

@@ -32,11 +32,11 @@ This directory contains the submission for the problem **XSH-n20-k4-23**.
 | ====== |  |
 | Hardware Specifications | Intel Core i7-7700HQ @ 2.80GHz (4 cores / 8 threads); 16 GB RAM; Ubuntu 24.04 LTS; Java 21 (Oracle GraalVM 21.0.2), multi-threaded execution |
 | ====== |  |
-| Total Runtime | 28.136 |
-| Time to Solution | 18.783 |
-| CPU Runtime | 28.136 |
+| Total Runtime | 10.417 |
+| Time to Solution | 4.412 |
+| CPU Runtime | 10.417 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Loop-until-feasible variant: each run restarts from a fresh random population until it returns a capacity-feasible solution, so all runs are feasible by construction. Attempts to feasibility over the 5 runs: mean 1.2 (min 1, max 2). Known optimal = 851; best gap = 0.00%. Total Runtime and Time to Solution are wall-clock and include the failed-attempt retries; TTS is measured from the meta-run start to the last incumbent improvement. No cutoff was set: the solver never reads the known optimal value, so it cannot stop on optimality; the known optimum is quoted here for gap reporting only. Success Threshold is therefore N/A and every feasible run counts as successful. |
+| Remarks | Loop-until-feasible variant: each run restarts from a fresh random population until it returns a capacity-feasible solution, so all runs are feasible by construction. Attempts to feasibility over the 5 runs: mean 1.6 (min 1, max 3). Known optimal = 851; best gap = 0.00%. Total Runtime and Time to Solution are wall-clock and include the failed-attempt retries; TTS is measured from the meta-run start to the last incumbent improvement. No cutoff was set: the solver never reads the known optimal value, so it cannot stop on optimality; the known optimum is quoted here for gap reporting only. Success Threshold is therefore N/A and every feasible run counts as successful. |

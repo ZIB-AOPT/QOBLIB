@@ -10,7 +10,7 @@ This directory contains the submission for the problem **XSH-n20-k4-34**.
 | Date | 2026-07-11 |
 | ====== |  |
 | Reference | Code: https://github.com/othma125/heuristicCVRP |
-| Best Objective Value | 891 |
+| Best Objective Value | 893 |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | Giant-tour (permutation) representation with graph-based optimal split into capacity-feasible routes |
@@ -32,11 +32,11 @@ This directory contains the submission for the problem **XSH-n20-k4-34**.
 | ====== |  |
 | Hardware Specifications | Intel Core i7-7700HQ @ 2.80GHz (4 cores / 8 threads); 16 GB RAM; Ubuntu 24.04 LTS; Java 21 (Oracle GraalVM 21.0.2), multi-threaded execution |
 | ====== |  |
-| Total Runtime | 235.539 |
-| Time to Solution | 179.757 |
-| CPU Runtime | 235.539 |
+| Total Runtime | 104.007 |
+| Time to Solution | 42.968 |
+| CPU Runtime | 104.007 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Loop-until-feasible variant: each run restarts from a fresh random population until it returns a capacity-feasible solution, so all runs are feasible by construction. Attempts to feasibility over the 5 runs: mean 11.8 (min 4, max 23). Known optimal = 891; best gap = 0.00%. Total Runtime and Time to Solution are wall-clock and include the failed-attempt retries; TTS is measured from the meta-run start to the last incumbent improvement. No cutoff was set: the solver never reads the known optimal value, so it cannot stop on optimality; the known optimum is quoted here for gap reporting only. Success Threshold is therefore N/A and every feasible run counts as successful. |
+| Remarks | Loop-until-feasible variant: each run restarts from a fresh random population until it returns a capacity-feasible solution, so all runs are feasible by construction. Attempts to feasibility over the 5 runs: mean 21.4 (min 2, max 46). Known optimal = 891; best gap = 0.22%. Total Runtime and Time to Solution are wall-clock and include the failed-attempt retries; TTS is measured from the meta-run start to the last incumbent improvement. No cutoff was set: the solver never reads the known optimal value, so it cannot stop on optimality; the known optimum is quoted here for gap reporting only. Success Threshold is therefore N/A and every feasible run counts as successful. |
