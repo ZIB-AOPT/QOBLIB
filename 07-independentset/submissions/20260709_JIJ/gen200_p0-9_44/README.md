@@ -9,7 +9,7 @@ This directory contains the submission for the problem **gen200_p0-9_44**.
 | Affiliation | JIJ, JIJ, JIJ, JIJ, JIJ |
 | Date | 2026-07-09 |
 | ====== |  |
-| Reference | Manuscript in preparation |
+| Reference | https://www.j-ij.com/. The algorithm builds on the SQOA framework (https://ieeexplore.ieee.org/document/11250318) with pre- and post-processing. |
 | Best Objective Value | 44 |
 | Optimality Bound | N/A |
 | ====== |  |
