@@ -52,6 +52,8 @@ Each `XSH-n20-k4-NN/` directory contains:
 
 ## Reproducing
 
-Solver at [`othma125/heuristicCVRP`](https://github.com/othma125/heuristicCVRP), branch
-`objective-trace`. Hardware: Intel Core i7-7700HQ @ 2.80GHz (4 cores / 8 threads), 16 GB RAM,
-Ubuntu 24.04 LTS, Java 21 (Oracle GraalVM 21.0.2), multi-threaded. Full campaign: 4534 s.
+Solver at [`othma125/heuristicCVRP`](https://github.com/othma125/heuristicCVRP). This campaign ran a
+trace-recording build (each incumbent improvement logged with its timestamp) that is not yet on the
+public repository; it can be published on request. Hardware: Intel Core i7-7700HQ @ 2.80GHz
+(4 cores / 8 threads), 16 GB RAM, Ubuntu 24.04 LTS, Java 21 (Oracle GraalVM 21.0.2), multi-threaded.
+Full campaign: 4534 s.
