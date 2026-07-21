@@ -43,7 +43,7 @@ Given:
 
 ### Graph-Based Genetic Algorithm via Giant-Tour Decomposition
 
-**Author:** Othmane El Yaakoubi &nbsp;·&nbsp; **Code:** [github.com/othma125/heuristicCVRP](https://github.com/othma125/heuristicCVRP) &nbsp;·&nbsp; **Submission:** [`submissions/20260720_MemeticGA_LoopUntilFeasible_ElYaakoubi/`](submissions/20260720_MemeticGA_LoopUntilFeasible_ElYaakoubi/)
+**Author:** Othmane El Yaakoubi &nbsp;·&nbsp; **Code:** [github.com/othma125/heuristicCVRP](https://github.com/othma125/heuristicCVRP) &nbsp;·&nbsp; **Submission:** [`submissions/20260721_MemeticGA_LoopUntilFeasible_ElYaakoubi/`](submissions/20260721_MemeticGA_LoopUntilFeasible_ElYaakoubi/)
 
 A CVRP-native hybrid of a Genetic Algorithm and graph-theoretic optimization. Rather than searching over route-level encodings with cut-point crossover, it evolves **giant tours** (permutations of all customers, no route delimiters) and delegates feasibility and route construction to a graph:
 
