@@ -9,7 +9,7 @@ This directory contains the submission for the problem **XSH-n20-k4-43**.
 | Affiliation | Independent Researcher |
 | Date | 2026-07-21 |
 | ====== |  |
-| Reference | Code: https://github.com/othma125/heuristicCVRP @ 51b335b |
+| Reference | Code: https://github.com/othma125/heuristicCVRP @ v1.0 (51b335b) |
 | Best Objective Value | 472 |
 | Optimality Bound | N/A |
 | ====== |  |

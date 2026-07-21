@@ -1,7 +1,7 @@
-# Loop-until-feasible Memetic GA — CVRP submission (solver 51b335b)
+# Loop-until-feasible Memetic GA — CVRP submission (solver v1.0)
 
 **Submitter:** Othmane El Yaakoubi · **Date:** 2026-07-21 ·
-**Code:** [`othma125/heuristicCVRP@51b335b`](https://github.com/othma125/heuristicCVRP/commit/51b335b)
+**Code:** [`othma125/heuristicCVRP@v1.0`](https://github.com/othma125/heuristicCVRP/releases/tag/v1.0) (commit `51b335b`)
 
 All 55 `XSH-n20-k4` instances solved with the loop-until-feasible graph-based memetic GA
 (giant-tour chromosome + shortest-path capacity split). See the
@@ -9,11 +9,11 @@ All 55 `XSH-n20-k4` instances solved with the loop-until-feasible graph-based me
 
 ## Solver version
 
-Run on `heuristicCVRP` commit `51b335b` (the public `main` HEAD), which includes the
-population-initialisation fix and always runs the intra-route local search inside the split.
-The objective time series is recorded by campaign instrumentation that logs each incumbent
-improvement with its wall-clock timestamp; it only reads the incumbent and does not affect the
-search, so all results are attributable to `51b335b` as published.
+Run on `heuristicCVRP` tag `v1.0` (commit `51b335b`), which includes the population-initialisation
+fix and always runs the intra-route local search inside the split. The objective time series is
+recorded by campaign instrumentation that logs each incumbent improvement with its wall-clock
+timestamp; it only reads the incumbent and does not affect the search, so all results are
+attributable to `v1.0` as published.
 
 ## Results (5 runs per instance, all feasible)
 
