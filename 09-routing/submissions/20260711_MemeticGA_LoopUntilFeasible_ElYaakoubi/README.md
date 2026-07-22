@@ -2,10 +2,11 @@
 
 **Submitter:** Othmane El Yaakoubi · **Date:** 2026-07-11 · **Code:** https://github.com/othma125/heuristicCVRP
 
-Companion to the [`20260708_MemeticGA_ElYaakoubi`](../20260708_MemeticGA_ElYaakoubi) submission, using
-the **loop-until-feasible** variant of the same graph-based memetic GA (giant-tour chromosome +
-shortest-path capacity split). See the [09-routing README](../../README.md) for the method and its
-adaptive stopping criterion.
+This is a **loop-until-feasible** graph-based memetic GA (giant-tour chromosome + shortest-path
+capacity split): each run restarts from a fresh random population until it returns a feasible
+solution. See the [09-routing README](../../README.md) for the method and its adaptive stopping
+criterion, and [`20260721_MemeticGA_LoopUntilFeasible_ElYaakoubi`](../20260721_MemeticGA_LoopUntilFeasible_ElYaakoubi)
+for the same variant re-run on a later solver version.
 
 ## Why this variant
 
