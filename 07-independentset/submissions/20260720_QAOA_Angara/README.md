@@ -12,6 +12,10 @@
   
 ## Instances covered
 
+For a given graph $G = (V, E)$, 
+- **best IS** is the best bitstring found on the hardware using the workflow from the reference above. This involves using the Hamiltonian of Maximum Profit Cover, training on QTensor, sampling on IBM Quebec and post-processing classically to recover a feasible solution.
+- **optimal IS** is the reported bitstring from QOBLIB
+
 - `C125-9`: |V|=125, |E|=787, best IS=28, optimal IS=34
 - `aves-sparrow-social`: |V|=52, |E|=454, best IS=13, optimal IS=13
 - `chesapeake`: |V|=39, |E|=170, best IS=16, optimal IS=17
