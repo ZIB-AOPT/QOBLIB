@@ -22,7 +22,7 @@ LP_FOLDER="./lp_files"          # Temporary folder for .lp files
 
 # Set paths to other scripts and binary files
 MODEL="./topology_seidel_quadratic.zpl"     # Path to the ZIMPL model
-ZIMPL="./../../../misc/zimpl-3.7.1.linux.x86_64.gnu.static.opt"  # ZIMPL binary
+ZIMPL="./../../../misc/bin/zimpl-3.7.1.linux.x86_64.gnu.static.opt"  # ZIMPL binary
 CSV_FILE="./../../instances/bounds.csv"    # Path to the CSV file containing additional data
 
 # Check if the CSV file exists

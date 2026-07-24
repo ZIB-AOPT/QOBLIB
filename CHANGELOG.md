@@ -73,8 +73,8 @@ All problems (01-10) have been updated to follow a consistent format and structu
 ## 9. Tooling & Automation
 
 ### Updated Tools
-- Updated [metrics script](./misc/get_metrics.py) for better performance
-- Updated [QUBO conversion tool](./misc/convert_lp2qubo.py) for new format
+- Updated [metrics script](./misc/tools/get_metrics.py) for better performance
+- Updated [QUBO conversion tool](./misc/tools/convert_lp2qubo.py) for new format
 - Deleted redundant metrics files
 
 ### Infrastructure Updates

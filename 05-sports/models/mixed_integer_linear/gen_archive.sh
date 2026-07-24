@@ -24,7 +24,7 @@ ZPL_FOLDER="./zpl_files"
 
 # Set paths to other scripts and binary files
 ITS2MIP="${MISC_FOLDER}/itc2mip.py"
-ZIMPL="./../../../misc/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
+ZIMPL="./../../../misc/bin/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
 
 # Create necessary folders if they don't exist
 mkdir -p "$LP_FOLDER"

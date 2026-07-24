@@ -20,7 +20,7 @@ import unittest
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "misc"))
+sys.path.insert(0, str(REPO_ROOT / "misc" / "ci"))
 
 from site_builder import html_pages as H  # noqa: E402
 

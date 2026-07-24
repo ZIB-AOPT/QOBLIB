@@ -19,7 +19,7 @@
 cd "$(dirname "$0")"
 
 # Set paths to other scripts and binary files
-ZIMPL="./../../misc/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
+ZIMPL="./../../misc/bin/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
 GEN_PERM="./permutation.zpl"
 
 START=$1

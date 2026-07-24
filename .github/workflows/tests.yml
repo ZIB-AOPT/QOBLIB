@@ -1,0 +1,32 @@
+name: Tests
+
+# Runs the Python unit tests on every pull request so code changes stay covered.
+# It intentionally does NOT build or publish the site: deployment happens only
+# from main (see pages.yml), never from an unreviewed PR.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Run unit tests
+        run: uv run --project misc python -m unittest discover -s tests

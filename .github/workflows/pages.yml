@@ -1,7 +1,9 @@
 name: Build GitHub Pages
 
+# The public site is (re)built and deployed only when changes land on main
+# (i.e. a PR is merged) or on a manual dispatch — never on pull requests. PRs are
+# validated by the "Validate Submission" workflow instead.
 on:
-  pull_request:
   push:
     branches:
       - main
@@ -11,8 +13,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -22,41 +24,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
+          enable-cache: true
 
       - name: Run unit tests
-        run: python -m unittest discover -s tests
+        run: uv run --project misc python -m unittest discover -s tests
 
       - name: Build site
         env:
-          SITE_REPO_URL: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.html_url || format('{0}/{1}', github.server_url, github.repository) }}
-          SITE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-        run: python misc/build_site.py --out _site --repo-url "$SITE_REPO_URL" --ref "$SITE_REF"
-
-      - name: Upload PR preview artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: qoblib-site
-          path: _site
-          if-no-files-found: error
-          retention-days: 14
+          SITE_REPO_URL: ${{ format('{0}/{1}', github.server_url, github.repository) }}
+          SITE_REF: ${{ github.sha }}
+        run: uv run --project misc qoblib-build-site --out _site --repo-url "$SITE_REPO_URL" --ref "$SITE_REF"
 
       - name: Configure Pages
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
         uses: actions/configure-pages@v6
 
       - name: Upload Pages artifact
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
         uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
   deploy:
     name: Deploy Pages
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     needs: build
     runs-on: ubuntu-latest
     permissions:

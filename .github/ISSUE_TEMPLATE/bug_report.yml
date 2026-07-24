@@ -1,0 +1,83 @@
+name: Bug report
+description: Report a bug in submissions, instances, validation, or repository tooling.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug.
+
+        Please review `CONTRIBUTING.md` before filing submission-related issues.
+  - type: dropdown
+    id: category
+    attributes:
+      label: Bug category
+      description: What area is affected?
+      options:
+        - Submission validation
+        - Submission metadata/format
+        - Instance files
+        - Solution files
+        - Checker/tooling script
+        - Website/docs
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: problem_class
+    attributes:
+      label: Affected problem class
+      description: "Example: 01-marketsplit"
+      placeholder: 01-marketsplit
+    validations:
+      required: true
+  - type: input
+    id: instance_ids
+    attributes:
+      label: Affected instance ID(s)
+      description: Provide one or more IDs, or N/A.
+      placeholder: "Example: msc_100_5"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Include exact commands and paths if relevant.
+      placeholder: |
+        1. Run ...
+        2. Open ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / errors
+      description: Paste stack traces, checker output, or CI log snippets.
+      render: shell
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmation (do not remove)
+      options:
+        - label: I reviewed `CONTRIBUTING.md`.
+          required: true
+        - label: I provided enough detail to reproduce the issue.
+          required: true

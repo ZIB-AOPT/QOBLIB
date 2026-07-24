@@ -156,6 +156,16 @@ fn check_birkhoff_decomposition(instance: &Instance, solution: &Solution) -> Res
 }
 
 fn main() {
+    // Exit-code contract (see misc/ci/CHECKER_CONTRACT.md):
+    //   0  VALID        valid file, feasible
+    //   21 INFEASIBLE   valid file, one or more instances fail verification
+    //   10 INVALID_FILE unparseable solution file (raised via this hook)
+    //   2  USAGE        bad arguments
+    std::panic::set_hook(Box::new(|info| {
+        eprintln!("INVALID_FILE: {info}");
+        std::process::exit(10);
+    }));
+
     println!(
         "QOBLIB Birkhoff Decomposition Solution Checker Version {}",
         VERSION
@@ -168,16 +178,25 @@ fn main() {
         std::process::exit(2);
     }
 
-    // Load instance file
-    let instance_data = fs::read_to_string(&args[1])
-        .unwrap_or_else(|err| panic!("Reading {} failed: {err}", args[1]));
+    // Load instance file (a support file: read/parse failures are USAGE, not a
+    // statement about the solution).
+    let instance_data = fs::read_to_string(&args[1]).unwrap_or_else(|err| {
+        eprintln!("USAGE: reading instance file {} failed: {err}", args[1]);
+        std::process::exit(2);
+    });
 
     let instance_file: InstanceFile = serde_json::from_str(&instance_data)
-        .unwrap_or_else(|err| panic!("Parsing instance JSON failed: {err}"));
+        .unwrap_or_else(|err| {
+            eprintln!("USAGE: parsing instance JSON failed: {err}");
+            std::process::exit(2);
+        });
 
-    // Load solution file
-    let solution_data = fs::read_to_string(&args[2])
-        .unwrap_or_else(|err| panic!("Reading {} failed: {err}", args[2]));
+    // Load solution file (unreadable file is USAGE/infra; malformed content below
+    // is funnelled to INVALID_FILE by the panic hook).
+    let solution_data = fs::read_to_string(&args[2]).unwrap_or_else(|err| {
+        eprintln!("USAGE: reading solution file {} failed: {err}", args[2]);
+        std::process::exit(2);
+    });
 
     let solution_file: SolutionFile = serde_json::from_str(&solution_data)
         .unwrap_or_else(|err| panic!("Parsing solution JSON failed: {err}"));
@@ -235,10 +254,10 @@ fn main() {
         std::process::exit(0);
     } else {
         println!(
-            "INVALID: {} of {} instances failed",
+            "INFEASIBLE: {} of {} instances failed",
             failed,
             passed + failed
         );
-        std::process::exit(1);
+        std::process::exit(21);
     }
 }

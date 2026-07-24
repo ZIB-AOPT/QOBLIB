@@ -23,7 +23,7 @@ LP_FOLDER="./lp_files"    # Temporary folder for .lp files
 
 # Set paths to other scripts and binary files
 MODEL="./marketsplit_blp.zpl"
-ZIMPL="./../../../misc/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
+ZIMPL="./../../../misc/bin/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
 DAT2TXT="./../../misc/convert_dat2txt.awk"
 
 # Create necessary folders if they don't exist

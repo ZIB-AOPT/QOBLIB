@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # This file is part of QOBLIB - Quantum Optimization Benchmarking Library
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,14 +45,11 @@ Usage:
   python validate_submission.py SUBMISSION_ROOT
     [--all]                              # validate every submission under a repo / problem-class / submissions dir
     [--no-check]                         # disable automatic per-problem solution checker
-    [--checker-cmd '...{solution}...']   # command template with placeholders
     [--instance-pattern 'glob*']         # only check matching instance dir names
-    [--fail-on-checker]                  # mark instance invalid if checker fails/returns nonzero
     [--generate-readme]                  # (re)create README.md from CSV pretty table
     [--strict-problem-match]             # require CSV Problem column == instance dir name
     [--verbose]
     [--quiet]
-  Placeholders for --checker-cmd: {submission_root} {instance_dir} {instance} {solution}
 
 Exit code is nonzero if any instance fails validation.
 
@@ -98,6 +96,25 @@ INT_COLUMNS = {
 FLOAT_COLUMNS = {
     "Best Objective Value","Optimality Bound","Success Threshold",
     "Total Runtime","Time to Solution","CPU Runtime","GPU Runtime","QPU Runtime","Other HW Runtime"
+}
+
+# ---------------------------------------------------------------------------
+# Per-problem checker exit-code contract (see misc/CHECKER_CONTRACT.md).
+# The checker reports a *fact* about the solution file; this script applies the
+# *policy* (what a submission is allowed to declare) on top of it.
+# ---------------------------------------------------------------------------
+EXIT_VALID        = 0    # valid file, feasible (and optimal where determinable)
+EXIT_INVALID_FILE = 10   # solution file is malformed / unparseable / wrong shape
+EXIT_SUBOPTIMAL   = 20   # valid, feasible file, but not optimal
+EXIT_INFEASIBLE   = 21   # valid file, but the solution violates a constraint
+EXIT_USAGE        = 2    # bad arguments / unreadable instance file (infra error)
+
+EXIT_CODE_LABELS = {
+    EXIT_VALID:        "VALID",
+    EXIT_INVALID_FILE: "INVALID_FILE",
+    EXIT_SUBOPTIMAL:   "SUBOPTIMAL",
+    EXIT_INFEASIBLE:   "INFEASIBLE",
+    EXIT_USAGE:        "USAGE",
 }
 
 OBJECTIVE_TS_BASENAME = "_objective_time_series.json"
@@ -394,6 +411,74 @@ def generate_readme_from_csv(instance: str, inst_dir: Path, rows: List[Dict[str,
 
 
 # ---------------------------------------------------------------------------
+# Declared-claim helpers (policy inputs read from the summary CSV)
+# ---------------------------------------------------------------------------
+
+def _parse_count(value: Optional[str]) -> Optional[int]:
+    """Parse a count column to an int, or None when blank / 'N/A'."""
+    if value is None:
+        return None
+    v = value.strip().replace(",", "")
+    if v == "" or v.upper() in {"N/A", "NA"}:
+        return None
+    try:
+        return int(float(v))
+    except ValueError:
+        return None
+
+
+def _parse_number(value: Optional[str]) -> Optional[float]:
+    """Parse a numeric column to a float, or None when blank / 'N/A'."""
+    if value is None:
+        return None
+    v = value.strip().replace(",", "")
+    if v == "" or v.upper() in {"N/A", "NA"}:
+        return None
+    try:
+        return float(v)
+    except ValueError:
+        return None
+
+
+def feasibility_claimed(rows: List[Dict[str, str]]) -> bool:
+    """Does the submission claim at least one feasible solution for this instance?
+
+    Derived from the '# Feasible Runs' column. A blank / 'N/A' value is treated as
+    "assumed feasible" (i.e. the claim stands) — feasibility enforcement is only
+    waived when the submitter *explicitly* declares 0 feasible runs on every row.
+    Mirrors misc/check_bkv_updates.py::_is_feasible_row.
+    """
+    if not rows:
+        return True
+    for row in rows:
+        n = _parse_count(row.get("# Feasible Runs"))
+        if n is None or n > 0:
+            return True
+    return False
+
+
+def optimality_claimed(rows: List[Dict[str, str]]) -> bool:
+    """Does the submission assert a *proven* optimum for this instance?
+
+    A proven-optimum claim is expressed by the 'Optimality Bound' meeting the
+    'Best Objective Value' (the bound certifies the reported objective is optimal).
+    Optimality is opt-in: if the bound is blank / 'N/A' the submission makes no
+    optimality claim, so a valid but non-optimal solution is accepted.
+
+    Note: '# Successful Runs' is deliberately NOT used here. Per CONTRIBUTING.md it
+    counts runs within the success threshold of the *algorithm's own best*, not the
+    global optimum, so a good heuristic legitimately has '# Successful Runs' > 0 while
+    remaining sub-optimal — using it would reject valid heuristic submissions.
+    """
+    for row in rows:
+        obj = _parse_number(row.get("Best Objective Value"))
+        bound = _parse_number(row.get("Optimality Bound"))
+        if obj is not None and bound is not None and abs(obj - bound) <= 1e-9 * max(1.0, abs(obj)):
+            return True
+    return False
+
+
+# ---------------------------------------------------------------------------
 # Auto per-problem checker
 # ---------------------------------------------------------------------------
 
@@ -582,45 +667,86 @@ def run_auto_checker_on_solutions(
             report.fail(f"Auto-checker execution failed for {sol.name}: {e}")
 
 
-# ---------------------------------------------------------------------------
-# Manual template checker (original)
-# ---------------------------------------------------------------------------
-
-def run_checker_on_solutions(
-    checker_cmd_tpl: str,
-    submission_root: Path,
-    instance_dir: Path,
-    instance: str,
-    solutions: List[Path],
+def apply_checker_policy(
+    results: List[CheckerResult],
+    feas_claimed: bool,
+    opt_claimed: bool,
     report: InstanceReport,
 ) -> None:
-    for sol in solutions:
-        cmd = checker_cmd_tpl.format(
-            submission_root=str(submission_root),
-            instance_dir=str(instance_dir),
-            instance=instance,
-            solution=str(sol),
-        )
-        # Shell execution so users can pass pipelines; but warn about shells
-        try:
-            proc = subprocess.run(
-                cmd,
-                shell=True,
-                capture_output=True,
-                text=True,
-                check=False,
-            )
-            checker_result = CheckerResult(
-                solution_path=sol,
-                returncode=proc.returncode,
-                stdout=proc.stdout.strip(),
-                stderr=proc.stderr.strip(),
-            )
-            report.checker_results.append(checker_result)
-            if proc.returncode == 0:
-                report.info(f"Checker ran successfully for solution {sol.name}.")
-        except Exception as e:
-            report.fail(f"Checker execution failed for {sol.name}: {e}")
+    """Turn raw checker exit codes into pass/fail decisions using the declared claims.
+
+    See misc/CHECKER_CONTRACT.md for the full table. In short:
+      * A malformed solution file (EXIT_INVALID_FILE) or infra error (EXIT_USAGE, or
+        any unexpected non-zero code such as a raw panic) always fails — validity of
+        the solution file is non-negotiable.
+      * Infeasibility (EXIT_INFEASIBLE) fails only when the submission claims
+        feasibility; a submission that declares 0 feasible runs is accepted as long
+        as its file is well-formed.
+      * Non-optimality (EXIT_SUBOPTIMAL) fails only when the submission claims
+        optimality (# Successful Runs > 0).
+    The feasibility/optimality checks are aggregated over all solution files of the
+    instance: every file must be well-formed, and *at least one* file must satisfy a
+    claimed property.
+    """
+    if not results:
+        return
+
+    feasible_files = []   # files that are at least feasible (valid + feasible)
+    optimal_files = []     # files that are optimal (valid + feasible + optimal)
+    hard_failure = False
+
+    for cr in results:
+        rc = cr.returncode
+        name = cr.solution_path.name
+        if rc == EXIT_VALID:
+            feasible_files.append(name)
+            optimal_files.append(name)
+        elif rc == EXIT_SUBOPTIMAL:
+            feasible_files.append(name)  # feasible, just not optimal
+        elif rc == EXIT_INFEASIBLE:
+            pass  # valid file, but infeasible
+        elif rc == EXIT_INVALID_FILE:
+            report.fail(f"Solution file '{name}' is invalid (malformed / unparseable) "
+                        f"[checker exit {rc}].")
+            hard_failure = True
+        elif rc == EXIT_USAGE:
+            report.fail(f"Checker could not process solution '{name}' "
+                        f"(usage / instance error) [checker exit {rc}].")
+            hard_failure = True
+        else:
+            report.fail(f"Checker for solution '{name}' returned unexpected exit code "
+                        f"{rc}; treating the file as invalid.")
+            hard_failure = True
+
+    if hard_failure:
+        return  # a malformed / unprocessable file already failed the instance
+
+    # Feasibility: enforced only when the submission claims it.
+    if feas_claimed:
+        if not feasible_files:
+            report.fail("Submission declares at least one feasible run "
+                        "(# Feasible Runs > 0 or blank), but no submitted solution "
+                        "file is feasible.")
+        elif len(feasible_files) < len(results):
+            report.warn(f"{len(results) - len(feasible_files)} of {len(results)} "
+                        f"solution file(s) are infeasible, but at least one is "
+                        f"feasible as claimed.")
+    else:
+        if feasible_files:
+            report.info("Submission declares 0 feasible runs, yet a submitted "
+                        "solution file is feasible — metadata may under-claim.")
+        else:
+            report.warn("Solution file(s) valid but infeasible; accepted because the "
+                        "submission declares 0 feasible runs (# Feasible Runs = 0).")
+
+    # Optimality: enforced only when the submission asserts a proven optimum
+    # (Optimality Bound == Best Objective Value).
+    if opt_claimed and not optimal_files:
+        report.fail("Submission asserts a proven optimum (Optimality Bound equals Best "
+                    "Objective Value), but no submitted solution file is optimal.")
+    elif not opt_claimed and feasible_files and not optimal_files:
+        report.info("Solution file(s) valid and feasible but not optimal; accepted "
+                    "because the submission makes no optimality claim.")
 
 
 def print_report(reports: List[InstanceReport], quiet: bool=False) -> None:
@@ -639,15 +765,19 @@ def print_report(reports: List[InstanceReport], quiet: bool=False) -> None:
             print(msg)
         for w in r.warnings:
             print(w)
-        failed_checks = [cr for cr in r.checker_results if cr.returncode != 0]
-        if failed_checks:
-            print("Checker results:")
-            for cr in failed_checks:
-                print(f"  - {cr.solution_path.name}: FAIL (rc={cr.returncode})")
-                if cr.stdout:
-                    print(textwrap.indent(cr.stdout, prefix="      stdout: "))
-                if cr.stderr:
-                    print(textwrap.indent(cr.stderr, prefix="      stderr: "))
+        # Surface per-solution checker detail only for failed instances (a passing
+        # instance may legitimately contain infeasible/non-optimal files).
+        if not r.ok:
+            noteworthy = [cr for cr in r.checker_results if cr.returncode != EXIT_VALID]
+            if noteworthy:
+                print("Checker results:")
+                for cr in noteworthy:
+                    label = EXIT_CODE_LABELS.get(cr.returncode, f"exit {cr.returncode}")
+                    print(f"  - {cr.solution_path.name}: {label} (rc={cr.returncode})")
+                    if cr.stdout:
+                        print(textwrap.indent(cr.stdout, prefix="      stdout: "))
+                    if cr.stderr:
+                        print(textwrap.indent(cr.stderr, prefix="      stderr: "))
         print()
 
     print(f"Summary: {passed}/{total} instances passed, {failed} failed.")
@@ -696,20 +826,17 @@ def validate_instance(
             run_auto_checker_on_solutions(
                 problem_name, check_dir, qoblib_root, instance, solutions, report
             )
-            # Auto-checker always fails the submission when the solution is incorrect
-            for cr in report.checker_results[auto_start:]:
-                if cr.returncode != 0:
-                    report.fail(f"Checker failed for solution {cr.solution_path.name} with return code {cr.returncode}.")
+            # Interpret the checker exit codes against what the submission declares
+            # in its summary CSV (see misc/CHECKER_CONTRACT.md). Solution-file
+            # validity is always required; feasibility/optimality are enforced only
+            # when the submission claims them.
+            apply_checker_policy(
+                report.checker_results[auto_start:],
+                feas_claimed=feasibility_claimed(rows),
+                opt_claimed=optimality_claimed(rows),
+                report=report,
+            )
         # If layout unrecognised, silently skip (no checker available)
-
-    # 6) Manual template checker if --checker-cmd provided
-    if args.checker_cmd and solutions:
-        manual_start = len(report.checker_results)
-        run_checker_on_solutions(args.checker_cmd, submission_root, inst_dir, instance, solutions, report)
-        if args.fail_on_checker:
-            for cr in report.checker_results[manual_start:]:
-                if cr.returncode != 0:
-                    report.fail(f"Checker failed for solution {cr.solution_path.name} with return code {cr.returncode}.")
 
     return report
 
@@ -761,11 +888,6 @@ def main() -> None:
                              "under <root>/*/submissions/*. Aggregates results across all submissions.")
     parser.add_argument("--no-check", action="store_true",
                         help="Disable the automatic per-problem solution checker.")
-    parser.add_argument("--checker-cmd", type=str, default=None,
-                        help=("Command template to run a solution checker for each solution. "
-                              "Placeholders: {submission_root} {instance_dir} {instance} {solution}"))
-    parser.add_argument("--fail-on-checker", action="store_true",
-                        help="Mark instance invalid if checker returns nonzero.")
     parser.add_argument("--instance-pattern", type=str, default=None,
                         help="Only validate instance directories whose names match this glob (e.g., 'vrp_*').")
     parser.add_argument("--generate-readme", action="store_true",

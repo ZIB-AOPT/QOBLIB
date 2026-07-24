@@ -11,8 +11,8 @@
 #   <problem>/submissions/<submission>/<group>/<instance>/<instance>_summary.csv
 #
 # Usage:
-#   misc/generate_all_readmes.sh                 # generate READMEs, skip solution checks
-#   misc/generate_all_readmes.sh --fail-on-checker --strict-problem-match
+#   misc/ci/generate_all_readmes.sh                 # generate READMEs, skip solution checks
+#   misc/ci/generate_all_readmes.sh --fail-on-checker --strict-problem-match
 #                                                # pass extra args straight to the checker
 #
 # Any extra arguments are forwarded to check_submission.py. When none are given

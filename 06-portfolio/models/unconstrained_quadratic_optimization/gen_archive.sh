@@ -21,7 +21,7 @@ DATA_DIR="./../../instances" # Replace with your data directory path
 QS_FILES="./qs_files" # Replace with your LP files directory
 
 # Define the ZIMPL model files
-ZIMPL_EXEC="./../../../misc/zimpl-3.7.1.linux.x86_64.gnu.static.opt" # Replace with your ZIMPL program directory
+ZIMPL_EXEC="./../../../misc/bin/zimpl-3.7.1.linux.x86_64.gnu.static.opt" # Replace with your ZIMPL program directory
 MODEL_DIR="./"    # Replace with your ZIMPL model directory
 MODEL="uqo_u3_c10.zpl"
 

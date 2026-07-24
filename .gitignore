@@ -1,5 +1,9 @@
 __pycache__
 _site/
 
+# Python tooling virtual environments (uv). The lockfile (misc/uv.lock) is committed.
+.venv/
+*.egg-info/
+
 # Ignore Rust target directory
 target/

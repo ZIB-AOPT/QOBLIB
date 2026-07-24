@@ -13,6 +13,7 @@
 
 
 import os
+import subprocess
 
 import pandas as pd
 from csv_to_txt import create_zimpl_covariance_matrices, create_zimpl_prices
@@ -30,7 +31,7 @@ def retrieve_stock_data(start_date: str = '2024-01-01', end_date: str = '2024-05
         return stock_dir
     elif os.path.exists(stock_dir + '.tar.gz'):
         # check whether there is a .tar.gz with that name and extract it if it exists
-        os.system(f'tar -xzf {stock_dir}.tar.gz')
+        subprocess.run(["tar", "-xzf", f"{stock_dir}.tar.gz"], check=True)
         print(f"Extracted {stock_dir}.tar.gz")
         return stock_dir
     else:
@@ -156,7 +157,7 @@ def main():
         convert_to_txt(perturbed_instance)
 
     # tarball the stock data
-    os.system(f'tar -czf {stock_dir}.tar.gz {stock_dir}')
+    subprocess.run(["tar", "-czf", f"{stock_dir}.tar.gz", stock_dir], check=True)
     
     print("done.")
     

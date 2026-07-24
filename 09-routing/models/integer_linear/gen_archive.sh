@@ -22,7 +22,7 @@ LP_FOLDER="./lp_files"    # Temporary folder for .lp files
 
 # Set paths to other scripts and binary files
 MODEL="./cvrp_ilp.zpl"
-ZIMPL="./../../../misc/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
+ZIMPL="./../../../misc/bin/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
 
 # Create necessary folders if they don't exist
 mkdir -p "$LP_FOLDER"

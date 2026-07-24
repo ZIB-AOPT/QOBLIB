@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for the pre-rendered performance charts (``misc/site_builder/charts.py``).
+"""Tests for the pre-rendered performance charts (``misc/ci/site_builder/charts.py``).
 
 The chart maths is a port of ``website/assets/problem.js``; there is no JS runtime
 in CI to diff against, so these tests pin the divergence-prone pieces — the number
@@ -25,7 +25,7 @@ import unittest
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "misc"))
+sys.path.insert(0, str(REPO_ROOT / "misc" / "ci"))
 
 from site_builder import charts  # noqa: E402
 

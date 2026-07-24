@@ -38,7 +38,7 @@ const {
 //   • Performance profile — share of instances within a given optimality gap.
 //   • Scaling — fastest feasible runtime versus instance size.
 //
-// The chart SVGs are PRE-RENDERED at build time (misc/site_builder/charts.py,
+// The chart SVGs are PRE-RENDERED at build time (misc/ci/site_builder/charts.py,
 // emitted to data/problems/<id>/charts.json) so the browser no longer recomputes
 // them on every page load — it just injects the prebaked markup for the active
 // grouping mode and viewport. Keep charts.py in sync if the chart maths change.

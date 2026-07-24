@@ -1,10 +1,22 @@
 name: Validate Submission
 
-# Runs the authoritative submission checker (misc/check_submission.py) on every
-# pull request that touches a submissions/ folder, and reports the result on the PR.
+# Runs the authoritative submission checker (misc/ci/check_submission.py) on every
+# pull request that touches a submissions/ folder. The result is written to an
+# artifact that the companion "Comment Submission Validation" workflow turns into
+# a sticky PR comment.
+#
+# Why the split: submissions usually come from forks, where a pull_request-triggered
+# workflow only gets a READ-ONLY token and cannot comment. This workflow safely runs
+# the (untrusted) PR code with that read-only token; the companion workflow_run
+# workflow posts the comment with write access WITHOUT checking out PR code.
+#
 # This complements the in-browser validator on the website: the browser catches
 # format / metadata / value-range mistakes instantly, while this job additionally
-# runs the per-problem solution-feasibility checkers, which a browser cannot.
+# runs the per-problem solution checkers, which a browser cannot.
+#
+# Policy (see misc/ci/CHECKER_CONTRACT.md): a solution file must always be VALID;
+# feasibility is enforced only when the submission declares it (# Feasible Runs),
+# and optimality only when it asserts a proven optimum (Optimality Bound == objective).
 
 on:
   pull_request:
@@ -23,10 +35,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
+          enable-cache: true
 
       - name: Set up Rust (for per-problem solution checkers)
         uses: dtolnay/rust-toolchain@stable
@@ -44,9 +57,14 @@ jobs:
         id: validate
         shell: bash
         run: |
-          set -o pipefail
+          set -uo pipefail
           BASE="${{ github.event.pull_request.base.sha }}"
           HEAD="${{ github.sha }}"
+
+          OUTDIR="$GITHUB_WORKSPACE/_validation"
+          mkdir -p "$OUTDIR"
+          COMMENT="$OUTDIR/comment.md"
+          echo "${{ github.event.pull_request.number }}" > "$OUTDIR/pr-number.txt"
 
           # Submission roots are <NN-problem>/submissions/<submission-name>.
           # Instance directories may be nested in arbitrary subfolders below that
@@ -58,43 +76,110 @@ jobs:
               | sort -u
           )
 
-          {
-            echo "## QOBLIB submission validation"
-            echo ""
-          } >> "$GITHUB_STEP_SUMMARY"
+          # The comment wording lives in misc/ci/comment_template.md; this step only
+          # assembles the dynamic {{RESULTS}} / {{VERDICT}} blocks and fills it in.
+          TEMPLATE="misc/ci/comment_template.md"
+          DOC_URL="${{ github.server_url }}/${{ github.repository }}/blob/${HEAD}/misc/ci/CHECKER_CONTRACT.md"
+          RESULTS="$RUNNER_TEMP/results.md"
+          : > "$RESULTS"
+
+          # render <verdict-literal-or-@file>  → fills the template into $COMMENT.
+          render() {
+            uv run --project misc python misc/ci/render_comment.py "$TEMPLATE" \
+              "VERDICT=$1" "RESULTS=@$RESULTS" "DOC_URL=$DOC_URL" > "$COMMENT"
+          }
 
           if [ "${#ROOTS[@]}" -eq 0 ]; then
-            echo "No submission directories changed — nothing to validate." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "_No submission directories changed — nothing to validate._" > "$RESULTS"
+            render "### ✅ All checks passed"
+            echo "failed=0" >> "$GITHUB_OUTPUT"
+            cat "$COMMENT" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
+          {
+            echo "Validated **${#ROOTS[@]}** submission root(s):"
+            echo ""
+          } >> "$RESULTS"
+
           FAILED=0
+          declare -a FAILED_ROOTS=()
           for root in "${ROOTS[@]}"; do
             echo "::group::Validating $root"
-            {
-              echo "### \`$root\`"
-              echo ""
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
-
-            if python misc/check_submission.py "$root" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"; then
-              status="OK"
+            OUT="$RUNNER_TEMP/out.txt"
+            if uv run --project misc qoblib-check-submission "$root" > "$OUT" 2>&1; then
+              icon="✅"; status="OK"
             else
-              status="FAILED"
-              FAILED=1
+              icon="❌"; status="FAILED"; FAILED=1; FAILED_ROOTS+=("$root")
             fi
-
+            cat "$OUT"
             {
+              echo "### $icon \`$root\` — $status"
+              echo ""
+              echo "<details><summary>Checker output</summary>"
+              echo ""
+              echo '```'
+              cat "$OUT"
               echo '```'
               echo ""
-              echo "**Result: $status**"
+              echo "</details>"
               echo ""
-            } >> "$GITHUB_STEP_SUMMARY"
+            } >> "$RESULTS"
             echo "::endgroup::"
           done
 
+          # Best-known-value check (informational): reports any improvement over the
+          # current reference. It never fails the PR — the reference solutions/ files
+          # and README.md tables are regenerated automatically on merge to main by
+          # .github/workflows/update-bkv.yml.
+          echo "::group::Best-known value check"
+          BKV_OUT="$RUNNER_TEMP/bkv.txt"
+          uv run --project misc qoblib-check-bkv --warn-only --base "$BASE" --head "$HEAD" > "$BKV_OUT" 2>&1 || true
+          cat "$BKV_OUT"
+          {
+            echo "### ℹ️ Best-known value check"
+            echo ""
+            echo "<details><summary>Output</summary>"
+            echo ""
+            echo '```'
+            cat "$BKV_OUT"
+            echo '```'
+            echo ""
+            echo "</details>"
+          } >> "$RESULTS"
+          echo "::endgroup::"
+
           if [ "$FAILED" -ne 0 ]; then
-            echo "::error::One or more submissions failed validation. See the job summary for details."
+            VERDICT="$RUNNER_TEMP/verdict.md"
+            {
+              echo "### ❌ Validation failed"
+              echo ""
+              echo "The following submission root(s) did not pass:"
+              for r in "${FAILED_ROOTS[@]}"; do echo "- \`$r\`"; done
+            } > "$VERDICT"
+            render "@$VERDICT"
+          else
+            render "### ✅ All checks passed"
+          fi
+
+          cat "$COMMENT" >> "$GITHUB_STEP_SUMMARY"
+          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
+
+      - name: Upload validation result (for the commenting workflow)
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-comment
+          path: _validation/
+          if-no-files-found: ignore
+          retention-days: 3
+
+      - name: Fail the job if any check failed
+        if: always()
+        shell: bash
+        run: |
+          if [ "${{ steps.validate.outputs.failed }}" = "1" ]; then
+            echo "::error::One or more submissions failed validation. See the PR comment / job summary."
             exit 1
           fi
           echo "All changed submissions passed validation. ✅"

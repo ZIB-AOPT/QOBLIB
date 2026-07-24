@@ -16,7 +16,7 @@ __author__ = "Paul Meinhold"
 
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../misc"))
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../misc/tools"))
 import mdutils
 
 USAGE = "Usage: python sol2mdtable.py <outfile>"

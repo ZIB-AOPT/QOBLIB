@@ -1,233 +1,58 @@
-# Miscellaneous
+# `misc/` — QOBLIB tooling
 
-This directory contains global utility scripts, tools, and binaries used across all problem classes in QOBLIB.
+Utility scripts, the data-pipeline code, and shared binaries used across all
+problem classes. Everything here is organised into a few clearly-scoped
+subdirectories and is installable/runnable with [`uv`](https://docs.astral.sh/uv/).
 
-## Binaries
+## Layout
 
-### ZIMPL
-
-Mathematical programming modeling language used to create models and generate LP and QS files.
-
-**Included versions:**
-- `zimpl-3.7.1.linux.x86_64.gnu.static.opt`
-
-**More information:** [zimpl.zib.de](https://zimpl.zib.de/)
-
-## Submission and Validation Scripts
-
-### check_submission.py
-
-Validates that a submission matches QOBLIB contribution guidelines.
-
-**Basic usage:**
-```bash
-python check_submission.py <path_to_submission>
-```
-
-**Validate every submission at once:**
-```bash
-# Point --all at the repo root, a problem-class dir, or a submissions/ dir.
-python check_submission.py --all ..
-python check_submission.py --all ../03-birkhoff
-```
-This discovers every submission under `<root>/*/submissions/*` (or the narrower
-scope you point it at), validates each one, and prints a grand-total summary
-listing which submissions failed and which contain no recognized instance dirs.
-The process exits non-zero if any submission fails. Combine with `--quiet` to
-show only failing instances and `--no-check` to skip the per-problem solution
-checker for a fast structural pass.
-
-**Full functionality:**
-```bash
-python check_submission.py -h
-```
-
-**Features:**
-- Validates submission structure and format
-- Checks solution correctness (with custom checker command)
-- Verifies problem names in CSV files
-- Auto-generates optional README files for problem directories
-- `--all`: batch-validate every submission in the library with an aggregate report
-
-**Example (Independent Set):**
-```bash
-python check_submission.py \
-    --generate-readme \
-    --checker-cmd="{submission_root}/../../check/target/debug/check_stableset {submission_root}/../../instances/{instance}.gph {solution}" \
-    --strict-problem-match \
-    ../07-independentset/submissions/20250627_Quicopt_Bode/
-```
-
-This command validates structure, checks solutions, ensures correct problem naming, and generates the optional README.
-
-## Metric Extraction
-
-### get_metrics.py
-
-Extracts metrics from archived model files across the project.
-
-**Walk entire project:**
-```bash
-python get_metrics.py --parent_dir ../ --directory qs_files
-```
-
-Walks the project directory and extracts metrics from all `.tar.gz` archives named `qs_files`. Saves metrics in respective directories. Already generated metrics are skipped.
-
-**Note:** Creates temporary directory in `/tmp`. If the script crashes, manually remove the temporary folder.
-
-**Single archive:**
-```bash
-python get_metrics.py \
-    --directory ../09-routing/models/integer_linear/lp_files.tar.gz \
-    --output_csv metrics.csv
-```
-
-Extracts metrics from a single archive to specified CSV file.
-
-## Format Conversion
-
-### convert_lp2qubo.py
-
-Converts linear program files to QUBO (Quadratic Unconstrained Binary Optimization) format.
-
-**Usage:**
-```bash
-# Convert a single .lp.xz file
-python convert_lp2qubo.py <path_to_file.lp.xz>
-
-# Convert all .lp.xz files in a directory (recursively searches subdirectories)
-python convert_lp2qubo.py <path_to_directory>
-```
-
-Converts `.lp.xz` files to compressed `.qs.xz` QUBO format files.
-
-**Requirements:**
-- Qiskit (for integer to binary variable conversion)
-- All integer variables must be bounded
-
-**Input:** `.lp.xz` compressed file(s)  
-**Output:** `.qs.xz` compressed QUBO format files (placed in same directory as input files)
-
-**Note:** When processing a directory, the script will recursively search all subdirectories for `.lp.xz` files and convert them individually, creating corresponding `.qs.xz` files alongside the originals.
-
-### convert_info_to_md.py
-
-Converts instance information files to Markdown format.
-
-**Use case:** Generate documentation from instance metadata.
-
-### convert_solution_to_active.py
-
-Converts solution files to active variable format.
-
-**Use case:** Extract only active (non-zero) variables from solutions for more compact representation.
-
-## Documentation Utilities
-
-### mdutils.py
-
-Collection of helper functions for creating Markdown tables and documentation.
-
-**Purpose:** Centralized utilities for generating consistent Markdown documentation across all problem classes.
-
-**Usage:** Typically imported by scripts in `<problem_class>/misc/` directories to generate README files in `<problem_class>/solutions/`.
-
-**Key functions:**
-- Table formatting and generation
-- Data structure conversion
-- Markdown formatting helpers
-
-## QUBO Processing
-
-### simplify_qubo.py
-
-Simplifies QUBO files to make them more suitable for quantum hardware execution.
-
-**Main function:** `simplify_qubo_file`
-
-**Process:**
-1. Loads a `.qs` QUBO file
-2. Simplifies according to maximum allowed SWAP gate layers
-3. Creates new simplified QUBO file
-
-**Parameters:** Based on SWAP network constraints for linear qubit topology.
-
-**Reference:** Weidenfeller et al., Quantum 6, 870 (2022) for SWAP network details.
-
-## Other Utilities
-
-### add_licence.py
-
-Adds license headers to source files.
-
-**Use case:** Ensure all code files have proper Apache 2.0 license headers.
-
-### rename_sol_files.sh
-
-Batch renames solution files according to naming conventions.
-
-**Use case:** Standardize solution file naming across the project.
-
-### submission_template.csv
-
-Template file for submission CSV format.
-
-**Use case:** Reference for creating valid submission files.
-
-## Generators Directory
-
-### generators/
-
-Contains instance generation utilities used across multiple problem classes.
-
-**Use case:** Shared instance generation code and tools.
-
-## Website (GitHub Pages)
-
-The public site is a static frontend (committed under [`../website/`](../website))
-driven entirely by JSON data generated from the repository. The Python side
-produces **only data — never HTML**.
-
-### build_site.py
-
-Thin command-line entry point. Copies the static frontend into the output
-directory and writes the generated data under `<out>/data`.
-
-**Usage:**
-```bash
-# Assemble the full site into _site/ (static frontend + generated data)
-python misc/build_site.py --out _site
-
-# Point download links at a fork / commit (used for PR previews)
-python misc/build_site.py --out _site --repo-url <url> --ref <sha>
-
-# Regenerate only the JSON data (skip copying the static frontend)
-python misc/build_site.py --out _site --no-static
-```
-
-The GitHub Pages workflow (`.github/workflows/pages.yml`) runs the unit tests in
-[`../tests`](../tests) and then this command, deploying the assembled `_site/`.
-
-### site_builder/
-
-The data builder, split into focused modules:
-
-| Module | Responsibility |
+| Path | What it holds |
 | --- | --- |
-| `config.py` | Build context (repo/ref URL helpers), problem metadata, table columns |
-| `text.py` | Date / name / number parsing and README section extraction |
-| `classify.py` | Quantum-hardware / quantum-sim / classical submission classification |
-| `solutions.py` | Reference-solution / best-known-value readers |
-| `submissions.py` | Canonical `*_summary.csv` submission reader |
-| `models.py` | Downloadable model-artifact scanning |
-| `metrics.py` | Per-instance metric columns |
-| `instances.py` | Instance discovery (flat, bundle, recursive, Birkhoff) |
-| `problem.py` | Per-problem payload assembly + best-value resolution |
-| `build.py` | Orchestration and JSON output / static-copy |
+| [`ci/`](ci/) | **Workflow / CI scripts** run by GitHub Actions — the static-site builder, the submission checker, and the best-known-value updater — plus the shared `site_builder` package and the checker contract. Standard-library only. See [`ci/README.md`](ci/README.md). |
+| [`tools/`](tools/) | **Standalone maintenance utilities** (format converters, metric extraction, QUBO simplification, figure generation, licensing). Each is independently runnable; the heavy ones declare their own dependencies inline. See [`tools/README.md`](tools/README.md). |
+| [`bin/`](bin/) | Third-party **binaries** (the ZIMPL modeling-language executable). |
+| [`generators/`](generators/) | Notes on the external QUBO-generation toolchains. |
+| `submission_template.csv` | The canonical 30-column submission template (referenced from `CONTRIBUTING.md`). |
+| `pyproject.toml`, `.python-version`, `uv.lock` | Packaging + pinned interpreter for the `uv` environment. |
 
-**Output layout** (consumed by the frontend's `fetch` calls):
+## Installing / running with uv
+
+The CI tools have **no third-party dependencies**, so the base environment is
+tiny. From the repository root:
+
+```bash
+# Create the environment (downloads Python 3.12 if needed) and run a tool:
+uv run --project misc qoblib-update-bkv --check
+uv run --project misc qoblib-build-site --out _site
+uv run --project misc qoblib-check-submission <problem>/submissions/<name>
+
+# Or install the console scripts into an isolated tool environment:
+uv tool install ./misc            # exposes qoblib-* on your PATH
 ```
-<out>/data/index.json
-<out>/data/leaderboard.json
-<out>/data/problems/<id>/{meta,instances,solutions,submissions,submission_groups,instance_submissions}.json
+
+Installed console scripts (defined in [`pyproject.toml`](pyproject.toml)):
+
+| Command | Script |
+| --- | --- |
+| `qoblib-build-site` | [`ci/build_site.py`](ci/build_site.py) |
+| `qoblib-update-bkv` | [`ci/update_bkv.py`](ci/update_bkv.py) |
+| `qoblib-check-bkv` | [`ci/check_bkv_updates.py`](ci/check_bkv_updates.py) |
+| `qoblib-check-submission` | [`ci/check_submission.py`](ci/check_submission.py) |
+
+### Heavy tools (optional extras)
+
+The QUBO / metric utilities pull larger dependencies. They are exposed both as
+extras of this project and as self-contained [PEP 723](https://peps.python.org/pep-0723/)
+scripts, so the simplest invocation needs no install at all:
+
+```bash
+# Simplest: the script header (PEP 723) declares its own deps, uv resolves them:
+uv run misc/tools/convert_lp2qubo.py <file.lp.xz>
+uv run misc/tools/get_metrics.py --help
+
+# Or add the deps to the project environment via an extra (qubo | metrics | tables):
+uv sync --project misc --extra qubo
 ```
+
+All scripts also carry a shebang and are executable, so `./misc/tools/<name>.py`
+works directly (the heavy ones via `uv run --script`).

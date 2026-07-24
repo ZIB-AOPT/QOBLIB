@@ -23,7 +23,7 @@ function landscapeFigureHtml(card) {
 }
 
 // Inject the pre-rendered complexity-landscape scatter SVGs (built once by
-// misc/site_builder/landscape.py → data/landscape.json) into the two plot cards.
+// misc/ci/site_builder/landscape.py → data/landscape.json) into the two plot cards.
 async function renderLandscape() {
     const targets = [
         ["landscape-mip", "mip"],

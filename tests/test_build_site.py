@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for the QOBLIB static-site data builder (``misc/site_builder``)."""
+"""Tests for the QOBLIB static-site data builder (``misc/ci/site_builder``)."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "misc"))
+sys.path.insert(0, str(REPO_ROOT / "misc" / "ci"))
 
 import site_builder  # noqa: E402
 from site_builder import config  # noqa: E402

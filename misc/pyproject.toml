@@ -1,0 +1,55 @@
+# QOBLIB tooling — installable with uv/pip.
+#
+#   uv sync --project misc                     # create the env (CI tools, zero deps)
+#   uv run --project misc qoblib-update-bkv --check
+#   uv sync --project misc --extra qubo        # add the heavy optimisation deps
+#
+# The workflow/CI tools (site builder, submission checker, best-known-value
+# updater) live in ``ci/`` and use only the standard library, so the base
+# install has no dependencies. The heavier maintenance utilities under ``tools/``
+# pull their dependencies from the optional extras below (or run standalone via
+# their PEP 723 inline metadata: ``uv run misc/tools/convert_lp2qubo.py``).
+[project]
+name = "qoblib-tools"
+version = "0.1.0"
+description = "Workflow and maintenance tooling for the Quantum Optimization Benchmarking Library (QOBLIB)."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = []
+
+[project.optional-dependencies]
+# Heavy optimisation stack for the QUBO conversion / simplification tools.
+qubo = [
+    "qiskit",
+    "qiskit-optimization",
+    "gurobipy",
+    "docplex",
+    "networkx",
+    "numpy",
+]
+# Model-metric extraction (get_metrics.py).
+metrics = ["pyscipopt"]
+# Markdown table helpers (mdutils.py).
+tables = ["pandas"]
+
+[project.scripts]
+qoblib-build-site = "build_site:main"
+qoblib-update-bkv = "update_bkv:main"
+qoblib-check-bkv = "check_bkv_updates:main"
+qoblib-check-submission = "check_submission:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# The installable code lives under ci/: the ``site_builder`` package plus the four
+# single-file CLI entry points. tools/ scripts are standalone (PEP 723) and are
+# intentionally not packaged here.
+[tool.setuptools]
+package-dir = { "" = "ci" }
+py-modules = ["build_site", "update_bkv", "check_bkv_updates", "check_submission"]
+
+[tool.setuptools.packages.find]
+where = ["ci"]
+include = ["site_builder*"]

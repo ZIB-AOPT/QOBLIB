@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for the home-page complexity-landscape plots (``misc/site_builder/landscape.py``).
+"""Tests for the home-page complexity-landscape plots (``misc/ci/site_builder/landscape.py``).
 
 Covers the divergence-prone helpers (metric-stem canonicalisation, log-axis
 ticks/bounds) and an end-to-end ``build_landscape`` over a temp fixture: the
@@ -27,7 +27,7 @@ import xml.dom.minidom as minidom
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "misc"))
+sys.path.insert(0, str(REPO_ROOT / "misc" / "ci"))
 
 from site_builder import landscape  # noqa: E402
 

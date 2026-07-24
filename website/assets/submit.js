@@ -11,7 +11,7 @@ const {
 
 const REPO = "ZIB-AOPT/QOBLIB";
 
-// Canonical 30-column header — MUST match misc/check_submission.py REQUIRED_COLUMNS exactly.
+// Canonical 30-column header — MUST match misc/ci/check_submission.py REQUIRED_COLUMNS exactly.
 const CSV_COLUMNS = [
     "Problem", "Submitter", "Affiliation", "Date", "Reference", "Best Objective Value", "Optimality Bound",
     "Modeling Approach", "# Decision Variables", "# Binary Variables", "# Integer Variables", "# Continuous Variables",
@@ -573,7 +573,7 @@ function computeValidation() {
         if (invalid) shInvalid.add(f.col);
     });
     // Multiple authors need one affiliation each, in the same order (mirrors the
-    // authoritative checker's warning in misc/check_submission.py).
+    // authoritative checker's warning in misc/ci/check_submission.py).
     const submitters = String(shared["Submitter"] || "").split(",").map((s) => s.trim()).filter(Boolean);
     const affiliations = String(shared["Affiliation"] || "").split(",").map((s) => s.trim()).filter(Boolean);
     if (submitters.length > 1 && affiliations.length !== submitters.length) {
@@ -753,7 +753,7 @@ function exportReadme(folder, files) {
         "1. Unzip this archive at the ROOT of your QOBLIB fork (paths already match the repo).",
         "2. For every '<instance>_summary.csv' add the corresponding solution file in the SAME folder,",
         "   named '<instance>_solution.<ext>' (see the problem's solutions/ folder for the format).",
-        "3. Validate locally:  python misc/check_submission.py <problem-dir>/submissions/" + folder,
+        "3. Validate locally:  uv run --project misc qoblib-check-submission <problem-dir>/submissions/" + folder,
         "4. Commit and open a pull request. A GitHub Action will re-validate automatically.",
         "",
         "Included instances:",

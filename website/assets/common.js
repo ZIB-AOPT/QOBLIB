@@ -209,7 +209,7 @@ function submissionMethod(group) {
 }
 
 // Pretty per-problem URL (e.g. problem/07/). The build generates a static page
-// at each of these (misc/site_builder/html_pages.py); problem.html?id= still
+// at each of these (misc/ci/site_builder/html_pages.py); problem.html?id= still
 // works as a fallback. Relative form resolves against <base> on the deep pages
 // and against the site root elsewhere.
 function problemUrl(id) {
@@ -271,7 +271,7 @@ const SUBMISSION_CATEGORIES = {
 };
 
 // Explicit "Paradigm" column values → canonical category. Mirrors _PARADIGM_MAP
-// in misc/site_builder/classify.py — keep the two in sync.
+// in misc/ci/site_builder/classify.py — keep the two in sync.
 const PARADIGM_MAP = {
     classical: "classical",
     "quantum hardware": "quantum_hw",
@@ -509,7 +509,7 @@ async function loadProblemSubmissionGroups(id) {
     return SUBMISSION_GROUPS_CACHE.get(id);
 }
 
-// Pre-rendered performance-chart SVGs (built by misc/site_builder/charts.py).
+// Pre-rendered performance-chart SVGs (built by misc/ci/site_builder/charts.py).
 // Returns null when a problem has no charts or the chunk is absent, so callers
 // can simply skip the performance section.
 async function loadProblemCharts(id) {
@@ -526,7 +526,7 @@ async function loadProblemCharts(id) {
 }
 
 // Pre-baked "MIP Instance Map" scatter points for one problem (built by
-// misc/site_builder/metrics.py → data/problems/<id>/mip.json). Replaces the old
+// misc/ci/site_builder/metrics.py → data/problems/<id>/mip.json). Replaces the old
 // runtime fetch of metrics.csv files from raw.githubusercontent.com. Returns an
 // empty array when a problem has no LP metrics or the chunk is absent.
 async function loadProblemMipPoints(id) {
