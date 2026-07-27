@@ -22,6 +22,8 @@
                 <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
                 <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
                 <a class="nl" data-nav="submit" href="submit.html">Submit</a>
+                <a class="nl" data-nav="participate" href="participate.html">Participate</a>
+                <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
             <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
@@ -53,6 +55,11 @@
 
         <hr class="section-divider" />
 
+        <div class="lb-view-toggle" role="group" aria-label="Leaderboard view">
+            <button class="lb-vt-btn lb-vt-active" type="button" id="lb-vt-overall" onclick="setLeaderboardView('overall')">Overall</button>
+            <button class="lb-vt-btn" type="button" id="lb-vt-quantum" onclick="setLeaderboardView('quantum')">Quantum</button>
+        </div>
+
         <div class="filters">
             <select id="lb-prob" onchange="renderLeaderboard()">
                 <option value="">All problem classes</option>
@@ -60,9 +67,17 @@
             <select id="lb-inst" onchange="renderLeaderboard()">
                 <option value="">All instances</option>
             </select>
+            <select id="lb-paradigm" onchange="renderLeaderboard()">
+                <option value="">All paradigms</option>
+                <option value="classical">Classical</option>
+                <option value="quantum_hw">Quantum hardware</option>
+                <option value="quantum_sim">Quantum simulator</option>
+            </select>
             <span class="fi-count" id="lb-count"></span>
             <button class="btn btn-ghost btn-sm" type="button" id="lb-download" onclick="downloadLeaderboardCsv()">⬇ Download CSV</button>
         </div>
+
+        <div id="lb-paradigm-bests"></div>
 
         <div id="lb-content">
             <div class="loading">Loading leaderboard</div>

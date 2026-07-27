@@ -380,7 +380,7 @@ def build_problem(problem_id: str, problem_dir: Path) -> dict:
     solutions_dir = problem_dir / "solutions"
     submissions_dir = problem_dir / "submissions"
 
-    bkv_map = read_solutions_folder(solutions_dir)
+    bkv_map = read_solutions_folder(solutions_dir, problem_id)
     model_map = scan_model_files(problem_dir)
 
     # --- Read README for long description (fallback to static meta) ---

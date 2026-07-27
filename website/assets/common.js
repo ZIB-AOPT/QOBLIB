@@ -974,10 +974,15 @@ function ensureFigureLightbox() {
 function openFigureLightbox(html, trigger) {
     if (!html) return;
     const box = ensureFigureLightbox();
-    box.querySelector(".fig-lightbox-inner").innerHTML = html;
+    const inner = box.querySelector(".fig-lightbox-inner");
+    inner.innerHTML = html;
     box.hidden = false;
     figLightboxTrigger = trigger || null;
     box.querySelector(".fig-lightbox-close").focus();
+    // Let page-level scripts (e.g. problem.js) wire interactive content that was
+    // cloned into the lightbox. The event fires on the inner element so handlers
+    // can query its subtree directly.
+    inner.dispatchEvent(new CustomEvent("lightboxopen", { bubbles: true }));
 }
 
 // Add a top-right expand button to `container`. By default the lightbox shows the

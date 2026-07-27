@@ -116,18 +116,27 @@ class TestBuildPerfMode(unittest.TestCase):
         self.assertEqual(by_key["quantum_hw"]["color"], "var(--cat-quantum-hw)")
 
         # classical reached best-known on both instances (rt 2 and 5, sorted asc).
-        self.assertEqual(by_key["classical"]["times"], [2.0, 5.0])
+        # times entries are now dicts {"rt": float, "exact": bool, "inst": str}.
+        self.assertEqual([e["rt"] for e in by_key["classical"]["times"]], [2.0, 5.0])
+        self.assertTrue(all(isinstance(e["exact"], bool) for e in by_key["classical"]["times"]))
+        self.assertEqual([e["inst"] for e in by_key["classical"]["times"]], ["i1", "i2"])
         # quantum_hw never reached best-known (val 12 vs target 10) -> no cactus point.
         self.assertEqual(by_key["quantum_hw"]["times"], [])
         # Optimality gaps: classical exact (0,0); quantum_hw (12-10)/10*100 = 20.
-        self.assertEqual(by_key["classical"]["gaps"], [0.0, 0.0])
-        self.assertEqual(by_key["quantum_hw"]["gaps"], [20.0])
-        # Scaling points carry (size, fastest feasible runtime).
+        # gaps entries are now dicts {"gap": float, "inst": str}.
+        self.assertEqual([e["gap"] for e in by_key["classical"]["gaps"]], [0.0, 0.0])
+        self.assertEqual([e["inst"] for e in by_key["classical"]["gaps"]], ["i1", "i2"])
+        self.assertEqual([e["gap"] for e in by_key["quantum_hw"]["gaps"]], [20.0])
+        self.assertEqual(by_key["quantum_hw"]["gaps"][0]["inst"], "i1")
+        # Scaling points carry (size, fastest feasible runtime, instance name).
         self.assertEqual(
-            sorted((p["size"], p["rt"]) for p in by_key["classical"]["points"]),
-            [(4.0, 2.0), (8.0, 5.0)],
+            sorted((p["size"], p["rt"], p["inst"]) for p in by_key["classical"]["points"]),
+            [(4.0, 2.0, "i1"), (8.0, 5.0, "i2")],
         )
-        self.assertEqual([(p["size"], p["rt"]) for p in by_key["quantum_hw"]["points"]], [(4.0, 1.0)])
+        self.assertEqual(
+            [(p["size"], p["rt"], p["inst"]) for p in by_key["quantum_hw"]["points"]],
+            [(4.0, 1.0, "i1")],
+        )
 
     def test_submission_mode_groups_by_source(self):
         groups = charts._build_perf_mode(_synthetic_problem(), "submission")
@@ -155,7 +164,8 @@ class TestBuildProblemCharts(unittest.TestCase):
         self.assertIn("var(--cat-classical)", cactus["wide"])
         # Legend only lists groups with data for THIS chart: classical has 2
         # cactus points; quantum_hw has none, so it is absent from the cactus legend.
-        self.assertIn("Classical (2)", cactus["wide"])
+        # The legend now appends an exact/heuristic note, so check for the prefix.
+        self.assertIn("Classical (2", cactus["wide"])
         self.assertNotIn("Quantum hardware (", cactus["wide"])
         # Profile legend, by contrast, includes quantum_hw (it has a gap).
         self.assertIn("Quantum hardware (1)", payload["modes"]["paradigm"]["profile"]["wide"])

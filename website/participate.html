@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>(function(){try{var t=localStorage.getItem("qoblib-theme");if(t!=="dark"&&t!=="light"){t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+    <title>QOBLIB - Participate</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/qoblib-favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body data-nav="participate">
+    <nav>
+        <div class="nav-inner">
+            <a class="logo" href="index.html"><em>Q</em>OBLIB</a>
+            <div class="nav-links">
+                <a class="nl" data-nav="home" href="index.html">Home</a>
+                <a class="nl" data-nav="problems" href="problems.html">Problems</a>
+                <a class="nl" data-nav="instances" href="instances.html">Instances</a>
+                <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
+                <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
+                <a class="nl" data-nav="submit" href="submit.html">Submit</a>
+                <a class="nl" data-nav="participate" href="participate.html">Participate</a>
+                <a class="nl" data-nav="committee" href="committee.html">Committee</a>
+            </div>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
+        </div>
+    </nav>
+
+    <main class="page">
+        <div class="ph">
+            <h2>How to Participate</h2>
+            <p>
+                QOBLIB thrives on community contributions. Whether you have a better bound, a new quantum run,
+                or a useful negative result — every submission enriches the benchmark for the whole community.
+            </p>
+        </div>
+        <div class="hero-actions" style="margin:-0.5rem 0 2rem">
+            <a class="btn btn-navy" href="submit.html">Build a submission</a>
+            <a class="btn btn-ghost" href="https://github.com/ZIB-AOPT/QOBLIB/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Full guide on GitHub ↗</a>
+            <a class="btn btn-ghost" href="https://github.com/ZIB-AOPT/QOBLIB/blob/main/misc/submission_template.csv" target="_blank" rel="noopener">CSV template ↗</a>
+        </div>
+
+        <hr class="section-divider" />
+
+        <!-- Submission process -->
+        <section>
+            <div class="sh">
+                <span class="sh-title">Submission Process</span>
+            </div>
+            <p class="participate-lead">
+                To contribute a solution to any problem instance, submit your results via
+                <strong>Pull Request</strong> to the QOBLIB repository. Every PR must be approved by
+                at least two committee members before it can be merged.
+            </p>
+            <ol class="timeline">
+                <li class="tl-item">
+                    <div class="tl-node">
+                        <span class="tl-num">1</span>
+                    </div>
+                    <div class="tl-body">
+                        <div class="tl-title">Build your submission file</div>
+                        <p class="tl-desc">
+                            Use the <a href="submit.html">interactive submission builder</a> or fill in the
+                            <a href="https://github.com/ZIB-AOPT/QOBLIB/blob/main/misc/submission_template.csv" target="_blank" rel="noopener">CSV template</a>
+                            directly. Every row covers one problem instance; shared fields (submitter, affiliation,
+                            hardware, etc.) can be filled once and applied to all rows.
+                        </p>
+                    </div>
+                </li>
+                <li class="tl-item">
+                    <div class="tl-node">
+                        <span class="tl-num">2</span>
+                    </div>
+                    <div class="tl-body">
+                        <div class="tl-title">Validate locally</div>
+                        <p class="tl-desc">
+                            Run the automated checker
+                            <a href="https://github.com/ZIB-AOPT/QOBLIB/blob/main/misc/ci/check_submission.py" target="_blank" rel="noopener"><code>misc/ci/check_submission.py</code></a>
+                            to verify your directory structure, CSV format, and solution feasibility before submitting.
+                            See <a href="https://github.com/ZIB-AOPT/QOBLIB/blob/main/misc/README.md" target="_blank" rel="noopener">misc/README.md</a>
+                            for full usage instructions.
+                        </p>
+                    </div>
+                </li>
+                <li class="tl-item">
+                    <div class="tl-node">
+                        <span class="tl-num">3</span>
+                    </div>
+                    <div class="tl-body">
+                        <div class="tl-title">Open a Pull Request</div>
+                        <p class="tl-desc">
+                            Fork the repository, commit your <code>_summary.csv</code> and solution files, then open
+                            a PR against <code>main</code>. The CI checker runs automatically and posts its result as
+                            a comment; a failing run blocks the merge until fixed.
+                            Every PR requires approval from at least two committee members.
+                        </p>
+                    </div>
+                </li>
+                <li class="tl-item">
+                    <div class="tl-node">
+                        <span class="tl-num">4</span>
+                    </div>
+                    <div class="tl-body">
+                        <div class="tl-title">Best-known values update automatically</div>
+                        <p class="tl-desc">
+                            You do not need to touch any <code>solutions/</code> directory.
+                            When your PR is merged, a GitHub Action recomputes best-known values from all feasible
+                            submissions and credits the first source to reach each new best.
+                        </p>
+                    </div>
+                </li>
+            </ol>
+        </section>
+
+        <hr class="section-divider" />
+
+        <!-- What is required -->
+        <section>
+            <div class="sh">
+                <span class="sh-title">What is Required of a Solution</span>
+            </div>
+            <div class="info-cards">
+                <div class="info-card info-card-ok">
+                    <div class="info-card-head">Validity — always required</div>
+                    <p>Your solution file must parse and match the instance's dimensions and format. A malformed file always fails, regardless of other declarations.</p>
+                </div>
+                <div class="info-card info-card-amber">
+                    <div class="info-card-head">Feasibility — always checked automatically</div>
+                    <p>Solution feasibility is always verified by the automated checker on every PR. If a run did not produce a feasible solution, set <code># Feasible Runs</code> to <code>0</code> — the checker will then accept the valid file even if constraints are violated, allowing honest reporting of exploratory or unsuccessful runs.</p>
+                </div>
+                <div class="info-card info-card-blue">
+                    <div class="info-card-head">Optimality — never required</div>
+                    <p>A valid, feasible heuristic solution that is not optimal is accepted. Optimality is only cross-checked when you assert a proven optimum by setting <code>Optimality Bound</code> equal to your <code>Best Objective Value</code>; otherwise leave it as <code>N/A</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider" />
+
+        <!-- Required information -->
+        <section>
+            <div class="sh">
+                <span class="sh-title">Required Information</span>
+            </div>
+            <p class="participate-lead">Each benchmark submission should include the following fields (see the full CSV template for details).</p>
+
+            <div class="tw req-table-wrap">
+                <table class="req-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Field</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="req-cat" rowspan="5">Identification &amp; Attribution</td>
+                            <td class="mono">Problem</td>
+                            <td>Identifier of the considered problem instance</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Submitter</td>
+                            <td>Name(s) of the author(s); comma-separated list in double quotes for multiple authors</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Affiliation</td>
+                            <td>Institution(s) in the same order as the authors; repeat a shared affiliation so the count matches</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Date</td>
+                            <td>Date of submission</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Reference</td>
+                            <td>Link to paper or repository with full details (hardware specs, software versions, hyperparameters)</td>
+                        </tr>
+                        <tr>
+                            <td class="req-cat" rowspan="10">Objective &amp; Model</td>
+                            <td class="mono req-section-start">Best Objective Value</td>
+                            <td class="req-section-start">Best value found across all repetitions</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Optimality Bound</td>
+                            <td>Lower/upper bound if proven optimal; otherwise <code>N/A</code></td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Modeling Approach</td>
+                            <td>How the problem was formulated</td>
+                        </tr>
+                        <tr>
+                            <td class="mono"># Decision Variables</td>
+                            <td>Total number of decision variables</td>
+                        </tr>
+                        <tr>
+                            <td class="mono"># Binary Variables</td>
+                            <td>Number of binary decision variables</td>
+                        </tr>
+                        <tr>
+                            <td class="mono"># Integer Variables</td>
+                            <td>Number of integer decision variables</td>
+                        </tr>
+                        <tr>
+                            <td class="mono"># Continuous Variables</td>
+                            <td>Number of continuous decision variables</td>
+                        </tr>
+                        <tr>
+                            <td class="mono"># Non-Zero Coefficients</td>
+                            <td>Number of non-zero coefficients in the objective and constraints</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Coefficients Type</td>
+                            <td>Type of coefficients (integer, binary, continuous)</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Coefficients Range</td>
+                            <td>Min/max values of non-zero coefficients</td>
+                        </tr>
+                        <tr>
+                            <td class="req-cat" rowspan="7">Algorithm Details</td>
+                            <td class="mono req-section-start">Workflow</td>
+                            <td class="req-section-start">Pre-processing, pre-solvers, main algorithm, post-processing</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Algorithm Type</td>
+                            <td>Deterministic or stochastic</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Paradigm</td>
+                            <td>Classical, Quantum Simulator, or Quantum Hardware</td>
+                        </tr>
+                        <tr>
+                            <td class="mono"># Runs</td>
+                            <td>Number of times the experiment was repeated</td>
+                        </tr>
+                        <tr>
+                            <td class="mono"># Feasible Runs</td>
+                            <td>Number of runs that found a feasible solution</td>
+                        </tr>
+                        <tr>
+                            <td class="mono"># Successful Runs</td>
+                            <td>Runs with objective within ε of the best found value</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Success Threshold</td>
+                            <td>The threshold ε defining a successful run</td>
+                        </tr>
+                        <tr>
+                            <td class="req-cat" rowspan="7">Hardware &amp; Runtime</td>
+                            <td class="mono req-section-start">Hardware Specifications</td>
+                            <td class="req-section-start">Complete specifications of all hardware used</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Total Runtime</td>
+                            <td>End-to-end execution time for the complete workflow</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Time to Solution</td>
+                            <td>Time to find the best solution</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">CPU Runtime</td>
+                            <td>CPU runtime to run the workflow</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">GPU Runtime</td>
+                            <td>GPU runtime to run the workflow</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">QPU Runtime</td>
+                            <td>QPU runtime to run the workflow</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Other HW Runtime</td>
+                            <td>Runtime on any other hardware used</td>
+                        </tr>
+                        <tr>
+                            <td class="req-cat req-section-start">Miscellaneous</td>
+                            <td class="mono req-section-start">Remarks</td>
+                            <td class="req-section-start">Additional notes or information</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr class="section-divider" />
+
+        <!-- Contributing a new instance -->
+        <section>
+            <div class="sh">
+                <span class="sh-title">Contributing a New Problem Instance</span>
+            </div>
+            <p class="participate-lead">
+                The instance sets for each problem class are curated by the committee, but well-motivated proposals to
+                extend them are welcome — for example when you have identified a challenging real-world graph,
+                a larger size tier, or a structurally distinct instance not represented in the existing set.
+            </p>
+
+            <div class="sh" style="margin-top:1.5rem">
+                <span class="sh-title">When to propose a new instance</span>
+            </div>
+            <div class="info-cards" style="margin-bottom:1.5rem">
+                <div class="info-card info-card-ok">
+                    <div class="info-card-head">Good candidates</div>
+                    <ul class="req-list" style="margin:0;padding-left:1.1rem">
+                        <li>Fills a gap in difficulty or size range (larger tier, denser family, distinct structure)</li>
+                        <li>Originates from a real application and is verifiably hard for classical solvers</li>
+                        <li>Discussed with a committee member in advance</li>
+                    </ul>
+                </div>
+                <div class="info-card info-card-amber">
+                    <div class="info-card-head">Not suitable</div>
+                    <ul class="req-list" style="margin:0;padding-left:1.1rem">
+                        <li>Trivially solved by standard classical solvers</li>
+                        <li>Duplicate of an existing instance</li>
+                        <li>No clear source or generation procedure</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="sh" style="margin-top:0.25rem">
+                <span class="sh-title">What to include in the PR</span>
+            </div>
+            <ol class="timeline" style="margin-top:1rem">
+                <li class="tl-item">
+                    <div class="tl-node"><span class="tl-num">1</span></div>
+                    <div class="tl-body">
+                        <div class="tl-title">The instance file</div>
+                        <p class="tl-desc">
+                            Place it in <code>NN-problem/instances/</code> and name it according to the existing
+                            naming convention for that problem class (see the <code>instances/README.md</code> of
+                            the target problem).
+                        </p>
+                    </div>
+                </li>
+                <li class="tl-item">
+                    <div class="tl-node"><span class="tl-num">2</span></div>
+                    <div class="tl-body">
+                        <div class="tl-title">A reference solution or known bound</div>
+                        <p class="tl-desc">
+                            Even a heuristic or partial solution placed in <code>NN-problem/solutions/</code>
+                            helps the committee assess difficulty and is used to seed the best-known-value table.
+                        </p>
+                    </div>
+                </li>
+                <li class="tl-item">
+                    <div class="tl-node"><span class="tl-num">3</span></div>
+                    <div class="tl-body">
+                        <div class="tl-title">Generation provenance</div>
+                        <p class="tl-desc">
+                            Include in the PR description a code snippet, random seed, or external citation
+                            sufficient to reproduce or credit the instance. Instances from external sources
+                            must have a verifiable URL or publication reference.
+                        </p>
+                    </div>
+                </li>
+                <li class="tl-item">
+                    <div class="tl-node"><span class="tl-num">4</span></div>
+                    <div class="tl-body">
+                        <div class="tl-title">Update the instances README</div>
+                        <p class="tl-desc">
+                            Add an entry to <code>instances/README.md</code> (or the Instance Sources list)
+                            documenting the file format, size parameters, and origin of the new instance.
+                        </p>
+                    </div>
+                </li>
+            </ol>
+
+            <div class="sh" style="margin-top:1rem">
+                <span class="sh-title">Review &amp; acceptance</span>
+            </div>
+            <p class="tl-desc" style="margin-top:0.5rem">
+                Instance PRs are reviewed by at least two committee members who assess difficulty, structural coverage,
+                and provenance. Accepted instances are merged into <code>main</code> and automatically picked up
+                by the site builder at the next deployment. Rejected proposals receive a written explanation with
+                guidance on how to revise.
+            </p>
+            <p class="tl-desc">
+                To propose an entirely <strong>new problem class</strong>, please
+                <a href="https://github.com/ZIB-AOPT/QOBLIB/issues/new" target="_blank" rel="noopener">open a GitHub Issue first</a>
+                to align on scope and checker requirements before investing in a full PR.
+            </p>
+        </section>
+
+        <hr class="section-divider" />
+
+        <!-- Best practices -->
+        <section>
+            <div class="sh">
+                <span class="sh-title">Best Practices</span>
+            </div>
+            <div class="bp-grid">
+                <div class="bp-card">
+                    <div class="bp-card-title">Solution Files</div>
+                    <ul class="req-list">
+                        <li>Follow the format specified in each problem class directory</li>
+                        <li>Include validation information where applicable</li>
+                        <li>Name files according to the instance naming convention</li>
+                    </ul>
+                </div>
+                <div class="bp-card">
+                    <div class="bp-card-title">Documentation</div>
+                    <ul class="req-list">
+                        <li>Be as detailed as possible in your reference material</li>
+                        <li>Include reproducible instructions</li>
+                        <li>Document any deviations from standard approaches</li>
+                        <li>Report negative results — they are valuable to the community</li>
+                    </ul>
+                </div>
+                <div class="bp-card">
+                    <div class="bp-card-title">Stochastic Algorithms</div>
+                    <ul class="req-list">
+                        <li>Run at least 5 independent trials (10+ recommended)</li>
+                        <li>Report statistical measures (mean, median, std dev) when possible</li>
+                        <li>Document random seeds for reproducibility</li>
+                    </ul>
+                </div>
+                <div class="bp-card">
+                    <div class="bp-card-title">Runtime Measurements</div>
+                    <ul class="req-list">
+                        <li>Measure wall-clock time for total runtime</li>
+                        <li>Separate classical and quantum processing times</li>
+                        <li>Exclude compilation and queue times</li>
+                        <li>Report hardware specifications completely</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider" />
+
+        <section class="callout">
+            <div>
+                <div class="hero-eyebrow">Questions?</div>
+                <h2>Get in touch</h2>
+                <p>Open an issue in the repository or reach out to any committee member directly.</p>
+            </div>
+            <div class="callout-actions">
+                <a class="btn btn-navy" href="https://github.com/ZIB-AOPT/QOBLIB/issues/new" target="_blank" rel="noopener">Open an issue ↗</a>
+                <a class="btn btn-ghost" href="committee.html">Meet the committee</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <span id="footer-build">Generated from the QOBLIB repository.</span>
+        <span><a href="data/index.json">Download site data</a></span>
+    </footer>
+
+    <script src="assets/common.js"></script>
+    <script>window.QOBLIB.initCommon();</script>
+</body>
+</html>

@@ -31,11 +31,13 @@ const {
 } = window.QOBLIB;
 
 // ---------------------------------------------------------------------------
-// Performance section for the problem's instance family — three charts that
+// Performance section for the problem's instance family — four charts that
 // share one "by paradigm / by submission" grouping toggle (so a given method
-// keeps the same colour across all three):
-//   • Cactus — runtime to reach the best-known objective.
-//   • Performance profile — share of instances within a given optimality gap.
+// keeps the same colour across all four):
+//   • Cactus  — runtime to reach the best-known objective. Solid line + filled
+//               circle = proven exact; dashed line + open diamond = heuristic.
+//   • TTS     — same cactus layout using time-to-solution instead of total runtime.
+//   • Profile — share of instances within a given optimality gap.
 //   • Scaling — fastest feasible runtime versus instance size.
 //
 // The chart SVGs are PRE-RENDERED at build time (misc/ci/site_builder/charts.py,
@@ -49,9 +51,10 @@ let PERF_MODE = "paradigm";
 let currentProblem = null;
 
 const PERF_CHARTS = [
-    { key: "cactus", id: "cactus-body", has: "has_cactus" },
+    { key: "cactus",  id: "cactus-body",  has: "has_cactus"  },
+    { key: "tts",     id: "tts-body",     has: "has_tts"     },
     { key: "profile", id: "profile-body", has: "has_profile" },
-    { key: "scaling", id: "scaling-body", has: "has_scaling" },
+    { key: "scaling", id: "scaling-body", has: "has_scaling"  },
 ];
 
 // Wide layout on desktop; a taller, narrower aspect on phones so a single
@@ -65,7 +68,7 @@ function perfBreakpoint() {
 // pre-rendered payload. Records module state used by wirePerformance/renderPerf.
 // Returns "" when there is nothing to plot.
 function performanceSection(charts) {
-    PERF = charts && charts.modes && (charts.has_cactus || charts.has_profile || charts.has_scaling) ? charts : null;
+    PERF = charts && charts.modes && (charts.has_cactus || charts.has_tts || charts.has_profile || charts.has_scaling) ? charts : null;
     PERF_MODE = "paradigm";
     if (!PERF) return "";
 
@@ -80,8 +83,9 @@ function performanceSection(charts) {
             </div>
         </div>
         <div class="perf-charts">
-            ${PERF.has_cactus ? card("cactus-body", "Runtime to reach the best-known objective", "Each curve sorts a group's solved instances by total runtime — a point (x, y) means it reached the best-known objective on x instances, each within y seconds. Lower and further right is better.") : ""}
-            ${PERF.has_profile ? card("profile-body", "Solution quality (performance profile)", "Share of instances each group brings within a given optimality gap of the best-known objective. Higher is better; the value at “best” is the share solved exactly.") : ""}
+            ${PERF.has_cactus  ? card("cactus-body",  "Runtime to reach best-known objective", "Sorted instances vs total runtime. A point (x, y) means x instances were solved within y seconds. Solid line + filled circle = proven exact; dashed line + open diamond = heuristic. Lower-right is better.") : ""}
+            ${PERF.has_tts     ? card("tts-body",     "Time-to-solution (TTS) to reach best-known objective", "Same as the runtime cactus but uses the reported Time-to-Solution rather than total runtime. Solid = exact, dashed = heuristic.") : ""}
+            ${PERF.has_profile ? card("profile-body", "Solution quality (performance profile)", "Share of instances each group brings within a given optimality gap of the best-known objective. Higher is better; the value at \u201cbest\u201d is the share solved exactly.") : ""}
             ${PERF.has_scaling ? card("scaling-body", "Runtime scaling with instance size", `Fastest feasible runtime per instance versus ${sizeLabel}, both on log scales — shows how each group scales.`) : ""}
         </div>`;
 }
@@ -98,7 +102,123 @@ function renderPerf() {
         const variants = mode[key];
         body.innerHTML = (variants && variants[bp]) || "";
     });
+    wireChartToggles(document);
 }
+
+// ---------------------------------------------------------------------------
+// Series toggling — spotlight model:
+//   • Click a legend entry → that series stays bright, all others dim.
+//   • Click the same entry again (or the last visible one) → restore all.
+//   • If all entries somehow end up dimmed → auto-restore all.
+//
+// Toggle rules:
+//   All visible  → click X  → solo X (hide all others)
+//   Some hidden  → click hidden Y  → show Y (independent toggle)
+//   Some hidden  → click visible Y → hide Y (independent toggle)
+//   All hidden   → restore all
+// wireChartToggles(root) can be called on the live document or on the
+// lightbox DOM fragment so the expanded view is interactive too.
+// ---------------------------------------------------------------------------
+
+// cardId → Set of hidden series keys (empty Set = all visible).
+const PERF_HIDDEN = {};
+
+function _applyCardVisibility(card, hidden) {
+    card.querySelectorAll(".conv-leg[data-series]").forEach((leg) => {
+        const key = leg.dataset.series;
+        const off = hidden.has(key);
+        leg.classList.toggle("conv-leg-off", off);
+        card.querySelectorAll(`[data-series="${CSS.escape(key)}"]`).forEach((el) => {
+            el.style.opacity = off ? "0.1" : "";
+        });
+    });
+}
+
+function _toggleSeries(hidden, key, allKeys) {
+    if (hidden.size === 0) {
+        // All visible → solo: hide everything except the clicked one.
+        allKeys.forEach((k) => { if (k !== key) hidden.add(k); });
+    } else if (hidden.size === allKeys.length) {
+        // All hidden → restore all.
+        hidden.clear();
+    } else {
+        // Partial state → independently toggle the clicked series.
+        if (hidden.has(key)) hidden.delete(key); else hidden.add(key);
+        // If that just hid the last visible one, restore all instead.
+        if (hidden.size === allKeys.length) hidden.clear();
+    }
+}
+
+function wireChartToggles(root) {
+    (root || document).querySelectorAll(".perf-charts .conv-legend").forEach((legend) => {
+        const card = legend.closest(".chart-card");
+        if (!card) return;
+
+        // Give the card a stable id so PERF_HIDDEN can track its state.
+        if (!card.id) card.id = "chart-card-" + Math.random().toString(36).slice(2, 8);
+        if (!PERF_HIDDEN[card.id]) PERF_HIDDEN[card.id] = new Set();
+
+        legend.querySelectorAll(".conv-leg[data-series]").forEach((leg) => {
+            if (leg.dataset.bound === "1") return;
+            leg.dataset.bound = "1";
+
+            leg.addEventListener("click", () => {
+                const hidden = PERF_HIDDEN[card.id];
+                const allKeys = [...card.querySelectorAll(".conv-leg[data-series]")]
+                    .map((l) => l.dataset.series);
+                _toggleSeries(hidden, leg.dataset.series, allKeys);
+                _applyCardVisibility(card, hidden);
+            });
+        });
+
+        // Re-apply stored state when renderPerf re-injects SVG content
+        // (e.g. after a grouping-mode toggle) — the card element and its id
+        // survive, so visibility state should carry over.
+        _applyCardVisibility(card, PERF_HIDDEN[card.id]);
+    });
+}
+
+// Wire chart toggles inside the figure lightbox when it opens.
+//
+// attachFigureExpand clones container.innerHTML (not the container itself), so
+// the lightbox inner holds the chart-card's *children* directly — there is no
+// .chart-card or .perf-charts wrapper. We treat the lightbox inner element
+// itself as the "card" scope for the toggle.
+document.addEventListener("lightboxopen", (ev) => {
+    const inner = ev.target;
+    if (!inner) return;
+    if (!inner.querySelector(".conv-leg[data-series]")) return;
+
+    // Strip stale data-bound flags copied from the live DOM.
+    inner.querySelectorAll(".conv-leg[data-bound]").forEach((el) => {
+        delete el.dataset.bound;
+    });
+
+    // Seed lbHidden from the cloned DOM's visual state: whatever the live card
+    // was showing when the user hit Expand should be the starting state here.
+    const lbHidden = new Set(
+        [...inner.querySelectorAll(".conv-leg-off[data-series]")]
+            .map((l) => l.dataset.series)
+    );
+
+    inner.querySelectorAll(".conv-leg[data-series]").forEach((leg) => {
+        if (leg.dataset.bound === "1") return;
+        leg.dataset.bound = "1";
+
+        leg.addEventListener("click", () => {
+            const allKeys = [...inner.querySelectorAll(".conv-leg[data-series]")]
+                .map((l) => l.dataset.series);
+            _toggleSeries(lbHidden, leg.dataset.series, allKeys);
+            inner.querySelectorAll(".conv-leg[data-series]").forEach((l) => {
+                const off = lbHidden.has(l.dataset.series);
+                l.classList.toggle("conv-leg-off", off);
+                inner.querySelectorAll(`[data-series="${CSS.escape(l.dataset.series)}"]`).forEach((el) => {
+                    el.style.opacity = off ? "0.1" : "";
+                });
+            });
+        });
+    });
+});
 
 function wirePerformance() {
     const tb = document.querySelector(".perf-toolbar");

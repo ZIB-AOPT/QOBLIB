@@ -49,7 +49,8 @@ CACTUS_PALETTE = ["#2f6db0", "#c0504d", "#9bbb59", "#8064a2", "#4bacc6", "#f7964
 DIMS = {"wide": (720, 300), "narrow": (430, 340)}
 
 EMPTY_MSGS = {
-    "cactus": "No group reached the best-known objective with a recorded runtime in this view.",
+    "cactus":  "No group reached the best-known objective with a recorded runtime in this view.",
+    "tts":     "No group reported a Time-to-Solution with a recorded best-known objective in this view.",
     "profile": "No optimality-gap data in this view.",
     "scaling": "No instance-size / runtime data in this view.",
 }
@@ -95,6 +96,19 @@ def _is_feasible(sub) -> bool:
     """``cIsFeasible``: feasible unless '# Feasible Runs' is explicitly 0."""
     nf = _cnum(sub.get("n_feasible"))
     return not (nf is not None and nf == 0)
+
+
+def _is_exact(sub) -> bool:
+    """A submission is *exact* (proven optimal) when its Optimality Bound equals
+    its Best Objective Value — i.e. the submitter asserts the solution is optimal.
+    Algorithm type alone is NOT sufficient (a deterministic heuristic is not exact).
+    """
+    val   = _cnum(sub.get("value"))
+    bound = _cnum(sub.get("optimality_bound"))
+    if val is None or bound is None:
+        return False
+    scale = max(1.0, abs(val), abs(bound))
+    return abs(val - bound) <= 1e-9 * scale
 
 
 def _is_feasibility_problem(problem) -> bool:
@@ -228,25 +242,29 @@ def _build_perf_mode(problem, mode):
 
     def G(k):
         if k not in groups:
-            groups[k] = {"times": [], "gaps": [], "points": []}
+            groups[k] = {"times": [], "tts": [], "gaps": [], "points": []}
         return groups[k]
 
     for inst in instances:
-        subs = [s for s in (entries.get(inst.get("name")) or []) if _is_feasible(s)]
+        inst_name = inst.get("name", "")
+        subs = [s for s in (entries.get(inst_name) or []) if _is_feasible(s)]
         if not subs:
             continue
         target = _cnum(_best_value(inst))
         ref = 0 if feas else _ref_best(inst, subs, minimize)
         size = size_get(inst)
 
-        best_rt: dict = {}   # group -> fastest runtime that reached best-known
-        min_gap: dict = {}   # group -> smallest optimality gap %
-        feas_rt: dict = {}   # group -> fastest feasible runtime (scaling)
+        best_rt:  dict = {}  # group -> (fastest runtime, exact_flag) that reached best-known
+        best_tts: dict = {}  # group -> (fastest TTS, exact_flag) that reached best-known
+        min_gap:  dict = {}  # group -> smallest optimality gap %
+        feas_rt:  dict = {}  # group -> fastest feasible runtime (scaling)
 
         for s in subs:
             k = group_key(s)
-            val = _cnum(s.get("value"))
-            rt = _cnum(s.get("runtime_total"))
+            val   = _cnum(s.get("value"))
+            rt    = _cnum(s.get("runtime_total"))
+            tts   = _cnum(s.get("time_to_solution"))
+            exact = _is_exact(s)
 
             if feas:
                 reached = (val is None) or abs(val) <= 1e-9
@@ -255,37 +273,50 @@ def _build_perf_mode(problem, mode):
                 reached = abs(val - target) <= 1e-9 * scale
             else:
                 reached = False
+
             if reached and rt is not None:
                 pr = best_rt.get(k)
-                if pr is None or rt < pr:
-                    best_rt[k] = rt
+                if pr is None or rt < pr[0]:
+                    best_rt[k] = (rt, exact)
+
+            # TTS: accept when the submission reached the best-known value and
+            # reported a finite, non-negative TTS. tts == 0 is valid (solved
+            # instantly / at first evaluation).
+            if reached and tts is not None and tts >= 0:
+                pr = best_tts.get(k)
+                if pr is None or tts < pr[0]:
+                    best_tts[k] = (tts, exact)
 
             if (not feas) and val is not None and ref is not None:
                 gap = max(0, ((val - ref) if minimize else (ref - val)) / max(1, abs(ref)) * 100)
                 pr = min_gap.get(k)
-                if pr is None or gap < pr:
-                    min_gap[k] = gap
+                if pr is None or gap < pr[0]:
+                    min_gap[k] = (gap, inst_name)
 
             if size is not None and rt is not None:
                 pr = feas_rt.get(k)
-                if pr is None or rt < pr:
-                    feas_rt[k] = rt
+                if pr is None or rt < pr[0]:
+                    feas_rt[k] = (rt, inst_name)
 
-        for k, rt in best_rt.items():
-            G(k)["times"].append(rt)
-        for k, g in min_gap.items():
-            G(k)["gaps"].append(g)
-        for k, rt in feas_rt.items():
-            G(k)["points"].append({"size": size, "rt": rt})
+        for k, (rt, exact) in best_rt.items():
+            G(k)["times"].append({"rt": rt, "exact": exact, "inst": inst_name})
+        for k, (tts, exact) in best_tts.items():
+            G(k)["tts"].append({"rt": tts, "exact": exact, "inst": inst_name})
+        for k, (gap, iname) in min_gap.items():
+            G(k)["gaps"].append({"gap": gap, "inst": iname})
+        for k, (rt, iname) in feas_rt.items():
+            G(k)["points"].append({"size": size, "rt": rt, "inst": iname})
 
     def finalize(key, name, color):
         g = groups[key]
         return {
-            "key": key,
-            "name": name,
-            "color": color,
-            "times": sorted(g["times"]),
-            "gaps": sorted(g["gaps"]),
+            "key":    key,
+            "name":   name,
+            "color":  color,
+            # Sort cactus/TTS entries by runtime; keep exact flag alongside.
+            "times":  sorted(g["times"],  key=lambda x: x["rt"]),
+            "tts":    sorted(g["tts"],    key=lambda x: x["rt"]),
+            "gaps":   sorted(g["gaps"],   key=lambda x: x["gap"]),
             "points": list(g["points"]),
         }
 
@@ -310,6 +341,14 @@ def _build_perf_mode(problem, mode):
 # --------------------------------------------------------------------------- #
 # SVG builders (ports of buildCactusChart / buildProfileChart / buildScalingChart)
 # --------------------------------------------------------------------------- #
+
+def _diamond(cx: float, cy: float, r: float) -> str:
+    """SVG polygon for an open diamond (rotated square) with half-size r."""
+    pts = (f"{_f1(cx)},{_f1(cy - r)} {_f1(cx + r)},{_f1(cy)} "
+           f"{_f1(cx)},{_f1(cy + r)} {_f1(cx - r)},{_f1(cy)}")
+    return f'<polygon points="{pts}"'
+
+
 def _svg(w, h, body) -> str:
     return (
         f'<svg class="conv-svg" viewBox="0 0 {w} {h}" role="img" '
@@ -324,21 +363,27 @@ def _axes(m_l, m_t, m_b, m_r, w, h) -> str:
     )
 
 
-def _cactus_svg(series, dims) -> str:
+def _cactus_body(series, field, dims, y_title_txt) -> str:
+    """Shared renderer for both the runtime cactus and the TTS cactus.
+
+    *field* is ``"times"`` or ``"tts"``; each entry is ``{"rt": float, "exact": bool}``.
+    Exact submissions (proven optimal) are drawn with a solid line + filled circle;
+    heuristics with a dashed line + open diamond marker.
+    """
     w, h = dims
-    live = [s for s in series if s["times"]]
-    all_times = [t for s in live for t in s["times"]]
-    if not all_times:
+    live = [s for s in series if s[field]]
+    all_rts = [e["rt"] for s in live for e in s[field]]
+    if not all_rts:
         return ""
 
     m_t, m_r, m_b, m_l = 16, 18, 44, 66
-    max_n = max((len(s["times"]) for s in live), default=0)
-    pos = [t for t in all_times if t > 0]
+    max_n = max((len(s[field]) for s in live), default=0)
+    pos = [t for t in all_rts if t > 0]
     floor = min(pos) if pos else 1e-3
     clamp = lambda t: t if t > 0 else floor
 
-    lo = math.log10(min(clamp(t) for t in all_times))
-    hi = math.log10(max(clamp(t) for t in all_times))
+    lo = math.log10(min(clamp(t) for t in all_rts))
+    hi = math.log10(max(clamp(t) for t in all_rts))
     if lo == hi:
         lo -= 1
         hi += 1
@@ -373,41 +418,69 @@ def _cactus_svg(series, dims) -> str:
         f'<text class="conv-tick" text-anchor="middle" x="{_f1(x_px(ct))}" y="{h - m_b + 16}">{ct}</text>'
         for ct in xticks
     )
-    x_title = (
+    x_title_el = (
         f'<text class="conv-axis-title" text-anchor="middle" x="{_f1((m_l + (w - m_r)) / 2)}" '
         f'y="{h - 5}">instances solved →</text>'
     )
     cy = _f1((m_t + (h - m_b)) / 2)
-    y_title = (
+    y_title_el = (
         f'<text class="conv-axis-title" text-anchor="middle" transform="rotate(-90 14 {cy})" '
-        f'x="14" y="{cy}">runtime (s, log)</text>'
+        f'x="14" y="{cy}">{_esc(y_title_txt)}</text>'
     )
 
     parts = []
     for s in live:
-        pts = [(x_px(i + 1), y_px(t), i + 1, t) for i, t in enumerate(s["times"])]
-        d = ""
-        for i, (px, py, _c, _t) in enumerate(pts):
-            d += f'{"M" if i == 0 else "L"} {_f1(px)} {_f1(py)} '
-        line = (
-            f'<path d="{d.strip()}" fill="none" style="stroke:{s["color"]}" '
-            f'stroke-width="2" stroke-linejoin="round" />'
-        )
-        dots = "".join(
-            f'<circle cx="{_f1(px)}" cy="{_f1(py)}" r="3.2" style="fill:{s["color"]}">'
-            f'<title>{_esc(s["name"])} · solved {cc} · {_esc(_fmt_time(tt))} s</title></circle>'
-            for (px, py, cc, tt) in pts
-        )
-        parts.append(line + dots)
+        entries = s[field]
+        pts = [(x_px(i + 1), y_px(e["rt"]), i + 1, e["rt"], e["exact"], e.get("inst", ""))
+               for i, e in enumerate(entries)]
 
-    body = grid + _axes(m_l, m_t, m_b, m_r, w, h) + y_labels + x_labels + x_title + y_title + "".join(parts)
+        # Line: solid for all-exact series, dashed when any entry is heuristic.
+        all_exact = all(e["exact"] for e in entries)
+        dash = "" if all_exact else ' stroke-dasharray="5 3"'
+        d = "".join(
+            f'{"M" if i == 0 else "L"} {_f1(px)} {_f1(py)} '
+            for i, (px, py, *_) in enumerate(pts)
+        )
+        line = (
+            f'<path d="{d.strip()}" fill="none" style="stroke:{s["color"]}"'
+            f'{dash} stroke-width="2" stroke-linejoin="round" />'
+        )
+
+        # Markers: filled circle = exact; open diamond = heuristic.
+        dot_parts = []
+        for (px, py, cc, tt, exact, inst) in pts:
+            tip = (f'{_esc(s["name"])} · {"exact" if exact else "heuristic"} '
+                   f'· {_esc(inst)} · {_esc(_fmt_time(tt))} s')
+            if exact:
+                dot_parts.append(
+                    f'<circle cx="{_f1(px)}" cy="{_f1(py)}" r="3.2" '
+                    f'style="fill:{s["color"]}">'
+                    f'<title>{tip}</title></circle>'
+                )
+            else:
+                dot_parts.append(
+                    f'{_diamond(px, py, 4.5)} '
+                    f'style="fill:none;stroke:{s["color"]};stroke-width:1.5">'
+                    f'<title>{tip}</title></polygon>'
+                )
+        parts.append(f'<g data-series="{_esc(s["key"])}">{line}{"".join(dot_parts)}</g>')
+
+    body = grid + _axes(m_l, m_t, m_b, m_r, w, h) + y_labels + x_labels + x_title_el + y_title_el + "".join(parts)
     return _svg(w, h, body)
+
+
+def _cactus_svg(series, dims) -> str:
+    return _cactus_body(series, "times", dims, "runtime (s, log)")
+
+
+def _tts_svg(series, dims) -> str:
+    return _cactus_body(series, "tts", dims, "time-to-solution (s, log)")
 
 
 def _profile_svg(groups, ref_n, dims) -> str:
     w, h = dims
     live = [g for g in groups if g["gaps"]]
-    allg = [x for g in live for x in g["gaps"]]
+    allg = [x["gap"] for g in live for x in g["gaps"]]
     if not allg or not ref_n:
         return ""
 
@@ -445,32 +518,38 @@ def _profile_svg(groups, ref_n, dims) -> str:
 
     parts = []
     for g in live:
-        s = sorted(g["gaps"])
+        # gaps is a list of {"gap": float, "inst": str}, already sorted by gap.
+        s = g["gaps"]
         steps = []
         cum = 0
+        inst_names: list = []
         for i in range(len(s)):
             cum += 1
-            if i + 1 < len(s) and s[i + 1] == s[i]:
+            inst_names.append(s[i]["inst"])
+            if i + 1 < len(s) and s[i + 1]["gap"] == s[i]["gap"]:
                 continue
-            steps.append((s[i], cum / ref_n))
+            steps.append((s[i]["gap"], cum / ref_n, list(inst_names)))
+            inst_names = []
         prev_y = y_px(0)
         d = f"M {_f1(x_px(0))} {_f1(prev_y)}"
         dots = []
-        for gap, frac in steps:
+        for gap, frac, inames in steps:
             xx = x_px(gap)
             yy = y_px(frac)
             d += f" L {_f1(xx)} {_f1(prev_y)} L {_f1(xx)} {_f1(yy)}"
             lbl = "best" if gap <= 1e-9 else "+" + _esc(_fmt_gap(gap))
+            inst_lbl = ", ".join(_esc(n) for n in inames)
             dots.append(
                 f'<circle cx="{_f1(xx)}" cy="{_f1(yy)}" r="2.6" style="fill:{g["color"]}">'
-                f'<title>{_esc(g["name"])} · within {lbl} · {_jround(frac * 100)}%</title></circle>'
+                f'<title>{_esc(g["name"])} · within {lbl} · {_jround(frac * 100)}% · {inst_lbl}</title></circle>'
             )
             prev_y = yy
         d += f" L {_f1(x_px(axis_max_gap))} {_f1(prev_y)}"
-        parts.append(
+        path = (
             f'<path d="{d}" fill="none" style="stroke:{g["color"]}" '
-            f'stroke-width="2" stroke-linejoin="round" />' + "".join(dots)
+            f'stroke-width="2" stroke-linejoin="round" />'
         )
+        parts.append(f'<g data-series="{_esc(g["key"])}">{path}{"".join(dots)}</g>')
 
     body = grid + _axes(m_l, m_t, m_b, m_r, w, h) + y_labels + x_labels + x_title + y_title + "".join(parts)
     return _svg(w, h, body)
@@ -541,12 +620,13 @@ def _scaling_svg(groups, size_label, dims) -> str:
         circles = "".join(
             f'<circle cx="{_f1(x_px(pt["size"]))}" cy="{_f1(y_px(pt["rt"]))}" r="3" '
             f'style="fill:{g["color"]};fill-opacity:0.78">'
-            f'<title>{_esc(g["name"])} · {_esc(size_label)} {_esc(_fmt_size(pt["size"]))} · '
+            f'<title>{_esc(g["name"])} · {_esc(pt.get("inst", ""))} · '
+            f'{_esc(size_label)} {_esc(_fmt_size(pt["size"]))} · '
             f'{_esc(_fmt_time(pt["rt"]))} s</title></circle>'
             for pt in g["points"]
             if pt["size"] is not None and pt["size"] > 0
         )
-        parts.append(circles)
+        parts.append(f'<g data-series="{_esc(g["key"])}">{circles}</g>')
 
     body = grid + _axes(m_l, m_t, m_b, m_r, w, h) + y_labels + x_labels + x_title + y_title + "".join(parts)
     return _svg(w, h, body)
@@ -556,12 +636,40 @@ def _scaling_svg(groups, size_label, dims) -> str:
 # Legend + body assembly (port of renderInto) and the public entry point
 # --------------------------------------------------------------------------- #
 def _legend_html(groups, field) -> str:
-    return "".join(
-        f'<span class="conv-leg"><span class="conv-dot" style="background:{g["color"]}"></span>'
-        f'{_esc(g["name"])} ({len(g[field])})</span>'
-        for g in groups
-        if g[field]
-    )
+    """Build legend entries for one chart.
+
+    For cactus/TTS (``field`` is ``"times"`` or ``"tts"``) each entry carries an
+    ``"exact"`` flag; we append an exact/heuristic note and use the right icon.
+    For other charts the items are plain values so we just show the count.
+    """
+    parts = []
+    for g in groups:
+        items = g[field]
+        if not items:
+            continue
+        n = len(items)
+        # Detect cactus-family fields by checking whether items are dicts with "exact".
+        if items and isinstance(items[0], dict) and "exact" in items[0]:
+            n_exact = sum(1 for e in items if e["exact"])
+            if n_exact == n:
+                note = " · exact"
+            elif n_exact == 0:
+                note = " · heuristic"
+            else:
+                note = f" · {n_exact} exact, {n - n_exact} heuristic"
+            # Solid circle icon for all-exact; open diamond icon for any heuristic.
+            if n_exact == n:
+                icon = f'<span class="conv-dot" style="background:{g["color"]}"></span>'
+            else:
+                icon = f'<span class="conv-dot conv-dot-heur" style="border-color:{g["color"]}"></span>'
+        else:
+            note = ""
+            icon = f'<span class="conv-dot" style="background:{g["color"]}"></span>'
+        parts.append(
+            f'<span class="conv-leg" data-series="{_esc(g["key"])}" title="Click to solo / restore">'
+            f'{icon}<span class="conv-leg-label">{_esc(g["name"])} ({n}{_esc(note)})</span></span>'
+        )
+    return "".join(parts)
 
 
 def _body_html(svg, groups, field, empty_msg) -> str:
@@ -572,7 +680,7 @@ def _body_html(svg, groups, field, empty_msg) -> str:
 
 
 # field name on each group dict that feeds each chart's legend / has-data check.
-_CHART_FIELD = {"cactus": "times", "profile": "gaps", "scaling": "points"}
+_CHART_FIELD = {"cactus": "times", "tts": "tts", "profile": "gaps", "scaling": "points"}
 
 
 def build_problem_charts(problem):
@@ -583,7 +691,7 @@ def build_problem_charts(problem):
           "problem_id": "07",
           "size_label": "Nodes",
           "ref_n": 42,
-          "has_cactus": true, "has_profile": true, "has_scaling": true,
+          "has_cactus": true, "has_tts": true, "has_profile": true, "has_scaling": true,
           "modes": {
             "paradigm":   {"cactus": {"wide": "<html>", "narrow": "<html>"}, ...},
             "submission": {...}
@@ -607,22 +715,25 @@ def build_problem_charts(problem):
                 ref_n += 1
 
     modes = {
-        "paradigm": _build_perf_mode(problem, "paradigm"),
+        "paradigm":   _build_perf_mode(problem, "paradigm"),
         "submission": _build_perf_mode(problem, "submission"),
     }
 
     def any_field(field):
         return any(g[field] for g in modes["paradigm"]) or any(g[field] for g in modes["submission"])
 
-    has_cactus = any_field("times")
+    has_cactus  = any_field("times")
+    has_tts     = any_field("tts")
     has_profile = (not feas) and ref_n > 0 and any_field("gaps")
     has_scaling = any_field("points")
-    if not (has_cactus or has_profile or has_scaling):
+    if not (has_cactus or has_tts or has_profile or has_scaling):
         return None
 
     present = []
     if has_cactus:
         present.append("cactus")
+    if has_tts:
+        present.append("tts")
     if has_profile:
         present.append("profile")
     if has_scaling:
@@ -632,6 +743,8 @@ def build_problem_charts(problem):
         field = _CHART_FIELD[chart]
         if chart == "cactus":
             svg = _cactus_svg(groups, dims)
+        elif chart == "tts":
+            svg = _tts_svg(groups, dims)
         elif chart == "profile":
             svg = _profile_svg(groups, ref_n, dims)
         else:
@@ -646,11 +759,12 @@ def build_problem_charts(problem):
         }
 
     return {
-        "problem_id": problem.get("id"),
-        "size_label": size_label,
-        "ref_n": ref_n,
-        "has_cactus": has_cactus,
+        "problem_id":  problem.get("id"),
+        "size_label":  size_label,
+        "ref_n":       ref_n,
+        "has_cactus":  has_cactus,
+        "has_tts":     has_tts,
         "has_profile": has_profile,
         "has_scaling": has_scaling,
-        "modes": out_modes,
+        "modes":       out_modes,
     }
