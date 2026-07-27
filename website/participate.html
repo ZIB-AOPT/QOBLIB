@@ -290,6 +290,89 @@
 
         <hr class="section-divider" />
 
+        <!-- Objective time series -->
+        <section>
+            <div class="sh">
+                <span class="sh-title">Objective Time Series <span style="font-weight:400;font-size:0.85em;color:var(--muted)">(Optional)</span></span>
+            </div>
+            <p class="participate-lead">
+                To enable convergence analysis and Time-to-Solution (TTS) verification, you may include an
+                <strong>objective time series</strong> file alongside your solution files. This is optional but
+                strongly encouraged for stochastic runs.
+            </p>
+
+            <div class="sh" style="margin-top:1.25rem">
+                <span class="sh-title">File naming &amp; placement</span>
+            </div>
+            <p class="tl-desc" style="margin-top:0.5rem">
+                Place the file in each instance subdirectory, named
+                <code>&lt;instance&gt;_objective_time_series.json</code> (plain JSON) or
+                <code>&lt;instance&gt;_objective_time_series.json.gz</code> (gzip-compressed for large files).
+            </p>
+
+            <div class="sh" style="margin-top:1.25rem">
+                <span class="sh-title">Format</span>
+            </div>
+            <p class="tl-desc" style="margin-top:0.5rem">
+                The file must be a JSON <strong>array of runs</strong> (one element per independent run).
+                Each run is itself an array of <em>incumbent update</em> objects recorded
+                <strong>whenever the best-found objective value improves</strong>:
+            </p>
+            <pre class="code-block"><code>[
+  [
+    {"Time": 0.001, "Incumbent": 120.0},
+    {"Time": 0.218, "Incumbent":   5.0},
+    {"Time": 0.435, "Incumbent":   0.0}
+  ],
+  [
+    {"Time": 0.002, "Incumbent":  80.0},
+    {"Time": 0.651, "Incumbent":   0.0}
+  ]
+]</code></pre>
+
+            <div class="tw req-table-wrap" style="margin-top:1rem">
+                <table class="req-table">
+                    <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="mono">Time</td>
+                            <td>number</td>
+                            <td>Wall-clock time in <strong>seconds</strong> from the start of the run at which this incumbent was first reached</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">Incumbent</td>
+                            <td>number</td>
+                            <td>The best objective value found up to this point in the run</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-cards" style="margin-top:1.25rem">
+                <div class="info-card info-card-ok">
+                    <div class="info-card-head">Rules</div>
+                    <ul class="req-list" style="margin:0;padding-left:1.1rem">
+                        <li>The <code>Incumbent</code> sequence within each run must be non-increasing for minimization (non-decreasing for maximization).</li>
+                        <li>The first entry should record the initial incumbent (the starting solution's objective value).</li>
+                        <li>The last entry's <code>Time</code> should correspond to the end of the run so that TTS can be computed from it.</li>
+                        <li>There is no required correspondence between the number of runs in the time series and <code># Runs</code> in the CSV, but they should ideally match.</li>
+                    </ul>
+                </div>
+                <div class="info-card info-card-blue">
+                    <div class="info-card-head">CI checker behaviour</div>
+                    <p>The automated checker validates the JSON structure (correct types, required keys, non-empty runs) but does <strong>not</strong> enforce monotonicity — that is left to reviewers. Providing a time series is entirely optional; its absence is reported as informational only.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider" />
+
         <!-- Contributing a new instance -->
         <section>
             <div class="sh">

@@ -3050,6 +3050,20 @@ textarea.invalid {
     white-space: nowrap;
 }
 
+/* ---- Code block (participate page) ---- */
+.code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--text);
+    overflow-x: auto;
+    margin: 0;
+}
+
 /* ---- Requirement groups (kept for potential reuse) ---- */
 .req-group { margin-bottom: 1.5rem; }
 

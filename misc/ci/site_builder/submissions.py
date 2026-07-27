@@ -192,6 +192,13 @@ def read_csv_submissions_folder(submissions_dir: Path, known_instances: set[str]
                     for key in COLUMN_MAP:
                         if key not in ("instance", "value"):
                             sub[key] = get_col(row, key)
+                    # Normalise affiliation: each comma-separated token that
+                    # matches /ibm/i is replaced with the canonical "IBM".
+                    raw_aff = sub.get("affiliation") or ""
+                    if raw_aff:
+                        tokens = [t.strip() for t in raw_aff.split(",")]
+                        tokens = ["IBM" if t.lower().find("ibm") != -1 else t for t in tokens]
+                        sub["affiliation"] = ", ".join(tokens)
                     sub["date"] = parse_date_str(sub.get("date", ""))
                     sub["category"] = classify_submission(sub)
 
