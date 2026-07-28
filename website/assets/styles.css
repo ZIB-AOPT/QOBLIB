@@ -838,6 +838,7 @@ a.badge:hover {
     margin-bottom: 2rem;
 }
 
+.ph h1,
 .ph h2 {
     font-size: 1.7rem;
     font-weight: 700;
@@ -950,10 +951,6 @@ a.badge:hover {
     min-height: 440px;
     border: 1px solid var(--border);
     border-radius: var(--r);
-    /* background:
-        radial-gradient(circle at 12% 8%, #f8fbfd 0%, transparent 28%),
-        radial-gradient(circle at 90% 85%, #fbf5eb 0%, transparent 35%),
-        var(--surface); */
     position: relative;
     overflow: hidden;
 }
@@ -980,6 +977,13 @@ a.badge:hover {
 .mip-grid-line {
     stroke: rgba(122, 112, 97, 0.2);
     stroke-width: 1;
+}
+
+/* Faint unlabelled 2×/5× guides between decades on log axes. */
+.mip-grid-minor {
+    stroke: rgba(122, 112, 97, 0.1);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
 }
 
 .mip-axis-line {
@@ -1166,12 +1170,17 @@ td.num {
 
 .rlink {
     color: var(--navy);
-    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: var(--border-mid);
+    text-underline-offset: 2px;
+    cursor: pointer;
 }
 
 .rlink:hover {
     color: var(--accent);
-    text-decoration: underline;
+    text-decoration-style: solid;
+    text-decoration-color: var(--accent);
 }
 
 .dl {
@@ -1215,10 +1224,122 @@ td.num {
     gap: 0.35rem;
     font-size: 0.83rem;
     color: var(--muted);
-    margin-bottom: 1.4rem;
+    margin-bottom: 0.6rem;
 }
 
 .back:hover {
+    color: var(--navy);
+}
+
+/* Instance prev / pos / next navigation strip */
+.inst-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 1.4rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    padding: 0.3rem 0.5rem;
+    background: var(--surface);
+}
+
+.inst-nav-btn {
+    flex: 1 1 0;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: background 0.12s, color 0.12s;
+    min-width: 0;
+}
+
+a.inst-nav-btn:hover {
+    background: var(--surface2);
+    color: var(--navy);
+}
+
+.inst-nav-next {
+    text-align: right;
+}
+
+.inst-nav-disabled {
+    pointer-events: none;
+}
+
+.inst-nav-pos {
+    flex: 0 0 auto;
+    color: var(--faint);
+    text-align: center;
+    padding: 0 0.5rem;
+    white-space: nowrap;
+}
+
+.inst-nav-search-wrap {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.inst-nav-search {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.18rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text);
+    width: 10rem;
+    outline: none;
+    transition: border-color 0.12s;
+}
+
+.inst-nav-search:focus {
+    border-color: var(--navy);
+}
+
+.inst-nav-search::-webkit-search-cancel-button {
+    cursor: pointer;
+}
+
+.inst-nav-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 100%;
+    width: max-content;
+    max-width: 22rem;
+    max-height: 16rem;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    box-shadow: 0 4px 12px rgba(0,0,0,.10);
+    list-style: none;
+    margin: 0;
+    padding: 0.25rem 0;
+    z-index: 200;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+}
+
+.inst-nav-dropdown li {
+    padding: 0.3rem 0.75rem;
+    cursor: pointer;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    outline: none;
+}
+
+.inst-nav-dropdown li:hover,
+.inst-nav-dropdown li:focus {
+    background: var(--surface2);
     color: var(--navy);
 }
 
@@ -1241,6 +1362,7 @@ td.num {
     font-size: 1.9rem;
     font-weight: 700;
     color: var(--navy);
+    margin-top: 0;         /* reset the UA <h1> top margin when .d-title is an <h1> */
     margin-bottom: 0.2rem;
     line-height: 1.15;
 }
@@ -2234,13 +2356,18 @@ td.num {
     stroke: rgba(159, 173, 177, 0.16);
 }
 
+:root[data-theme="dark"] .mip-grid-minor {
+    stroke: rgba(159, 173, 177, 0.09);
+}
+
 :root[data-theme="dark"] .mip-axis-line {
     stroke: rgba(159, 173, 177, 0.5);
 }
 
-/* Plot images keep a white backing so the figures stay legible. */
+/* Plot images keep a white backing so the figures stay legible in dark mode. */
 :root[data-theme="dark"] .plot-card img {
-    background: #f3f5f4;
+    --plot-bg: #f3f5f4;
+    background: var(--plot-bg);
 }
 
 /* =========================================================================
@@ -2618,6 +2745,14 @@ textarea.invalid {
     stroke-width: 1;
 }
 
+/* Faint unlabelled 2×/5× guides between decades on log axes. */
+.conv-grid-minor {
+    stroke: var(--border);
+    stroke-width: 1;
+    stroke-opacity: 0.4;
+    stroke-dasharray: 2 3;
+}
+
 .conv-axis-line {
     stroke: var(--border-mid);
     stroke-width: 1.2;
@@ -2645,6 +2780,35 @@ textarea.invalid {
     display: inline-flex;
     align-items: center;
     gap: 0.32rem;
+}
+
+/* Legend items are clickable when they carry data-series (toggling). */
+.conv-leg[data-series] {
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.15s, color 0.15s;
+}
+
+.conv-leg[data-series]:hover {
+    opacity: 0.8;
+}
+
+/* Dimmed state: dot fades out strongly; text stays fully readable with
+   a strikethrough so users know it is toggled off but can still read it.
+   A title hint reinforces the "click to restore" affordance. */
+.conv-leg-off {
+    color: var(--muted);
+    opacity: 1;
+}
+
+.conv-leg-off .conv-dot,
+.conv-leg-off .conv-dot-heur {
+    opacity: 0.25;
+}
+
+.conv-leg-off .conv-leg-label {
+    text-decoration: line-through;
+    text-decoration-color: var(--muted);
 }
 
 .conv-axis-title {
@@ -2678,6 +2842,22 @@ textarea.invalid {
 /* Keep charts from ballooning in height on wide screens. */
 .perf-charts .conv-svg {
     max-height: 360px;
+}
+
+/* Observable Plot output container inside each chart card.
+   Plot emits a bare <svg> (or <figure>) directly — make it fill the card width
+   and cap height so tall narrow viewports don't blow up the card. */
+.perf-plot {
+    width: 100%;
+    overflow-x: auto;  /* let the fixed-width SVG scroll rather than clip */
+}
+
+.perf-plot > svg,
+.perf-plot > figure > svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 320px;
 }
 
 /* Stack the charts one per row on narrow screens. This override must follow the
@@ -2724,6 +2904,20 @@ textarea.invalid {
     color: #fff;
 }
 
+/* Open diamond: heuristic series marker in the chart legend. */
+.conv-dot-heur {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 0;
+    transform: rotate(45deg);
+    background: transparent;
+    border-width: 1.5px;
+    border-style: solid;
+    /* border-color set inline from the series colour */
+    flex-shrink: 0;
+}
+
 .conv-dot {
     width: 10px;
     height: 10px;
@@ -2751,4 +2945,906 @@ textarea.invalid {
     border-radius: 999px;
     display: inline-block;
     flex-shrink: 0;
+}
+
+/* =========================================================================
+   Participate page — steps, info cards, requirement groups, best practices
+   Committee page — member cards, responsibility cards
+   ========================================================================= */
+
+.participate-lead {
+    font-family: var(--serif);
+    font-size: 0.97rem;
+    color: var(--muted);
+    line-height: 1.78;
+    max-width: 72ch;
+    margin-bottom: 1.6rem;
+}
+
+/* Hero actions on the participate page sit immediately under the .ph intro,
+   so pull them up slightly to close the gap and add bottom clearance. */
+.participate-hero-actions {
+    margin: -0.5rem 0 2rem;
+}
+
+/* Sub-section headings (.sh) used within a section — add top spacing so they
+   don't run into the preceding element. */
+.sh-mt    { margin-top: 1.25rem; }
+.sh-mt-sm { margin-top: 0.25rem; }
+.sh-mt-md { margin-top: 1rem; }
+.sh-mt-lg { margin-top: 1.5rem; }
+
+/* "Optional" label inside a section heading. */
+.sh-optional {
+    font-weight: 400;
+    font-size: 0.85em;
+    color: var(--muted);
+}
+
+/* Prose paragraphs that follow a sub-heading need a small top nudge. */
+.tl-desc-mt { margin-top: 0.5rem; }
+
+/* Requirement table variants with top/bottom spacing. */
+.req-table-mt  { margin-top: 1rem; }
+
+/* Info-card grids with explicit spacing overrides. */
+.info-cards-mt { margin-top: 1.25rem; }
+.info-cards-mb { margin-bottom: 1.5rem; }
+
+/* Lists inside info-cards: reset the default outer spacing so the card
+   padding alone controls the visual inset. */
+.req-list-inline {
+    margin: 0;
+    padding-left: 1.1rem;
+}
+
+/* Timeline list with top spacing. */
+.timeline-mt { margin-top: 1rem; }
+
+/* ---- Vertical step timeline ---- */
+.timeline {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 0;
+    position: relative;
+}
+
+/* dotted connector runs down the left alongside the nodes */
+.timeline::before {
+    content: "";
+    position: absolute;
+    top: 1.05rem;
+    left: 1.05rem;
+    width: 0;
+    height: calc(100% - 2.1rem);
+    border-left: 2px dashed var(--border);
+    z-index: 0;
+}
+
+.tl-item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    padding: 0 0 1.75rem 0;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.tl-item:last-child { padding-bottom: 0; }
+
+.tl-node {
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.tl-num {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.tl-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 0.25rem;
+}
+
+.tl-title {
+    font-weight: 700;
+    font-size: 0.93rem;
+    color: var(--navy);
+    margin-bottom: 0.35rem;
+    line-height: 1.35;
+}
+
+.tl-desc {
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.tl-desc a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.tl-desc a:hover { color: var(--accent-d); }
+
+/* ---- Three-column info cards (validity / feasibility / optimality) ---- */
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 0;
+}
+
+.info-card {
+    border-radius: var(--rl);
+    padding: 1.1rem 1.25rem;
+    border: 1px solid transparent;
+}
+
+.info-card p {
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    line-height: 1.72;
+    color: var(--muted);
+    margin: 0;
+}
+
+.info-card code {
+    font-family: var(--mono);
+    font-size: 0.82em;
+    background: rgba(0,0,0,0.06);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+}
+
+.info-card-head {
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.55rem;
+}
+
+.info-card-ok  { background: var(--green-l);  border-color: #b6d9a8; }
+.info-card-ok  .info-card-head { color: var(--green); }
+
+.info-card-amber { background: var(--amber-l); border-color: #e8d9a0; }
+.info-card-amber .info-card-head { color: var(--amber); }
+
+.info-card-blue  { background: var(--blue-l);  border-color: #a8ccdb; }
+.info-card-blue  .info-card-head { color: var(--blue); }
+
+/* ---- Required-information table ---- */
+.req-table-wrap { margin-bottom: 0; }
+
+/* The category cell spans multiple rows — keep it visually stable by not
+   letting row-level hover or striping bleed into it. All other cells use
+   the normal global table styles (stripe, hover). */
+.req-table .req-cat {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+    vertical-align: top;
+    border-right: 2px solid var(--border);
+    background: var(--surface2) !important;
+}
+
+/* Thick top border marks the start of each category group across all columns */
+.req-table .req-cat,
+.req-table .req-section-start {
+    border-top: 2px solid var(--border-mid);
+}
+
+/* First group has no top divider */
+.req-table tbody tr:first-child .req-cat,
+.req-table tbody tr:first-child .req-section-start {
+    border-top: none;
+}
+
+.req-table td.mono {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+/* ---- Code block (participate page) ---- */
+.code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--text);
+    overflow-x: auto;
+    margin: 0;
+}
+
+/* ---- Requirement groups (kept for potential reuse) ---- */
+.req-group { margin-bottom: 1.5rem; }
+
+.req-group-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 0.65rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.req-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+}
+
+.req-list li {
+    font-family: var(--serif);
+    font-size: 0.91rem;
+    color: var(--text);
+    line-height: 1.65;
+    padding-left: 1.2rem;
+    position: relative;
+}
+
+.req-list li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.req-list code {
+    font-family: var(--mono);
+    font-size: 0.82em;
+    background: var(--surface2);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    color: var(--text);
+}
+
+/* ---- Best practices 2×2 grid ---- */
+.bp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.bp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    padding: 1.15rem 1.3rem;
+}
+
+.bp-card-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--navy);
+    margin-bottom: 0.65rem;
+}
+
+.bp-card .req-list li { font-size: 0.86rem; }
+
+/* ---- Committee member cards ---- */
+.committee-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
+}
+
+.committee-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    padding: 1.3rem 1.4rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.committee-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+:root[data-theme="dark"] .committee-card:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+}
+
+.committee-info { min-width: 0; }
+
+.committee-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--navy);
+    margin-bottom: 0.12rem;
+}
+
+.committee-affil {
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--accent);
+    margin-bottom: 0.18rem;
+}
+
+.committee-role {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 0.65rem;
+}
+
+.committee-bio {
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0 0 0.7rem;
+}
+
+.committee-contact { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.committee-link {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+    transition: all 0.15s;
+}
+
+.committee-link:hover {
+    border-color: var(--accent);
+    background: var(--accent-l);
+    color: var(--accent-d);
+}
+
+/* ---- Responsibility cards ---- */
+.resp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.resp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--rl) var(--rl) 0;
+    padding: 1rem 1.2rem;
+}
+
+.resp-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--navy);
+    margin-bottom: 0.45rem;
+}
+
+.resp-desc {
+    font-family: var(--serif);
+    font-size: 0.87rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+    .info-cards,
+    .committee-grid,
+    .resp-grid,
+    .bp-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .step-item {
+        grid-template-columns: 2rem 1fr;
+        gap: 0.75rem;
+        padding: 0.9rem 1rem;
+    }
+    .committee-card { display: block; }
+}
+
+/* =========================================================================
+   Affiliations section (index page)
+   Two counter-scrolling rows of stat cards; a count-up number sits to the
+   right of the section heading.  Each card shows an org name + instance count.
+   ========================================================================= */
+
+/* Header row: title on left, animated count on right */
+.affil-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+}
+
+.affil-count-display {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+.affil-count-num {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--navy);
+    line-height: 1;
+}
+
+.affil-count-lbl {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+}
+
+/* Stack the two tracks with a small gap between them */
+.affil-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Each row clips overflow and fades at both edges */
+.affil-track-wrap {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+        to right, transparent 0%, #000 7%, #000 93%, transparent 100%
+    );
+    mask-image: linear-gradient(
+        to right, transparent 0%, #000 7%, #000 93%, transparent 100%
+    );
+}
+
+.affil-track {
+    display: flex;
+    align-items: stretch;
+    gap: 0.55rem;
+    width: max-content;
+    padding: 0.2rem 0;
+}
+
+/* Row A scrolls left; row B uses reverse direction for the counter-scroll */
+.affil-track.running {
+    animation: affil-scroll linear infinite;
+    animation-duration: var(--affil-duration, 50s);
+}
+
+.affil-track.affil-track-reverse.running {
+    animation-direction: reverse;
+}
+
+/* Pause both rows on hover */
+@media (hover: hover) {
+    .affil-rows:hover .affil-track.running {
+        animation-play-state: paused;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .affil-track.running { animation: none; }
+    .affil-track-wrap {
+        overflow-x: auto;
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+    .affil-rows {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+    }
+    .affil-track {
+        flex-wrap: wrap;
+        width: auto;
+        gap: 0.45rem;
+        padding: 0;
+    }
+    .affil-track.affil-track-reverse { display: contents; }
+    .affil-chip-dup { display: none; }
+}
+
+@keyframes affil-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(var(--affil-shift, -50%)); }
+}
+
+/* Stat card: name on top, instance count below */
+.affil-chip {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    user-select: none;
+    cursor: default;
+    padding: 0.5rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    transition: border-color 0.15s;
+    min-width: 9rem;
+}
+
+.affil-chip:hover {
+    border-color: var(--accent);
+}
+
+.affil-chip-name {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.25;
+}
+
+.affil-chip-stat {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+}
+
+/* =========================================================================
+   Best-practices card icon (non-emoji symbol variant replacing .bp-icon)
+   ========================================================================= */
+
+.bp-card-icon {
+    font-size: 0.55rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+    letter-spacing: 0.15em;
+}
+
+/* =========================================================================
+   Leaderboard — view toggle (Overall / Quantum)
+   ========================================================================= */
+
+.lb-view-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    width: fit-content;
+}
+
+.lb-vt-btn {
+    padding: 0.38rem 1.1rem;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 500;
+    background: var(--surface);
+    color: var(--muted);
+    border: none;
+    cursor: pointer;
+    border-right: 1px solid var(--border);
+    transition: background 0.12s, color 0.12s;
+}
+
+.lb-vt-btn:last-child {
+    border-right: none;
+}
+
+.lb-vt-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+}
+
+.lb-vt-btn.lb-vt-active {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* =========================================================================
+   Leaderboard — best-by-paradigm panel
+   ========================================================================= */
+
+.lb-pdg-wrap {
+    margin-bottom: 1.4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    padding: 1rem 1.2rem 1.1rem;
+}
+
+.lb-pdg-title {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.8rem;
+}
+
+.lb-pdg-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.lb-pdg-card {
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 0.75rem 0.9rem;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.lb-pdg-card.lb-pdg-empty {
+    background: var(--surface2);
+    opacity: 0.7;
+}
+
+.lb-pdg-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    margin-bottom: 0.15rem;
+    flex-shrink: 0;
+}
+
+.lb-pdg-label {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.lb-pdg-value {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--text);
+    margin-top: 0.15rem;
+}
+
+.lb-pdg-holder {
+    font-size: 0.79rem;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lb-pdg-holder.lb-pdg-none {
+    font-style: italic;
+}
+
+.lb-pdg-date {
+    font-size: 0.72rem;
+    color: var(--faint);
+}
+
+@media (max-width: 600px) {
+    .lb-pdg-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   Global search omnibox
+   ============================================================ */
+
+.gsearch-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.gsearch-input {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.22rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    width: 9rem;
+    transition: border-color 0.12s, width 0.2s;
+}
+
+.gsearch-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    width: 14rem;
+}
+
+.gsearch-input::-webkit-search-cancel-button {
+    cursor: pointer;
+}
+
+.gsearch-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 22rem;
+    max-height: 18rem;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    list-style: none;
+    margin: 0;
+    padding: 0.3rem 0;
+    z-index: 300;
+    font-size: 0.8rem;
+}
+
+.gsearch-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.35rem 0.8rem;
+    cursor: pointer;
+    color: var(--text);
+    outline: none;
+}
+
+.gsearch-item:hover,
+.gsearch-item:focus {
+    background: var(--surface2);
+    color: var(--navy);
+}
+
+.gsearch-kind {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--faint);
+    flex-shrink: 0;
+    min-width: 3.5rem;
+}
+
+.gsearch-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gsearch-item.gsearch-problem .gsearch-kind { color: var(--accent); }
+.gsearch-item.gsearch-instance .gsearch-kind { color: var(--muted); }
+
+/* ============================================================
+   Scatter plot legend hint
+   ============================================================ */
+
+.mip-legend-hint {
+    font-size: 0.72rem;
+    color: var(--faint);
+    font-family: var(--mono);
+    padding: 0.15rem 0.25rem 0.4rem;
+    margin-top: -0.25rem;
+}
+
+/* ============================================================
+   Leaderboard filter reset notice
+   ============================================================ */
+
+.lb-filter-notice {
+    font-size: 0.78rem;
+    color: var(--amber);
+    background: var(--amber-l);
+    border: 1px solid var(--amber);
+    border-radius: var(--r);
+    padding: 0.4rem 0.8rem;
+    margin-bottom: 0.75rem;
+}
+
+/* ============================================================
+   Status badge non-colour symbol cue
+   ============================================================ */
+
+.status-pill-sym {
+    font-size: 0.7em;
+    font-style: normal;
+    margin-right: 0.1em;
+}
+
+/* ============================================================
+   Submit page — draft restore banner
+   ============================================================ */
+
+.draft-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: var(--blue-l);
+    border: 1px solid var(--blue);
+    color: var(--blue);
+    border-radius: var(--r);
+    padding: 0.55rem 0.9rem;
+    font-size: 0.82rem;
+    margin-bottom: 1.25rem;
+}
+
+/* The `display: flex` above otherwise beats the `hidden` attribute, so the
+   Dismiss button (which toggles `hidden`) had no visible effect. */
+.draft-banner[hidden] {
+    display: none;
+}
+
+.draft-banner-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   Expandable remarks in submission tables
+   ============================================================ */
+
+.remarks-short {
+    cursor: pointer;
+}
+
+.remarks-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 0.8rem;
+    padding: 0 0.2rem;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.remarks-toggle:hover {
+    color: var(--accent-d);
+}
+
+/* ============================================================
+   Participate page — CI failure note inside timeline
+   ============================================================ */
+
+.tl-note {
+    margin-top: 0.65rem;
+    padding: 0.55rem 0.8rem;
+    background: var(--amber-l);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 var(--r) var(--r) 0;
+    font-size: 0.8rem;
+    color: var(--text);
+    line-height: 1.55;
 }

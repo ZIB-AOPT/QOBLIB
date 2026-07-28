@@ -127,7 +127,7 @@ async function initSubmissionPage() {
             <div class="dh">
                 <div>
                     <div class="d-num">${String(problem.id).padStart(2, "0")} / submission package</div>
-                    <div class="d-title">${qEsc(submissionId)}</div>
+                    <h1 class="d-title">${qEsc(submissionId)}</h1>
                     <div class="d-sub">${qEsc(problem.name)}</div>
                     <div class="hero-actions submission-links" style="margin-top:0.6rem">
                         <a class="btn btn-ghost" href="${qProblemUrl(problem.id)}">Problem Overview</a>

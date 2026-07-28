@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>(function(){try{var t=localStorage.getItem("qoblib-theme");if(t!=="dark"&&t!=="light"){t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+    <title>QOBLIB - Steering Committee</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/qoblib-favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body data-nav="committee">
+    <nav>
+        <div class="nav-inner">
+            <a class="logo" href="index.html"><em>Q</em>OBLIB</a>
+            <div class="nav-links">
+                <a class="nl" data-nav="home" href="index.html">Home</a>
+                <a class="nl" data-nav="problems" href="problems.html">Problems</a>
+                <a class="nl" data-nav="instances" href="instances.html">Instances</a>
+                <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
+                <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
+                <a class="nl" data-nav="submit" href="submit.html">Submit</a>
+                <a class="nl" data-nav="participate" href="participate.html">Participate</a>
+                <a class="nl" data-nav="committee" href="committee.html">Committee</a>
+            </div>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
+            <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
+        </div>
+    </nav>
+
+    <main class="page" id="main-content">
+        <div class="ph">
+            <h1>Steering Committee</h1>
+            <p>
+                QOBLIB is maintained and developed by a steering committee of researchers from academia and
+                industry. The committee oversees benchmark design, reviews contributions, and guides the
+                long-term direction of the library.
+            </p>
+        </div>
+
+        <hr class="section-divider" />
+
+        <!-- Committee members -->
+        <section>
+            <div class="sh">
+                <span class="sh-title">Committee Members</span>
+            </div>
+            <div class="committee-grid">
+
+                <div class="committee-card">
+                    <div class="committee-info">
+                        <div class="committee-name">Maximilian Schicker</div>
+                        <div class="committee-affil">Zuse Institute Berlin</div>
+                        <div class="committee-role">Maintainer</div>
+                        <p class="committee-bio">
+                            Researcher in combinatorial optimisation and mixed-integer programming.
+                            Leads the day-to-day maintenance of QOBLIB and its CI infrastructure, including
+                            submission validation and best-known-value tracking.
+                        </p>
+                        <div class="committee-contact">
+                            <a class="committee-link" href="https://www.schicker.org" target="_blank" rel="noopener">Website ↗</a>
+                            <a class="committee-link committee-email" data-e="schicker" data-d="zib.de" href="#">Email</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="committee-card">
+                    <div class="committee-info">
+                        <div class="committee-name">Thorsten Koch</div>
+                        <div class="committee-affil">Zuse Institute Berlin</div>
+                        <div class="committee-role">Maintainer</div>
+                        <p class="committee-bio">
+                            Professor and head of the Mathematical Optimisation group. Co-founder of
+                            several open benchmarking initiatives for mathematical programming.
+                            Provides oversight of problem class design and benchmark methodology.
+                        </p>
+                        <div class="committee-contact">
+                            <a class="committee-link" href="https://www.zib.de/koch" target="_blank" rel="noopener">Website ↗</a>
+                            <a class="committee-link committee-email" data-e="koch" data-d="zib.de" href="#">Email</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="committee-card">
+                    <div class="committee-info">
+                        <div class="committee-name">Christa Zoufal</div>
+                        <div class="committee-affil">IBM Research</div>
+                        <div class="committee-role">Maintainer</div>
+                        <p class="committee-bio">
+                            Research scientist working on quantum optimisation and quantum machine learning
+                            algorithms. Guides the quantum computing aspects of QOBLIB, including paradigm
+                            classification and quantum submission evaluation.
+                        </p>
+                        <div class="committee-contact">
+                            <a class="committee-link" href="https://research.ibm.com/people/christa-zoufal" target="_blank" rel="noopener">Website ↗</a>
+                            <a class="committee-link committee-email" data-e="OUF" data-d="zurich.ibm.com" href="#">Email</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="committee-card">
+                    <div class="committee-info">
+                        <div class="committee-name">Stefan Wörner</div>
+                        <div class="committee-affil">IBM Research</div>
+                        <div class="committee-role">Maintainer</div>
+                        <p class="committee-bio">
+                            Research scientist and manager specialising in quantum algorithms for
+                            combinatorial optimisation and finance. Contributes to the strategic direction of
+                            QOBLIB and its role in advancing quantum advantage assessment.
+                        </p>
+                        <div class="committee-contact">
+                            <a class="committee-link" href="https://research.ibm.com/people/stefan-worner" target="_blank" rel="noopener">Website ↗</a>
+                            <a class="committee-link committee-email" data-e="WOR" data-d="zurich.ibm.com" href="#">Email</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="committee-card">
+                    <div class="committee-info">
+                        <div class="committee-name">David Bernal Neira</div>
+                        <div class="committee-affil">Purdue University</div>
+                        <div class="committee-role">Maintainer</div>
+                        <p class="committee-bio">
+                            Assistant professor specialising in quantum and classical optimisation algorithms,
+                            mixed-integer nonlinear programming, and the interface between quantum computing
+                            and mathematical optimisation.
+                        </p>
+                        <div class="committee-contact">
+                            <a class="committee-link" href="https://engineering.purdue.edu/ME/people/ptProfile?id=261888" target="_blank" rel="noopener">Website ↗</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <hr class="section-divider" />
+
+        <!-- Responsibilities -->
+        <section>
+            <div class="sh">
+                <span class="sh-title">Committee Responsibilities</span>
+            </div>
+            <div class="resp-grid">
+                <div class="resp-card">
+                    <div class="resp-title">Benchmark Design</div>
+                    <p class="resp-desc">
+                        Curating and evolving the ten problem classes, their instance generators,
+                        and reference solutions to ensure diverse, fair, and meaningful challenges
+                        for both classical and quantum solvers.
+                    </p>
+                </div>
+                <div class="resp-card">
+                    <div class="resp-title">Submission Review</div>
+                    <p class="resp-desc">
+                        Reviewing pull requests — every PR requires approval by at least two committee
+                        members — resolving disputes about attribution and correctness, and operating the
+                        automated checker pipeline that validates every contribution.
+                    </p>
+                </div>
+                <div class="resp-card">
+                    <div class="resp-title">Community &amp; Standards</div>
+                    <p class="resp-desc">
+                        Maintaining the contributing guidelines, responding to community questions,
+                        and evolving the submission format as the benchmarking landscape matures.
+                    </p>
+                </div>
+                <div class="resp-card">
+                    <div class="resp-title">Scientific Governance</div>
+                    <p class="resp-desc">
+                        Overseeing the scientific integrity of the benchmark, coordinating with the
+                        broader optimisation community, and publishing updates on methodology and results.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider" />
+
+        <section class="callout">
+            <div>
+                <div class="hero-eyebrow">Want to contribute?</div>
+                <h2>Join the effort</h2>
+                <p>
+                    The best way to engage is to submit results, report issues, or start a discussion on GitHub.
+                    For deeper collaboration or questions about benchmark design, reach out to any committee member directly.
+                </p>
+            </div>
+            <div class="callout-actions">
+                <a class="btn btn-navy" href="participate.html">How to participate</a>
+                <a class="btn btn-ghost" href="https://github.com/ZIB-AOPT/QOBLIB/discussions" target="_blank" rel="noopener">GitHub Discussions ↗</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <span id="footer-build">Generated from the QOBLIB repository.</span>
+        <span><a href="data/index.json">Download site data</a></span>
+    </footer>
+
+    <script src="assets/common.js"></script>
+    <script>
+        window.QOBLIB.initCommon();
+        // Decode obfuscated email links at click time — never expose raw addresses in HTML.
+        document.querySelectorAll(".committee-email").forEach(function(a) {
+            a.addEventListener("click", function(e) {
+                e.preventDefault();
+                var addr = a.dataset.e + "@" + a.dataset.d;
+                window.location.href = "mailto:" + addr;
+            });
+            a.addEventListener("mouseenter", function() {
+                var addr = a.dataset.e + "@" + a.dataset.d;
+                a.title = addr;
+            });
+        });
+    </script>
+</body>
+</html>

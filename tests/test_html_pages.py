@@ -82,6 +82,12 @@ class TestRenderProblemPage(unittest.TestCase):
         # Meta description uses the richer "why" sentence.
         self.assertIn("mutually non-adjacent vertices", self.page)
 
+    def test_noindex_stripped_from_generated_page(self):
+        # The problem.html shell carries a noindex tag; the generated crawlable
+        # deep page must NOT (it is the indexable version, listed in the sitemap).
+        self.assertIn('content="noindex"', TEMPLATE)
+        self.assertNotIn('content="noindex"', self.page)
+
     def test_hydration_hook_and_ssr(self):
         self.assertIn('data-problem-id="07"', self.page)
         self.assertIn('<h1 class="d-title">Maximum Independent Set</h1>', self.page)

@@ -19,6 +19,8 @@ CSV headers to terse canonical keys. CSV is the only supported submission format
 
 from __future__ import annotations
 
+import gzip
+import json
 import sys
 from pathlib import Path
 
@@ -88,6 +90,41 @@ def _resolve_instance(col_instance: str, path_instance: str | None, known: set[s
     return col_instance or (path_instance or "")
 
 
+def _load_time_series(path: Path) -> list | None:
+    """Load an objective time series file (.json or .json.gz).
+
+    Returns a compact list-of-runs where each run is a list of
+    ``[time_seconds, incumbent_value]`` pairs — only the ``Time`` and
+    ``Incumbent`` keys from the original format, everything else dropped.
+    Returns ``None`` on any error or if the file is absent.
+    """
+    try:
+        raw = gzip.open(path, "rb").read() if path.suffix == ".gz" else path.read_bytes()
+        data = json.loads(raw)
+    except Exception:
+        return None
+    if not isinstance(data, list):
+        return None
+    result = []
+    for run in data:
+        if not isinstance(run, list):
+            continue
+        pts = []
+        for entry in run:
+            if not isinstance(entry, dict):
+                continue
+            try:
+                t = float(entry["Time"])
+                v = float(entry["Incumbent"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            if t == t and v == v:  # NaN guard
+                pts.append([t, v])
+        if pts:
+            result.append(pts)
+    return result or None
+
+
 def read_csv_submissions_folder(submissions_dir: Path, known_instances: set[str] | None = None) -> dict:
     """
     Walk submissions_dir recursively.  Collects:
@@ -155,8 +192,27 @@ def read_csv_submissions_folder(submissions_dir: Path, known_instances: set[str]
                     for key in COLUMN_MAP:
                         if key not in ("instance", "value"):
                             sub[key] = get_col(row, key)
+                    # Normalise affiliation: each comma-separated token that
+                    # matches /ibm/i is replaced with the canonical "IBM".
+                    raw_aff = sub.get("affiliation") or ""
+                    if raw_aff:
+                        tokens = [t.strip() for t in raw_aff.split(",")]
+                        tokens = ["IBM" if t.lower().find("ibm") != -1 else t for t in tokens]
+                        sub["affiliation"] = ", ".join(tokens)
                     sub["date"] = parse_date_str(sub.get("date", ""))
                     sub["category"] = classify_submission(sub)
+
+                    # Attach objective time series if available alongside the CSV.
+                    # Canonical path: <submissions_dir>/<source_dir>/<instance>/<instance>_objective_time_series.json[.gz]
+                    ts_base = submissions_dir / source_dir / instance / f"{instance}_objective_time_series"
+                    for suffix in (".json.gz", ".json"):
+                        ts_path = Path(str(ts_base) + suffix)
+                        if ts_path.exists():
+                            ts = _load_time_series(ts_path)
+                            if ts is not None:
+                                sub["time_series"] = ts
+                            break
+
                     result.setdefault(instance, []).append(sub)
         except Exception as exc:
             print(f"  Warning: skipping {csv_file}: {exc}", file=sys.stderr)

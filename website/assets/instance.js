@@ -8,7 +8,10 @@ const {
     fmtText: qFmtText,
     parseDate: qParseDate,
     fmtDate: qFmtDate,
+    niceLinearTicks: qNiceLinearTicks,
+    niceLogAxis: qNiceLogAxis,
     loadProblemData: qLoadProblemData,
+    instanceUrl: qInstanceUrl,
     submissionUrl: qSubmissionUrl,
     problemUrl: qProblemUrl,
     statusPill: qStatusPill,
@@ -53,11 +56,232 @@ function isInfeasibleSub(s) {
     return Number.isFinite(nf) && nf === 0;
 }
 
+// Palette matching charts.py CACTUS_PALETTE — one colour per submission.
+const TS_PALETTE = ["#2f6db0","#c0504d","#9bbb59","#8064a2","#4bacc6","#f79646","#7f6084","#5a7d2c"];
+
 function fmtTick(v) {
     const a = Math.abs(v);
     if (a !== 0 && (a >= 1e5 || a < 1e-3)) return v.toExponential(1);
+    // Whole numbers never show a decimal part (integer quantities stay integer).
+    if (Number.isInteger(v)) return v.toLocaleString();
     const dp = a < 10 ? 3 : a < 1000 ? 1 : 0;
     return Number(v.toFixed(dp)).toLocaleString();
+}
+
+function fmtSec(v) {
+    const a = Math.abs(v);
+    if (a !== 0 && (a >= 1e5 || a < 1e-3)) return v.toExponential(1) + " s";
+    const dp = a < 0.01 ? 3 : a < 10 ? 2 : a < 1000 ? 1 : 0;
+    return Number(v.toFixed(dp)).toLocaleString() + " s";
+}
+
+// Derive a short display label from a submission's _source_dir field,
+// mirroring _submission_method in charts.py: strip the date prefix and author suffix.
+function tsLabel(sub) {
+    const d = sub._source_dir || "";
+    const m = d.match(/^\d{6,8}_(.+)_([^_]+)$/);
+    return m ? m[1] : (d || sub.submitter || "Unknown");
+}
+
+// Build a step-function SVG for objective time series data.
+// series: [{label, color, runs: [[[t,v],...], ...]}]
+// bkv:    best-known value in the problem's canonical direction (or null)
+// Each run is drawn faintly; the best-run envelope (min or max incumbent at
+// each time point across all runs) is drawn as a solid line.
+function buildTsChart(series, minimize, bkv) {
+    const W = 720, H = 300;
+    const m = { t: 16, r: 36, b: 44, l: 66 };  // r=36 leaves room for "BKV" tag
+
+    // Collect all raw points for sign-detection and axis range.
+    const allPts = series.flatMap((s) => s.runs.flat());
+    if (!allPts.length) return "";
+
+    // Sign correction: an objective time series must be monotone in the problem's
+    // optimisation direction (non-decreasing for maximisation, non-increasing for
+    // minimisation). If a run moves strictly the wrong way throughout, the submitter
+    // stored the negated QUBO objective — negate it back. Checked per run so a
+    // mixed series (some correct, some negated) is handled entry by entry.
+    // A single-point run has no direction to check and is left untouched.
+    const fixRun = (run) => {
+        if (run.length < 2) return run;
+        // Count steps in each direction (ignore flat steps).
+        let nRight = 0, nWrong = 0;
+        for (let i = 1; i < run.length; i++) {
+            const delta = run[i][1] - run[i - 1][1];
+            if (delta === 0) continue;
+            if (minimize ? delta < 0 : delta > 0) nRight++;
+            else nWrong++;
+        }
+        // Only invert when every non-flat step goes the wrong way.
+        return (nWrong > 0 && nRight === 0)
+            ? run.map(([t, v]) => [t, -v])
+            : run;
+    };
+    series = series.map((s) => ({ ...s, runs: s.runs.map(fixRun) }));
+
+    const allT = allPts.map((p) => p[0]);
+    const allV = series.flatMap((s) => s.runs.flat()).map((p) => p[1]);
+    let tMin = Math.min(...allT), tMax = Math.max(...allT);
+    if (tMin === tMax) { tMin = Math.max(0, tMin - 1); tMax += 1; }
+
+    // Use log time axis when the range spans more than 2 orders of magnitude.
+    const tPos = allT.filter((t) => t > 0);
+    const useLogT = tPos.length > 0 && tMax / (Math.min(...tPos) || 1) > 100;
+    const tFloor = tPos.length ? Math.min(...tPos) : 1e-3;
+    const clampT = (t) => Math.max(t, tFloor);
+
+    // On a log axis, tLo/tHi are the log10 endpoints, snapped to nice 1-2-5 bounds
+    // (so a time range ending at 16 s stops at 20, not the next decade 100).
+    let tLo, tHi;
+    let tAxis = null;
+    if (useLogT) {
+        tAxis = qNiceLogAxis(clampT(tMin), clampT(tMax), { maxMajor: 6 });
+        // Pad ~5% beyond the nice bounds so points sit inset from the side frames.
+        const span = (Math.log10(tAxis.hi) - Math.log10(tAxis.lo)) || 1;
+        tLo = Math.log10(tAxis.lo) - span * 0.05;
+        tHi = Math.log10(tAxis.hi) + span * 0.05;
+    } else {
+        const pad = (tMax - tMin || 1) * 0.08;
+        tLo = tMin - pad; tHi = tMax + pad;
+    }
+
+    // Y-axis: span only the data range, extended just enough to fit bkv.
+    // The "best" end of the axis is always bkv (if provided); the "worst" end
+    // is the worst incumbent seen in the data plus a small pad.
+    const hasBkv = Number.isFinite(bkv);
+    let vDataMin = Math.min(...allV), vDataMax = Math.max(...allV);
+    // If bkv is outside the data range, stretch to include it.
+    if (hasBkv) {
+        if (minimize) vDataMin = Math.min(vDataMin, bkv);
+        else          vDataMax = Math.max(vDataMax, bkv);
+    }
+    const vSpan = (vDataMax - vDataMin) || Math.abs(vDataMax) || 1;
+    let vMin = vDataMin - vSpan * 0.05;
+    let vMax = vDataMax + vSpan * 0.05;
+    // Pin the bkv end of the axis exactly to bkv (with a tiny clearance so the
+    // reference line isn't clipped), overriding the small pad above.
+    if (hasBkv) {
+        if (minimize) vMin = bkv - vSpan * 0.02;
+        else          vMax = bkv + vSpan * 0.02;
+    }
+
+    const yPx = (v) => H - m.b - (H - m.t - m.b) * ((v - vMin) / ((vMax - vMin) || 1));
+    const xPx = (t) => {
+        const v = useLogT ? Math.log10(clampT(t)) : t;
+        return m.l + (W - m.l - m.r) * ((v - tLo) / ((tHi - tLo) || 1));
+    };
+
+    // Y-ticks: nice 1/2/5×10ⁿ steps over the data range (integer-forced when every
+    // incumbent value is a whole number, so an integer objective never shows
+    // fractional ticks) + bkv labelled distinctly. Data ticks colliding with bkv
+    // (within 5% of span) are dropped so the two labels never overlap.
+    const yIsInteger = allV.every((v) => Number.isInteger(v)) && (!hasBkv || Number.isInteger(bkv));
+    const yDataTicks = qNiceLinearTicks(vDataMin, vDataMax, { integer: yIsInteger, target: 4 });
+    const bkvTol = vSpan * 0.05;
+    const yticks = hasBkv
+        ? yDataTicks.filter((v) => Math.abs(v - bkv) > bkvTol)
+        : yDataTicks;
+
+    // X-ticks: nice 1-2-5 log ticks (+ faint minor guides) on a log time axis;
+    // nice linear steps otherwise. Time is in seconds, so not integer-forced.
+    let xticks;
+    let xMinorTicks = [];
+    if (useLogT) {
+        xticks = tAxis.major;
+        xMinorTicks = tAxis.minor;
+        if (!xticks.length) xticks = [tAxis.lo, tAxis.hi];
+    } else {
+        xticks = qNiceLinearTicks(tMin, tMax, { integer: false, target: 5 })
+            .filter((v) => v >= tLo - 1e-9 && v <= tHi + 1e-9);
+        if (!xticks.length) xticks = [tMin, tMax];
+    }
+
+    const f1 = (x) => x.toFixed(1);
+    const gridMinor = xMinorTicks.map((v) =>
+        `<line class="conv-grid-minor" x1="${f1(xPx(v))}" y1="${m.t}" x2="${f1(xPx(v))}" y2="${H - m.b}" />`
+    ).join("");
+    const grid = gridMinor + yticks.map((v) =>
+        `<line class="conv-grid" x1="${m.l}" y1="${f1(yPx(v))}" x2="${W - m.r}" y2="${f1(yPx(v))}" />`
+    ).join("");
+    const axes =
+        `<line class="conv-axis-line" x1="${m.l}" y1="${m.t}" x2="${m.l}" y2="${H - m.b}" />` +
+        `<line class="conv-axis-line" x1="${m.l}" y1="${H - m.b}" x2="${W - m.r}" y2="${H - m.b}" />`;
+    const yLabels = yticks.map((v) =>
+        `<text class="conv-tick" text-anchor="end" x="${m.l - 8}" y="${f1(yPx(v) + 3)}">${qEsc(fmtTick(v))}</text>`
+    ).join("");
+    // Best-known reference line and its y-label (rendered on top of ordinary ticks).
+    const bkvEl = hasBkv ? (() => {
+        const py = f1(yPx(bkv));
+        const line = `<line class="conv-grid" x1="${m.l}" y1="${py}" x2="${W - m.r}" y2="${py}" stroke-dasharray="6 3" style="stroke:var(--accent);stroke-opacity:0.7" />`;
+        const label = `<text class="conv-tick" text-anchor="end" x="${m.l - 8}" y="${f1(yPx(bkv) + 3)}" style="fill:var(--accent);font-weight:600">${qEsc(fmtTick(bkv))}</text>`;
+        const tag = `<text class="conv-axis-title" text-anchor="start" x="${W - m.r + 3}" y="${f1(yPx(bkv) + 3)}" style="fill:var(--accent)">BKV</text>`;
+        return line + label + tag;
+    })() : "";
+    const xLabels = xticks.map((t) =>
+        `<text class="conv-tick" text-anchor="middle" x="${f1(xPx(t))}" y="${H - m.b + 16}">${qEsc(fmtSec(t))}</text>`
+    ).join("");
+    const xTitle = `<text class="conv-axis-title" text-anchor="middle" x="${f1((m.l + W - m.r) / 2)}" y="${H - 4}">time${useLogT ? " (s, log)" : " (s)"} →</text>`;
+    const yCy = f1((m.t + H - m.b) / 2);
+    const yTitle = `<text class="conv-axis-title" text-anchor="middle" transform="rotate(-90 14 ${yCy})" x="14" y="${yCy}">incumbent</text>`;
+
+    // Draw each submission's runs.
+    const parts = series.map((s) => {
+        if (!s.runs.length) return "";
+
+        // Build the best-run envelope: at every incumbent change across all runs,
+        // track the best value seen so far across runs.
+        const events = s.runs.flatMap((run) => run.map(([t, v]) => ({ t, v })));
+        events.sort((a, b) => a.t - b.t);
+        const env = [];
+        let best = null;
+        for (const { t, v } of events) {
+            if (best === null || (minimize ? v < best : v > best)) {
+                best = v;
+                env.push([t, best]);
+            }
+        }
+
+        // Faint individual run lines — only rendered when there are multiple runs,
+        // because with a single run the envelope and the run are identical.
+        const runLines = s.runs.length > 1 ? s.runs.map((run) => {
+            if (run.length < 1) return "";
+            const sorted = run.slice().sort((a, b) => a[0] - b[0]);
+            let d = `M ${f1(xPx(sorted[0][0]))} ${f1(yPx(sorted[0][1]))}`;
+            for (let i = 1; i < sorted.length; i++) {
+                // Step: horizontal then vertical.
+                d += ` L ${f1(xPx(sorted[i][0]))} ${f1(yPx(sorted[i - 1][1]))}`;
+                d += ` L ${f1(xPx(sorted[i][0]))} ${f1(yPx(sorted[i][1]))}`;
+            }
+            // Extend to right edge.
+            d += ` L ${f1(xPx(tMax))} ${f1(yPx(sorted[sorted.length - 1][1]))}`;
+            return `<path d="${d}" fill="none" style="stroke:${s.color}" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="3 2" />`;
+        }).join("") : "";
+
+        // Bold envelope line.
+        let envPath = "";
+        if (env.length) {
+            let d = `M ${f1(xPx(env[0][0]))} ${f1(yPx(env[0][1]))}`;
+            for (let i = 1; i < env.length; i++) {
+                d += ` L ${f1(xPx(env[i][0]))} ${f1(yPx(env[i - 1][1]))}`;
+                d += ` L ${f1(xPx(env[i][0]))} ${f1(yPx(env[i][1]))}`;
+            }
+            d += ` L ${f1(xPx(tMax))} ${f1(yPx(env[env.length - 1][1]))}`;
+
+            // Dots at each improvement.
+            const dots = env.map(([t, v]) =>
+                `<circle cx="${f1(xPx(t))}" cy="${f1(yPx(v))}" r="3" style="fill:${s.color}">` +
+                `<title>${qEsc(s.label)} · ${qEsc(fmtSec(t))} · ${qEsc(fmtTick(v))}</title></circle>`
+            ).join("");
+
+            envPath =
+                `<path d="${d}" fill="none" style="stroke:${s.color}" stroke-width="2" stroke-linejoin="round" />` +
+                dots;
+        }
+
+        return `<g data-series="${qEsc(s.key)}">${runLines}${envPath}</g>`;
+    }).join("");
+
+    return `<svg class="conv-svg" viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet">${grid}${bkvEl}${axes}${yLabels}${xLabels}${xTitle}${yTitle}${parts}</svg>`;
 }
 
 function fmtDate(ms) {
@@ -100,17 +324,25 @@ function buildConvergenceChart(series, opts) {
     let yMax = Math.max(...ysAll);
     let lo = 0;
     let hi = 1;
+    let yAxis = null;
     if (useLog) {
-        lo = Math.log10(yMin);
-        hi = Math.log10(yMax);
-        const pad = (hi - lo || 1) * 0.1;
-        lo -= pad; hi += pad;
+        // lo/hi are log10 endpoints, snapped to nice 1-2-5 bounds (a max of 16
+        // stops the axis at 20, not the next full decade 100), then padded ~5% so
+        // points sit inset from the top/bottom frame.
+        yAxis = qNiceLogAxis(yMin, yMax, { maxMajor: 5 });
+        const span = (Math.log10(yAxis.hi) - Math.log10(yAxis.lo)) || 1;
+        lo = Math.log10(yAxis.lo) - span * 0.05;
+        hi = Math.log10(yAxis.hi) + span * 0.05;
     } else {
         const span = (yMax - yMin) || Math.abs(yMax) || 1;
         yMin -= span * 0.1; yMax += span * 0.1;
     }
 
-    const xPx = (x) => m.l + (W - m.l - m.r) * ((x - xMin) / ((xMax - xMin) || 1));
+    // Inset the x (time) domain ~4% so the first/last points don't hug the frames.
+    const xPad = ((xMax - xMin) || 1) * 0.04;
+    const xLoP = xMin - xPad;
+    const xHiP = xMax + xPad;
+    const xPx = (x) => m.l + (W - m.l - m.r) * ((x - xLoP) / ((xHiP - xLoP) || 1));
     const yPx = (y) => {
         if (useLog) {
             const v = Math.log10(y);
@@ -119,10 +351,20 @@ function buildConvergenceChart(series, opts) {
         return H - m.b - (H - m.t - m.b) * ((y - yMin) / ((yMax - yMin) || 1));
     };
 
-    const yticks = [];
-    for (let i = 0; i <= 4; i++) {
-        const val = useLog ? Math.pow(10, lo + (hi - lo) * (i / 4)) : yMin + (yMax - yMin) * (i / 4);
-        yticks.push({ y: val, py: yPx(val) });
+    // Y-ticks: labelled decades (+ faint 2×/5× minor guides) on a log axis; nice
+    // 1/2/5×10ⁿ linear steps otherwise, integer-forced when the data is whole.
+    const yIsInteger = ysAll.every((y) => Number.isInteger(y));
+    let yticks;
+    let yMinorTicks = [];
+    if (useLog) {
+        yticks = yAxis.major.map((y) => ({ y, py: yPx(y) }));
+        yMinorTicks = yAxis.minor;
+        if (!yticks.length) yticks = [{ y: yAxis.lo, py: yPx(yAxis.lo) }];
+    } else {
+        yticks = qNiceLinearTicks(yMin, yMax, { integer: yIsInteger, target: 4 })
+            .filter((v) => v >= yMin - 1e-9 && v <= yMax + 1e-9)
+            .map((y) => ({ y, py: yPx(y) }));
+        if (!yticks.length) yticks = [{ y: yMin, py: yPx(yMin) }];
     }
     const xticks = [];
     const nX = 3;
@@ -131,7 +373,10 @@ function buildConvergenceChart(series, opts) {
         xticks.push({ x, px: xPx(x) });
     }
 
-    const grid = yticks
+    const gridMinor = yMinorTicks
+        .map((v) => `<line class="conv-grid-minor" x1="${m.l}" y1="${yPx(v).toFixed(1)}" x2="${W - m.r}" y2="${yPx(v).toFixed(1)}" />`)
+        .join("");
+    const grid = gridMinor + yticks
         .map((t) => `<line class="conv-grid" x1="${m.l}" y1="${t.py.toFixed(1)}" x2="${W - m.r}" y2="${t.py.toFixed(1)}" />`)
         .join("");
     const yLabels = yticks
@@ -236,8 +481,91 @@ function renderSubmissionPlots(p, inst, submissions) {
         }
     }
 
-    if (!plot1 && !plot2) return "";
-    return `<div class="ss-title">Submission history</div><div class="chart-row">${plot1}${plot2}</div>`;
+    // Plot 3: objective time series — one series per submission that has time_series data.
+    let plot3 = "";
+    const tsSubs = (submissions || []).filter((s) => Array.isArray(s.time_series) && s.time_series.length);
+    if (tsSubs.length) {
+        // Group by _source_dir (one entry per submission package), up to palette limit.
+        const seen = new Map(); // source_dir → series index
+        const tsSeries = [];
+        for (const sub of tsSubs) {
+            const key = sub._source_dir || sub.submitter || "unknown";
+            if (!seen.has(key)) {
+                if (seen.size >= TS_PALETTE.length) continue; // palette exhausted
+                seen.set(key, tsSeries.length);
+                tsSeries.push({
+                    key,
+                    label: tsLabel(sub),
+                    color: TS_PALETTE[seen.size - 1],
+                    runs: [],
+                });
+            }
+            tsSeries[seen.get(key)].runs.push(...sub.time_series);
+        }
+        const bkv = pNum(inst.best_value ?? inst.bkv);
+        const svg = buildTsChart(tsSeries, minimize, Number.isFinite(bkv) ? bkv : null);
+        if (svg) {
+            const legend = tsSeries.map((s) =>
+                `<span class="conv-leg" data-series="${qEsc(s.key)}">` +
+                `<span class="conv-dot" style="background:${s.color}"></span>` +
+                `<span class="conv-leg-label">${qEsc(s.label)}</span></span>`
+            ).join("");
+            const nRuns = tsSeries.reduce((n, s) => n + s.runs.length, 0);
+            const hasMultiRun = tsSeries.some((s) => s.runs.length > 1);
+            const desc = hasMultiRun
+                ? `Incumbent objective vs. wall-clock time per submission (${nRuns} run${nRuns === 1 ? "" : "s"} total). Bold line = best-run envelope; faint dashed lines = individual runs. Click a legend entry to solo/toggle.`
+                : `Incumbent objective vs. wall-clock time per submission (${nRuns} run${nRuns === 1 ? "" : "s"} total). Click a legend entry to solo/toggle.`;
+            plot3 = `<section class="tw chart-card ts-chart-card">
+                <div class="chart-head">
+                    <div>
+                        <h3>Objective time series</h3>
+                        <p>${desc}</p>
+                    </div>
+                    <div class="conv-legend">${legend}</div>
+                </div>
+                ${svg}
+            </section>`;
+        }
+    }
+
+    if (!plot1 && !plot2 && !plot3) return "";
+    const plots = [plot1, plot2, plot3].filter(Boolean).join("");
+    return `<div class="ss-title">Performance charts</div><div class="perf-charts">${plots}</div>`;
+}
+
+// Per-series visibility toggle for the time series chart.
+// Same three-rule model as problem.js: all-on→solo, any-click-in-partial→toggle,
+// all-off→restore. Scoped to .ts-chart-card so it doesn't interfere with other charts.
+function _tsToggle(hidden, key, allKeys) {
+    if (hidden.size === 0) {
+        allKeys.forEach((k) => { if (k !== key) hidden.add(k); });
+    } else if (hidden.size === allKeys.length) {
+        hidden.clear();
+    } else {
+        if (hidden.has(key)) hidden.delete(key); else hidden.add(key);
+        if (hidden.size === allKeys.length) hidden.clear();
+    }
+}
+
+function wireTsToggles(root) {
+    (root || document).querySelectorAll(".ts-chart-card").forEach((card) => {
+        const hidden = new Set();
+        card.querySelectorAll(".conv-leg[data-series]").forEach((leg) => {
+            if (leg.dataset.bound === "1") return;
+            leg.dataset.bound = "1";
+            leg.addEventListener("click", () => {
+                const allKeys = [...card.querySelectorAll(".conv-leg[data-series]")].map((l) => l.dataset.series);
+                _tsToggle(hidden, leg.dataset.series, allKeys);
+                card.querySelectorAll(".conv-leg[data-series]").forEach((l) => {
+                    const off = hidden.has(l.dataset.series);
+                    l.classList.toggle("conv-leg-off", off);
+                    card.querySelectorAll(`[data-series="${CSS.escape(l.dataset.series)}"]`).forEach((el) => {
+                        el.style.opacity = off ? "0.1" : "";
+                    });
+                });
+            });
+        });
+    });
 }
 
 async function initInstancePage() {
@@ -360,12 +688,35 @@ async function initInstancePage() {
                 return String(a.s._source_dir || "").localeCompare(String(b.s._source_dir || ""));
             })[0]?.s;
 
+        // Instance navigation: alphabetical order, wraps around at both ends.
+        const allInstances = [...(p.instances || [])].sort((a, b) =>
+            a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
+        );
+        const n = allInstances.length;
+        const instIdx = allInstances.findIndex((i) => i.name === instanceName);
+        const prevInst = n > 1 ? allInstances[(instIdx - 1 + n) % n] : null;
+        const nextInst = n > 1 ? allInstances[(instIdx + 1) % n] : null;
+        const instNavHtml = `<div class="inst-nav">
+            ${prevInst
+                ? `<a class="inst-nav-btn" href="${qEsc(qInstanceUrl(p.id, prevInst.name))}" title="${qEsc(prevInst.name)}">← ${qEsc(prevInst.name)}</a>`
+                : `<span class="inst-nav-btn inst-nav-disabled"></span>`}
+            <span class="inst-nav-pos">${instIdx + 1} / ${n}</span>
+            <span class="inst-nav-search-wrap">
+                <input class="inst-nav-search" type="search" placeholder="Jump to…" aria-label="Search instance" autocomplete="off" />
+                <ul class="inst-nav-dropdown" role="listbox" hidden></ul>
+            </span>
+            ${nextInst
+                ? `<a class="inst-nav-btn inst-nav-next" href="${qEsc(qInstanceUrl(p.id, nextInst.name))}" title="${qEsc(nextInst.name)}">${qEsc(nextInst.name)} →</a>`
+                : `<span class="inst-nav-btn inst-nav-disabled"></span>`}
+        </div>`;
+
         container.innerHTML = `
             <a class="back" href="${qProblemUrl(p.id)}">← Back to ${String(p.id).padStart(2, "0")} ${qEsc(p.name)}</a>
+            ${instNavHtml}
             <div class="dh">
                 <div>
                     <div class="d-num">${String(p.id).padStart(2, "0")} / ${qEsc(p.slug)}</div>
-                    <div class="d-title">${qEsc(inst.name)}</div>
+                    <h1 class="d-title">${qEsc(inst.name)}</h1>
                     <div class="d-sub">${qEsc(p.name)}</div>
                     <div class="pcard-foot">
                         <a class="badge b-type" href="${qProblemUrl(p.id)}" title="Open the ${qEsc(p.name)} problem overview">${String(p.id).padStart(2, "0")} ${qEsc(p.name)}</a>
@@ -426,7 +777,7 @@ async function initInstancePage() {
                                                 <td title="${qEsc((qCATS[catOf(s)] || qCATS.classical).label)}">${catBadge(catOf(s))}</td>
                                                 <td title="${qEsc(s.reference || "")}">${qFmtText(s.reference)}</td>
                                                 <td class="num">${qFmtMaybeNum(s.runtime_total)}</td>
-                                                <td title="${qEsc(s.remarks || s.workflow || s.hardware || "")}">${infeasible ? '<span class="badge b-tag">infeasible</span> ' : ""}${qFmtText(s.remarks || s.workflow || s.hardware)}</td>
+                                                <td>${infeasible ? '<span class="badge b-tag">infeasible</span> ' : ""}${(() => { const full = s.remarks || s.workflow || s.hardware || ""; if (!full) return "-"; const short = full.length > 80 ? full.slice(0, 80) + "…" : full; return full.length > 80 ? `<span class="remarks-short" title="Click to expand">${qEsc(short)}</span><span class="remarks-full" hidden>${qEsc(full)}</span><button class="remarks-toggle" type="button" aria-expanded="false" aria-label="Expand remarks">▾</button>` : qEsc(full); })()}</td>
                                             </tr>`;
                                         },
                                     )
@@ -442,7 +793,71 @@ async function initInstancePage() {
 
         container.querySelectorAll(".resource-desc").forEach((el) => qRenderMath(el));
         qEnableTableSorting(container);
+        wireTsToggles(container);
         qEnhanceFigures(container); // expand affordance on the submission-history charts
+
+        // Expandable remarks toggle
+        container.addEventListener("click", (e) => {
+            const btn = e.target.closest(".remarks-toggle");
+            if (!btn) return;
+            const cell = btn.parentElement;
+            const shortEl = cell.querySelector(".remarks-short");
+            const fullEl = cell.querySelector(".remarks-full");
+            const expanded = btn.getAttribute("aria-expanded") === "true";
+            if (shortEl) shortEl.hidden = !expanded ? true : false;
+            if (fullEl) fullEl.hidden = !expanded ? false : true;
+            btn.setAttribute("aria-expanded", expanded ? "false" : "true");
+            btn.textContent = expanded ? "▾" : "▴";
+        });
+
+        // Instance search/jump widget
+        const searchInput = container.querySelector(".inst-nav-search");
+        const dropdown = container.querySelector(".inst-nav-dropdown");
+        if (searchInput && dropdown) {
+            const show = (items) => {
+                dropdown.innerHTML = items
+                    .map((inst) => `<li role="option" tabindex="-1" data-href="${qEsc(qInstanceUrl(p.id, inst.name))}">${qEsc(inst.name)}</li>`)
+                    .join("");
+                dropdown.hidden = items.length === 0;
+            };
+            const hide = () => { dropdown.hidden = true; };
+
+            searchInput.addEventListener("input", () => {
+                const q = searchInput.value.trim().toLowerCase();
+                if (!q) { hide(); return; }
+                const matches = allInstances.filter((i) => i.name.toLowerCase().includes(q)).slice(0, 12);
+                show(matches);
+            });
+
+            searchInput.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") { hide(); searchInput.value = ""; return; }
+                if (e.key === "Enter") {
+                    const first = dropdown.querySelector("li");
+                    if (first) window.location.href = first.dataset.href;
+                }
+                if (e.key === "ArrowDown") {
+                    const first = dropdown.querySelector("li");
+                    if (first) { e.preventDefault(); first.focus(); }
+                }
+            });
+
+            dropdown.addEventListener("keydown", (e) => {
+                const cur = document.activeElement;
+                if (e.key === "Enter" && cur.dataset.href) { window.location.href = cur.dataset.href; return; }
+                if (e.key === "ArrowDown") { e.preventDefault(); const nx = cur.nextElementSibling; if (nx) nx.focus(); }
+                if (e.key === "ArrowUp") { e.preventDefault(); const pv = cur.previousElementSibling; if (pv) pv.focus(); else searchInput.focus(); }
+                if (e.key === "Escape") { hide(); searchInput.value = ""; searchInput.focus(); }
+            });
+
+            dropdown.addEventListener("click", (e) => {
+                const li = e.target.closest("li[data-href]");
+                if (li) window.location.href = li.dataset.href;
+            });
+
+            document.addEventListener("click", (e) => {
+                if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) hide();
+            }, true);
+        }
     } catch (error) {
         qShowError(container, error.message);
     }

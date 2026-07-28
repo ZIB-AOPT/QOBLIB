@@ -22,15 +22,17 @@
                 <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
                 <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
                 <a class="nl" data-nav="submit" href="submit.html">Submit</a>
+                <a class="nl" data-nav="participate" href="participate.html">Participate</a>
+                <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
 
-    <main class="page">
+    <main class="page" id="main-content">
         <div class="ph">
-            <h2>Leaderboard</h2>
+            <h1>Leaderboard</h1>
             <p>The current record for each instance: the best feasible submission and who holds it.</p>
         </div>
 
@@ -53,16 +55,30 @@
 
         <hr class="section-divider" />
 
+        <div class="lb-view-toggle" role="group" aria-label="Leaderboard view">
+            <button class="lb-vt-btn lb-vt-active" type="button" id="lb-vt-overall">Overall</button>
+            <button class="lb-vt-btn" type="button" id="lb-vt-quantum">Quantum</button>
+        </div>
+
         <div class="filters">
-            <select id="lb-prob" onchange="renderLeaderboard()">
+            <select id="lb-prob" aria-label="Filter by problem class">
                 <option value="">All problem classes</option>
             </select>
-            <select id="lb-inst" onchange="renderLeaderboard()">
+            <select id="lb-inst" aria-label="Filter by instance">
                 <option value="">All instances</option>
             </select>
+            <select id="lb-paradigm" aria-label="Filter by paradigm">
+                <option value="">All paradigms</option>
+                <option value="classical">Classical</option>
+                <option value="quantum_hw">Quantum hardware</option>
+                <option value="quantum_sim">Quantum simulator</option>
+            </select>
             <span class="fi-count" id="lb-count"></span>
-            <button class="btn btn-ghost btn-sm" type="button" id="lb-download" onclick="downloadLeaderboardCsv()">⬇ Download CSV</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="lb-download">⬇ Download CSV</button>
         </div>
+
+        <p id="lb-filter-notice" class="lb-filter-notice" hidden aria-live="polite"></p>
+        <div id="lb-paradigm-bests"></div>
 
         <div id="lb-content">
             <div class="loading">Loading leaderboard</div>

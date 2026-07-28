@@ -22,16 +22,18 @@
                 <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
                 <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
                 <a class="nl" data-nav="submit" href="submit.html">Submit</a>
+                <a class="nl" data-nav="participate" href="participate.html">Participate</a>
+                <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
 
-    <main class="page">
+    <main class="page" id="main-content">
         <div class="ph">
-            <h2>Instance Browser</h2>
-            <p>Click any instance name for details, or use the download link to access the raw file on GitHub.</p>
+            <h1>Instance Browser</h1>
+            <p>Click any instance name for details, or use the download link to access the raw file on GitHub. The interactive scatter plot below lets you explore instances by size and density — click any point to open that instance.</p>
         </div>
 
         <hr class="section-divider" />
@@ -44,6 +46,7 @@
                 </div>
                 <div class="chart-legend" id="mip-chart-legend"></div>
             </div>
+            <p class="mip-legend-hint">Click a chip to isolate that model group · click again to restore all</p>
             <div id="mip-chart" class="mip-chart-wrap">
                 <div class="loading">Loading MIP metrics</div>
             </div>
@@ -52,18 +55,18 @@
         <hr class="section-divider" />
 
         <div class="filters">
-            <input type="text" class="fi-grow" id="i-search" placeholder="Search by instance..." oninput="renderInstances()" />
-            <select id="i-prob" onchange="renderInstances()">
+            <input type="text" class="fi-grow" id="i-search" placeholder="Search by instance..." aria-label="Search instances" />
+            <select id="i-prob" aria-label="Filter by problem class">
                 <option value="">All problem classes</option>
             </select>
-            <select id="i-status" onchange="renderInstances()">
+            <select id="i-status" aria-label="Filter by status">
                 <option value="">All statuses</option>
                 <option value="optimal">Optimal</option>
                 <option value="best_known">Best known</option>
                 <option value="open">Open</option>
             </select>
             <span class="fi-count" id="i-count"></span>
-            <button class="btn btn-ghost btn-sm" type="button" id="i-download" onclick="downloadInstancesCsv()">⬇ Download CSV</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="i-download">⬇ Download CSV</button>
         </div>
 
         <div class="tw" id="instances-table">

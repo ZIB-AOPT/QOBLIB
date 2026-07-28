@@ -13,6 +13,7 @@ const {
     SUBMISSION_CATEGORIES: qCATS,
     catBadge: qCatBadge,
     downloadCsv: qDownloadCsv,
+    orderRowsByTable: qOrderRowsByTable,
     submissionDate: qSubmissionDate,
     submissionMethod: qSubmissionMethod,
     showError: qShowError,
@@ -109,6 +110,11 @@ function getFilteredGroups() {
 function renderSubmissions() {
     const filtered = getFilteredGroups();
     document.getElementById("sub-count").textContent = `${filtered.length} submission${filtered.length !== 1 ? "s" : ""}`;
+    // The headline stat tiles are a stable dataset overview — always the global
+    // totals, not the filtered subset (which silently shrank "Problems" to 1 etc.
+    // as soon as any filter was applied). The count pill above already reflects
+    // the active filter, so the tiles staying global is the least-surprising.
+    renderStats(allGroups);
 
     const body = document.getElementById("sub-tbody");
 
@@ -126,7 +132,7 @@ function renderSubmissions() {
             // The package name already carries the date + author; surface just the
             // method here and link it to the package's detail page.
             return `
-                <tr>
+                <tr data-export-key="${qEsc(String(group.problem_id) + "::" + group.id)}">
                     <td><a class="rlink" href="${qSubmissionUrl(group.problem_id, group.id)}" title="${qEsc(group.id)}">${qEsc(qSubmissionMethod(group))}</a></td>
                     <td><a class="badge b-type" href="${qProblemUrl(group.problem_id)}">${qEsc(formatProblemLabel(problem))}</a></td>
                     <td>${qCatBadge(groupCategory(group))}</td>
@@ -163,7 +169,10 @@ async function initSubmissionsPage() {
 }
 
 function downloadSubmissionsCsv() {
-    const groups = getFilteredGroups();
+    let groups = getFilteredGroups();
+    // Honour the user's clicked-column sort so the CSV matches the visible table.
+    const table = document.querySelector("#submissions-table table");
+    if (table) groups = qOrderRowsByTable(table, groups, groups.map((g) => `${g.problem_id}::${g.id}`));
     const headers = [
         "Package", "Method", "Problem ID", "Problem", "Paradigm", "Submitter", "Date",
         "Instances", "Files", "Workflow", "Algorithm", "Hardware", "Source files",
@@ -193,4 +202,10 @@ function downloadSubmissionsCsv() {
 
 window.renderSubmissions = renderSubmissions;
 window.downloadSubmissionsCsv = downloadSubmissionsCsv;
+
+document.getElementById("sub-search")?.addEventListener("input", renderSubmissions);
+document.getElementById("sub-prob")?.addEventListener("change", renderSubmissions);
+document.getElementById("sub-cat")?.addEventListener("change", renderSubmissions);
+document.getElementById("sub-download")?.addEventListener("click", downloadSubmissionsCsv);
+
 initSubmissionsPage();

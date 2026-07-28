@@ -22,15 +22,17 @@
                 <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
                 <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
                 <a class="nl" data-nav="submit" href="submit.html">Submit</a>
+                <a class="nl" data-nav="participate" href="participate.html">Participate</a>
+                <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
 
-    <main class="page">
+    <main class="page" id="main-content">
         <div class="ph">
-            <h2>Submissions</h2>
+            <h1>Submissions</h1>
             <p>One row per uploaded submission package, with links to the problem page and package details.</p>
         </div>
 
@@ -58,18 +60,18 @@
         <hr class="section-divider" />
 
         <div class="filters">
-            <input type="text" class="fi-grow" id="sub-search" placeholder="Search by package, author, or problem..." oninput="renderSubmissions()" />
-            <select id="sub-prob" onchange="renderSubmissions()">
+            <input type="text" class="fi-grow" id="sub-search" placeholder="Search by package, author, or problem..." aria-label="Search submissions" />
+            <select id="sub-prob" aria-label="Filter by problem class">
                 <option value="">All problem classes</option>
             </select>
-            <select id="sub-cat" onchange="renderSubmissions()">
+            <select id="sub-cat" aria-label="Filter by paradigm">
                 <option value="">All paradigms</option>
                 <option value="quantum_hw">Quantum hardware</option>
                 <option value="quantum_sim">Quantum simulator</option>
                 <option value="classical">Classical</option>
             </select>
             <span class="fi-count" id="sub-count"></span>
-            <button class="btn btn-ghost btn-sm" type="button" id="sub-download" onclick="downloadSubmissionsCsv()">⬇ Download CSV</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="sub-download">⬇ Download CSV</button>
         </div>
 
         <div class="tw" id="submissions-table">

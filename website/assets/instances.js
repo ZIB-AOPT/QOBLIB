@@ -5,6 +5,7 @@ const {
     fmtBytes: qFmtBytes,
     fmtNum: qFmtNum,
     loadInstancesList: qLoadInstancesList,
+    niceLogAxis: qNiceLogAxis,
     enhanceFigures: qEnhanceFigures,
     instanceUrl: qInstanceUrl,
     problemUrl: qProblemUrl,
@@ -12,6 +13,7 @@ const {
     showError: qShowError,
     initCommon: qInitCommon,
     downloadCsv: qDownloadCsv,
+    orderRowsByTable: qOrderRowsByTable,
 } = window.QOBLIB;
 
 let allInstances = [];
@@ -198,29 +200,29 @@ function renderMipChart(points) {
     const yMinRaw = Math.min(...positivePoints.map((p) => p.density));
     const yMaxRaw = Math.max(...positivePoints.map((p) => p.density));
 
-    const xMinPow = Math.floor(log10(xMinRaw));
-    const xMaxPow = Math.ceil(log10(xMaxRaw));
-    const yMinPow = Math.floor(log10(yMinRaw));
-    const yMaxPow = Math.ceil(log10(yMaxRaw));
+    // Tight log axes snapped to nice 1-2-5 bounds (a data max of 16 ends the axis
+    // at 20, not the next full decade 100).
+    const xAxis = qNiceLogAxis(xMinRaw, xMaxRaw, { maxMajor: 8 });
+    const yAxis = qNiceLogAxis(yMinRaw, yMaxRaw, { maxMajor: 6 });
 
-    const xMin = 10 ** xMinPow;
-    const xMax = 10 ** xMaxPow;
-    const yMin = 10 ** yMinPow;
-    const yMax = 10 ** yMaxPow;
+    const xMin = xAxis.lo;
+    const xMax = xAxis.hi;
+    const yMin = yAxis.lo;
+    const yMax = yAxis.hi;
 
-    const xRange = Math.max(1e-12, log10(xMax) - log10(xMin));
-    const yRange = Math.max(1e-12, log10(yMax) - log10(yMin));
+    // Pad the plotted domain ~5% beyond the axis bounds so points (and ticks) sit
+    // inset from the edges rather than flush against them. Ticks/grid still render
+    // at their nice values — they just no longer hug the frame.
+    const PAD = 0.05;
+    const xSpan = Math.max(1e-12, log10(xMax) - log10(xMin));
+    const ySpan = Math.max(1e-12, log10(yMax) - log10(yMin));
+    const xLoP = log10(xMin) - xSpan * PAD;
+    const yLoP = log10(yMin) - ySpan * PAD;
+    const xRange = xSpan * (1 + 2 * PAD);
+    const yRange = ySpan * (1 + 2 * PAD);
 
-    const xPos = (v) => margin.left + ((log10(v) - log10(xMin)) / xRange) * plotW;
-    const yPos = (v) => margin.top + (1 - (log10(v) - log10(yMin)) / yRange) * plotH;
-
-    const buildLogTicks = (pMin, pMax) => {
-        const ticks = [];
-        for (let p = pMin; p <= pMax; p += 1) ticks.push(10 ** p);
-        if (ticks.length <= 8) return ticks;
-        const step = Math.ceil(ticks.length / 8);
-        return ticks.filter((_, idx) => idx % step === 0 || idx === ticks.length - 1);
-    };
+    const xPos = (v) => margin.left + ((log10(v) - xLoP) / xRange) * plotW;
+    const yPos = (v) => margin.top + (1 - (log10(v) - yLoP) / yRange) * plotH;
 
     const formatLogTick = (v) => {
         const p = Math.round(log10(v));
@@ -228,15 +230,23 @@ function renderMipChart(points) {
         return `1e${p}`;
     };
 
-    const xTickValues = buildLogTicks(xMinPow, xMaxPow);
-    const yTickValues = buildLogTicks(yMinPow, yMaxPow);
+    const xTickValues = xAxis.major;
+    const yTickValues = yAxis.major;
+    const xMinorValues = xAxis.minor;
+    const yMinorValues = yAxis.minor;
 
-    const gridX = xTickValues
-        .map((v) => `<line class="mip-grid-line" x1="${xPos(v)}" y1="${margin.top}" x2="${xPos(v)}" y2="${height - margin.bottom}" />`)
-        .join("");
-    const gridY = yTickValues
-        .map((v) => `<line class="mip-grid-line" x1="${margin.left}" y1="${yPos(v)}" x2="${width - margin.right}" y2="${yPos(v)}" />`)
-        .join("");
+    const gridX = xMinorValues
+        .map((v) => `<line class="mip-grid-minor" x1="${xPos(v)}" y1="${margin.top}" x2="${xPos(v)}" y2="${height - margin.bottom}" />`)
+        .join("")
+        + xTickValues
+            .map((v) => `<line class="mip-grid-line" x1="${xPos(v)}" y1="${margin.top}" x2="${xPos(v)}" y2="${height - margin.bottom}" />`)
+            .join("");
+    const gridY = yMinorValues
+        .map((v) => `<line class="mip-grid-minor" x1="${margin.left}" y1="${yPos(v)}" x2="${width - margin.right}" y2="${yPos(v)}" />`)
+        .join("")
+        + yTickValues
+            .map((v) => `<line class="mip-grid-line" x1="${margin.left}" y1="${yPos(v)}" x2="${width - margin.right}" y2="${yPos(v)}" />`)
+            .join("");
     const labelsX = xTickValues
         .map((v) => `<text class="mip-axis-tick" text-anchor="middle" x="${xPos(v)}" y="${height - margin.bottom + 15}">${qEsc(formatLogTick(v))}</text>`)
         .join("");
@@ -273,15 +283,17 @@ function renderMipChart(points) {
 
     root.innerHTML = `
         <svg viewBox="0 0 ${width} ${height}" aria-label="MIP instance scatter plot">
-            ${gridX}
-            ${gridY}
-            <line class="mip-axis-line" x1="${margin.left}" y1="${height - margin.bottom}" x2="${width - margin.right}" y2="${height - margin.bottom}" />
-            <line class="mip-axis-line" x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${height - margin.bottom}" />
-            ${labelsX}
-            ${labelsY}
-            <text class="mip-axis-label" text-anchor="middle" x="${margin.left + plotW / 2}" y="${height - 10}">Number of Variables (log scale)</text>
-            <text class="mip-axis-label" text-anchor="middle" transform="translate(16 ${margin.top + plotH / 2}) rotate(-90)">Density (log scale)</text>
-            ${circles}
+            <g>
+                ${gridX}
+                ${gridY}
+                <line class="mip-axis-line" x1="${margin.left}" y1="${height - margin.bottom}" x2="${width - margin.right}" y2="${height - margin.bottom}" />
+                <line class="mip-axis-line" x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${height - margin.bottom}" />
+                ${labelsX}
+                ${labelsY}
+                <text class="mip-axis-label" text-anchor="middle" x="${margin.left + plotW / 2}" y="${height - 10}">Number of Variables (log scale)</text>
+                <text class="mip-axis-label" text-anchor="middle" transform="translate(16 ${margin.top + plotH / 2}) rotate(-90)">Density (log scale)</text>
+                ${circles}
+            </g>
         </svg>
         <div class="mip-tooltip" id="mip-tooltip">
             <div class="mip-tooltip-title">Hover or focus a point</div>
@@ -377,7 +389,7 @@ function getFilteredInstances() {
 
     let rows = allInstances.filter(
         (r) =>
-            (!q || r.name.toLowerCase().includes(q) || r.problem_name.toLowerCase().includes(q)) &&
+            (!q || r.name.toLowerCase().includes(q) || r.problem_name.toLowerCase().includes(q) || r.status.toLowerCase().includes(q)) &&
             (!pid || r.problem_id === pid) &&
             (!st || r.status === st),
     );
@@ -388,7 +400,10 @@ function getFilteredInstances() {
 }
 
 function downloadInstancesCsv() {
-    const rows = getFilteredInstances();
+    let rows = getFilteredInstances();
+    // Honour the user's clicked-column sort so the CSV matches the visible table.
+    const table = document.querySelector("#instances-table table");
+    if (table) rows = qOrderRowsByTable(table, rows, rows.map((r) => `${r.problem_id}::${r.name}`));
     const headers = ["Problem ID", "Problem", "Instance", "Parameters", "Best objective", "Optimal", "Source", "Source URL", "Status", "Raw URL"];
     const data = rows.map((r) => [
         String(r.problem_id).padStart(2, "0"),
@@ -415,7 +430,7 @@ function renderInstances() {
         rows
             .map(
                 (r) => `
-                <tr>
+                <tr data-export-key="${qEsc(String(r.problem_id) + "::" + r.name)}">
                     <td><a class="rlink mono" href="${qInstanceUrl(r.problem_id, r.name)}">${qEsc(r.name)}</a></td>
                     <td><a class="badge b-type" href="${qProblemUrl(r.problem_id)}">${String(r.problem_id).padStart(2, "0")} ${qEsc(r.problem_name)}</a></td>
                     <td class="notes-cell" title="${r.metrics_text || ""}">${r.metrics_text || "-"}</td>
@@ -434,4 +449,10 @@ function renderInstances() {
 
 window.renderInstances = renderInstances;
 window.downloadInstancesCsv = downloadInstancesCsv;
+
+document.getElementById("i-search")?.addEventListener("input", renderInstances);
+document.getElementById("i-prob")?.addEventListener("change", renderInstances);
+document.getElementById("i-status")?.addEventListener("change", renderInstances);
+document.getElementById("i-download")?.addEventListener("click", downloadInstancesCsv);
+
 initInstancesPage();

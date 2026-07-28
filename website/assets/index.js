@@ -3,6 +3,7 @@
 const {
     esc: qEsc,
     loadIndex: qLoadIndex,
+    loadAllSubmissionGroups: qLoadAllSubmissionGroups,
     problemCard: qProblemCard,
     animateCount: qAnimateCount,
     showError: qShowError,
@@ -55,9 +56,107 @@ async function renderLandscape() {
     }
 }
 
+// Collect unique affiliations + per-org instance counts from submission_groups.json.
+// Builds two counter-scrolling tracks (row A → left, row B ← right) where each
+// chip shows the org name and how many instances they have contributed results for.
+// A count-up number above shows the total number of contributing organisations.
+async function renderAffiliations() {
+    const trackA = document.getElementById("affil-track-a");
+    const trackB = document.getElementById("affil-track-b");
+    if (!trackA || !trackB) return;
+
+    const section = trackA.closest("section");
+
+    try {
+        const allGroups = await qLoadAllSubmissionGroups();
+
+        // Accumulate instance counts per affiliation.
+        // CSV affiliation fields are comma-separated when multi-author; we split
+        // on commas but then re-join any fragment that looks like a broken
+        // parenthesised name (e.g. "Foo (Bar" + "Baz)" → "Foo (Bar, Baz)").
+        const counts = new Map(); // affiliation → instance count
+        allGroups.forEach((group) => {
+            const raw = (group.profile?.affiliation || "").trim();
+            if (!raw || raw === "N/A") return;
+            const nInst = (group.instances || []).length;
+
+            // Split on commas then heal broken parentheses:
+            // if a fragment ends with an unclosed "(" or the next starts mid-paren,
+            // merge them back.
+            const parts = raw.split(",").map((s) => s.trim()).filter(Boolean);
+            const healed = [];
+            let carry = "";
+            for (const p of parts) {
+                const combined = carry ? `${carry}, ${p}` : p;
+                const opens = (combined.match(/\(/g) || []).length;
+                const closes = (combined.match(/\)/g) || []).length;
+                if (opens > closes) {
+                    carry = combined; // unmatched open paren — keep accumulating
+                } else {
+                    healed.push(combined);
+                    carry = "";
+                }
+            }
+            if (carry) healed.push(carry); // flush any remaining fragment
+
+            healed.forEach((a) => {
+                if (a && a !== "N/A") {
+                    counts.set(a, (counts.get(a) || 0) + nInst);
+                }
+            });
+        });
+
+        if (!counts.size) {
+            if (section) section.remove();
+            return;
+        }
+
+        // Sort alphabetically for a consistent, non-hierarchical display.
+        const orgs = Array.from(counts.entries()).sort((a, b) =>
+            a[0].localeCompare(b[0], undefined, { sensitivity: "base" }),
+        );
+
+        // Animate the count number.
+        const countEl = document.getElementById("affil-count");
+        if (countEl) qAnimateCount("affil-count", orgs.length);
+
+        // Build a stat card: name + instance count below.
+        const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+        const card = (name, n, dup = false) =>
+            `<span class="affil-chip${dup ? " affil-chip-dup" : ""}">` +
+            `<span class="affil-chip-name">${esc(name)}</span>` +
+            `<span class="affil-chip-stat">${n} instance${n === 1 ? "" : "s"}</span>` +
+            `</span>`;
+
+        // Split orgs across two rows for visual variety.
+        // Odd-indexed go on row B so neither row is an exact subset of the other.
+        const rowA = orgs.filter((_, i) => i % 2 === 0);
+        const rowB = orgs.filter((_, i) => i % 2 === 1);
+
+        // Each track needs two copies of its set for the seamless loop.
+        const fill = (track, row, reverse) => {
+            const html = (dup) => row.map(([n, c]) => card(n, c, dup)).join("");
+            track.innerHTML = html(false) + html(true);
+            // Speed proportional to content width (~70 px/s, clamped 18–70 s).
+            const estWidth = row.length * 190;
+            const duration = Math.min(70, Math.max(18, estWidth / 70));
+            track.style.setProperty("--affil-duration", `${duration}s`);
+            track.style.setProperty("--affil-shift", "-50%");
+            if (reverse) track.classList.add("affil-track-reverse");
+            track.classList.add("running");
+        };
+
+        fill(trackA, rowA, false);
+        fill(trackB, rowB, true);
+    } catch {
+        if (section) section.remove();
+    }
+}
+
 async function initHomePage() {
     qInitCommon();
     renderLandscape();
+    renderAffiliations();
     try {
         const idx = await qLoadIndex();
         qAnimateCount("s-inst", idx.total_instances || 0);

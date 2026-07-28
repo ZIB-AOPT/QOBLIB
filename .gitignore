@@ -7,3 +7,8 @@ _site/
 
 # Ignore Rust target directory
 target/
+
+# Environment / secret files — never commit these
+.env
+.env.*
+*.local
