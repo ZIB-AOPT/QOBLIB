@@ -1275,6 +1275,70 @@ a.inst-nav-btn:hover {
     white-space: nowrap;
 }
 
+.inst-nav-search-wrap {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.inst-nav-search {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.18rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text);
+    width: 10rem;
+    outline: none;
+    transition: border-color 0.12s;
+}
+
+.inst-nav-search:focus {
+    border-color: var(--navy);
+}
+
+.inst-nav-search::-webkit-search-cancel-button {
+    cursor: pointer;
+}
+
+.inst-nav-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 100%;
+    width: max-content;
+    max-width: 22rem;
+    max-height: 16rem;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    box-shadow: 0 4px 12px rgba(0,0,0,.10);
+    list-style: none;
+    margin: 0;
+    padding: 0.25rem 0;
+    z-index: 200;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+}
+
+.inst-nav-dropdown li {
+    padding: 0.3rem 0.75rem;
+    cursor: pointer;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    outline: none;
+}
+
+.inst-nav-dropdown li:hover,
+.inst-nav-dropdown li:focus {
+    background: var(--surface2);
+    color: var(--navy);
+}
+
 .dh {
     display: grid;
     grid-template-columns: 1fr 320px;

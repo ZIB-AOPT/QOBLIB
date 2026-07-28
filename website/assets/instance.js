@@ -659,6 +659,10 @@ async function initInstancePage() {
                 ? `<a class="inst-nav-btn" href="${qEsc(qInstanceUrl(p.id, prevInst.name))}" title="${qEsc(prevInst.name)}">← ${qEsc(prevInst.name)}</a>`
                 : `<span class="inst-nav-btn inst-nav-disabled"></span>`}
             <span class="inst-nav-pos">${instIdx + 1} / ${n}</span>
+            <span class="inst-nav-search-wrap">
+                <input class="inst-nav-search" type="search" placeholder="Jump to…" aria-label="Search instance" autocomplete="off" />
+                <ul class="inst-nav-dropdown" role="listbox" hidden></ul>
+            </span>
             ${nextInst
                 ? `<a class="inst-nav-btn inst-nav-next" href="${qEsc(qInstanceUrl(p.id, nextInst.name))}" title="${qEsc(nextInst.name)}">${qEsc(nextInst.name)} →</a>`
                 : `<span class="inst-nav-btn inst-nav-disabled"></span>`}
@@ -749,6 +753,55 @@ async function initInstancePage() {
         qEnableTableSorting(container);
         wireTsToggles(container);
         qEnhanceFigures(container); // expand affordance on the submission-history charts
+
+        // Instance search/jump widget
+        const searchInput = container.querySelector(".inst-nav-search");
+        const dropdown = container.querySelector(".inst-nav-dropdown");
+        if (searchInput && dropdown) {
+            const show = (items) => {
+                dropdown.innerHTML = items
+                    .map((inst) => `<li role="option" tabindex="-1" data-href="${qEsc(qInstanceUrl(p.id, inst.name))}">${qEsc(inst.name)}</li>`)
+                    .join("");
+                dropdown.hidden = items.length === 0;
+            };
+            const hide = () => { dropdown.hidden = true; };
+
+            searchInput.addEventListener("input", () => {
+                const q = searchInput.value.trim().toLowerCase();
+                if (!q) { hide(); return; }
+                const matches = allInstances.filter((i) => i.name.toLowerCase().includes(q)).slice(0, 12);
+                show(matches);
+            });
+
+            searchInput.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") { hide(); searchInput.value = ""; return; }
+                if (e.key === "Enter") {
+                    const first = dropdown.querySelector("li");
+                    if (first) window.location.href = first.dataset.href;
+                }
+                if (e.key === "ArrowDown") {
+                    const first = dropdown.querySelector("li");
+                    if (first) { e.preventDefault(); first.focus(); }
+                }
+            });
+
+            dropdown.addEventListener("keydown", (e) => {
+                const cur = document.activeElement;
+                if (e.key === "Enter" && cur.dataset.href) { window.location.href = cur.dataset.href; return; }
+                if (e.key === "ArrowDown") { e.preventDefault(); const nx = cur.nextElementSibling; if (nx) nx.focus(); }
+                if (e.key === "ArrowUp") { e.preventDefault(); const pv = cur.previousElementSibling; if (pv) pv.focus(); else searchInput.focus(); }
+                if (e.key === "Escape") { hide(); searchInput.value = ""; searchInput.focus(); }
+            });
+
+            dropdown.addEventListener("click", (e) => {
+                const li = e.target.closest("li[data-href]");
+                if (li) window.location.href = li.dataset.href;
+            });
+
+            document.addEventListener("click", (e) => {
+                if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) hide();
+            }, true);
+        }
     } catch (error) {
         qShowError(container, error.message);
     }
