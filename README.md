@@ -2,6 +2,8 @@
 
 A comprehensive benchmark suite for quantum optimization methods, featuring ten challenging problem classes with practical applications.
 
+Visit the official [website](https://zib-aopt.github.io/QOBLIB/) to view the current results!
+
 [![arXiv](https://img.shields.io/badge/arXiv-2504.03832-b31b1b.svg)](https://arxiv.org/pdf/2504.03832)
 [![Nature Computational Science](https://img.shields.io/badge/Nature%20Computational%20Science-10.1038%2Fs43588--026--00991--1-1f1f1f.svg)](https://www.nature.com/articles/s43588-026-00991-1)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
