@@ -8,6 +8,8 @@ const {
     fmtText: qFmtText,
     parseDate: qParseDate,
     fmtDate: qFmtDate,
+    niceLinearTicks: qNiceLinearTicks,
+    niceLogAxis: qNiceLogAxis,
     loadProblemData: qLoadProblemData,
     instanceUrl: qInstanceUrl,
     submissionUrl: qSubmissionUrl,
@@ -60,6 +62,8 @@ const TS_PALETTE = ["#2f6db0","#c0504d","#9bbb59","#8064a2","#4bacc6","#f79646",
 function fmtTick(v) {
     const a = Math.abs(v);
     if (a !== 0 && (a >= 1e5 || a < 1e-3)) return v.toExponential(1);
+    // Whole numbers never show a decimal part (integer quantities stay integer).
+    if (Number.isInteger(v)) return v.toLocaleString();
     const dp = a < 10 ? 3 : a < 1000 ? 1 : 0;
     return Number(v.toFixed(dp)).toLocaleString();
 }
@@ -126,12 +130,16 @@ function buildTsChart(series, minimize, bkv) {
     const tFloor = tPos.length ? Math.min(...tPos) : 1e-3;
     const clampT = (t) => Math.max(t, tFloor);
 
+    // On a log axis, tLo/tHi are the log10 endpoints, snapped to nice 1-2-5 bounds
+    // (so a time range ending at 16 s stops at 20, not the next decade 100).
     let tLo, tHi;
+    let tAxis = null;
     if (useLogT) {
-        tLo = Math.log10(clampT(tMin));
-        tHi = Math.log10(clampT(tMax));
-        const pad = (tHi - tLo || 1) * 0.08;
-        tLo -= pad; tHi += pad;
+        tAxis = qNiceLogAxis(clampT(tMin), clampT(tMax), { maxMajor: 6 });
+        // Pad ~5% beyond the nice bounds so points sit inset from the side frames.
+        const span = (Math.log10(tAxis.hi) - Math.log10(tAxis.lo)) || 1;
+        tLo = Math.log10(tAxis.lo) - span * 0.05;
+        tHi = Math.log10(tAxis.hi) + span * 0.05;
     } else {
         const pad = (tMax - tMin || 1) * 0.08;
         tLo = tMin - pad; tHi = tMax + pad;
@@ -163,23 +171,36 @@ function buildTsChart(series, minimize, bkv) {
         return m.l + (W - m.l - m.r) * ((v - tLo) / ((tHi - tLo) || 1));
     };
 
-    // Y-ticks: 4 evenly-spaced data ticks + bkv labelled distinctly at the top/bottom.
-    const yDataTicks = [];
-    for (let i = 0; i <= 3; i++) yDataTicks.push(vDataMin + (vDataMax - vDataMin) * (i / 3));
-    // Remove any data tick that collides with bkv (within 5% of span).
+    // Y-ticks: nice 1/2/5×10ⁿ steps over the data range (integer-forced when every
+    // incumbent value is a whole number, so an integer objective never shows
+    // fractional ticks) + bkv labelled distinctly. Data ticks colliding with bkv
+    // (within 5% of span) are dropped so the two labels never overlap.
+    const yIsInteger = allV.every((v) => Number.isInteger(v)) && (!hasBkv || Number.isInteger(bkv));
+    const yDataTicks = qNiceLinearTicks(vDataMin, vDataMax, { integer: yIsInteger, target: 4 });
     const bkvTol = vSpan * 0.05;
     const yticks = hasBkv
         ? yDataTicks.filter((v) => Math.abs(v - bkv) > bkvTol)
         : yDataTicks;
 
-    const xticks = [];
-    for (let i = 0; i <= 4; i++) {
-        xticks.push(useLogT ? Math.pow(10, tLo + (tHi - tLo) * (i / 4))
-                             : tLo + (tHi - tLo) * (i / 4));
+    // X-ticks: nice 1-2-5 log ticks (+ faint minor guides) on a log time axis;
+    // nice linear steps otherwise. Time is in seconds, so not integer-forced.
+    let xticks;
+    let xMinorTicks = [];
+    if (useLogT) {
+        xticks = tAxis.major;
+        xMinorTicks = tAxis.minor;
+        if (!xticks.length) xticks = [tAxis.lo, tAxis.hi];
+    } else {
+        xticks = qNiceLinearTicks(tMin, tMax, { integer: false, target: 5 })
+            .filter((v) => v >= tLo - 1e-9 && v <= tHi + 1e-9);
+        if (!xticks.length) xticks = [tMin, tMax];
     }
 
     const f1 = (x) => x.toFixed(1);
-    const grid = yticks.map((v) =>
+    const gridMinor = xMinorTicks.map((v) =>
+        `<line class="conv-grid-minor" x1="${f1(xPx(v))}" y1="${m.t}" x2="${f1(xPx(v))}" y2="${H - m.b}" />`
+    ).join("");
+    const grid = gridMinor + yticks.map((v) =>
         `<line class="conv-grid" x1="${m.l}" y1="${f1(yPx(v))}" x2="${W - m.r}" y2="${f1(yPx(v))}" />`
     ).join("");
     const axes =
@@ -303,17 +324,25 @@ function buildConvergenceChart(series, opts) {
     let yMax = Math.max(...ysAll);
     let lo = 0;
     let hi = 1;
+    let yAxis = null;
     if (useLog) {
-        lo = Math.log10(yMin);
-        hi = Math.log10(yMax);
-        const pad = (hi - lo || 1) * 0.1;
-        lo -= pad; hi += pad;
+        // lo/hi are log10 endpoints, snapped to nice 1-2-5 bounds (a max of 16
+        // stops the axis at 20, not the next full decade 100), then padded ~5% so
+        // points sit inset from the top/bottom frame.
+        yAxis = qNiceLogAxis(yMin, yMax, { maxMajor: 5 });
+        const span = (Math.log10(yAxis.hi) - Math.log10(yAxis.lo)) || 1;
+        lo = Math.log10(yAxis.lo) - span * 0.05;
+        hi = Math.log10(yAxis.hi) + span * 0.05;
     } else {
         const span = (yMax - yMin) || Math.abs(yMax) || 1;
         yMin -= span * 0.1; yMax += span * 0.1;
     }
 
-    const xPx = (x) => m.l + (W - m.l - m.r) * ((x - xMin) / ((xMax - xMin) || 1));
+    // Inset the x (time) domain ~4% so the first/last points don't hug the frames.
+    const xPad = ((xMax - xMin) || 1) * 0.04;
+    const xLoP = xMin - xPad;
+    const xHiP = xMax + xPad;
+    const xPx = (x) => m.l + (W - m.l - m.r) * ((x - xLoP) / ((xHiP - xLoP) || 1));
     const yPx = (y) => {
         if (useLog) {
             const v = Math.log10(y);
@@ -322,10 +351,20 @@ function buildConvergenceChart(series, opts) {
         return H - m.b - (H - m.t - m.b) * ((y - yMin) / ((yMax - yMin) || 1));
     };
 
-    const yticks = [];
-    for (let i = 0; i <= 4; i++) {
-        const val = useLog ? Math.pow(10, lo + (hi - lo) * (i / 4)) : yMin + (yMax - yMin) * (i / 4);
-        yticks.push({ y: val, py: yPx(val) });
+    // Y-ticks: labelled decades (+ faint 2×/5× minor guides) on a log axis; nice
+    // 1/2/5×10ⁿ linear steps otherwise, integer-forced when the data is whole.
+    const yIsInteger = ysAll.every((y) => Number.isInteger(y));
+    let yticks;
+    let yMinorTicks = [];
+    if (useLog) {
+        yticks = yAxis.major.map((y) => ({ y, py: yPx(y) }));
+        yMinorTicks = yAxis.minor;
+        if (!yticks.length) yticks = [{ y: yAxis.lo, py: yPx(yAxis.lo) }];
+    } else {
+        yticks = qNiceLinearTicks(yMin, yMax, { integer: yIsInteger, target: 4 })
+            .filter((v) => v >= yMin - 1e-9 && v <= yMax + 1e-9)
+            .map((y) => ({ y, py: yPx(y) }));
+        if (!yticks.length) yticks = [{ y: yMin, py: yPx(yMin) }];
     }
     const xticks = [];
     const nX = 3;
@@ -334,7 +373,10 @@ function buildConvergenceChart(series, opts) {
         xticks.push({ x, px: xPx(x) });
     }
 
-    const grid = yticks
+    const gridMinor = yMinorTicks
+        .map((v) => `<line class="conv-grid-minor" x1="${m.l}" y1="${yPx(v).toFixed(1)}" x2="${W - m.r}" y2="${yPx(v).toFixed(1)}" />`)
+        .join("");
+    const grid = gridMinor + yticks
         .map((t) => `<line class="conv-grid" x1="${m.l}" y1="${t.py.toFixed(1)}" x2="${W - m.r}" y2="${t.py.toFixed(1)}" />`)
         .join("");
     const yLabels = yticks
@@ -674,7 +716,7 @@ async function initInstancePage() {
             <div class="dh">
                 <div>
                     <div class="d-num">${String(p.id).padStart(2, "0")} / ${qEsc(p.slug)}</div>
-                    <div class="d-title">${qEsc(inst.name)}</div>
+                    <h1 class="d-title">${qEsc(inst.name)}</h1>
                     <div class="d-sub">${qEsc(p.name)}</div>
                     <div class="pcard-foot">
                         <a class="badge b-type" href="${qProblemUrl(p.id)}" title="Open the ${qEsc(p.name)} problem overview">${String(p.id).padStart(2, "0")} ${qEsc(p.name)}</a>
@@ -735,7 +777,7 @@ async function initInstancePage() {
                                                 <td title="${qEsc((qCATS[catOf(s)] || qCATS.classical).label)}">${catBadge(catOf(s))}</td>
                                                 <td title="${qEsc(s.reference || "")}">${qFmtText(s.reference)}</td>
                                                 <td class="num">${qFmtMaybeNum(s.runtime_total)}</td>
-                                                <td title="${qEsc(s.remarks || s.workflow || s.hardware || "")}">${infeasible ? '<span class="badge b-tag">infeasible</span> ' : ""}${qFmtText(s.remarks || s.workflow || s.hardware)}</td>
+                                                <td>${infeasible ? '<span class="badge b-tag">infeasible</span> ' : ""}${(() => { const full = s.remarks || s.workflow || s.hardware || ""; if (!full) return "-"; const short = full.length > 80 ? full.slice(0, 80) + "…" : full; return full.length > 80 ? `<span class="remarks-short" title="Click to expand">${qEsc(short)}</span><span class="remarks-full" hidden>${qEsc(full)}</span><button class="remarks-toggle" type="button" aria-expanded="false" aria-label="Expand remarks">▾</button>` : qEsc(full); })()}</td>
                                             </tr>`;
                                         },
                                     )
@@ -753,6 +795,20 @@ async function initInstancePage() {
         qEnableTableSorting(container);
         wireTsToggles(container);
         qEnhanceFigures(container); // expand affordance on the submission-history charts
+
+        // Expandable remarks toggle
+        container.addEventListener("click", (e) => {
+            const btn = e.target.closest(".remarks-toggle");
+            if (!btn) return;
+            const cell = btn.parentElement;
+            const shortEl = cell.querySelector(".remarks-short");
+            const fullEl = cell.querySelector(".remarks-full");
+            const expanded = btn.getAttribute("aria-expanded") === "true";
+            if (shortEl) shortEl.hidden = !expanded ? true : false;
+            if (fullEl) fullEl.hidden = !expanded ? false : true;
+            btn.setAttribute("aria-expanded", expanded ? "false" : "true");
+            btn.textContent = expanded ? "▾" : "▴";
+        });
 
         // Instance search/jump widget
         const searchInput = container.querySelector(".inst-nav-search");

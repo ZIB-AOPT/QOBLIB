@@ -25,6 +25,7 @@ const {
     classifySubmission: qClassify,
     SUBMISSION_CATEGORIES: qCATS,
     downloadCsv: qDownloadCsv,
+    orderRowsByTable: qOrderRowsByTable,
     setPageMeta: qSetPageMeta,
     attachFigureExpand: qAttachFigureExpand,
     enhanceFigures: qEnhanceFigures,
@@ -86,7 +87,7 @@ function performanceSection(charts) {
             ${PERF.has_cactus  ? card("cactus-body",  "Runtime to reach best-known objective", "Sorted instances vs total runtime. A point (x, y) means x instances were solved within y seconds. Solid line + filled circle = proven exact; dashed line + open diamond = heuristic. Lower-right is better.") : ""}
             ${PERF.has_tts     ? card("tts-body",     "Time-to-solution (TTS) to reach best-known objective", "Same as the runtime cactus but uses the reported Time-to-Solution rather than total runtime. Solid = exact, dashed = heuristic.") : ""}
             ${PERF.has_profile ? card("profile-body", "Solution quality (performance profile)", "Share of instances each group brings within a given optimality gap of the best-known objective. Higher is better; the value at \u201cbest\u201d is the share solved exactly.") : ""}
-            ${PERF.has_scaling ? card("scaling-body", "Runtime scaling with instance size", `Fastest feasible runtime per instance versus ${sizeLabel}, both on log scales — shows how each group scales.`) : ""}
+            ${PERF.has_scaling ? card("scaling-body", "Runtime scaling with instance size", `Fastest feasible runtime (log scale) per instance versus ${sizeLabel} — shows how each group scales.`) : ""}
         </div>`;
 }
 
@@ -433,7 +434,7 @@ async function initProblemPage() {
             <div class="dh">
                 <div>
                     <div class="d-num">${String(p.id).padStart(2, "0")} / ${qEsc(p.slug)}</div>
-                    <div class="d-title">${qEsc(p.name)}</div>
+                    <h1 class="d-title">${qEsc(p.name)}</h1>
                     <div class="d-sub">${qEsc(p.short)}</div>
                     <div class="pcard-foot">
                         <span class="badge b-type">${qEsc(p.type)}</span>
@@ -445,7 +446,7 @@ async function initProblemPage() {
                     <div class="mr"><span class="mk">Instances</span><span class="mv">${qFmtInt(p.instance_count)}</span></div>
                     <div class="mr"><span class="mk">Optimally solved</span><span class="mv">${qFmtInt(solved)} / ${qFmtInt(p.instance_count)}</span></div>
                     ${p.vars_min != null ? `<div class="mr"><span class="mk">Variable range</span><span class="mv">${qFmtInt(p.vars_min)}–${qFmtInt(p.vars_max)}</span></div>` : ""}
-                    <div class="mr"><span class="mk">Objective</span><span class="mv">${p.minimize ? "minimize" : "maximize"}</span></div>
+                    <div class="mr"><span class="mk">Objective</span><span class="mv">${p.minimize !== false ? "minimize" : "maximize"}</span></div>
                 </div>
             </div>
             ${p.description_md || p.description ? `<hr class="section-divider" />` : ""}
@@ -458,9 +459,9 @@ async function initProblemPage() {
 
             ${collapsibleSection("Instances", `
                 <div class="filters">
-                    <input type="text" class="fi-grow" id="prob-inst-search" placeholder="Search by instance name..." oninput="filterProblemInstances()" />
+                    <input type="text" class="fi-grow" id="prob-inst-search" placeholder="Search by instance name..." />
                     <span class="fi-count" id="prob-inst-count">${(p.instances || []).length.toLocaleString()} of ${(p.instances || []).length.toLocaleString()}</span>
-                    <button class="btn btn-ghost btn-sm" type="button" onclick="downloadProblemInstancesCsv()">⬇ Download CSV</button>
+                    <button class="btn btn-ghost btn-sm" type="button" id="prob-inst-csv-btn">⬇ Download CSV</button>
                 </div>
                 <div class="tw">
                     <table>
@@ -486,6 +487,10 @@ async function initProblemPage() {
         `;
 
         wirePerformance();
+
+        // Wire instance search and CSV download via addEventListener — no inline handlers.
+        document.getElementById("prob-inst-search")?.addEventListener("input", filterProblemInstances);
+        document.getElementById("prob-inst-csv-btn")?.addEventListener("click", downloadProblemInstancesCsv);
 
         const desc = container.querySelector(".d-desc");
         if (desc) {
@@ -535,7 +540,7 @@ function problemInstanceRowsHtml(p, list) {
     return list
         .map(
             (i) => `
-            <tr>
+            <tr data-export-key="${qEsc(String(i.name))}">
                 <td class="mono"><a class="rlink mono" href="${qInstanceUrl(p.id, i.name)}">${qEsc(i.name)}</a></td>
                 ${problemMetricCells(i, cols)}
                 <td class="num">${(() => { const v = qFmtNum(i.best_value ?? i.bkv); return i.best_is_optimal && v !== "-" ? `<strong>${v}</strong>` : v; })()}</td>
@@ -564,14 +569,19 @@ function filterProblemInstances() {
     }
 }
 
-window.filterProblemInstances = filterProblemInstances;
 
 function downloadProblemInstancesCsv() {
     const p = currentProblem;
     if (!p) return;
     const cols = Array.isArray(p.columns) ? p.columns : [];
     const headers = ["Instance", ...cols.map((c) => c.label), "Best objective", "Optimal", "Status", "Source", "Source URL", "Raw URL"];
-    const data = (p.instances || []).map((i) => [
+    // Export exactly what the table shows: the current search filter, in the
+    // user's chosen column-sort order.
+    const query = document.getElementById("prob-inst-search")?.value || "";
+    let list = filteredProblemInstances(p, query);
+    const table = document.getElementById("prob-inst-tbody")?.closest("table");
+    if (table) list = qOrderRowsByTable(table, list, list.map((i) => String(i.name)));
+    const data = list.map((i) => [
         i.name,
         ...cols.map((c) => (i.metrics && i.metrics[c.key] != null ? i.metrics[c.key] : "")),
         i.best_value ?? i.bkv ?? "",
@@ -583,7 +593,5 @@ function downloadProblemInstancesCsv() {
     ]);
     qDownloadCsv(`qoblib_${p.slug || p.id}_instances.csv`, headers, data);
 }
-
-window.downloadProblemInstancesCsv = downloadProblemInstancesCsv;
 
 initProblemPage();

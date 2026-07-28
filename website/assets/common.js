@@ -94,6 +94,105 @@ function sanitizeHtml(html) {
     return template.innerHTML;
 }
 
+// --- axis ticks --------------------------------------------------------------
+// Human-friendly tick generation shared by every chart on the site, so no axis
+// ever shows arbitrary values like "1234, 182938". Two helpers:
+//   • niceLinearTicks — 1/2/5×10ⁿ steps on a linear axis, integer-forced when the
+//     data is whole numbers (no fractional ticks on an integer-only quantity);
+//   • niceLogAxis — a tight log axis snapped to nice 1-2-5×10ⁿ bounds (a data max
+//     of 16 ends the axis at 20, not the next full decade), with labelled 1-2-5
+//     ticks and faint 2×/5× minor guides when the range spans several decades.
+
+// Round a raw step up to the nearest "nice" number: 1, 2, 5, 10, 20, 50, …
+function niceStep(raw, { integer = false } = {}) {
+    if (!(raw > 0) || !Number.isFinite(raw)) return 1;
+    const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+    const frac = raw / pow;
+    let nice;
+    if (frac <= 1) nice = 1;
+    else if (frac <= 2) nice = 2;
+    else if (frac <= 5) nice = 5;
+    else nice = 10;
+    let step = nice * pow;
+    if (integer) step = Math.max(1, Math.round(step));
+    return step;
+}
+
+// Return an array of tick values spanning [min, max] using a nice step. When
+// `integer` is true the step and every tick are whole numbers. `target` is the
+// approximate tick count to aim for (default 5).
+function niceLinearTicks(min, max, { integer = false, target = 5 } = {}) {
+    let lo = Number(min);
+    let hi = Number(max);
+    if (!Number.isFinite(lo) || !Number.isFinite(hi)) return [];
+    if (lo > hi) [lo, hi] = [hi, lo];
+    if (lo === hi) {
+        // Degenerate range: emit a single sensible tick.
+        return [integer ? Math.round(lo) : lo];
+    }
+    const step = niceStep((hi - lo) / Math.max(1, target), { integer });
+    if (!(step > 0)) return [lo, hi];
+    const start = Math.ceil(lo / step - 1e-9) * step;
+    const ticks = [];
+    for (let v = start; v <= hi + step * 1e-9; v += step) {
+        // Snap away tiny FP dust so integer ticks read as clean integers.
+        ticks.push(integer ? Math.round(v) : Number(v.toFixed(10)));
+    }
+    return ticks.length ? ticks : [lo, hi];
+}
+
+// Snap a positive value to the nearest "nice" 1-2-5×10ⁿ number. dir < 0 rounds
+// DOWN (largest nice ≤ value), dir > 0 rounds UP (smallest nice ≥ value). This is
+// what keeps an axis tight: a data max of 16 snaps to 20, not up to the next full
+// decade (100).
+function niceLogBound(value, dir) {
+    if (!(value > 0) || !Number.isFinite(value)) return 1;
+    const e = Math.floor(Math.log10(value));
+    const base = 10 ** e;
+    const m = value / base; // mantissa in [1, 10)
+    const steps = [1, 2, 5, 10];
+    if (dir < 0) {
+        let chosen = 1;
+        for (const s of steps) if (s <= m + 1e-9) chosen = s;
+        return chosen * base;
+    }
+    for (const s of steps) if (s >= m - 1e-9) return s * base;
+    return 10 * base;
+}
+
+// Build a tight, nicely-ticked log axis for a positive data range [minVal,maxVal].
+// Returns { lo, hi, major, minor } where lo/hi are the axis endpoints snapped to
+// nice 1-2-5 values (so the axis ends at 20 for data reaching 16, not at 100),
+// `major` are labelled tick values and `minor` are faint unlabelled guides. When
+// the whole 1-2-5 sequence fits it is all labelled (tight ranges look complete);
+// over a wider span only the decades are labelled and 2×/5× become minor guides.
+function niceLogAxis(minVal, maxVal, { maxMajor = 8 } = {}) {
+    let lo = niceLogBound(Math.min(minVal, maxVal), -1);
+    let hi = niceLogBound(Math.max(minVal, maxVal), +1);
+    if (!(lo > 0)) lo = 1;
+    if (hi <= lo) hi = lo * 10; // guarantee a non-zero span (single-point data)
+
+    const eLo = Math.floor(Math.log10(lo) + 1e-9);
+    const eHi = Math.ceil(Math.log10(hi) - 1e-9);
+    const all = [];
+    for (let e = eLo; e <= eHi; e += 1) {
+        for (const mm of [1, 2, 5]) {
+            const v = mm * 10 ** e;
+            if (v >= lo * (1 - 1e-9) && v <= hi * (1 + 1e-9)) all.push(v);
+        }
+    }
+    const uniq = [...new Set(all)].sort((a, b) => a - b);
+    if (uniq.length <= maxMajor) {
+        return { lo, hi, major: uniq, minor: [] };
+    }
+    // Too many for full 1-2-5 labels: label decades, demote 2×/5× to faint guides
+    // (only while the span is narrow enough that they stay legible).
+    const isDecade = (v) => Math.abs(Math.log10(v) - Math.round(Math.log10(v))) < 1e-9;
+    const major = uniq.filter(isDecade);
+    const minor = (eHi - eLo) <= 3 ? uniq.filter((v) => !isDecade(v)) : [];
+    return { lo, hi, major, minor };
+}
+
 function fmtBytes(b) {
     if (b == null) return "-";
     if (b < 1024) return `${b} B`;
@@ -243,18 +342,20 @@ function submissionUrl(problemId, submissionId) {
 function statusPill(s) {
     // Colours come from CSS variables (defined in styles.css) so the badges
     // track the active theme and stay muted on dark backgrounds.
+    // The symbol prefix provides a non-colour cue for colour-vision accessibility.
     const cfg = {
-        optimal: { bg: "var(--pill-ok-bg)", c: "var(--pill-ok-fg)", label: "Optimal" },
-        solved: { bg: "var(--pill-ok-bg)", c: "var(--pill-ok-fg)", label: "Solved" },
-        best_known: { bg: "var(--pill-best-bg)", c: "var(--pill-best-fg)", label: "Best known" },
-        submitted: { bg: "var(--pill-sub-bg)", c: "var(--pill-sub-fg)", label: "Submitted" },
-        open: { bg: "var(--pill-open-bg)", c: "var(--pill-open-fg)", label: "Open" },
+        optimal:    { bg: "var(--pill-ok-bg)",   c: "var(--pill-ok-fg)",   label: "Optimal",    sym: "✓" },
+        solved:     { bg: "var(--pill-ok-bg)",   c: "var(--pill-ok-fg)",   label: "Solved",     sym: "✓" },
+        best_known: { bg: "var(--pill-best-bg)", c: "var(--pill-best-fg)", label: "Best known", sym: "~" },
+        submitted:  { bg: "var(--pill-sub-bg)",  c: "var(--pill-sub-fg)",  label: "Submitted",  sym: "·" },
+        open:       { bg: "var(--pill-open-bg)", c: "var(--pill-open-fg)", label: "Open",       sym: "?" },
     };
-    const cc = cfg[s] || { bg: "var(--pill-open-bg)", c: "var(--pill-open-fg)" };
+    const cc = cfg[s] || { bg: "var(--pill-open-bg)", c: "var(--pill-open-fg)", sym: "·" };
     // Show a friendly label (matching the filter dropdowns) instead of the raw
     // machine token, e.g. "Best known" rather than "best_known".
     const label = cc.label || String(s ?? "").replace(/_/g, " ");
-    return `<span class="status-pill" style="background:${cc.bg};color:${cc.c}">${esc(label)}</span>`;
+    const sym = cc.sym ? `<span aria-hidden="true" class="status-pill-sym">${cc.sym}</span> ` : "";
+    return `<span class="status-pill" style="background:${cc.bg};color:${cc.c}">${sym}${esc(label)}</span>`;
 }
 
 // Three-way classification of a submission's compute paradigm. The QUBO/Ising
@@ -646,6 +747,8 @@ function initTheme() {
 function animateCount(id, target) {
     const el = document.getElementById(id);
     if (!el) return;
+    // Clear any in-progress animation from a previous call on the same element.
+    if (el._animTimer) { clearInterval(el._animTimer); el._animTimer = null; }
     el.classList.remove("loading-val");
     // Respect reduced-motion: jump straight to the final value, no count-up.
     const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -655,10 +758,10 @@ function animateCount(id, target) {
     }
     let cur = 0;
     const step = Math.ceil(target / 30);
-    const timer = setInterval(() => {
+    el._animTimer = setInterval(() => {
         cur = Math.min(cur + step, target);
         el.textContent = cur.toLocaleString();
-        if (cur >= target) clearInterval(timer);
+        if (cur >= target) { clearInterval(el._animTimer); el._animTimer = null; }
     }, 30);
 }
 
@@ -880,10 +983,98 @@ function updateFooterDataLink() {
     link.textContent = label;
 }
 
+// ---------------------------------------------------------------------------
+// Global search omnibox
+// ---------------------------------------------------------------------------
+
+function setupGlobalSearch() {
+    const navInner = document.querySelector(".nav-inner");
+    if (!navInner || navInner.querySelector(".gsearch-wrap")) return;
+
+    const wrap = document.createElement("span");
+    wrap.className = "gsearch-wrap";
+    wrap.innerHTML =
+        '<input class="gsearch-input" type="search" placeholder="Search…" aria-label="Global search" autocomplete="off" />' +
+        '<ul class="gsearch-dropdown" role="listbox" hidden></ul>';
+
+    // Insert before the theme toggle
+    const themeBtn = navInner.querySelector(".theme-toggle");
+    if (themeBtn) navInner.insertBefore(wrap, themeBtn);
+    else navInner.appendChild(wrap);
+
+    const input = wrap.querySelector(".gsearch-input");
+    const dropdown = wrap.querySelector(".gsearch-dropdown");
+
+    let _debounce = null;
+    let _data = null; // { problems, instances }
+
+    async function getData() {
+        if (_data) return _data;
+        try {
+            const [idx, instList] = await Promise.all([loadIndex(), loadInstancesList()]);
+            _data = {
+                problems: idx.problems || [],
+                instances: (instList.problems || []).flatMap((p) => (p.instances || []).map((i) => ({ name: i.name, problem_id: p.id, problem_name: p.name }))),
+            };
+        } catch { _data = { problems: [], instances: [] }; }
+        return _data;
+    }
+
+    function show(results) {
+        if (!results.length) { dropdown.hidden = true; return; }
+        dropdown.innerHTML = results.map((r) =>
+            `<li role="option" tabindex="-1" data-href="${esc(r.href)}" class="gsearch-item gsearch-${esc(r.type)}">` +
+            `<span class="gsearch-kind">${esc(r.kind)}</span>` +
+            `<span class="gsearch-label">${esc(r.label)}</span>` +
+            `</li>`
+        ).join("");
+        dropdown.hidden = false;
+    }
+    const hide = () => { dropdown.hidden = true; };
+
+    input.addEventListener("input", () => {
+        clearTimeout(_debounce);
+        const q = input.value.trim().toLowerCase();
+        if (!q) { hide(); return; }
+        _debounce = setTimeout(async () => {
+            const { problems, instances } = await getData();
+            const results = [];
+            problems.filter((p) => (p.name || "").toLowerCase().includes(q) || String(p.id).includes(q)).slice(0, 4).forEach((p) => {
+                results.push({ type: "problem", kind: "Problem", label: `${String(p.id).padStart(2, "0")} ${p.name}`, href: problemUrl(p.id) });
+            });
+            instances.filter((i) => i.name.toLowerCase().includes(q)).slice(0, 10).forEach((i) => {
+                results.push({ type: "instance", kind: `${String(i.problem_id).padStart(2, "0")}`, label: i.name, href: instanceUrl(i.problem_id, i.name) });
+            });
+            show(results.slice(0, 12));
+        }, 120);
+    });
+
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") { hide(); input.value = ""; return; }
+        if (e.key === "Enter") { const first = dropdown.querySelector("li"); if (first) window.location.href = first.dataset.href; return; }
+        if (e.key === "ArrowDown") { e.preventDefault(); const first = dropdown.querySelector("li"); if (first) first.focus(); }
+    });
+    dropdown.addEventListener("keydown", (e) => {
+        const cur = document.activeElement;
+        if (e.key === "Enter" && cur.dataset.href) { window.location.href = cur.dataset.href; return; }
+        if (e.key === "ArrowDown") { e.preventDefault(); const nx = cur.nextElementSibling; if (nx) nx.focus(); }
+        if (e.key === "ArrowUp") { e.preventDefault(); const pv = cur.previousElementSibling; if (pv) pv.focus(); else input.focus(); }
+        if (e.key === "Escape") { hide(); input.value = ""; input.focus(); }
+    });
+    dropdown.addEventListener("click", (e) => {
+        const li = e.target.closest("li[data-href]");
+        if (li) window.location.href = li.dataset.href;
+    });
+    document.addEventListener("click", (e) => {
+        if (!wrap.contains(e.target)) hide();
+    }, true);
+}
+
 function initCommon() {
     const current = document.body.dataset.nav || "home";
     setActiveNav(current);
     setupMobileNav();
+    setupGlobalSearch();
     initTheme();
     enableTableSorting(document);
     renderFooter();
@@ -911,7 +1102,15 @@ function initCommon() {
 // (current filters + sort) as a spreadsheet-friendly CSV.
 
 function csvField(value) {
-    const s = value == null ? "" : String(value);
+    let s = value == null ? "" : String(value);
+    // Neutralise spreadsheet formula injection: a field beginning with = + - @
+    // (or a leading tab / CR that some parsers strip to reveal one) is treated as
+    // a formula by Excel / Google Sheets and can execute. Submission fields are
+    // author-supplied, so prefix such values with a single quote — the standard
+    // guard that keeps them literal text. Plain numbers (incl. negatives like an
+    // objective "-1234.5") are exempt so numeric columns stay numeric.
+    const isNumber = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/.test(s.trim());
+    if (/^[=+\-@\t\r]/.test(s) && !isNumber) s = `'${s}`;
     return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
@@ -919,6 +1118,27 @@ function toCsv(headers, rows) {
     const lines = [headers.map(csvField).join(",")];
     for (const row of rows) lines.push(row.map(csvField).join(","));
     return lines.join("\r\n");
+}
+
+// Reorder export `rows` (parallel to `keys`) to match the order the table
+// currently DISPLAYS, so "download what you see" honours the column sort the
+// user clicked — not just the active filters. Each visible <tr> carries a
+// data-export-key; a row whose key isn't in the DOM keeps its original relative
+// position at the end. No-op (returns rows unchanged) when the table has no
+// keyed rows, so callers can use it unconditionally.
+function orderRowsByTable(table, rows, keys) {
+    const body = table && table.tBodies && table.tBodies[0];
+    if (!body) return rows;
+    const pos = new Map();
+    Array.from(body.rows).forEach((tr, i) => {
+        const k = tr.dataset ? tr.dataset.exportKey : undefined;
+        if (k != null && k !== "" && !pos.has(k)) pos.set(k, i);
+    });
+    if (!pos.size) return rows;
+    return rows
+        .map((row, i) => ({ row, ord: pos.has(keys[i]) ? pos.get(keys[i]) : Infinity, i }))
+        .sort((a, b) => a.ord - b.ord || a.i - b.i)
+        .map((x) => x.row);
 }
 
 function downloadCsv(filename, headers, rows) {
@@ -1043,6 +1263,8 @@ window.QOBLIB = {
     fmtBytes,
     fmtNum,
     fmtInt,
+    niceLinearTicks,
+    niceLogAxis,
     fmtMaybeNum,
     fmtText,
     parseDate,
@@ -1082,4 +1304,5 @@ window.QOBLIB = {
     animateCount,
     toCsv,
     downloadCsv,
+    orderRowsByTable,
 };

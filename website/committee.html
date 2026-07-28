@@ -25,14 +25,14 @@
                 <a class="nl" data-nav="participate" href="participate.html">Participate</a>
                 <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
 
-    <main class="page">
+    <main class="page" id="main-content">
         <div class="ph">
-            <h2>Steering Committee</h2>
+            <h1>Steering Committee</h1>
             <p>
                 QOBLIB is maintained and developed by a steering committee of researchers from academia and
                 industry. The committee oversees benchmark design, reviews contributions, and guides the
@@ -61,7 +61,7 @@
                         </p>
                         <div class="committee-contact">
                             <a class="committee-link" href="https://www.schicker.org" target="_blank" rel="noopener">Website ↗</a>
-                            <a class="committee-link" href="mailto:schicker@zib.de">schicker@zib.de</a>
+                            <a class="committee-link committee-email" data-e="schicker" data-d="zib.de" href="#">Email</a>
                         </div>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                         </p>
                         <div class="committee-contact">
                             <a class="committee-link" href="https://www.zib.de/koch" target="_blank" rel="noopener">Website ↗</a>
-                            <a class="committee-link" href="mailto:koch@zib.de">koch@zib.de</a>
+                            <a class="committee-link committee-email" data-e="koch" data-d="zib.de" href="#">Email</a>
                         </div>
                     </div>
                 </div>
@@ -95,7 +95,7 @@
                         </p>
                         <div class="committee-contact">
                             <a class="committee-link" href="https://research.ibm.com/people/christa-zoufal" target="_blank" rel="noopener">Website ↗</a>
-                            <a class="committee-link" href="mailto:OUF@zurich.ibm.com">OUF@zurich.ibm.com</a>
+                            <a class="committee-link committee-email" data-e="OUF" data-d="zurich.ibm.com" href="#">Email</a>
                         </div>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
                         </p>
                         <div class="committee-contact">
                             <a class="committee-link" href="https://research.ibm.com/people/stefan-worner" target="_blank" rel="noopener">Website ↗</a>
-                            <a class="committee-link" href="mailto:WOR@zurich.ibm.com">WOR@zurich.ibm.com</a>
+                            <a class="committee-link committee-email" data-e="WOR" data-d="zurich.ibm.com" href="#">Email</a>
                         </div>
                     </div>
                 </div>
@@ -201,6 +201,20 @@
     </footer>
 
     <script src="assets/common.js"></script>
-    <script>window.QOBLIB.initCommon();</script>
+    <script>
+        window.QOBLIB.initCommon();
+        // Decode obfuscated email links at click time — never expose raw addresses in HTML.
+        document.querySelectorAll(".committee-email").forEach(function(a) {
+            a.addEventListener("click", function(e) {
+                e.preventDefault();
+                var addr = a.dataset.e + "@" + a.dataset.d;
+                window.location.href = "mailto:" + addr;
+            });
+            a.addEventListener("mouseenter", function() {
+                var addr = a.dataset.e + "@" + a.dataset.d;
+                a.title = addr;
+            });
+        });
+    </script>
 </body>
 </html>

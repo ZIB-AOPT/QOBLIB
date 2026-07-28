@@ -219,6 +219,119 @@ def _jround(x) -> int:
     return math.floor(x + 0.5)
 
 
+# --------------------------------------------------------------------------- #
+# Axis ticks — tight, nicely-ticked log axes snapped to 1-2-5×10ⁿ bounds, so an
+# axis never shows arbitrary values like "1234, 182938" AND never overshoots (a
+# data max of 16 ends the axis at 20, not the next full decade 100). Mirrors
+# ``niceLogAxis`` / ``niceLogBound`` in assets/common.js; keep the two in sync.
+# --------------------------------------------------------------------------- #
+def _nice_log_bound(value: float, direction: int) -> float:
+    """Snap a positive value to the nearest 1-2-5×10ⁿ number. direction<0 rounds
+    down (largest nice ≤ value); direction>0 rounds up (smallest nice ≥ value)."""
+    if not (value > 0) or not math.isfinite(value):
+        return 1.0
+    e = math.floor(math.log10(value))
+    base = 10.0 ** e
+    m = value / base  # mantissa in [1, 10)
+    steps = [1, 2, 5, 10]
+    if direction < 0:
+        chosen = 1
+        for s in steps:
+            if s <= m + 1e-9:
+                chosen = s
+        return chosen * base
+    for s in steps:
+        if s >= m - 1e-9:
+            return s * base
+    return 10 * base
+
+
+def _nice_log_axis(min_val: float, max_val: float, *, max_major: int = 8):
+    """Tight log axis for a positive data range. Returns ``(lo, hi, major, minor)``
+    as real values: lo/hi are the endpoints snapped to nice 1-2-5 bounds, `major`
+    are labelled tick values and `minor` are faint unlabelled guides. When the full
+    1-2-5 sequence fits it is all labelled; over a wider span only decades are
+    labelled and 2×/5× become minor guides."""
+    lo = _nice_log_bound(min(min_val, max_val), -1)
+    hi = _nice_log_bound(max(min_val, max_val), +1)
+    if not (lo > 0):
+        lo = 1.0
+    if hi <= lo:
+        hi = lo * 10  # guarantee a non-zero span (single-point data)
+
+    e_lo = math.floor(math.log10(lo) + 1e-9)
+    e_hi = math.ceil(math.log10(hi) - 1e-9)
+    all_ticks: list = []
+    for e in range(e_lo, e_hi + 1):
+        for mm in (1, 2, 5):
+            v = mm * 10.0 ** e
+            if lo * (1 - 1e-9) <= v <= hi * (1 + 1e-9):
+                all_ticks.append(v)
+    uniq = sorted(set(all_ticks))
+    if len(uniq) <= max_major:
+        return lo, hi, uniq, []
+    # Too many for full 1-2-5 labels: label decades, demote 2×/5× to faint guides
+    # (only while the span is narrow enough that they stay legible).
+    def is_decade(v):
+        return abs(math.log10(v) - round(math.log10(v))) < 1e-9
+    major = [v for v in uniq if is_decade(v)]
+    minor = [v for v in uniq if not is_decade(v)] if (e_hi - e_lo) <= 3 else []
+    return lo, hi, major, minor
+
+
+def _use_log_axis(values) -> bool:
+    """Whether a set of positive values is better shown on a log axis. True only
+    when they span a wide multiplicative range (≥2 decades, i.e. a ≥100× spread).
+    Small linear counting parameters — a LABS sequence length (2..100), a portfolio
+    asset count, a matrix dimension — stay on a linear axis; only genuinely
+    order-of-magnitude size ranges (e.g. variable counts spanning 100..13000) go
+    log."""
+    pos = [v for v in values if v is not None and v > 0]
+    if len(pos) < 2:
+        return False
+    lo, hi = min(pos), max(pos)
+    if lo <= 0:
+        return False
+    return math.log10(hi / lo) >= 2.0
+
+
+def _nice_step(raw: float, *, integer: bool = False) -> float:
+    """Round a raw step up to the nearest 1-2-5×10ⁿ. Mirrors ``niceStep`` in
+    assets/common.js."""
+    if not (raw > 0) or not math.isfinite(raw):
+        return 1.0
+    pow10 = 10.0 ** math.floor(math.log10(raw))
+    frac = raw / pow10
+    nice = 1 if frac <= 1 else 2 if frac <= 2 else 5 if frac <= 5 else 10
+    step = nice * pow10
+    if integer:
+        step = max(1.0, round(step))
+    return step
+
+
+def _nice_linear_ticks(min_val: float, max_val: float, *, integer: bool = False, target: int = 5):
+    """Tick values spanning [min, max] on a linear axis using a nice 1-2-5 step
+    (integer-forced when the data is whole). Mirrors ``niceLinearTicks`` in
+    assets/common.js."""
+    lo, hi = float(min_val), float(max_val)
+    if not (math.isfinite(lo) and math.isfinite(hi)):
+        return []
+    if lo > hi:
+        lo, hi = hi, lo
+    if lo == hi:
+        return [round(lo) if integer else lo]
+    step = _nice_step((hi - lo) / max(1, target), integer=integer)
+    if not (step > 0):
+        return [lo, hi]
+    start = math.ceil(lo / step - 1e-9) * step
+    ticks = []
+    v = start
+    while v <= hi + step * 1e-9:
+        ticks.append(round(v) if integer else round(v, 10))
+        v += step
+    return ticks or [lo, hi]
+
+
 def _f1(x) -> str:
     return f"{x:.1f}"
 
@@ -382,21 +495,27 @@ def _cactus_body(series, field, dims, y_title_txt) -> str:
     floor = min(pos) if pos else 1e-3
     clamp = lambda t: t if t > 0 else floor
 
-    lo = math.log10(min(clamp(t) for t in all_rts))
-    hi = math.log10(max(clamp(t) for t in all_rts))
-    if lo == hi:
-        lo -= 1
-        hi += 1
-    else:
-        pad = (hi - lo) * 0.08
-        lo -= pad
-        hi += pad
+    # Y (runtime, log): tight axis snapped to nice 1-2-5 bounds (a max of 16 s ends
+    # at 20, not 100), labelled 1-2-5 ticks + faint minor guides. lo/hi are the
+    # log10 endpoints used for positioning. X (instances solved): integer counts.
+    y_min_v = min(clamp(t) for t in all_rts)
+    y_max_v = max(clamp(t) for t in all_rts)
+    lo_v, hi_v, yticks, y_minor = _nice_log_axis(y_min_v, y_max_v, max_major=6)
+    if not yticks:
+        yticks = [lo_v, hi_v]
+    # Pad the plotted domain ~5% beyond the bounds so the fastest/slowest points
+    # sit inset from the top/bottom frame rather than flush against it.
+    PAD = 0.05
+    _yspan = (math.log10(hi_v) - math.log10(lo_v)) or 1
+    lo = math.log10(lo_v) - _yspan * PAD
+    hi = math.log10(hi_v) + _yspan * PAD
 
     x_max = max(max_n, 1)
-    x_px = lambda c: m_l + (w - m_l - m_r) * (0.5 if x_max <= 1 else c / x_max)
+    # Inset the point row a little from both side frames (the first point is at
+    # count 1, the last at x_max — map that span into 4%..96% of the plot width).
+    x_px = lambda c: m_l + (w - m_l - m_r) * (0.5 if x_max <= 1 else 0.04 + 0.92 * (c / x_max))
     y_px = lambda t: h - m_b - (h - m_t - m_b) * ((math.log10(clamp(t)) - lo) / ((hi - lo) or 1))
 
-    yticks = [(10 ** (lo + (hi - lo) * (i / 4))) for i in range(5)]
     xticks: list = []
     step = max(1, math.ceil(x_max / 6))
     c = 0
@@ -407,6 +526,9 @@ def _cactus_body(series, field, dims, y_title_txt) -> str:
         xticks.append(x_max)
 
     grid = "".join(
+        f'<line class="conv-grid-minor" x1="{m_l}" y1="{_f1(y_px(v))}" x2="{w - m_r}" y2="{_f1(y_px(v))}" />'
+        for v in y_minor
+    ) + "".join(
         f'<line class="conv-grid" x1="{m_l}" y1="{_f1(y_px(v))}" x2="{w - m_r}" y2="{_f1(y_px(v))}" />'
         for v in yticks
     )
@@ -569,31 +691,50 @@ def _scaling_svg(groups, size_label, dims) -> str:
     rfloor = min(rpos) if rpos else 1e-3
     clamp_r = lambda r: r if r > 0 else rfloor
 
-    xlo = math.log10(min(sizes))
-    xhi = math.log10(max(sizes))
-    if xlo == xhi:
-        xlo -= 0.5
-        xhi += 0.5
-    else:
-        pad = (xhi - xlo) * 0.06
-        xlo -= pad
-        xhi += pad
-    ylo = math.log10(min(clamp_r(r) for r in rts))
-    yhi = math.log10(max(clamp_r(r) for r in rts))
-    if ylo == yhi:
-        ylo -= 1
-        yhi += 1
-    else:
-        pad = (yhi - ylo) * 0.08
-        ylo -= pad
-        yhi += pad
+    # X (instance size): a log axis only makes sense when the sizes span a wide
+    # multiplicative range. For problems like LABS the size is a small linear
+    # sequence length (e.g. 3..66), where a log x-axis is misleading — use a linear
+    # axis there. Heuristic: log only when the sizes cover >~1.5 decades.
+    # Pad the plotted domain ~5% beyond the axis bounds on each side so points and
+    # ticks sit inset from the frame rather than flush against the edges.
+    PAD = 0.05
 
-    x_px = lambda s: m_l + (w - m_l - m_r) * ((math.log10(max(s, 1e-9)) - xlo) / ((xhi - xlo) or 1))
+    def _pad(lo, hi):
+        span = (hi - lo) or 1
+        return lo - span * PAD, hi + span * PAD
+
+    x_log = _use_log_axis(sizes)
+    size_int = all(float(s).is_integer() for s in sizes)
+    if x_log:
+        x_lo_v, x_hi_v, xticks, x_minor = _nice_log_axis(min(sizes), max(sizes), max_major=6)
+        xlo, xhi = _pad(math.log10(x_lo_v), math.log10(x_hi_v))
+        if not xticks:
+            xticks = [x_lo_v, x_hi_v]
+        x_px = lambda s: m_l + (w - m_l - m_r) * ((math.log10(max(s, 1e-9)) - xlo) / ((xhi - xlo) or 1))
+    else:
+        xticks = _nice_linear_ticks(min(sizes), max(sizes), integer=size_int, target=6)
+        x_minor = []
+        lo0 = min([*xticks, min(sizes)]) if xticks else min(sizes)
+        hi0 = max([*xticks, max(sizes)]) if xticks else max(sizes)
+        xlo, xhi = _pad(lo0, hi0)
+        x_px = lambda s: m_l + (w - m_l - m_r) * ((s - xlo) / ((xhi - xlo) or 1))
+
+    # Y (runtime): always log — runtimes genuinely span orders of magnitude.
+    y_lo_v, y_hi_v, yticks, y_minor = _nice_log_axis(
+        min(clamp_r(r) for r in rts), max(clamp_r(r) for r in rts), max_major=5
+    )
+    ylo, yhi = _pad(math.log10(y_lo_v), math.log10(y_hi_v))
+    if not yticks:
+        yticks = [y_lo_v, y_hi_v]
+
     y_px = lambda r: h - m_b - (h - m_t - m_b) * ((math.log10(clamp_r(r)) - ylo) / ((yhi - ylo) or 1))
-
-    xticks = [(10 ** (xlo + (xhi - xlo) * (i / 4))) for i in range(5)]
-    yticks = [(10 ** (ylo + (yhi - ylo) * (i / 4))) for i in range(5)]
     grid = "".join(
+        f'<line class="conv-grid-minor" x1="{m_l}" y1="{_f1(y_px(v))}" x2="{w - m_r}" y2="{_f1(y_px(v))}" />'
+        for v in y_minor
+    ) + "".join(
+        f'<line class="conv-grid-minor" x1="{_f1(x_px(v))}" y1="{m_t}" x2="{_f1(x_px(v))}" y2="{_f1(h - m_b)}" />'
+        for v in x_minor
+    ) + "".join(
         f'<line class="conv-grid" x1="{m_l}" y1="{_f1(y_px(v))}" x2="{w - m_r}" y2="{_f1(y_px(v))}" />'
         for v in yticks
     )
@@ -605,9 +746,10 @@ def _scaling_svg(groups, size_label, dims) -> str:
         f'<text class="conv-tick" text-anchor="middle" x="{_f1(x_px(v))}" y="{h - m_b + 16}">{_esc(_fmt_size(v))}</text>'
         for v in xticks
     )
+    x_scale_note = " (log)" if x_log else ""
     x_title = (
         f'<text class="conv-axis-title" text-anchor="middle" x="{_f1((m_l + (w - m_r)) / 2)}" '
-        f'y="{h - 5}">{_esc(size_label)} (log) →</text>'
+        f'y="{h - 5}">{_esc(size_label)}{x_scale_note} →</text>'
     )
     cy = _f1((m_t + (h - m_b)) / 2)
     y_title = (

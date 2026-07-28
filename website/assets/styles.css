@@ -838,6 +838,7 @@ a.badge:hover {
     margin-bottom: 2rem;
 }
 
+.ph h1,
 .ph h2 {
     font-size: 1.7rem;
     font-weight: 700;
@@ -950,10 +951,6 @@ a.badge:hover {
     min-height: 440px;
     border: 1px solid var(--border);
     border-radius: var(--r);
-    /* background:
-        radial-gradient(circle at 12% 8%, #f8fbfd 0%, transparent 28%),
-        radial-gradient(circle at 90% 85%, #fbf5eb 0%, transparent 35%),
-        var(--surface); */
     position: relative;
     overflow: hidden;
 }
@@ -980,6 +977,13 @@ a.badge:hover {
 .mip-grid-line {
     stroke: rgba(122, 112, 97, 0.2);
     stroke-width: 1;
+}
+
+/* Faint unlabelled 2×/5× guides between decades on log axes. */
+.mip-grid-minor {
+    stroke: rgba(122, 112, 97, 0.1);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
 }
 
 .mip-axis-line {
@@ -1358,6 +1362,7 @@ a.inst-nav-btn:hover {
     font-size: 1.9rem;
     font-weight: 700;
     color: var(--navy);
+    margin-top: 0;         /* reset the UA <h1> top margin when .d-title is an <h1> */
     margin-bottom: 0.2rem;
     line-height: 1.15;
 }
@@ -2351,13 +2356,18 @@ a.inst-nav-btn:hover {
     stroke: rgba(159, 173, 177, 0.16);
 }
 
+:root[data-theme="dark"] .mip-grid-minor {
+    stroke: rgba(159, 173, 177, 0.09);
+}
+
 :root[data-theme="dark"] .mip-axis-line {
     stroke: rgba(159, 173, 177, 0.5);
 }
 
-/* Plot images keep a white backing so the figures stay legible. */
+/* Plot images keep a white backing so the figures stay legible in dark mode. */
 :root[data-theme="dark"] .plot-card img {
-    background: #f3f5f4;
+    --plot-bg: #f3f5f4;
+    background: var(--plot-bg);
 }
 
 /* =========================================================================
@@ -2735,6 +2745,14 @@ textarea.invalid {
     stroke-width: 1;
 }
 
+/* Faint unlabelled 2×/5× guides between decades on log axes. */
+.conv-grid-minor {
+    stroke: var(--border);
+    stroke-width: 1;
+    stroke-opacity: 0.4;
+    stroke-dasharray: 2 3;
+}
+
 .conv-axis-line {
     stroke: var(--border-mid);
     stroke-width: 1.2;
@@ -2942,6 +2960,46 @@ textarea.invalid {
     max-width: 72ch;
     margin-bottom: 1.6rem;
 }
+
+/* Hero actions on the participate page sit immediately under the .ph intro,
+   so pull them up slightly to close the gap and add bottom clearance. */
+.participate-hero-actions {
+    margin: -0.5rem 0 2rem;
+}
+
+/* Sub-section headings (.sh) used within a section — add top spacing so they
+   don't run into the preceding element. */
+.sh-mt    { margin-top: 1.25rem; }
+.sh-mt-sm { margin-top: 0.25rem; }
+.sh-mt-md { margin-top: 1rem; }
+.sh-mt-lg { margin-top: 1.5rem; }
+
+/* "Optional" label inside a section heading. */
+.sh-optional {
+    font-weight: 400;
+    font-size: 0.85em;
+    color: var(--muted);
+}
+
+/* Prose paragraphs that follow a sub-heading need a small top nudge. */
+.tl-desc-mt { margin-top: 0.5rem; }
+
+/* Requirement table variants with top/bottom spacing. */
+.req-table-mt  { margin-top: 1rem; }
+
+/* Info-card grids with explicit spacing overrides. */
+.info-cards-mt { margin-top: 1.25rem; }
+.info-cards-mb { margin-bottom: 1.5rem; }
+
+/* Lists inside info-cards: reset the default outer spacing so the card
+   padding alone controls the visual inset. */
+.req-list-inline {
+    margin: 0;
+    padding-left: 1.1rem;
+}
+
+/* Timeline list with top spacing. */
+.timeline-mt { margin-top: 1rem; }
 
 /* ---- Vertical step timeline ---- */
 .timeline {
@@ -3603,4 +3661,190 @@ textarea.invalid {
     .lb-pdg-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ============================================================
+   Global search omnibox
+   ============================================================ */
+
+.gsearch-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.gsearch-input {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.22rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    width: 9rem;
+    transition: border-color 0.12s, width 0.2s;
+}
+
+.gsearch-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    width: 14rem;
+}
+
+.gsearch-input::-webkit-search-cancel-button {
+    cursor: pointer;
+}
+
+.gsearch-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 22rem;
+    max-height: 18rem;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    list-style: none;
+    margin: 0;
+    padding: 0.3rem 0;
+    z-index: 300;
+    font-size: 0.8rem;
+}
+
+.gsearch-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.35rem 0.8rem;
+    cursor: pointer;
+    color: var(--text);
+    outline: none;
+}
+
+.gsearch-item:hover,
+.gsearch-item:focus {
+    background: var(--surface2);
+    color: var(--navy);
+}
+
+.gsearch-kind {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--faint);
+    flex-shrink: 0;
+    min-width: 3.5rem;
+}
+
+.gsearch-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gsearch-item.gsearch-problem .gsearch-kind { color: var(--accent); }
+.gsearch-item.gsearch-instance .gsearch-kind { color: var(--muted); }
+
+/* ============================================================
+   Scatter plot legend hint
+   ============================================================ */
+
+.mip-legend-hint {
+    font-size: 0.72rem;
+    color: var(--faint);
+    font-family: var(--mono);
+    padding: 0.15rem 0.25rem 0.4rem;
+    margin-top: -0.25rem;
+}
+
+/* ============================================================
+   Leaderboard filter reset notice
+   ============================================================ */
+
+.lb-filter-notice {
+    font-size: 0.78rem;
+    color: var(--amber);
+    background: var(--amber-l);
+    border: 1px solid var(--amber);
+    border-radius: var(--r);
+    padding: 0.4rem 0.8rem;
+    margin-bottom: 0.75rem;
+}
+
+/* ============================================================
+   Status badge non-colour symbol cue
+   ============================================================ */
+
+.status-pill-sym {
+    font-size: 0.7em;
+    font-style: normal;
+    margin-right: 0.1em;
+}
+
+/* ============================================================
+   Submit page — draft restore banner
+   ============================================================ */
+
+.draft-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: var(--blue-l);
+    border: 1px solid var(--blue);
+    color: var(--blue);
+    border-radius: var(--r);
+    padding: 0.55rem 0.9rem;
+    font-size: 0.82rem;
+    margin-bottom: 1.25rem;
+}
+
+/* The `display: flex` above otherwise beats the `hidden` attribute, so the
+   Dismiss button (which toggles `hidden`) had no visible effect. */
+.draft-banner[hidden] {
+    display: none;
+}
+
+.draft-banner-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   Expandable remarks in submission tables
+   ============================================================ */
+
+.remarks-short {
+    cursor: pointer;
+}
+
+.remarks-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 0.8rem;
+    padding: 0 0.2rem;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.remarks-toggle:hover {
+    color: var(--accent-d);
+}
+
+/* ============================================================
+   Participate page — CI failure note inside timeline
+   ============================================================ */
+
+.tl-note {
+    margin-top: 0.65rem;
+    padding: 0.55rem 0.8rem;
+    background: var(--amber-l);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 var(--r) var(--r) 0;
+    font-size: 0.8rem;
+    color: var(--text);
+    line-height: 1.55;
 }

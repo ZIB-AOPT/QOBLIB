@@ -18,6 +18,7 @@ const {
     SUBMISSION_CATEGORIES: qCATS,
     catBadge: qCatBadge,
     downloadCsv: qDownloadCsv,
+    orderRowsByTable: qOrderRowsByTable,
     fmtMaybeNum: qFmtMaybeNum,
     enableTableSorting: qEnableTableSorting,
 } = window.QOBLIB;
@@ -233,11 +234,24 @@ function setLeaderboardView(view) {
     document.getElementById("lb-vt-overall")?.classList.toggle("lb-vt-active", view === "overall");
     document.getElementById("lb-vt-quantum")?.classList.toggle("lb-vt-active", view === "quantum");
 
-    // In Quantum view the paradigm filter only makes sense for hw vs sim — reset
-    // if it was set to "classical" since that would always show nothing.
+    // In Quantum view the paradigm filter only makes sense for hw vs sim.
     const paradigmSel = document.getElementById("lb-paradigm");
-    if (view === "quantum" && paradigmSel?.value === "classical") {
-        paradigmSel.value = "";
+    if (paradigmSel) {
+        // Update the placeholder text so it reflects the active view.
+        const allOpt = paradigmSel.querySelector("option[value='']");
+        if (allOpt) allOpt.textContent = view === "quantum" ? "All quantum paradigms" : "All paradigms";
+
+        // Reset to "All" if the user had "Classical" selected — that would show nothing in Quantum view.
+        if (view === "quantum" && paradigmSel.value === "classical") {
+            paradigmSel.value = "";
+            const notice = document.getElementById("lb-filter-notice");
+            if (notice) {
+                notice.textContent = "Paradigm filter reset to \u201cAll\u201d \u2014 Classical submissions are excluded from the Quantum view.";
+                notice.hidden = false;
+                clearTimeout(notice._hideTimer);
+                notice._hideTimer = setTimeout(() => { notice.hidden = true; }, 5000);
+            }
+        }
     }
 
     renderLeaderboard();
@@ -385,7 +399,7 @@ function renderLeaderboard() {
                         gapCell = `<td class="num">${fmt}%</td>`;
                     }
                 }
-                return `<tr>
+                return `<tr data-export-key="${qEsc(String(r.problem_id) + "::" + r.instance)}">
                     <td class="mono"><a class="rlink mono" href="${qInstanceUrl(r.problem_id, r.instance)}">${qEsc(r.instance)}</a></td>
                     <td><a class="badge b-type" href="${qProblemUrl(r.problem_id)}">${String(r.problem_id).padStart(2, "0")}</a></td>
                     <td class="num">${r.noValue ? '<span title="A feasible solution was found; this problem reports no objective value">feasible</span>' : qFmtNum(r.value)}${r.reachedBest ? ' <span title="Reaches the best-known objective" style="color:var(--star)">★</span>' : ""}</td>
@@ -441,7 +455,13 @@ function downloadLeaderboardCsv() {
         "Problem ID", "Instance", "Best objective", "Reaches best", "Status",
         "Holder", "Type", "Date", "Runtime (s)", "Submissions",
     ];
-    const data = rows.map((r) => [
+    // Reflect the user's clicked-column sort (the table re-orders in place; our
+    // data list is in the page default order), so the CSV matches what's on screen.
+    const table = document.querySelector("#lb-content table");
+    const ordered = table
+        ? qOrderRowsByTable(table, rows, rows.map((r) => `${r.problem_id}::${r.instance}`))
+        : rows;
+    const data = ordered.map((r) => [
         String(r.problem_id).padStart(2, "0"),
         r.instance,
         r.noValue ? "feasible" : r.value,
@@ -462,5 +482,12 @@ function downloadLeaderboardCsv() {
 window.renderLeaderboard = renderLeaderboard;
 window.downloadLeaderboardCsv = downloadLeaderboardCsv;
 window.setLeaderboardView = setLeaderboardView;
+
+document.getElementById("lb-vt-overall")?.addEventListener("click", () => setLeaderboardView("overall"));
+document.getElementById("lb-vt-quantum")?.addEventListener("click", () => setLeaderboardView("quantum"));
+document.getElementById("lb-prob")?.addEventListener("change", renderLeaderboard);
+document.getElementById("lb-inst")?.addEventListener("change", renderLeaderboard);
+document.getElementById("lb-paradigm")?.addEventListener("change", renderLeaderboard);
+document.getElementById("lb-download")?.addEventListener("click", downloadLeaderboardCsv);
 
 initLeaderboardPage();

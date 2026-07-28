@@ -83,6 +83,71 @@ class TestFormatters(unittest.TestCase):
         self.assertEqual(charts._esc(None), "")
 
 
+class TestNiceLogAxis(unittest.TestCase):
+    def test_nice_log_bound_does_not_overshoot(self):
+        # A data max of 16 snaps UP to 20, NOT the next full decade 100.
+        self.assertEqual(charts._nice_log_bound(16, +1), 20)
+        self.assertEqual(charts._nice_log_bound(16, -1), 10)
+        self.assertEqual(charts._nice_log_bound(3, +1), 5)
+        self.assertEqual(charts._nice_log_bound(0.012, -1), 0.01)
+
+    def test_tight_range_labels_full_1_2_5(self):
+        # 10 .. 16 → tight axis 10..20 with both 1-2-5 ticks labelled, no overshoot.
+        lo, hi, major, minor = charts._nice_log_axis(10, 16)
+        self.assertEqual(lo, 10)
+        self.assertEqual(hi, 20)
+        self.assertEqual(major, [10, 20])
+        self.assertEqual(minor, [])
+
+    def test_multi_decade_labels_decades_with_minor_guides(self):
+        # 10 .. 1000 → decade majors + 2×/5× minor guides.
+        lo, hi, major, minor = charts._nice_log_axis(10, 1000, max_major=4)
+        self.assertEqual((lo, hi), (10, 1000))
+        self.assertEqual(major, [10, 100, 1000])
+        self.assertEqual(minor, [20, 50, 200, 500])
+
+    def test_wide_span_no_minor(self):
+        lo, hi, major, minor = charts._nice_log_axis(1, 1e10, max_major=6)
+        self.assertEqual(minor, [])
+        self.assertTrue(all(abs(v - 10 ** round(charts.math.log10(v))) < 1e-6 for v in major))
+        self.assertEqual(major[-1], 10 ** 10)
+
+
+class TestUseLogAxis(unittest.TestCase):
+    def test_small_linear_range_is_not_log(self):
+        # LABS sequence lengths (2..100, ~1.7 decades) → linear axis, as do other
+        # small counting parameters (assets, matrix dim, nodes 15..50).
+        self.assertFalse(charts._use_log_axis([2, 8, 16, 32, 100]))
+        self.assertFalse(charts._use_log_axis([10, 20, 30, 50]))
+        self.assertFalse(charts._use_log_axis([3, 16]))
+
+    def test_wide_multiplicative_range_is_log(self):
+        # Sizes spanning ≥2 decades (≥100× spread) → log axis, e.g. variable counts.
+        self.assertTrue(charts._use_log_axis([101, 1000, 13249]))
+        self.assertTrue(charts._use_log_axis([17, 400, 4000]))
+
+    def test_threshold_is_two_decades(self):
+        self.assertFalse(charts._use_log_axis([1, 99]))    # <100× → linear
+        self.assertTrue(charts._use_log_axis([1, 100]))    # exactly 100× → log
+
+    def test_degenerate_inputs(self):
+        self.assertFalse(charts._use_log_axis([]))
+        self.assertFalse(charts._use_log_axis([42]))
+
+
+class TestNiceLinearTicks(unittest.TestCase):
+    def test_integer_forced(self):
+        ticks = charts._nice_linear_ticks(3, 66, integer=True, target=6)
+        self.assertTrue(all(float(t).is_integer() for t in ticks))
+        self.assertTrue(ticks[0] <= 3 or ticks[0] >= 0)
+        self.assertLessEqual(ticks[-1], 70)
+
+    def test_nice_step_values(self):
+        self.assertEqual(charts._nice_step(1.3), 2)
+        self.assertEqual(charts._nice_step(3), 5)
+        self.assertEqual(charts._nice_step(4, integer=True), 5)
+
+
 def _synthetic_problem():
     """Minimisation problem, two instances, three feasible submission rows."""
     return {

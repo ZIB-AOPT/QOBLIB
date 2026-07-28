@@ -26,14 +26,14 @@
                 <a class="nl" data-nav="participate" href="participate.html">Participate</a>
                 <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
 
-    <main class="page">
+    <main class="page" id="main-content">
         <div class="ph">
-            <h2>Submit Results</h2>
+            <h1>Submit Results</h1>
             <p>
                 Build a valid QOBLIB submission for <strong>any number of instances across any number of problems</strong> in
                 one go. Everything is checked live in your browser, then exported as ready-to-commit files. A GitHub Action
@@ -50,6 +50,15 @@
             <li><span class="step-n">3</span> Fix any flagged errors</li>
             <li><span class="step-n">4</span> Export &amp; open a PR</li>
         </ol>
+
+        <!-- Draft restore banner -->
+        <div id="draft-banner" class="draft-banner" hidden>
+            <span>↩ Draft restored from your last session.</span>
+            <div class="draft-banner-actions">
+                <button class="btn btn-ghost btn-sm" id="draft-banner-clear" type="button">Start fresh</button>
+                <button class="btn btn-ghost btn-sm" id="draft-banner-dismiss" type="button">✕ Dismiss</button>
+            </div>
+        </div>
 
         <!-- Shared / package-wide fields -->
         <section class="sub-panel">

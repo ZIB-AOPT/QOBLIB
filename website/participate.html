@@ -25,20 +25,20 @@
                 <a class="nl" data-nav="participate" href="participate.html">Participate</a>
                 <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
 
-    <main class="page">
+    <main class="page" id="main-content">
         <div class="ph">
-            <h2>How to Participate</h2>
+            <h1>How to Participate</h1>
             <p>
                 QOBLIB thrives on community contributions. Whether you have a better bound, a new quantum run,
                 or a useful negative result — every submission enriches the benchmark for the whole community.
             </p>
         </div>
-        <div class="hero-actions" style="margin:-0.5rem 0 2rem">
+        <div class="hero-actions participate-hero-actions">
             <a class="btn btn-navy" href="submit.html">Build a submission</a>
             <a class="btn btn-ghost" href="https://github.com/ZIB-AOPT/QOBLIB/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Full guide on GitHub ↗</a>
             <a class="btn btn-ghost" href="https://github.com/ZIB-AOPT/QOBLIB/blob/main/misc/submission_template.csv" target="_blank" rel="noopener">CSV template ↗</a>
@@ -98,6 +98,13 @@
                             a comment; a failing run blocks the merge until fixed.
                             Every PR requires approval from at least two committee members.
                         </p>
+                        <div class="tl-note">
+                            <strong>If CI fails:</strong> read the checker comment on your PR — it lists each failing
+                            check with the exact row and column. Fix the issue locally, re-run
+                            <a href="https://github.com/ZIB-AOPT/QOBLIB/blob/main/misc/ci/check_submission.py" target="_blank" rel="noopener"><code>misc/ci/check_submission.py</code></a>
+                            to confirm it passes, then push a new commit to the same branch. The CI job
+                            re-runs automatically on every push.
+                        </div>
                     </div>
                 </li>
                 <li class="tl-item">
@@ -293,7 +300,7 @@
         <!-- Objective time series -->
         <section>
             <div class="sh">
-                <span class="sh-title">Objective Time Series <span style="font-weight:400;font-size:0.85em;color:var(--muted)">(Optional)</span></span>
+                <span class="sh-title">Objective Time Series <span class="sh-optional">(Optional)</span></span>
             </div>
             <p class="participate-lead">
                 To enable convergence analysis and Time-to-Solution (TTS) verification, you may include an
@@ -301,19 +308,19 @@
                 strongly encouraged for stochastic runs.
             </p>
 
-            <div class="sh" style="margin-top:1.25rem">
+            <div class="sh sh-mt">
                 <span class="sh-title">File naming &amp; placement</span>
             </div>
-            <p class="tl-desc" style="margin-top:0.5rem">
+            <p class="tl-desc tl-desc-mt">
                 Place the file in each instance subdirectory, named
                 <code>&lt;instance&gt;_objective_time_series.json</code> (plain JSON) or
                 <code>&lt;instance&gt;_objective_time_series.json.gz</code> (gzip-compressed for large files).
             </p>
 
-            <div class="sh" style="margin-top:1.25rem">
+            <div class="sh sh-mt">
                 <span class="sh-title">Format</span>
             </div>
-            <p class="tl-desc" style="margin-top:0.5rem">
+            <p class="tl-desc tl-desc-mt">
                 The file must be a JSON <strong>array of runs</strong> (one element per independent run).
                 Each run is itself an array of <em>incumbent update</em> objects recorded
                 <strong>whenever the best-found objective value improves</strong>:
@@ -330,7 +337,7 @@
   ]
 ]</code></pre>
 
-            <div class="tw req-table-wrap" style="margin-top:1rem">
+            <div class="tw req-table-wrap req-table-mt">
                 <table class="req-table">
                     <thead>
                         <tr>
@@ -354,10 +361,10 @@
                 </table>
             </div>
 
-            <div class="info-cards" style="margin-top:1.25rem">
+            <div class="info-cards info-cards-mt">
                 <div class="info-card info-card-ok">
                     <div class="info-card-head">Rules</div>
-                    <ul class="req-list" style="margin:0;padding-left:1.1rem">
+                    <ul class="req-list req-list-inline">
                         <li>The <code>Incumbent</code> sequence within each run must be non-increasing for minimization (non-decreasing for maximization).</li>
                         <li>The first entry should record the initial incumbent (the starting solution's objective value).</li>
                         <li>The last entry's <code>Time</code> should correspond to the end of the run so that TTS can be computed from it.</li>
@@ -384,13 +391,13 @@
                 a larger size tier, or a structurally distinct instance not represented in the existing set.
             </p>
 
-            <div class="sh" style="margin-top:1.5rem">
+            <div class="sh sh-mt-lg">
                 <span class="sh-title">When to propose a new instance</span>
             </div>
-            <div class="info-cards" style="margin-bottom:1.5rem">
+            <div class="info-cards info-cards-mb">
                 <div class="info-card info-card-ok">
                     <div class="info-card-head">Good candidates</div>
-                    <ul class="req-list" style="margin:0;padding-left:1.1rem">
+                    <ul class="req-list req-list-inline">
                         <li>Fills a gap in difficulty or size range (larger tier, denser family, distinct structure)</li>
                         <li>Originates from a real application and is verifiably hard for classical solvers</li>
                         <li>Discussed with a committee member in advance</li>
@@ -398,7 +405,7 @@
                 </div>
                 <div class="info-card info-card-amber">
                     <div class="info-card-head">Not suitable</div>
-                    <ul class="req-list" style="margin:0;padding-left:1.1rem">
+                    <ul class="req-list req-list-inline">
                         <li>Trivially solved by standard classical solvers</li>
                         <li>Duplicate of an existing instance</li>
                         <li>No clear source or generation procedure</li>
@@ -406,10 +413,10 @@
                 </div>
             </div>
 
-            <div class="sh" style="margin-top:0.25rem">
+            <div class="sh sh-mt-sm">
                 <span class="sh-title">What to include in the PR</span>
             </div>
-            <ol class="timeline" style="margin-top:1rem">
+            <ol class="timeline timeline-mt">
                 <li class="tl-item">
                     <div class="tl-node"><span class="tl-num">1</span></div>
                     <div class="tl-body">
@@ -454,10 +461,10 @@
                 </li>
             </ol>
 
-            <div class="sh" style="margin-top:1rem">
+            <div class="sh sh-mt-md">
                 <span class="sh-title">Review &amp; acceptance</span>
             </div>
-            <p class="tl-desc" style="margin-top:0.5rem">
+            <p class="tl-desc tl-desc-mt">
                 Instance PRs are reviewed by at least two committee members who assess difficulty, structural coverage,
                 and provenance. Accepted instances are merged into <code>main</code> and automatically picked up
                 by the site builder at the next deployment. Rejected proposals receive a written explanation with

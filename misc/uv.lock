@@ -269,14 +269,14 @@ tables = [
 
 [package.metadata]
 requires-dist = [
-    { name = "docplex", marker = "extra == 'qubo'" },
-    { name = "gurobipy", marker = "extra == 'qubo'" },
-    { name = "networkx", marker = "extra == 'qubo'" },
-    { name = "numpy", marker = "extra == 'qubo'" },
-    { name = "pandas", marker = "extra == 'tables'" },
-    { name = "pyscipopt", marker = "extra == 'metrics'" },
-    { name = "qiskit", marker = "extra == 'qubo'" },
-    { name = "qiskit-optimization", marker = "extra == 'qubo'" },
+    { name = "docplex", marker = "extra == 'qubo'", specifier = ">=2.25" },
+    { name = "gurobipy", marker = "extra == 'qubo'", specifier = ">=11.0" },
+    { name = "networkx", marker = "extra == 'qubo'", specifier = ">=3.0" },
+    { name = "numpy", marker = "extra == 'qubo'", specifier = ">=1.26" },
+    { name = "pandas", marker = "extra == 'tables'", specifier = ">=2.0" },
+    { name = "pyscipopt", marker = "extra == 'metrics'", specifier = ">=5.0" },
+    { name = "qiskit", marker = "extra == 'qubo'", specifier = ">=1.0" },
+    { name = "qiskit-optimization", marker = "extra == 'qubo'", specifier = ">=0.6" },
 ]
 provides-extras = ["qubo", "metrics", "tables"]
 

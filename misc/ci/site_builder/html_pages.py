@@ -131,6 +131,7 @@ def _meta_block(title, description, canonical_url, og_image_url, og_type="websit
 
 
 _TITLE_RE = re.compile(r"<title>.*?</title>", re.DOTALL)
+_NOINDEX_RE = re.compile(r'\s*<meta\s+name="robots"\s+content="noindex"\s*/?>', re.IGNORECASE)
 _BODY_OPEN_RE = re.compile(r"(<body\b[^>]*>)")
 _MAIN_OPEN_RE = re.compile(r"(<main\b[^>]*?)(>)")
 _VIEWPORT_RE = re.compile(r'(<meta name="viewport"[^>]*>)')
@@ -234,7 +235,11 @@ def render_problem_page(template_html, p, base_url) -> str:
     # Relative to the <base> (site root), this points back at the current page.
     main_href = f"problem/{pid}/#main"
 
-    html_text = _inject_base(template_html, PROBLEM_PAGE_BASE)
+    # The problem.html shell carries a noindex tag (it is a client-only ?id=
+    # redirect target). These generated deep pages ARE the crawlable version and
+    # appear in the sitemap, so drop the noindex here.
+    html_text = _NOINDEX_RE.sub("", template_html, count=1)
+    html_text = _inject_base(html_text, PROBLEM_PAGE_BASE)
     html_text = _set_title(html_text, title)
     html_text = _inject_into_head(html_text, _meta_block(title, desc, canonical, og_image, og_type="article"))
     # Tell problem.js which problem to load (no ?id= query on these static URLs).
