@@ -152,9 +152,9 @@ function updateMipPointVisibility() {
     const legendRoot = document.getElementById("mip-chart-legend");
     if (!root || !legendRoot) return;
 
-    root.querySelectorAll(".mip-point").forEach((point) => {
-        const key = String(point.dataset.modelKey || "");
-        point.classList.toggle("hidden", !visibleMipModels.has(key));
+    root.querySelectorAll(".mip-pt").forEach((group) => {
+        const key = String(group.dataset.modelKey || "");
+        group.classList.toggle("hidden", !visibleMipModels.has(key));
     });
 
     legendRoot.querySelectorAll(".legend-item").forEach((button) => {
@@ -179,7 +179,11 @@ function renderMipChart(points) {
 
     const positivePoints = points.filter((p) => p.num_vars > 0 && p.density > 0);
     buildModelColors(positivePoints);
-    visibleMipModels = new Set([...new Set(positivePoints.map((p) => p.model_key).filter(Boolean))]);
+    // renderProblemLegend seeds visibleMipModels in the *computed* key-space
+    // (modelKeyForPoint). Do NOT pre-seed it here from the raw p.model_key field:
+    // that lives in a different key-space, so the legend items and point groups
+    // would never match — every legend entry would render "off" and its toggle
+    // would do nothing.
     renderProblemLegend(positivePoints);
 
     if (!positivePoints.length) {
@@ -254,30 +258,49 @@ function renderMipChart(points) {
         .map((v) => `<text class="mip-axis-tick" text-anchor="end" x="${margin.left - 8}" y="${yPos(v) + 3}">${qEsc(formatLogTick(v))}</text>`)
         .join("");
 
+    // Each point is a small visible dot (.mip-dot) plus a much larger transparent
+    // hit circle (.mip-point) sharing the same centre. The r="4" dot alone is only
+    // ~9px across — too small to reliably hover/tap; the hit circle widens the
+    // pointer/touch target to ~24px without cluttering the scatter. The hit circle
+    // carries all the data + interaction (it sits on top, so it catches the event);
+    // the dot is inert (pointer-events:none) and gets the active/hover styling.
     const circles = positivePoints
         .map((p, idx) => {
             const href = qInstanceUrl(p.problem_id, p.name);
+            // Use the computed key everywhere (colors, legend, and this group's
+            // data-model-key) so legend toggles reliably match their points.
             const color = colorForModelKey(modelKeyForPoint(p), p.problem_id);
+            const cx = xPos(p.num_vars);
+            const cy = yPos(p.density);
+            const modelKey = qEsc(modelKeyForPoint(p));
             return `
-                <circle
-                    class="mip-point"
-                    id="mip-point-${idx}"
-                    data-idx="${idx}"
-                    data-name="${qEsc(p.name)}"
-                    data-problem="${qEsc(p.problem_id)}"
-                    data-model-key="${qEsc(p.model_key || modelKeyForPoint(p))}"
-                    data-vars="${p.num_vars}"
-                    data-density="${p.density}"
-                    data-model="${qEsc(p.model_approach || p.model_kind || "model")}"
-                    data-url="${qEsc(href)}"
-                    cx="${xPos(p.num_vars)}"
-                    cy="${yPos(p.density)}"
-                    style="--p-fill:${qEsc(color.fill)};--p-stroke:${qEsc(color.stroke)}"
-                    r="4"
-                    tabindex="0"
-                    role="link"
-                    aria-label="${qEsc(p.name)}"
-                ></circle>`;
+                <g class="mip-pt" data-model-key="${modelKey}">
+                    <circle
+                        class="mip-dot"
+                        id="mip-point-${idx}"
+                        cx="${cx}"
+                        cy="${cy}"
+                        style="--p-fill:${qEsc(color.fill)};--p-stroke:${qEsc(color.stroke)}"
+                        r="4"
+                    ></circle>
+                    <circle
+                        class="mip-point"
+                        data-idx="${idx}"
+                        data-name="${qEsc(p.name)}"
+                        data-problem="${qEsc(p.problem_id)}"
+                        data-model-key="${modelKey}"
+                        data-vars="${p.num_vars}"
+                        data-density="${p.density}"
+                        data-model="${qEsc(p.model_approach || p.model_kind || "model")}"
+                        data-url="${qEsc(href)}"
+                        cx="${cx}"
+                        cy="${cy}"
+                        r="12"
+                        tabindex="0"
+                        role="link"
+                        aria-label="${qEsc(p.name)}"
+                    ></circle>
+                </g>`;
         })
         .join("");
 
@@ -305,9 +328,12 @@ function renderMipChart(points) {
     const tooltip = document.getElementById("mip-tooltip");
     const pointsEls = Array.from(root.querySelectorAll(".mip-point"));
 
+    // Move the "active" highlight onto the *visible* dot (the sibling of the
+    // transparent hit circle that actually receives the event), since the dot is
+    // what carries the fill/radius styling.
     const activatePoint = (el) => {
-        pointsEls.forEach((pEl) => pEl.classList.remove("active"));
-        el.classList.add("active");
+        root.querySelectorAll(".mip-dot.active").forEach((d) => d.classList.remove("active"));
+        el.previousElementSibling?.classList.add("active");
         tooltip.innerHTML = `
             <div class="mip-tooltip-title">${qEsc(el.dataset.name || "")}</div>
             <div class="mip-tooltip-row"><span>Problem</span><strong>${qEsc(el.dataset.problem || "")}</strong></div>
@@ -383,9 +409,9 @@ async function initInstancesPage() {
 }
 
 function getFilteredInstances() {
-    const q = (document.getElementById("i-search").value || "").toLowerCase();
-    const pid = document.getElementById("i-prob").value || "";
-    const st = document.getElementById("i-status").value || "";
+    const q = (document.getElementById("i-search")?.value || "").toLowerCase();
+    const pid = document.getElementById("i-prob")?.value || "";
+    const st = document.getElementById("i-status")?.value || "";
 
     let rows = allInstances.filter(
         (r) =>
@@ -423,10 +449,12 @@ function downloadInstancesCsv() {
 function renderInstances() {
     const rows = getFilteredInstances();
 
-    document.getElementById("i-count").textContent =
-        `${rows.length.toLocaleString()} instance${rows.length !== 1 ? "s" : ""}`;
+    const countEl = document.getElementById("i-count");
+    if (countEl) countEl.textContent = `${rows.length.toLocaleString()} instance${rows.length !== 1 ? "s" : ""}`;
 
-    document.getElementById("i-tbody").innerHTML =
+    const tbody = document.getElementById("i-tbody");
+    if (!tbody) return;
+    tbody.innerHTML =
         rows
             .map(
                 (r) => `

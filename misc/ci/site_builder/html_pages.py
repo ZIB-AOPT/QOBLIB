@@ -78,6 +78,16 @@ PAGE_META = {
         "description": "Contribute a result to QOBLIB: build a submission from the canonical "
         "summary CSV template and open a pull request.",
     },
+    "participate.html": {
+        "title": "Participate — QOBLIB",
+        "description": "How to participate in QOBLIB: submission requirements, validity and "
+        "optimality criteria, and best practices for contributing benchmark results.",
+    },
+    "committee.html": {
+        "title": "Steering Committee — QOBLIB",
+        "description": "The QOBLIB steering committee — the researchers curating the benchmark "
+        "library and reviewing submissions.",
+    },
     "instance.html": {
         "title": "Instance — QOBLIB",
         "description": "Detailed view of a single QOBLIB benchmark instance and its submissions.",
@@ -160,11 +170,16 @@ def _inject_base(html_text, base_href) -> str:
     return _VIEWPORT_RE.sub(lambda m: m.group(1) + tag, html_text, count=1)
 
 
-def _add_skip_link(html_text, main_href="#main") -> str:
-    # On <base>-using pages a bare "#main" would resolve against the base URL, so
-    # deep pages pass an absolute path to their own #main.
-    if 'id="main"' not in html_text:
-        html_text = _MAIN_OPEN_RE.sub(r'\1 id="main"\2', html_text, count=1)
+def _add_skip_link(html_text, main_href="#main-content") -> str:
+    # The source <main> already carries id="main-content", so point the skip link
+    # there rather than injecting a second id. Only add an id when the <main> has
+    # none at all (guards against a source page that omits it).
+    #   NB: a substring check for 'id="main"' would false-match 'id="main-content"'
+    #   and inject a duplicate id (invalid HTML; the skip target then never
+    #   resolves), so we detect any id on the <main> element specifically.
+    main_match = _MAIN_OPEN_RE.search(html_text)
+    if main_match and "id=" not in main_match.group(1):
+        html_text = _MAIN_OPEN_RE.sub(r'\1 id="main-content"\2', html_text, count=1)
     if 'class="skip-link"' not in html_text:
         link = f'<a class="skip-link" href="{_esc(main_href)}">Skip to content</a>'
         html_text = _BODY_OPEN_RE.sub(lambda m: m.group(1) + "\n        " + link, html_text, count=1)
@@ -232,8 +247,9 @@ def render_problem_page(template_html, p, base_url) -> str:
     desc = p.get("why") or p.get("short") or DEFAULT_DESCRIPTION
     canonical = f"{base_url}/problem/{pid}/"
     og_image = f"{base_url}/{DEFAULT_OG_IMAGE}"
-    # Relative to the <base> (site root), this points back at the current page.
-    main_href = f"problem/{pid}/#main"
+    # Relative to the <base> (site root), this points back at the current page's
+    # <main id="main-content">.
+    main_href = f"problem/{pid}/#main-content"
 
     # The problem.html shell carries a noindex tag (it is a client-only ?id=
     # redirect target). These generated deep pages ARE the crawlable version and
@@ -264,6 +280,8 @@ def build_sitemap(base_url, problem_ids) -> str:
         "leaderboard.html",
         "submissions.html",
         "submit.html",
+        "participate.html",
+        "committee.html",
     ]
     paths += [f"problem/{pid}/" for pid in problem_ids]
     locs = "".join(f"  <url><loc>{_esc(base_url + '/' + p)}</loc></url>\n" for p in paths)
@@ -306,6 +324,9 @@ def not_found_page(base_url) -> str:
     problems = f"{base}/problems.html"
     css = f"{base}/assets/styles.css"
     icon = f"{base}/assets/images/qoblib-favicon.svg"
+    icon_png32 = f"{base}/assets/images/favicon-32.png"
+    icon_png192 = f"{base}/assets/images/qoblib-icon-192.png"
+    icon_apple = f"{base}/assets/images/apple-touch-icon.png"
     fonts = (
         "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700"
         "&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap"
@@ -319,6 +340,11 @@ def not_found_page(base_url) -> str:
     <title>Page not found — {SITE_NAME}</title>
     <meta name="robots" content="noindex" />
     <link rel="icon" type="image/svg+xml" href="{_esc(icon)}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{_esc(icon_png32)}" />
+    <link rel="icon" type="image/png" sizes="192x192" href="{_esc(icon_png192)}" />
+    <link rel="apple-touch-icon" href="{_esc(icon_apple)}" />
+    <meta name="theme-color" content="#1d6f78" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14191b" media="(prefers-color-scheme: dark)" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="{_esc(fonts)}" rel="stylesheet" />

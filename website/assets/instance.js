@@ -267,11 +267,18 @@ function buildTsChart(series, minimize, bkv) {
             }
             d += ` L ${f1(xPx(tMax))} ${f1(yPx(env[env.length - 1][1]))}`;
 
-            // Dots at each improvement.
-            const dots = env.map(([t, v]) =>
-                `<circle cx="${f1(xPx(t))}" cy="${f1(yPx(v))}" r="3" style="fill:${s.color}">` +
-                `<title>${qEsc(s.label)} · ${qEsc(fmtSec(t))} · ${qEsc(fmtTick(v))}</title></circle>`
-            ).join("");
+            // Dots at each improvement. A larger transparent circle over each dot
+            // widens the hover target (the native <title> tooltip fires on it), so
+            // the r=3 dots are no longer pixel-perfect to hit.
+            const dots = env.map(([t, v]) => {
+                const cx = f1(xPx(t));
+                const cy = f1(yPx(v));
+                return (
+                    `<circle cx="${cx}" cy="${cy}" r="3" style="fill:${s.color}" />` +
+                    `<circle cx="${cx}" cy="${cy}" r="10" fill="transparent" style="cursor:pointer">` +
+                    `<title>${qEsc(s.label)} · ${qEsc(fmtSec(t))} · ${qEsc(fmtTick(v))}</title></circle>`
+                );
+            }).join("");
 
             envPath =
                 `<path d="${d}" fill="none" style="stroke:${s.color}" stroke-width="2" stroke-linejoin="round" />` +
@@ -402,8 +409,18 @@ function buildConvergenceChart(series, opts) {
             });
             d += ` L ${xPx(xMax).toFixed(1)} ${yPx(sp[sp.length - 1].y).toFixed(1)}`;
             const line = `<path d="${d}" fill="none" style="stroke:${s.color}" stroke-width="2" stroke-linejoin="round" />`;
+            // A larger transparent circle over each dot widens the hover target
+            // (the native <title> tooltip fires on it) so the small dots are easy
+            // to hit on desktop and touch alike.
             const dots = sp
-                .map((p) => `<circle cx="${xPx(p.x).toFixed(1)}" cy="${yPx(p.y).toFixed(1)}" r="3.6" style="fill:${s.color}"><title>${qEsc(s.name)} · ${qEsc(fmtDate(p.x))} · ${qEsc(fmtTick(p.y))}</title></circle>`)
+                .map((p) => {
+                    const cx = xPx(p.x).toFixed(1);
+                    const cy = yPx(p.y).toFixed(1);
+                    return (
+                        `<circle cx="${cx}" cy="${cy}" r="3.6" style="fill:${s.color}" />` +
+                        `<circle cx="${cx}" cy="${cy}" r="10" fill="transparent" style="cursor:pointer"><title>${qEsc(s.name)} · ${qEsc(fmtDate(p.x))} · ${qEsc(fmtTick(p.y))}</title></circle>`
+                    );
+                })
                 .join("");
             return line + dots;
         })
@@ -702,8 +719,9 @@ async function initInstancePage() {
                 : `<span class="inst-nav-btn inst-nav-disabled"></span>`}
             <span class="inst-nav-pos">${instIdx + 1} / ${n}</span>
             <span class="inst-nav-search-wrap">
-                <input class="inst-nav-search" type="search" placeholder="Jump to…" aria-label="Search instance" autocomplete="off" />
-                <ul class="inst-nav-dropdown" role="listbox" hidden></ul>
+                <input class="inst-nav-search" type="search" placeholder="Jump to…" aria-label="Search instance" autocomplete="off"
+                       role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="inst-nav-listbox" />
+                <ul class="inst-nav-dropdown" id="inst-nav-listbox" role="listbox" aria-label="Instance results" hidden></ul>
             </span>
             ${nextInst
                 ? `<a class="inst-nav-btn inst-nav-next" href="${qEsc(qInstanceUrl(p.id, nextInst.name))}" title="${qEsc(nextInst.name)}">${qEsc(nextInst.name)} →</a>`
@@ -814,13 +832,28 @@ async function initInstancePage() {
         const searchInput = container.querySelector(".inst-nav-search");
         const dropdown = container.querySelector(".inst-nav-dropdown");
         if (searchInput && dropdown) {
+            const setActive = (li) => {
+                dropdown.querySelectorAll("li[aria-selected]").forEach((el) => el.removeAttribute("aria-selected"));
+                if (li) {
+                    li.setAttribute("aria-selected", "true");
+                    searchInput.setAttribute("aria-activedescendant", li.id);
+                } else {
+                    searchInput.removeAttribute("aria-activedescendant");
+                }
+            };
             const show = (items) => {
                 dropdown.innerHTML = items
-                    .map((inst) => `<li role="option" tabindex="-1" data-href="${qEsc(qInstanceUrl(p.id, inst.name))}">${qEsc(inst.name)}</li>`)
+                    .map((inst, i) => `<li role="option" id="inst-nav-opt-${i}" tabindex="-1" data-href="${qEsc(qInstanceUrl(p.id, inst.name))}">${qEsc(inst.name)}</li>`)
                     .join("");
                 dropdown.hidden = items.length === 0;
+                searchInput.setAttribute("aria-expanded", items.length ? "true" : "false");
+                setActive(null);
             };
-            const hide = () => { dropdown.hidden = true; };
+            const hide = () => {
+                dropdown.hidden = true;
+                searchInput.setAttribute("aria-expanded", "false");
+                setActive(null);
+            };
 
             searchInput.addEventListener("input", () => {
                 const q = searchInput.value.trim().toLowerCase();
@@ -837,15 +870,15 @@ async function initInstancePage() {
                 }
                 if (e.key === "ArrowDown") {
                     const first = dropdown.querySelector("li");
-                    if (first) { e.preventDefault(); first.focus(); }
+                    if (first) { e.preventDefault(); first.focus(); setActive(first); }
                 }
             });
 
             dropdown.addEventListener("keydown", (e) => {
                 const cur = document.activeElement;
                 if (e.key === "Enter" && cur.dataset.href) { window.location.href = cur.dataset.href; return; }
-                if (e.key === "ArrowDown") { e.preventDefault(); const nx = cur.nextElementSibling; if (nx) nx.focus(); }
-                if (e.key === "ArrowUp") { e.preventDefault(); const pv = cur.previousElementSibling; if (pv) pv.focus(); else searchInput.focus(); }
+                if (e.key === "ArrowDown") { e.preventDefault(); const nx = cur.nextElementSibling; if (nx) { nx.focus(); setActive(nx); } }
+                if (e.key === "ArrowUp") { e.preventDefault(); const pv = cur.previousElementSibling; if (pv) { pv.focus(); setActive(pv); } else { searchInput.focus(); setActive(null); } }
                 if (e.key === "Escape") { hide(); searchInput.value = ""; searchInput.focus(); }
             });
 

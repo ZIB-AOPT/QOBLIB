@@ -423,7 +423,15 @@ function catBadge(cat) {
 
 function renderMarkdown(md) {
     if (!md) return "";
-    if (!window.marked?.parse) return `<p>${esc(md)}</p>`;
+    if (!window.marked?.parse) {
+        // marked CDN unavailable: degrade to readable escaped text rather than one
+        // undifferentiated blob — split on blank lines into paragraphs and keep
+        // single line breaks. Not Markdown, but legible prose during a CDN outage.
+        return String(md)
+            .split(/\n{2,}/)
+            .map((para) => `<p>${esc(para).replace(/\n/g, "<br>")}</p>`)
+            .join("");
+    }
     // Shield math from the Markdown processor: marked would otherwise strip TeX
     // backslash escapes (\\, \{, \(, ...) and turn _subscripts_ into <em>,
     // corrupting the source before KaTeX runs. Stash each math span behind an
@@ -652,17 +660,33 @@ async function loadProblemData(id) {
     return { ...meta, instances, instance_submissions: instanceSubs };
 }
 
-async function loadAllProblemSubmissions() {
+// Load and concatenate a per-problem chunk across all problems. Uses
+// allSettled so one missing/malformed chunk (a 404 or bad JSON for a single
+// problem) degrades to that problem being absent, rather than rejecting the
+// whole batch and blanking the Submissions / Leaderboard overview pages. Failed
+// chunks are logged (via console.warn) and skipped.
+async function loadAllChunks(loader, label) {
     const idx = await loadIndex();
-    const chunks = await Promise.all(idx.problems.map((p) => loadProblemSubmissions(p.id)));
-    return chunks.flat();
+    const settled = await Promise.allSettled(idx.problems.map((p) => loader(p.id)));
+    const out = [];
+    settled.forEach((r, i) => {
+        if (r.status === "fulfilled") {
+            out.push(...(r.value || []));
+        } else {
+            const pid = idx.problems[i]?.id;
+            console.warn(`Skipping problem ${pid} ${label}: ${r.reason?.message || r.reason}`);
+        }
+    });
+    return out;
+}
+
+async function loadAllProblemSubmissions() {
+    return loadAllChunks(loadProblemSubmissions, "submissions");
 }
 
 async function loadAllSubmissionGroups() {
     if (ALL_SUBMISSION_GROUPS_CACHE) return ALL_SUBMISSION_GROUPS_CACHE;
-    const idx = await loadIndex();
-    const chunks = await Promise.all(idx.problems.map((p) => loadProblemSubmissionGroups(p.id)));
-    ALL_SUBMISSION_GROUPS_CACHE = chunks.flat();
+    ALL_SUBMISSION_GROUPS_CACHE = await loadAllChunks(loadProblemSubmissionGroups, "submission groups");
     return ALL_SUBMISSION_GROUPS_CACHE;
 }
 
@@ -935,6 +959,36 @@ function enableTableSorting(root = document, options = {}) {
     });
 }
 
+// Toggle edge-fade classes on horizontally scrollable table wrappers (.tw) so a
+// subtle mask hints there are more columns off-screen. The fade appears only
+// while the table actually overflows, and only on the side(s) with hidden
+// content. Idempotent; safe to call repeatedly (e.g. after a tbody re-render).
+function updateScrollShadow(el) {
+    const overflow = el.scrollWidth - el.clientWidth;
+    el.classList.remove("scroll-x-start", "scroll-x-end", "scroll-x-both");
+    if (overflow <= 1) return; // fits — no fade
+    const atStart = el.scrollLeft <= 1;
+    const atEnd = el.scrollLeft >= overflow - 1;
+    if (atStart) el.classList.add("scroll-x-start");
+    else if (atEnd) el.classList.add("scroll-x-end");
+    else el.classList.add("scroll-x-both");
+}
+
+function markScrollShadows(root = document) {
+    const scope = root && root.querySelectorAll ? root : document;
+    const wraps = scope.matches?.(".tw") ? [scope] : Array.from(scope.querySelectorAll(".tw"));
+    wraps.forEach((el) => {
+        if (el.dataset.scrollShadowBound !== "1") {
+            el.dataset.scrollShadowBound = "1";
+            el.addEventListener("scroll", () => updateScrollShadow(el), { passive: true });
+            if (typeof ResizeObserver !== "undefined") {
+                new ResizeObserver(() => updateScrollShadow(el)).observe(el);
+            }
+        }
+        updateScrollShadow(el);
+    });
+}
+
 async function renderFooter() {
     const buildEl = document.getElementById("footer-build");
     if (!buildEl) return;
@@ -994,8 +1048,9 @@ function setupGlobalSearch() {
     const wrap = document.createElement("span");
     wrap.className = "gsearch-wrap";
     wrap.innerHTML =
-        '<input class="gsearch-input" type="search" placeholder="Search…" aria-label="Global search" autocomplete="off" />' +
-        '<ul class="gsearch-dropdown" role="listbox" hidden></ul>';
+        '<input class="gsearch-input" type="search" placeholder="Search…" aria-label="Global search" autocomplete="off" ' +
+        'role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="gsearch-listbox" />' +
+        '<ul class="gsearch-dropdown" id="gsearch-listbox" role="listbox" aria-label="Search results" hidden></ul>';
 
     // Insert before the theme toggle
     const themeBtn = navInner.querySelector(".theme-toggle");
@@ -1020,17 +1075,34 @@ function setupGlobalSearch() {
         return _data;
     }
 
+    // Reflect the popup's open/closed state on the combobox for assistive tech.
+    const setActive = (li) => {
+        dropdown.querySelectorAll(".gsearch-item[aria-selected]").forEach((el) => el.removeAttribute("aria-selected"));
+        if (li) {
+            li.setAttribute("aria-selected", "true");
+            input.setAttribute("aria-activedescendant", li.id);
+        } else {
+            input.removeAttribute("aria-activedescendant");
+        }
+    };
+
     function show(results) {
-        if (!results.length) { dropdown.hidden = true; return; }
-        dropdown.innerHTML = results.map((r) =>
-            `<li role="option" tabindex="-1" data-href="${esc(r.href)}" class="gsearch-item gsearch-${esc(r.type)}">` +
+        if (!results.length) { hide(); return; }
+        dropdown.innerHTML = results.map((r, i) =>
+            `<li role="option" id="gsearch-opt-${i}" tabindex="-1" data-href="${esc(r.href)}" class="gsearch-item gsearch-${esc(r.type)}">` +
             `<span class="gsearch-kind">${esc(r.kind)}</span>` +
             `<span class="gsearch-label">${esc(r.label)}</span>` +
             `</li>`
         ).join("");
         dropdown.hidden = false;
+        input.setAttribute("aria-expanded", "true");
+        setActive(null);
     }
-    const hide = () => { dropdown.hidden = true; };
+    const hide = () => {
+        dropdown.hidden = true;
+        input.setAttribute("aria-expanded", "false");
+        setActive(null);
+    };
 
     input.addEventListener("input", () => {
         clearTimeout(_debounce);
@@ -1052,13 +1124,13 @@ function setupGlobalSearch() {
     input.addEventListener("keydown", (e) => {
         if (e.key === "Escape") { hide(); input.value = ""; return; }
         if (e.key === "Enter") { const first = dropdown.querySelector("li"); if (first) window.location.href = first.dataset.href; return; }
-        if (e.key === "ArrowDown") { e.preventDefault(); const first = dropdown.querySelector("li"); if (first) first.focus(); }
+        if (e.key === "ArrowDown") { e.preventDefault(); const first = dropdown.querySelector("li"); if (first) { first.focus(); setActive(first); } }
     });
     dropdown.addEventListener("keydown", (e) => {
         const cur = document.activeElement;
         if (e.key === "Enter" && cur.dataset.href) { window.location.href = cur.dataset.href; return; }
-        if (e.key === "ArrowDown") { e.preventDefault(); const nx = cur.nextElementSibling; if (nx) nx.focus(); }
-        if (e.key === "ArrowUp") { e.preventDefault(); const pv = cur.previousElementSibling; if (pv) pv.focus(); else input.focus(); }
+        if (e.key === "ArrowDown") { e.preventDefault(); const nx = cur.nextElementSibling; if (nx) { nx.focus(); setActive(nx); } }
+        if (e.key === "ArrowUp") { e.preventDefault(); const pv = cur.previousElementSibling; if (pv) { pv.focus(); setActive(pv); } else { input.focus(); setActive(null); } }
         if (e.key === "Escape") { hide(); input.value = ""; input.focus(); }
     });
     dropdown.addEventListener("click", (e) => {
@@ -1077,6 +1149,7 @@ function initCommon() {
     setupGlobalSearch();
     initTheme();
     enableTableSorting(document);
+    markScrollShadows(document);
     renderFooter();
     updateFooterDataLink();
 
@@ -1089,6 +1162,11 @@ function initCommon() {
                         enableTableSorting(node.parentElement || document);
                     } else if (node.querySelectorAll) {
                         enableTableSorting(node);
+                    }
+                    // Refresh edge-fade hints for any table wrappers just added or
+                    // re-rendered (a re-rendered tbody changes the scroll width).
+                    if (node.matches?.(".tw") || node.closest?.(".tw") || node.querySelector?.(".tw")) {
+                        markScrollShadows(node.closest?.(".tw") || node);
                     }
                 });
             });
@@ -1185,10 +1263,36 @@ function ensureFigureLightbox() {
         if (ev.target === figLightbox || ev.target.closest(".fig-lightbox-close")) closeFigureLightbox();
     });
     document.addEventListener("keydown", (ev) => {
-        if (ev.key === "Escape" && !figLightbox.hidden) closeFigureLightbox();
+        if (figLightbox.hidden) return;
+        if (ev.key === "Escape") { closeFigureLightbox(); return; }
+        // Trap Tab within the modal so keyboard focus can't wander behind it.
+        if (ev.key === "Tab") trapLightboxTab(ev);
     });
     document.body.appendChild(figLightbox);
     return figLightbox;
+}
+
+// Keep Tab / Shift+Tab cycling within the open lightbox. Queries focusables at
+// event time because the figure content is injected per-open (links, chart
+// points, the close button). Falls back to holding focus on the close button.
+function trapLightboxTab(ev) {
+    if (!figLightbox) return;
+    const focusables = Array.from(
+        figLightbox.querySelectorAll(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input, select, textarea',
+        ),
+    ).filter((el) => el.offsetParent !== null || el === document.activeElement);
+    if (!focusables.length) { ev.preventDefault(); return; }
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+    if (ev.shiftKey && (active === first || !figLightbox.contains(active))) {
+        ev.preventDefault();
+        last.focus();
+    } else if (!ev.shiftKey && active === last) {
+        ev.preventDefault();
+        first.focus();
+    }
 }
 
 function openFigureLightbox(html, trigger) {
@@ -1298,6 +1402,7 @@ window.QOBLIB = {
     enhanceFigures,
     enableTableSorting,
     setTableSortIndicator,
+    markScrollShadows,
     initCommon,
     initTheme,
     applyTheme,

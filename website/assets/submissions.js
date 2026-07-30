@@ -65,10 +65,14 @@ function renderStats(groups) {
     const totalInstances = groups.reduce((sum, group) => sum + (group.instances || []).length, 0);
     const problems = new Set(groups.map((group) => group.problem_id)).size;
     const authors = new Set(groups.map((group) => group.profile?.submitter || "").filter(Boolean)).size;
-    document.getElementById("sub-stat-packages").textContent = groups.length.toLocaleString();
-    document.getElementById("sub-stat-instances").textContent = totalInstances.toLocaleString();
-    document.getElementById("sub-stat-problems").textContent = problems.toLocaleString();
-    document.getElementById("sub-stat-authors").textContent = authors.toLocaleString();
+    const setStat = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value.toLocaleString();
+    };
+    setStat("sub-stat-packages", groups.length);
+    setStat("sub-stat-instances", totalInstances);
+    setStat("sub-stat-problems", problems);
+    setStat("sub-stat-authors", authors);
 }
 
 function populateProblemFilter(indexData) {
@@ -82,9 +86,9 @@ function populateProblemFilter(indexData) {
 }
 
 function getFilteredGroups() {
-    const search = document.getElementById("sub-search").value.trim().toLowerCase();
-    const problemId = document.getElementById("sub-prob").value || "";
-    const category = document.getElementById("sub-cat").value || "";
+    const search = (document.getElementById("sub-search")?.value || "").trim().toLowerCase();
+    const problemId = document.getElementById("sub-prob")?.value || "";
+    const category = document.getElementById("sub-cat")?.value || "";
 
     const filtered = allGroups.filter((group) => {
         if (problemId && group.problem_id !== problemId) return false;
@@ -109,7 +113,8 @@ function getFilteredGroups() {
 
 function renderSubmissions() {
     const filtered = getFilteredGroups();
-    document.getElementById("sub-count").textContent = `${filtered.length} submission${filtered.length !== 1 ? "s" : ""}`;
+    const countEl = document.getElementById("sub-count");
+    if (countEl) countEl.textContent = `${filtered.length} submission${filtered.length !== 1 ? "s" : ""}`;
     // The headline stat tiles are a stable dataset overview — always the global
     // totals, not the filtered subset (which silently shrank "Problems" to 1 etc.
     // as soon as any filter was applied). The count pill above already reflects

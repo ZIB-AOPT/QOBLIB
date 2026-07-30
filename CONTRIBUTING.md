@@ -162,7 +162,7 @@ Rules:
 
 #### What the CI checker does
 
-The automated checker validates the JSON structure (correct types, required keys, non-empty runs) but does **not** enforce the monotonicity of incumbents — that is left to reviewers. Providing a time series is entirely optional; the CI checker reports its absence as informational only.
+The automated checker validates the JSON structure (correct types, required keys, non-empty runs) and **does enforce monotonicity** — a minimization run where the incumbent increases (or a maximization run where it decreases) is reported as a hard failure that blocks the merge. Providing a time series is entirely optional; the CI checker reports its absence as informational only.
 
 ## Benchmark Reporting Template
 

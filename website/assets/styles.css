@@ -105,6 +105,17 @@ button {
     color: inherit;
 }
 
+/* Global keyboard-focus ring. Many links only change colour on focus, which is
+   easy to miss; give every keyboard-focused link/button a visible ring. Mouse
+   clicks don't trigger :focus-visible, so this stays invisible for pointer users.
+   Component-specific :focus-visible rules elsewhere still override this. */
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
 nav {
     background: rgba(247, 247, 244, 0.96);
     backdrop-filter: blur(10px);
@@ -542,6 +553,27 @@ body[data-nav="home"] .stats-bar {
     }
 }
 
+/* Chart / plot legends use very small mono type (~0.62–0.7rem) that's hard to
+   read on a phone. Nudge every legend up a step and give the items a little more
+   breathing room on small screens. */
+@media (max-width: 600px) {
+    .ls-legend,
+    .landscape-inset figcaption,
+    .ls-inset-key {
+        font-size: 0.74rem;
+    }
+
+    .chart-legend,
+    .conv-legend {
+        font-size: 0.76rem;
+        gap: 0.5rem;
+    }
+
+    .mip-legend-hint {
+        font-size: 0.76rem;
+    }
+}
+
 .sh {
     display: flex;
     align-items: baseline;
@@ -880,6 +912,7 @@ a.badge:hover {
     margin-bottom: 0.85rem;
 }
 
+.chart-head h2,
 .chart-head h3 {
     color: var(--navy);
     font-size: 1rem;
@@ -942,8 +975,10 @@ a.badge:hover {
     width: 10px;
     height: 10px;
     border-radius: 999px;
-    background: #1f6f6c;
-    border: 1px solid #0e4f4d;
+    /* Theme-aware fallback swatch (the instances-page legend sets its own colour
+       inline per series); the literal teal here didn't adapt to dark mode. */
+    background: var(--teal);
+    border: 1px solid var(--accent-d);
 }
 
 .mip-chart-wrap {
@@ -991,30 +1026,49 @@ a.badge:hover {
     stroke-width: 1.2;
 }
 
-.mip-point {
-    fill: var(--p-fill, #1f6f6c);
-    stroke: var(--p-stroke, #0e4f4d);
+/* Visible scatter dot. Inert to pointer events — the transparent .mip-point
+   circle on top of it (a much larger hit target) catches hover/tap/focus. */
+.mip-dot {
+    /* JS sets --p-fill/--p-stroke inline per point; the fallbacks are theme-aware
+       so a dot with unset vars still reads in dark mode. */
+    fill: var(--p-fill, var(--teal));
+    stroke: var(--p-stroke, var(--accent-d));
     stroke-width: 1;
-    cursor: pointer;
-    transition: transform 0.12s ease, fill 0.12s ease;
+    pointer-events: none;
+    transition: r 0.12s ease, fill 0.12s ease, stroke 0.12s ease;
 }
 
-.mip-point:hover,
-.mip-point:focus-visible,
-.mip-point.active {
+/* Transparent hit circle (r≈12): a comfortable ~24px target on any device, so a
+   point no longer needs a pixel-perfect hover/tap. It carries the interaction;
+   the sibling .mip-dot below it gets the active/hover styling. */
+.mip-point {
+    fill: transparent;
+    stroke: none;
+    cursor: pointer;
+}
+
+/* Highlight the visible dot when its hit circle is hovered/focused/active. The
+   dot sits before the hit circle in the DOM, so we key off the parent group
+   (:has) rather than a next-sibling selector. */
+.mip-pt:hover .mip-dot,
+.mip-pt:has(.mip-point:focus-visible) .mip-dot,
+.mip-dot.active {
     fill: var(--warm);
     stroke: var(--warm-d);
+    r: 5.5;
 }
 
 .mip-point:focus-visible {
     outline: none;
 }
 
-.mip-point.active {
-    r: 5.5;
+/* Ring the dot when its hit circle has keyboard focus, since the transparent
+   target itself shows nothing. */
+.mip-pt:has(.mip-point:focus-visible) .mip-dot {
+    stroke-width: 2;
 }
 
-.mip-point.hidden {
+.mip-pt.hidden {
     display: none;
 }
 
@@ -1110,6 +1164,26 @@ textarea:focus {
     border-radius: var(--rl);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+}
+
+/* Edge-fade hint on horizontally scrollable tables. The classes are toggled by
+   markScrollShadows() in common.js only while the table actually overflows, and
+   only on the side(s) with off-screen content, so a table that fits shows no
+   fade. Table cells are opaque (they'd cover a background scroll-shadow), so the
+   hint is a mask fade over the ~1rem cell padding at each scrollable edge. */
+.tw.scroll-x-start {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent 100%);
+    mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent 100%);
+}
+
+.tw.scroll-x-end {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 1.5rem);
+    mask-image: linear-gradient(to right, transparent 0, #000 1.5rem);
+}
+
+.tw.scroll-x-both {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 1.5rem, #000 calc(100% - 1.5rem), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 1.5rem, #000 calc(100% - 1.5rem), transparent 100%);
 }
 
 table {
@@ -1303,6 +1377,37 @@ a.inst-nav-btn:hover {
 
 .inst-nav-search::-webkit-search-cancel-button {
     cursor: pointer;
+}
+
+/* Phones: the prev / pos / search / next controls can't share one row without
+   crushing the prev/next labels. Wrap, keep prev · pos · next on the top line,
+   and drop the search onto its own full-width line below. */
+@media (max-width: 640px) {
+    .inst-nav {
+        flex-wrap: wrap;
+    }
+
+    .inst-nav-btn {
+        /* Let prev/next take the row's width around the centred position marker
+           instead of being squeezed by the (now full-width) search. */
+        flex: 1 1 40%;
+    }
+
+    .inst-nav-search-wrap {
+        order: 1;
+        flex: 1 1 100%;
+    }
+
+    .inst-nav-search {
+        width: 100%;
+    }
+
+    .inst-nav-dropdown {
+        left: 0;
+        right: 0;
+        transform: none;
+        max-width: none;
+    }
 }
 
 .inst-nav-dropdown {
@@ -1991,39 +2096,6 @@ a.inst-nav-btn:hover {
     word-break: break-all;
 }
 
-.rank-num {
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 0.88rem;
-    text-align: center;
-}
-
-.r1 {
-    color: #b8860b;
-}
-
-.r2 {
-    color: #888;
-}
-
-.r3 {
-    color: #8b6347;
-}
-
-/* Brighter medals on dark surfaces — the light-mode gold/silver/bronze are too
-   dark to read on the dark leaderboard (the silver #888 especially). */
-:root[data-theme="dark"] .r1 {
-    color: #e0b84a;
-}
-
-:root[data-theme="dark"] .r2 {
-    color: #b9c0c4;
-}
-
-:root[data-theme="dark"] .r3 {
-    color: #c2906a;
-}
-
 .notes-cell {
     font-size: 0.77rem;
     color: var(--muted);
@@ -2060,6 +2132,14 @@ a.inst-nav-btn:hover {
 .toast.show {
     opacity: 1;
     transform: none;
+}
+
+/* The toast background is set inline by JS to --green / --amber / --red. Those
+   tokens are dark in light mode (white text reads fine) but flip to LIGHT
+   pastels in dark mode, where white text fails WCAG. Use a dark ink on the
+   pastel backgrounds in dark mode so the message stays readable in both themes. */
+:root[data-theme="dark"] .toast {
+    color: #14191b;
 }
 
 .text-center {
@@ -2117,6 +2197,14 @@ a.inst-nav-btn:hover {
 }
 
 @media (max-width: 700px) {
+    /* On phones the fluid `60% + 8rem` content width leaves wide side gutters on
+       top of the .page padding, wasting horizontal space where it's scarcest.
+       Let the content span the full viewport so the compact .page/.nav/.footer
+       padding is the only margin. */
+    :root {
+        --content-w: 100%;
+    }
+
     .hero h1 {
         font-size: 1.9rem;
     }
@@ -2130,11 +2218,53 @@ a.inst-nav-btn:hover {
     }
 
     .page {
-        padding: 1.5rem 1rem 4rem;
+        padding: 1.5rem 0.9rem 4rem;
     }
 
     .nav-links {
         gap: 0;
+    }
+}
+
+/* Very small screens: the row of hero / callout action buttons wraps raggedly
+   and each button is a small tap target. Stack them full-width so every action
+   is easy to hit and the column reads cleanly. */
+@media (max-width: 480px) {
+    .hero-actions,
+    .callout-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-actions .btn,
+    .callout-actions .btn {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+/* Touch devices: several controls (download chips, the GitHub link, chart-legend
+   toggles, the remarks expander) are well under the ~44px recommended tap target.
+   Scoped to coarse pointers so mouse users keep the compact desktop density. */
+@media (hover: none) and (pointer: coarse) {
+    .dl,
+    .nav-gh,
+    .committee-link {
+        padding: 0.5rem 0.7rem;
+        min-height: 2.75rem;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .chart-legend .legend-item,
+    .conv-leg[data-series] {
+        min-height: 2.25rem;
+        padding: 0.3rem 0.5rem;
+    }
+
+    .remarks-toggle {
+        min-width: 2.5rem;
+        min-height: 2.5rem;
     }
 }
 
@@ -2698,6 +2828,14 @@ textarea.invalid {
         display: inline-flex;
     }
 
+    /* The omnibox needs more room than a phone top bar can spare (its 9rem input
+       expands to 14rem on focus and pushes the logo/GitHub/hamburger off-screen).
+       Hide it on narrow viewports — the hamburger menu covers navigation, and
+       the Problems / Instances pages have their own in-page search. */
+    .gsearch-wrap {
+        display: none;
+    }
+
     /* Logo stays left; the theme toggle, GitHub link and hamburger group right. */
     .logo {
         margin-right: auto;
@@ -3119,6 +3257,12 @@ textarea.invalid {
     border-radius: 3px;
 }
 
+/* The black-alpha chip wash is nearly invisible on the dark card tints; invert
+   it to a light-alpha wash so inline code keeps a visible chip in dark mode. */
+:root[data-theme="dark"] .info-card code {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 .info-card-head {
     font-weight: 700;
     font-size: 0.88rem;
@@ -3372,11 +3516,6 @@ textarea.invalid {
 }
 
 @media (max-width: 600px) {
-    .step-item {
-        grid-template-columns: 2rem 1fr;
-        gap: 0.75rem;
-        padding: 0.9rem 1rem;
-    }
     .committee-card { display: block; }
 }
 
@@ -3847,4 +3986,26 @@ textarea.invalid {
     font-size: 0.8rem;
     color: var(--text);
     line-height: 1.55;
+}
+
+/* ============================================================
+   Global reduced-motion safety net
+   Honour prefers-reduced-motion for every transition/animation, not just the
+   affiliations ticker (which has its own richer fallback above). Near-zero
+   rather than 0 so any transitionend-dependent JS still fires. The blinking
+   loading caret is stopped outright.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .loading::after {
+        animation: none;
+    }
 }

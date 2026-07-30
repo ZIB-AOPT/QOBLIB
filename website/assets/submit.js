@@ -826,20 +826,24 @@ async function downloadZip() {
         showToast("ZIP library failed to load — use Preview files to copy CSVs instead.", "error");
         return;
     }
-    const zip = new JSZip();
-    files.forEach((f) => zip.file(f.path, f.content));
-    zip.file(`SUBMISSION_README_${folder}.txt`, exportReadme(folder, files));
-    const blob = await zip.generateAsync({ type: "blob" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `qoblib_submission_${folder}.zip`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-    if (errs > 0) showToast(`ZIP downloaded with ${errs} unresolved error${errs > 1 ? "s" : ""} — fix before opening the PR.`, "warn");
-    else showToast(`ZIP downloaded — ${files.length} instance file${files.length > 1 ? "s" : ""}.`);
+    try {
+        const zip = new JSZip();
+        files.forEach((f) => zip.file(f.path, f.content));
+        zip.file(`SUBMISSION_README_${folder}.txt`, exportReadme(folder, files));
+        const blob = await zip.generateAsync({ type: "blob" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `qoblib_submission_${folder}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        if (errs > 0) showToast(`ZIP downloaded with ${errs} unresolved error${errs > 1 ? "s" : ""} — fix before opening the PR.`, "warn");
+        else showToast(`ZIP downloaded — ${files.length} instance file${files.length > 1 ? "s" : ""}.`);
+    } catch (e) {
+        showToast("Could not build the ZIP — use Preview files to copy the CSVs instead.", "error");
+    }
 }
 
 function previewFiles() {
@@ -869,7 +873,15 @@ function previewFiles() {
 function copyFile(i) {
     const f = (window.__previewFiles || [])[i];
     if (!f) return;
-    navigator.clipboard.writeText(f.content).then(() => showToast("CSV copied to clipboard."));
+    // clipboard.writeText rejects on insecure origins or when permission is denied
+    // — tell the user to copy manually instead of failing silently.
+    if (!navigator.clipboard?.writeText) {
+        showToast("Clipboard unavailable — select the text and copy manually.", "warn");
+        return;
+    }
+    navigator.clipboard.writeText(f.content)
+        .then(() => showToast("CSV copied to clipboard."))
+        .catch(() => showToast("Couldn't copy — select the text and copy manually.", "warn"));
 }
 
 // ---------------------------------------------------------------------------
@@ -909,8 +921,9 @@ async function importCsvText(text) {
         showToast("That CSV has no 'Problem' column — is it a QOBLIB summary file?", "error");
         return 0;
     }
-    // Ensure all problems are indexed so we can map instance -> problem.
-    await Promise.all((SITE_INDEX.problems || []).map((p) => getProblem(p.id)));
+    // Ensure all problems are indexed so we can map instance -> problem. Use
+    // allSettled so one problem failing to load still lets the rest map instances.
+    await Promise.allSettled((SITE_INDEX.problems || []).map((p) => getProblem(p.id)));
 
     let added = 0;
     recs.slice(1).forEach((rec) => {
@@ -962,16 +975,31 @@ function onImportFiles(fileList) {
     if (!files.length) return;
     let total = 0;
     let pending = files.length;
+    const finish = () => {
+        pending -= 1;
+        if (pending !== 0) return;
+        if (note) {
+            note.style.display = "block";
+            note.textContent = `Imported ${total} row${total !== 1 ? "s" : ""} from ${files.length} file${files.length !== 1 ? "s" : ""}. Review the flagged items below.`;
+        }
+        showToast(`Imported ${total} row${total !== 1 ? "s" : ""}.`);
+    };
     files.forEach((file) => {
         const reader = new FileReader();
         reader.onload = async () => {
-            total += await importCsvText(String(reader.result || ""));
-            pending -= 1;
-            if (pending === 0) {
-                note.style.display = "block";
-                note.textContent = `Imported ${total} row${total !== 1 ? "s" : ""} from ${files.length} file${files.length !== 1 ? "s" : ""}. Review the flagged items below.`;
-                showToast(`Imported ${total} row${total !== 1 ? "s" : ""}.`);
+            // A single bad/unreadable CSV (or a network failure resolving its
+            // problems) shouldn't abort the whole import or leave an unhandled
+            // rejection — count what parsed and keep going.
+            try {
+                total += await importCsvText(String(reader.result || ""));
+            } catch (e) {
+                showToast(`Couldn't import ${file.name || "a file"} — skipped.`, "warn");
             }
+            finish();
+        };
+        reader.onerror = () => {
+            showToast(`Couldn't read ${file.name || "a file"} — skipped.`, "warn");
+            finish();
         };
         reader.readAsText(file);
     });

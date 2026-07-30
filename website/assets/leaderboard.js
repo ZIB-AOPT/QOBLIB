@@ -167,7 +167,14 @@ async function initLeaderboardPage() {
     try {
         indexData = await qLoadIndex();
         const problems = indexData.problems || [];
-        const datas = await Promise.all(problems.map((p) => qLoadProblemData(p.id)));
+        // allSettled so one problem's data failing to load doesn't blank the whole
+        // leaderboard — the failed problem is skipped (logged) and the rest render.
+        const settled = await Promise.allSettled(problems.map((p) => qLoadProblemData(p.id)));
+        const datas = [];
+        settled.forEach((r, i) => {
+            if (r.status === "fulfilled") datas.push(r.value);
+            else console.warn(`Leaderboard: skipping problem ${problems[i]?.id}: ${r.reason?.message || r.reason}`);
+        });
 
         records = [];
         quantumRecords = [];
@@ -266,8 +273,8 @@ function renderParadigmBests() {
     if (!panel) return;
 
     // Only in overall view, only when a single instance is focused.
-    const pid = document.getElementById("lb-prob").value || "";
-    const iid = document.getElementById("lb-inst").value || "";
+    const pid = document.getElementById("lb-prob")?.value || "";
+    const iid = document.getElementById("lb-inst")?.value || "";
     if (activeView !== "overall" || !pid || !iid) {
         panel.innerHTML = "";
         return;
@@ -315,8 +322,8 @@ function renderParadigmBests() {
 // ---------------------------------------------------------------------------
 
 function renderLeaderboard() {
-    const pid = document.getElementById("lb-prob").value || "";
-    const paradigm = document.getElementById("lb-paradigm").value || "";
+    const pid = document.getElementById("lb-prob")?.value || "";
+    const paradigm = document.getElementById("lb-paradigm")?.value || "";
 
     // Repopulate the instance filter for the chosen problem, using the active
     // record set so only instances with quantum submissions appear in Quantum view.
@@ -343,14 +350,15 @@ function renderLeaderboard() {
     renderParadigmBests();
 
     const rows = getLeaderboardRows();
-    document.getElementById("lb-count").textContent =
-        `${rows.length} record${rows.length !== 1 ? "s" : ""}`;
+    const countEl = document.getElementById("lb-count");
+    if (countEl) countEl.textContent = `${rows.length} record${rows.length !== 1 ? "s" : ""}`;
 
     const content = document.getElementById("lb-content");
+    if (!content) return;
     const prevSort = content.querySelector("table")?.qoblibSort;
 
     if (!rows.length) {
-        const filtering = pid || document.getElementById("lb-inst").value || paradigm;
+        const filtering = pid || document.getElementById("lb-inst")?.value || paradigm;
         content.innerHTML = `<div class="lb-empty">${filtering ? "No records match the current filters." : "No submissions yet."}</div>`;
         return;
     }
@@ -431,9 +439,9 @@ function renderLeaderboard() {
 // ---------------------------------------------------------------------------
 
 function getLeaderboardRows() {
-    const pid = document.getElementById("lb-prob").value || "";
-    const iid = document.getElementById("lb-inst").value || "";
-    const paradigm = document.getElementById("lb-paradigm").value || "";
+    const pid = document.getElementById("lb-prob")?.value || "";
+    const iid = document.getElementById("lb-inst")?.value || "";
+    const paradigm = document.getElementById("lb-paradigm")?.value || "";
     const src = activeView === "quantum" ? quantumRecords : records;
     return src
         .filter(
