@@ -54,8 +54,8 @@ class TestEnrichStaticPage(unittest.TestCase):
         self.assertIn('<meta name="description"', out)
         self.assertIn('<meta property="og:title"', out)
         self.assertIn('<meta name="twitter:card" content="summary_large_image" />', out)
-        self.assertIn('<main class="page" id="main">', out)
-        self.assertIn('<a class="skip-link" href="#main">', out)
+        self.assertIn('<main class="page" id="main-content">', out)
+        self.assertIn('<a class="skip-link" href="#main-content">', out)
 
     def test_subpage_canonical_is_file_url(self):
         src = '<head><title>x</title></head><body><main class="page"></main></body>'
@@ -98,7 +98,7 @@ class TestRenderProblemPage(unittest.TestCase):
 
     def test_skip_link_resolves_to_self_under_base(self):
         # Relative to <base> (site root) this is the page's own #main anchor.
-        self.assertIn('<a class="skip-link" href="problem/07/#main">', self.page)
+        self.assertIn('<a class="skip-link" href="problem/07/#main-content">', self.page)
 
     def test_cdn_scripts_inherited_from_pinned_template(self):
         self.assertIn("marked@12.0.2/marked.min.js", self.page)
@@ -143,7 +143,7 @@ class TestEnrichSite(unittest.TestCase):
 
             for name in ("sitemap.xml", "robots.txt", "404.html"):
                 self.assertTrue((out / name).is_file(), name)
-            self.assertIn("id=\"main\"", (out / "index.html").read_text(encoding="utf-8"))
+            self.assertIn("id=\"main-content\"", (out / "index.html").read_text(encoding="utf-8"))
 
     def test_missing_template_skips_problem_pages(self):
         with tempfile.TemporaryDirectory() as d:
