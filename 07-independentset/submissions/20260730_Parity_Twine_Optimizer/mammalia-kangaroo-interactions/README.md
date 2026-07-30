@@ -1,0 +1,42 @@
+# Submission for mammalia-kangaroo-interactions
+
+This directory contains the submission for the problem **mammalia-kangaroo-interactions**.
+
+| Field | Value 1 |
+| --- | --- |
+| Problem | mammalia-kangaroo-interactions |
+| Submitter | ParityQC Team |
+| Affiliation | Parity Quantum Computing GmbH |
+| Date | 2026-07-30 |
+| ====== |  |
+| Reference | https://parityqc.com/products/parity-twine-optimizer |
+| Best Objective Value | 4 |
+| Optimality Bound | N/A |
+| ====== |  |
+| Modeling Approach | QUBO |
+| # Decision Variables | 18 |
+| # Binary Variables | 18 |
+| # Integer Variables | N/A |
+| # Continuous Variables | N/A |
+| # Non-Zero Coefficients | 91 |
+| Coefficients Type | Integer |
+| Coefficients Range | N/A - N/A |
+| ====== |  |
+| Workflow | Solved using Parity Twine Optimizer (version: 0.1.8). |
+| Algorithm Type | Stochastic |
+| Paradigm | Quantum Hardware |
+| # Runs | 5 |
+| # Feasible Runs | 5 |
+| # Successful Runs | N/A |
+| Success Threshold | N/A |
+| ====== |  |
+| Hardware Specifications | Classical: MacBook Pro (Apple M3) 8 GB RAM 8 cores, Quantum: ibm_fez with 100000 shots. |
+| ====== |  |
+| Total Runtime | 118.822 |
+| Time to Solution | 118.822 |
+| CPU Runtime | 89.822 |
+| GPU Runtime | N/A |
+| QPU Runtime | 29.0 |
+| Other HW Runtime | N/A |
+| ====== |  |
+| Remarks | The Best Objective Value is the size of the maximal independent set found.Statistics for the Objective value across the runs: max: 4, median: 4.0, mean: 4.0, min: 4, std: 0.0. Times are in seconds. |
