@@ -18,9 +18,9 @@ This directory contains the submission for the problem **mammalia-kangaroo-inter
 | # Binary Variables | 18 |
 | # Integer Variables | N/A |
 | # Continuous Variables | N/A |
-| # Non-Zero Coefficients | 91 |
-| Coefficients Type | Integer |
-| Coefficients Range | N/A - N/A |
+| # Non-Zero Coefficients | 109 |
+| Coefficients Type | float |
+| Coefficients Range | -1.0 - 4.118778665134749 |
 | ====== |  |
 | Workflow | Solved using Parity Twine Optimizer (version: 0.1.8). 1) The parameters β and γ of the depth-one QAOA are optimized classically. 2) Samples are drawn from the QPU. 3) Samples from the QPU are classically post-processed. |
 | Algorithm Type | Stochastic |

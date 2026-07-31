@@ -18,9 +18,9 @@ This directory contains the submission for the problem **es60fst03**.
 | # Binary Variables | 114 |
 | # Integer Variables | N/A |
 | # Continuous Variables | N/A |
-| # Non-Zero Coefficients | 142 |
-| Coefficients Type | Integer |
-| Coefficients Range | N/A - N/A |
+| # Non-Zero Coefficients | 256 |
+| Coefficients Type | float |
+| Coefficients Range | -1.0 - 41.769134379606236 |
 | ====== |  |
 | Workflow | Solved using Parity Twine Optimizer (version: 0.1.8). 1) The parameters β and γ of the depth-one QAOA are optimized classically. 2) Samples are drawn from the QPU. 3) Samples from the QPU are classically post-processed. |
 | Algorithm Type | Stochastic |
