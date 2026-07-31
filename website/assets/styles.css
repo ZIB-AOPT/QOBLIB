@@ -2243,12 +2243,14 @@ a.inst-nav-btn:hover {
     }
 }
 
-/* Touch devices: several controls (download chips, the GitHub link, chart-legend
+/* Touch devices: several in-content controls (download chips, chart-legend
    toggles, the remarks expander) are well under the ~44px recommended tap target.
-   Scoped to coarse pointers so mouse users keep the compact desktop density. */
+   Scoped to coarse pointers so mouse users keep the compact desktop density.
+   NB: the nav-bar GitHub link is deliberately excluded — enlarging it to 44px
+   blows it out of proportion in the compact 54px top bar (next to the equally
+   small theme toggle and hamburger). */
 @media (hover: none) and (pointer: coarse) {
     .dl,
-    .nav-gh,
     .committee-link {
         padding: 0.5rem 0.7rem;
         min-height: 2.75rem;
