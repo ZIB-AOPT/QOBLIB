@@ -109,10 +109,12 @@ async function renderAffiliations() {
             }
             if (carry) healed.push(carry); // flush any remaining fragment
 
-            healed.forEach((a) => {
-                if (a && a !== "N/A") {
-                    counts.set(a, (counts.get(a) || 0) + nInst);
-                }
+            // A single package's affiliation string is comma-joined across all its
+            // co-authors, so the same org can appear several times (e.g. "JIJ, JIJ,
+            // JIJ"). Count each distinct org once per package, or its instance count
+            // would be multiplied by the number of authors from that org.
+            new Set(healed.filter((a) => a && a !== "N/A")).forEach((a) => {
+                counts.set(a, (counts.get(a) || 0) + nInst);
             });
         });
 
