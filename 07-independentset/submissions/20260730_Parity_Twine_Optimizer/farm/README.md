@@ -22,7 +22,7 @@ This directory contains the submission for the problem **farm**.
 | Coefficients Type | Integer |
 | Coefficients Range | N/A - N/A |
 | ====== |  |
-| Workflow | Solved using Parity Twine Optimizer (version: 0.1.8). |
+| Workflow | Solved using Parity Twine Optimizer (version: 0.1.8). 1) The parameters β and γ of the depth-one QAOA are optimized classically. 2) Samples are drawn from the QPU. 3) Samples from the QPU are classically post-processed. |
 | Algorithm Type | Stochastic |
 | Paradigm | Quantum Hardware |
 | # Runs | 5 |
