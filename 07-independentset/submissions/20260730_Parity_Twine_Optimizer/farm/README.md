@@ -13,7 +13,7 @@ This directory contains the submission for the problem **farm**.
 | Best Objective Value | 10 |
 | Optimality Bound | N/A |
 | ====== |  |
-| Modeling Approach | QUBO |
+| Modeling Approach | QUBO with penalty (n / d) * log(d) where n is the number of nodes and d the average degree of the graph. |
 | # Decision Variables | 18 |
 | # Binary Variables | 18 |
 | # Integer Variables | N/A |

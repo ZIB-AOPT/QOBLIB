@@ -13,7 +13,7 @@ This directory contains the submission for the problem **es60fst03**.
 | Best Objective Value | 55 |
 | Optimality Bound | N/A |
 | ====== |  |
-| Modeling Approach | QUBO |
+| Modeling Approach | QUBO with penalty (n / d) * log(d) where n is the number of nodes and d the average degree of the graph. |
 | # Decision Variables | 114 |
 | # Binary Variables | 114 |
 | # Integer Variables | N/A |

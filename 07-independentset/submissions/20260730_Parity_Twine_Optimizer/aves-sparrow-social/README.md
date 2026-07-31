@@ -13,7 +13,7 @@ This directory contains the submission for the problem **aves-sparrow-social**.
 | Best Objective Value | 13 |
 | Optimality Bound | N/A |
 | ====== |  |
-| Modeling Approach | QUBO |
+| Modeling Approach | QUBO with penalty (n / d) * log(d) where n is the number of nodes and d the average degree of the graph. |
 | # Decision Variables | 53 |
 | # Binary Variables | 53 |
 | # Integer Variables | N/A |
