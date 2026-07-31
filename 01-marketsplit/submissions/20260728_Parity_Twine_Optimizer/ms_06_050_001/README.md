@@ -18,9 +18,9 @@ This directory contains the submission for the problem **ms_06_050_001**.
 | # Binary Variables | 50 |
 | # Integer Variables | N/A |
 | # Continuous Variables | N/A |
-| # Non-Zero Coefficients | 1275 |
+| # Non-Zero Coefficients | 1276 |
 | Coefficients Type | Integer |
-| Coefficients Range | N/A - N/A |
+| Coefficients Range | -286422.0 - 16296.0 |
 | ====== |  |
 | Workflow | Solved using Parity Twine Optimizer (version: 0.1.8). 1) The parameters β and γ of the depth-one QAOA are optimized classically. 2) Samples are drawn from the QPU. 3) Samples from the QPU are classically post-processed. |
 | Algorithm Type | Stochastic |
