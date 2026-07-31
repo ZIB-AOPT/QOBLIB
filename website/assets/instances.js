@@ -18,6 +18,7 @@ const {
 
 let allInstances = [];
 let visibleMipModels = new Set();
+let problemNames = new Map(); // padded problem id -> problem name (for the scatter legend)
 
 const PROBLEM_COLORS = {
     "01": { fill: "#2E6F95", stroke: "#1C4A65" },
@@ -119,10 +120,12 @@ function renderProblemLegend(points) {
             const meta = classInfo.get(key) || {};
             const color = colorForModelKey(key, meta.pid);
             const active = visibleMipModels.has(key);
+            const problemName = problemNames.get(meta.pid) || "";
+            const problemLabel = problemName ? `${meta.pid} · ${problemName}` : meta.pid;
             return `
-                <button type="button" class="legend-item${active ? " on" : " off"}" data-model-key="${qEsc(key)}" aria-pressed="${active ? "true" : "false"}">
+                <button type="button" class="legend-item${active ? " on" : " off"}" data-model-key="${qEsc(key)}" aria-pressed="${active ? "true" : "false"}" title="${qEsc(problemLabel)} — ${qEsc(meta.model || "model")}">
                     <span class="dot" style="background:${qEsc(color.fill)};border-color:${qEsc(color.stroke)}"></span>
-                    <span class="legend-text"><strong>${qEsc(meta.pid)}</strong> ${qEsc(meta.model || "model")}</span>
+                    <span class="legend-text"><strong>${qEsc(problemLabel)}</strong> · ${qEsc(meta.model || "model")}</span>
                 </button>`;
         })
         .join("");
@@ -372,7 +375,9 @@ async function initInstancesPage() {
         const problems = agg.problems || [];
 
         const filter = document.getElementById("i-prob");
+        problemNames = new Map();
         problems.forEach((p) => {
+            problemNames.set(String(p.id).padStart(2, "0"), p.name);
             const o = document.createElement("option");
             o.value = p.id;
             o.textContent = `${String(p.id).padStart(2, "0")} - ${p.name}`;

@@ -147,9 +147,9 @@ async function renderAffiliations() {
         const fill = (track, row, reverse) => {
             const html = (dup) => row.map(([n, c]) => card(n, c, dup)).join("");
             track.innerHTML = html(false) + html(true);
-            // Speed proportional to content width (~70 px/s, clamped 18–70 s).
+            // Speed proportional to content width (~50 px/s, clamped 24–95 s).
             const estWidth = row.length * 190;
-            const duration = Math.min(70, Math.max(18, estWidth / 70));
+            const duration = Math.min(95, Math.max(24, estWidth / 50));
             track.style.setProperty("--affil-duration", `${duration}s`);
             track.style.setProperty("--affil-shift", "-50%");
             if (reverse) track.classList.add("affil-track-reverse");

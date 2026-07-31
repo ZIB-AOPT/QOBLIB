@@ -1626,6 +1626,22 @@ a.inst-nav-btn:hover {
     pointer-events: auto;
 }
 
+/* The expand button lives at the card's top-right — exactly where the chart
+   legend would otherwise be right-aligned. On cards that have the button, stack
+   the header so the legend drops to its own row below the title, clear of the
+   button (which then only overlaps the title row's empty right edge). */
+.has-fig-expand .chart-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+}
+
+/* Keep the legend flush to the card's right edge on its own row. */
+.has-fig-expand .chart-head .chart-legend,
+.has-fig-expand .chart-head .conv-legend {
+    justify-content: flex-end;
+}
+
 .fig-expand:hover {
     color: var(--accent-d);
     border-color: var(--accent);
@@ -3586,7 +3602,7 @@ textarea.invalid {
 /* Row A scrolls left; row B uses reverse direction for the counter-scroll */
 .affil-track.running {
     animation: affil-scroll linear infinite;
-    animation-duration: var(--affil-duration, 50s);
+    animation-duration: var(--affil-duration, 70s);
 }
 
 .affil-track.affil-track-reverse.running {
