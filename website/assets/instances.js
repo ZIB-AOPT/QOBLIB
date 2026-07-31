@@ -2,6 +2,7 @@
 
 const {
     esc: qEsc,
+    safeHref: qSafeHref,
     fmtBytes: qFmtBytes,
     fmtNum: qFmtNum,
     loadInstancesList: qLoadInstancesList,
@@ -470,7 +471,7 @@ function renderInstances() {
                     <td class="num">${(() => { const v = qFmtNum(r.best_value ?? r.bkv); return r.best_is_optimal && v !== "-" ? `<strong>${v}</strong>` : v; })()}</td>
                     <td>${r.best_source_url ? `<a class="dl" href="${qEsc(r.best_source_url)}" target="_blank" rel="noopener">${qEsc(r.best_source_label || r.best_source_type || "source")}</a>` : "-"}</td>
                     <td>${qStatusPill(r.status)}</td>
-                    <td>${r.raw_url ? `<a class="dl" href="${qEsc(r.raw_url)}" target="_blank" rel="noopener">↓ raw</a>` : "-"}</td>
+                    <td>${r.raw_url ? `<a class="dl" href="${qSafeHref(r.raw_url)}" target="_blank" rel="noopener">↓ raw</a>` : "-"}</td>
                 </tr>`,
             )
             .join("") || '<tr><td colspan="7" class="text-center padded">No instances match the current filters.</td></tr>';

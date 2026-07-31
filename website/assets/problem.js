@@ -2,6 +2,7 @@
 
 const {
     esc: qEsc,
+    safeHref: qSafeHref,
     fmtBytes: qFmtBytes,
     fmtNum: qFmtNum,
     fmtInt: qFmtInt,
@@ -480,7 +481,7 @@ async function initProblemPage() {
                 </div>`, p.instance_count)}
 
             <div class="hero-actions" style="margin-top:1.5rem">
-                ${p.github_url ? `<a class="btn btn-ghost" href="${qEsc(p.github_url)}" target="_blank" rel="noopener">View on GitHub ↗</a>` : ""}
+                ${p.github_url ? `<a class="btn btn-ghost" href="${qSafeHref(p.github_url)}" target="_blank" rel="noopener">View on GitHub ↗</a>` : ""}
                 <a class="btn btn-navy" href="leaderboard.html">View Leaderboard</a>
                 <a class="btn btn-ghost" href="instances.html">Browse All Instances</a>
             </div>
@@ -546,7 +547,7 @@ function problemInstanceRowsHtml(p, list) {
                 <td class="num">${(() => { const v = qFmtNum(i.best_value ?? i.bkv); return i.best_is_optimal && v !== "-" ? `<strong>${v}</strong>` : v; })()}</td>
                 <td>${i.best_source_url ? `<a class="dl" href="${qEsc(i.best_source_url)}" target="_blank" rel="noopener">${qEsc(i.best_source_label || i.best_source_type || "source")}</a>` : "-"}</td>
                 <td>${qStatusPill(i.status)}</td>
-                <td>${i.raw_url ? `<a class="dl" href="${qEsc(i.raw_url)}" target="_blank" rel="noopener">↓ raw</a>` : "-"}</td>
+                <td>${i.raw_url ? `<a class="dl" href="${qSafeHref(i.raw_url)}" target="_blank" rel="noopener">↓ raw</a>` : "-"}</td>
             </tr>`,
         )
         .join("");

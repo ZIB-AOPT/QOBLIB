@@ -2,6 +2,7 @@
 
 const {
     esc: qEsc,
+    safeHref: qSafeHref,
     fmtNum: qFmtNum,
     fmtInt: qFmtInt,
     fmtMaybeNum: qFmtMaybeNum,
@@ -752,8 +753,8 @@ async function initInstancePage() {
             </div>
 
             <div class="hero-actions" style="margin-bottom:1.5rem">
-                ${inst.raw_url ? `<a class="btn btn-ghost" href="${qEsc(inst.raw_url)}" target="_blank" rel="noopener">Download Instance</a>` : ""}
-                ${inst.reference_solution_url ? `<a class="btn btn-ghost" href="${qEsc(inst.reference_solution_url)}" target="_blank" rel="noopener">Download Solution</a>` : ""}
+                ${inst.raw_url ? `<a class="btn btn-ghost" href="${qSafeHref(inst.raw_url)}" target="_blank" rel="noopener">Download Instance</a>` : ""}
+                ${inst.reference_solution_url ? `<a class="btn btn-ghost" href="${qSafeHref(inst.reference_solution_url)}" target="_blank" rel="noopener">Download Solution</a>` : ""}
             </div>
 
             ${renderSubmissionPlots(p, inst, submissions)}

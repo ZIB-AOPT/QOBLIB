@@ -29,6 +29,14 @@ function safeUrl(value) {
     return !match || ["http", "https", "mailto"].includes(match[1].toLowerCase());
 }
 
+// Escape a URL for an href/src attribute, but neuter any non-allowlisted scheme
+// (javascript:, data:, …) first — so an unsafe URL degrades to "#" rather than
+// becoming a clickable code-execution vector. Use wherever a data-derived URL is
+// interpolated into a link.
+function safeHref(value) {
+    return esc(safeUrl(value) ? String(value ?? "") : "#");
+}
+
 function sanitizeHtml(html) {
     if (typeof document === "undefined") return esc(html);
 
@@ -477,7 +485,7 @@ function showError(el, msg) {
 function modelLinks(models) {
     if (!models || !models.length) return "";
     return models
-        .map((m) => `<a class="dl" href="${esc(m.raw_url)}" target="_blank" rel="noopener">↓ ${esc(m.format)}</a>`)
+        .map((m) => `<a class="dl" href="${safeHref(m.raw_url)}" target="_blank" rel="noopener">↓ ${esc(m.format)}</a>`)
         .join(" ");
 }
 
@@ -494,7 +502,7 @@ function detailModelList(models) {
                         <div class="resource-title">${esc(m.name)}</div>
                         <div class="resource-sub">${esc(m.approach || "model")} · ${esc(m.format)}</div>
                     </div>
-                    <a class="dl" href="${esc(m.raw_url)}" target="_blank" rel="noopener">↓ download</a>
+                    <a class="dl" href="${safeHref(m.raw_url)}" target="_blank" rel="noopener">↓ download</a>
                 </div>
                 <div class="resource-meta">
                     <span class="badge b-tag">${esc(m.kind || "model")}</span>
@@ -504,7 +512,7 @@ function detailModelList(models) {
                 <details>
                     <summary>Model description</summary>
                     <div class="resource-desc">${renderMarkdown(m.description_md)}</div>
-                    ${m.description_url ? `<div><a class="dl" href="${esc(m.description_url)}" target="_blank" rel="noopener">View README ↗</a></div>` : ""}
+                    ${m.description_url ? `<div><a class="dl" href="${safeHref(m.description_url)}" target="_blank" rel="noopener">View README ↗</a></div>` : ""}
                 </details>` : ""}
             </div>`
         )
@@ -1364,6 +1372,7 @@ function enhanceFigures(root = document) {
 
 window.QOBLIB = {
     esc,
+    safeHref,
     fmtBytes,
     fmtNum,
     fmtInt,
