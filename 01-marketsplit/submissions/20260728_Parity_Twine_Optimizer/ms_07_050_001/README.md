@@ -27,8 +27,8 @@ This directory contains the submission for the problem **ms_07_050_001**.
 | Paradigm | Quantum Hardware |
 | # Runs | 5 |
 | # Feasible Runs | 0 |
-| # Successful Runs | N/A |
-| Success Threshold | N/A |
+| # Successful Runs | 0 |
+| Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | Classical: MacBook Pro (Apple M3) 8 GB RAM 8 cores, Quantum: ibm_boston with 100000 shots. |
 | ====== |  |
