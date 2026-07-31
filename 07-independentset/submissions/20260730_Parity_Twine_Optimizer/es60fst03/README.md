@@ -27,8 +27,8 @@ This directory contains the submission for the problem **es60fst03**.
 | Paradigm | Quantum Hardware |
 | # Runs | 5 |
 | # Feasible Runs | 5 |
-| # Successful Runs | N/A |
-| Success Threshold | N/A |
+| # Successful Runs | 5 |
+| Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | Classical: MacBook Pro (Apple M3) 8 GB RAM 8 cores, Quantum: ibm_fez with 100000 shots. |
 | ====== |  |
