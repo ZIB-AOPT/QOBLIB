@@ -80,9 +80,15 @@ async function renderAffiliations() {
             if (!raw || raw === "N/A") return;
             const nInst = (group.instances || []).length;
 
-            // Split on commas then heal broken parentheses:
-            // if a fragment ends with an unclosed "(" or the next starts mid-paren,
-            // merge them back.
+            // The affiliation field is comma-joined across multiple authors, so we
+            // split on commas — but a single org name can itself contain a comma
+            // ("Qunova Computing, Inc."). Split, then heal two cases that a naive
+            // split breaks apart:
+            //   1. broken parentheses — a fragment with an unclosed "(" is merged
+            //      with following fragments until the paren closes;
+            //   2. a trailing corporate suffix (Inc., Ltd, LLC, GmbH, …) that got
+            //      severed from its org name is re-joined to the previous entry.
+            const CORP_SUFFIX = /^(?:inc|incorporated|ltd|limited|l\.?l\.?c|l\.?l\.?p|co|corp|corporation|company|gmbh|ag|kg|s\.?a|s\.?à\.?r\.?l|sarl|b\.?v|n\.?v|plc|pty|pte|srl|s\.?r\.?l|s\.?p\.?a|oy|ab|as)\.?$/i;
             const parts = raw.split(",").map((s) => s.trim()).filter(Boolean);
             const healed = [];
             let carry = "";
@@ -92,6 +98,10 @@ async function renderAffiliations() {
                 const closes = (combined.match(/\)/g) || []).length;
                 if (opens > closes) {
                     carry = combined; // unmatched open paren — keep accumulating
+                } else if (CORP_SUFFIX.test(combined) && healed.length) {
+                    // A standalone corporate suffix belongs to the preceding org.
+                    healed[healed.length - 1] += `, ${combined}`;
+                    carry = "";
                 } else {
                     healed.push(combined);
                     carry = "";
