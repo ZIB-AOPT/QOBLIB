@@ -100,7 +100,7 @@ function sanitizeHtml(html) {
 //   • niceLinearTicks — 1/2/5×10ⁿ steps on a linear axis, integer-forced when the
 //     data is whole numbers (no fractional ticks on an integer-only quantity);
 //   • niceLogAxis — a tight log axis snapped to nice 1-2-5×10ⁿ bounds (a data max
-//     of 16 ends the axis at 20, not the next full decade), with labelled 1-2-5
+//     of 16 ends the axis at 20, not the next full decade), with labeled 1-2-5
 //     ticks and faint 2×/5× minor guides when the range spans several decades.
 
 // Round a raw step up to the nearest "nice" number: 1, 2, 5, 10, 20, 50, …
@@ -163,9 +163,9 @@ function niceLogBound(value, dir) {
 // Build a tight, nicely-ticked log axis for a positive data range [minVal,maxVal].
 // Returns { lo, hi, major, minor } where lo/hi are the axis endpoints snapped to
 // nice 1-2-5 values (so the axis ends at 20 for data reaching 16, not at 100),
-// `major` are labelled tick values and `minor` are faint unlabelled guides. When
-// the whole 1-2-5 sequence fits it is all labelled (tight ranges look complete);
-// over a wider span only the decades are labelled and 2×/5× become minor guides.
+// `major` are labeled tick values and `minor` are faint unlabeled guides. When
+// the whole 1-2-5 sequence fits it is all labeled (tight ranges look complete);
+// over a wider span only the decades are labeled and 2×/5× become minor guides.
 function niceLogAxis(minVal, maxVal, { maxMajor = 8 } = {}) {
     let lo = niceLogBound(Math.min(minVal, maxVal), -1);
     let hi = niceLogBound(Math.max(minVal, maxVal), +1);
@@ -340,9 +340,9 @@ function submissionUrl(problemId, submissionId) {
 }
 
 function statusPill(s) {
-    // Colours come from CSS variables (defined in styles.css) so the badges
+    // Colors come from CSS variables (defined in styles.css) so the badges
     // track the active theme and stay muted on dark backgrounds.
-    // The symbol prefix provides a non-colour cue for colour-vision accessibility.
+    // The symbol prefix provides a non-color cue for color-vision accessibility.
     const cfg = {
         optimal:    { bg: "var(--pill-ok-bg)",   c: "var(--pill-ok-fg)",   label: "Optimal",    sym: "✓" },
         solved:     { bg: "var(--pill-ok-bg)",   c: "var(--pill-ok-fg)",   label: "Solved",     sym: "✓" },
@@ -361,7 +361,7 @@ function statusPill(s) {
 // Three-way classification of a submission's compute paradigm. The QUBO/Ising
 // *formulation* is deliberately NOT treated as a quantum signal — classical
 // heuristics (e.g. abs2, tabu, simulated annealing) routinely solve QUBOs.
-// Colours are CSS custom properties (defined in styles.css) rather than literal
+// Colors are CSS custom properties (defined in styles.css) rather than literal
 // hex so the dots, legends and chart lines all track the active light/dark
 // theme. They resolve in inline `style` (including on SVG elements), but NOT in
 // SVG presentation attributes — so chart fills/strokes are applied via `style`.
@@ -413,7 +413,7 @@ function classifySubmission(s) {
     return "quantum_sim";
 }
 
-// Compute-paradigm badge (Quantum HW / Quantum sim / Classical) — a coloured
+// Compute-paradigm badge (Quantum HW / Quantum sim / Classical) — a colored
 // dot plus the short label, shared by the leaderboard and submissions pages so
 // the three paradigms read the same everywhere.
 function catBadge(cat) {
@@ -1199,7 +1199,7 @@ function toCsv(headers, rows) {
 }
 
 // Reorder export `rows` (parallel to `keys`) to match the order the table
-// currently DISPLAYS, so "download what you see" honours the column sort the
+// currently DISPLAYS, so "download what you see" honors the column sort the
 // user clicked — not just the active filters. Each visible <tr> carries a
 // data-export-key; a row whose key isn't in the DOM keeps its original relative
 // position at the end. No-op (returns rows unchanged) when the table has no

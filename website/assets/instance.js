@@ -56,7 +56,7 @@ function isInfeasibleSub(s) {
     return Number.isFinite(nf) && nf === 0;
 }
 
-// Palette matching charts.py CACTUS_PALETTE — one colour per submission.
+// Palette matching charts.py CACTUS_PALETTE — one color per submission.
 const TS_PALETTE = ["#2f6db0","#c0504d","#9bbb59","#8064a2","#4bacc6","#f79646","#7f6084","#5a7d2c"];
 
 function fmtTick(v) {
@@ -97,8 +97,8 @@ function buildTsChart(series, minimize, bkv) {
     if (!allPts.length) return "";
 
     // Sign correction: an objective time series must be monotone in the problem's
-    // optimisation direction (non-decreasing for maximisation, non-increasing for
-    // minimisation). If a run moves strictly the wrong way throughout, the submitter
+    // optimization direction (non-decreasing for maximization, non-increasing for
+    // minimization). If a run moves strictly the wrong way throughout, the submitter
     // stored the negated QUBO objective — negate it back. Checked per run so a
     // mixed series (some correct, some negated) is handled entry by entry.
     // A single-point run has no direction to check and is left untouched.
@@ -173,7 +173,7 @@ function buildTsChart(series, minimize, bkv) {
 
     // Y-ticks: nice 1/2/5×10ⁿ steps over the data range (integer-forced when every
     // incumbent value is a whole number, so an integer objective never shows
-    // fractional ticks) + bkv labelled distinctly. Data ticks colliding with bkv
+    // fractional ticks) + bkv labeled distinctly. Data ticks colliding with bkv
     // (within 5% of span) are dropped so the two labels never overlap.
     const yIsInteger = allV.every((v) => Number.isInteger(v)) && (!hasBkv || Number.isInteger(bkv));
     const yDataTicks = qNiceLinearTicks(vDataMin, vDataMax, { integer: yIsInteger, target: 4 });
@@ -358,7 +358,7 @@ function buildConvergenceChart(series, opts) {
         return H - m.b - (H - m.t - m.b) * ((y - yMin) / ((yMax - yMin) || 1));
     };
 
-    // Y-ticks: labelled decades (+ faint 2×/5× minor guides) on a log axis; nice
+    // Y-ticks: labeled decades (+ faint 2×/5× minor guides) on a log axis; nice
     // 1/2/5×10ⁿ linear steps otherwise, integer-forced when the data is whole.
     const yIsInteger = ysAll.every((y) => Number.isInteger(y));
     let yticks;

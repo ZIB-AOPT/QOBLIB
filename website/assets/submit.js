@@ -534,7 +534,7 @@ function validateRow(row) {
                 out.errors.push("Best objective value is required (enter a value or N/A).");
             } else if (isNA(valRaw)) {
                 // Feasibility problems (e.g. Market Split) have no objective to
-                // optimise, so N/A is valid here — it is what the authoritative
+                // optimize, so N/A is valid here — it is what the authoritative
                 // checker accepts. There is nothing to cross-check against an optimum.
                 out.oks.push("Objective reported as N/A (no value to cross-check).");
             } else if (!Number.isFinite(Number(String(valRaw).replace(/,/g, "")))) {
@@ -584,7 +584,7 @@ function validateRow(row) {
 }
 
 // Toggle the visual invalid state and the matching aria-invalid so the failure
-// is conveyed to assistive tech, not just by colour.
+// is conveyed to assistive tech, not just by color.
 function markInvalid(el, bad) {
     if (!el) return;
     el.classList.toggle("invalid", Boolean(bad));
@@ -937,7 +937,7 @@ async function importCsvText(text) {
             if (f.col.startsWith("__")) return;
             let imported = get(f.col);
             if (isBlank(imported) || sharedTouched.has(f.col)) return;
-            // Normalise to the shapes the inputs/validator expect: dates → canonical
+            // Normalize to the shapes the inputs/validator expect: dates → canonical
             // YYYY-MM-DD (authors write timestamps, "22. Dec. 2024", …); select values
             // → the option's exact casing (real data uses "Deterministic").
             if (f.col === "Date") {

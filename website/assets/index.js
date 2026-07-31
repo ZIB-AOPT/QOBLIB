@@ -59,7 +59,7 @@ async function renderLandscape() {
 // Collect unique affiliations + per-org instance counts from submission_groups.json.
 // Builds two counter-scrolling tracks (row A → left, row B ← right) where each
 // chip shows the org name and how many instances they have contributed results for.
-// A count-up number above shows the total number of contributing organisations.
+// A count-up number above shows the total number of contributing organizations.
 async function renderAffiliations() {
     const trackA = document.getElementById("affil-track-a");
     const trackB = document.getElementById("affil-track-b");

@@ -35,16 +35,16 @@
     --green-l: #edf5e8;
     --blue: #24586f;
     --blue-l: #e9f5fa;
-    /* Compute-paradigm indicator colours (category dots, chart lines/legends).
+    /* Compute-paradigm indicator colors (category dots, chart lines/legends).
        Routed through variables so they track the active theme — the dark
        overrides below soften them for dark backgrounds. */
     --cat-classical: #2f8f81;
     --cat-quantum-hw: #8d6fc9;
     --cat-quantum-sim: #c77d3a;
-    /* Problem-card progress bars (index page). Each paradigm uses a colour-blind
+    /* Problem-card progress bars (index page). Each paradigm uses a color-blind
        safe sequential ramp (ColorBrewer Greens / Purples): the three tiers differ
        in *lightness*, so they stay distinguishable in greyscale and for all
-       colour-vision types. */
+       color-vision types. */
     --bar-solved-classical: #006d2c;
     --bar-best-known-classical: #74c476;
     --bar-solved-quantum: #54278f;
@@ -60,7 +60,7 @@
     --bar-best-known: #8d90cc;
     --bar-open: #d6b06b;
     /* Status badges (optimal / best-known / submitted / open). bg = chip fill,
-       fg = label colour. Dark overrides below soften them for dark mode. */
+       fg = label color. Dark overrides below soften them for dark mode. */
     --pill-ok-bg: #edf5e8;
     --pill-ok-fg: #355f24;
     --pill-best-bg: #fff6de;
@@ -69,7 +69,7 @@
     --pill-sub-fg: #24586f;
     --pill-open-bg: #f4f4f1;
     --pill-open-fg: #5d6a70;
-    /* Kept as the primary "ink" / heading colour (no longer navy). */
+    /* Kept as the primary "ink" / heading color (no longer navy). */
     --navy: #1f2528;
     --shadow: 0 16px 38px rgba(31, 37, 40, 0.08);
     --mono: "IBM Plex Mono", monospace;
@@ -105,7 +105,7 @@ button {
     color: inherit;
 }
 
-/* Global keyboard-focus ring. Many links only change colour on focus, which is
+/* Global keyboard-focus ring. Many links only change color on focus, which is
    easy to miss; give every keyboard-focused link/button a visible ring. Mouse
    clicks don't trigger :focus-visible, so this stays invisible for pointer users.
    Component-specific :focus-visible rules elsewhere still override this. */
@@ -701,7 +701,7 @@ body[data-nav="home"] .stats-bar {
 }
 
 /* Hairline separators between adjacent segments so tier boundaries stay crisp
-   even when two neighbouring colours are close in lightness. */
+   even when two neighboring colors are close in lightness. */
 .pcard-bar-fill + .pcard-bar-fill {
     box-shadow: inset 1px 0 0 var(--surface, #fff);
 }
@@ -975,7 +975,7 @@ a.badge:hover {
     width: 10px;
     height: 10px;
     border-radius: 999px;
-    /* Theme-aware fallback swatch (the instances-page legend sets its own colour
+    /* Theme-aware fallback swatch (the instances-page legend sets its own color
        inline per series); the literal teal here didn't adapt to dark mode. */
     background: var(--teal);
     border: 1px solid var(--accent-d);
@@ -1014,7 +1014,7 @@ a.badge:hover {
     stroke-width: 1;
 }
 
-/* Faint unlabelled 2×/5× guides between decades on log axes. */
+/* Faint unlabeled 2×/5× guides between decades on log axes. */
 .mip-grid-minor {
     stroke: rgba(122, 112, 97, 0.1);
     stroke-width: 1;
@@ -1388,7 +1388,7 @@ a.inst-nav-btn:hover {
     }
 
     .inst-nav-btn {
-        /* Let prev/next take the row's width around the centred position marker
+        /* Let prev/next take the row's width around the centered position marker
            instead of being squeezed by the (now full-width) search. */
         flex: 1 1 40%;
     }
@@ -1751,7 +1751,7 @@ a.inst-nav-btn:hover {
 }
 
 /* Inline problem figures (assets/problem_figures.js): theme-aware SVGs that use
-   the site's colour variables, so they sit on a surface backing rather than the
+   the site's color variables, so they sit on a surface backing rather than the
    forced-white backing the README PNGs needed. */
 .d-desc-visual svg.pfig {
     display: block;
@@ -2287,7 +2287,7 @@ a.inst-nav-btn:hover {
     gap: 1.5rem;
     margin: 0;
     padding: 0;
-    /* Separated from neighbours by .section-divider elements (like every other
+    /* Separated from neighbors by .section-divider elements (like every other
        top-level section), not its own borders — see index.html / leaderboard.html. */
 }
 
@@ -2364,7 +2364,7 @@ a.inst-nav-btn:hover {
 /* =========================================================================
    Dark mode
    Activated by data-theme="dark" on <html> (set by the inline head script
-   and toggled from the nav button). Only colour tokens + a handful of
+   and toggled from the nav button). Only color tokens + a handful of
    hard-coded surfaces are overridden; layout is untouched.
    ========================================================================= */
 .theme-toggle {
@@ -2415,13 +2415,13 @@ a.inst-nav-btn:hover {
     --green-l: #20301a;
     --blue: #7db9d0;
     --blue-l: #1a2b33;
-    /* Muted paradigm + bar colours for dark backgrounds: lower saturation so
+    /* Muted paradigm + bar colors for dark backgrounds: lower saturation so
        the dots, chart lines and progress bars read softly rather than glaring. */
     --cat-classical: #569a8d;
     --cat-quantum-hw: #9082bd;
     --cat-quantum-sim: #c2895e;
     /* Dark theme inverts the ramp: optimal is the *brightest* tier and open the
-       darkest, so it stays lightness-monotonic (and colour-blind safe) against a
+       darkest, so it stays lightness-monotonic (and color-blind safe) against a
        dark card. */
     --bar-solved-classical: #7ce295;
     --bar-best-known-classical: #2c8f4f;
@@ -2445,7 +2445,7 @@ a.inst-nav-btn:hover {
     --pill-sub-fg: #88b6cc;
     --pill-open-bg: #232c30;
     --pill-open-fg: #9fadb1;
-    /* "ink"/heading colour becomes light in dark mode. */
+    /* "ink"/heading color becomes light in dark mode. */
     --navy: #e7eceb;
     --shadow: 0 16px 38px rgba(0, 0, 0, 0.45);
 }
@@ -2459,7 +2459,7 @@ a.inst-nav-btn:hover {
     border-color: #6a3329;
 }
 
-/* Form controls: recolour the inline dropdown arrow for contrast. */
+/* Form controls: recolor the inline dropdown arrow for contrast. */
 :root[data-theme="dark"] select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%239FADB1' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
 }
@@ -2885,7 +2885,7 @@ textarea.invalid {
     stroke-width: 1;
 }
 
-/* Faint unlabelled 2×/5× guides between decades on log axes. */
+/* Faint unlabeled 2×/5× guides between decades on log axes. */
 .conv-grid-minor {
     stroke: var(--border);
     stroke-width: 1;
@@ -3054,7 +3054,7 @@ textarea.invalid {
     background: transparent;
     border-width: 1.5px;
     border-style: solid;
-    /* border-color set inline from the series colour */
+    /* border-color set inline from the series color */
     flex-shrink: 0;
 }
 
@@ -3913,7 +3913,7 @@ textarea.invalid {
 }
 
 /* ============================================================
-   Status badge non-colour symbol cue
+   Status badge non-color symbol cue
    ============================================================ */
 
 .status-pill-sym {
@@ -3992,7 +3992,7 @@ textarea.invalid {
 
 /* ============================================================
    Global reduced-motion safety net
-   Honour prefers-reduced-motion for every transition/animation, not just the
+   Honor prefers-reduced-motion for every transition/animation, not just the
    affiliations ticker (which has its own richer fallback above). Near-zero
    rather than 0 so any transitionend-dependent JS still fires. The blinking
    loading caret is stopped outright.

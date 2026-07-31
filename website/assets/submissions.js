@@ -40,6 +40,7 @@ function groupSearchText(group, problem) {
         problem?.name,
         problem?.slug,
         profile.submitter,
+        profile.affiliation,
         profile.date,
         qFmtDate(profile.date),
         profile.workflow,
@@ -124,7 +125,7 @@ function renderSubmissions() {
     const body = document.getElementById("sub-tbody");
 
     if (!filtered.length) {
-        body.innerHTML = '<tr><td colspan="6" class="text-center padded">No submissions match the current filters.</td></tr>';
+        body.innerHTML = '<tr><td colspan="7" class="text-center padded">No submissions match the current filters.</td></tr>';
         return;
     }
 
@@ -132,6 +133,7 @@ function renderSubmissions() {
         .map((group) => {
             const problem = problemIndex.get(group.problem_id);
             const submitter = group.profile?.submitter || "-";
+            const affiliation = group.profile?.affiliation || "-";
             const date = qFmtDate(qSubmissionDate(group));
             const instanceCount = (group.instances || []).length;
             // The package name already carries the date + author; surface just the
@@ -142,6 +144,7 @@ function renderSubmissions() {
                     <td><a class="badge b-type" href="${qProblemUrl(group.problem_id)}">${qEsc(formatProblemLabel(problem))}</a></td>
                     <td>${qCatBadge(groupCategory(group))}</td>
                     <td>${qEsc(submitter)}</td>
+                    <td>${qEsc(affiliation)}</td>
                     <td class="mono">${qEsc(date)}</td>
                     <td class="num">${instanceCount.toLocaleString()}</td>
                 </tr>`;
@@ -175,11 +178,11 @@ async function initSubmissionsPage() {
 
 function downloadSubmissionsCsv() {
     let groups = getFilteredGroups();
-    // Honour the user's clicked-column sort so the CSV matches the visible table.
+    // Honor the user's clicked-column sort so the CSV matches the visible table.
     const table = document.querySelector("#submissions-table table");
     if (table) groups = qOrderRowsByTable(table, groups, groups.map((g) => `${g.problem_id}::${g.id}`));
     const headers = [
-        "Package", "Method", "Problem ID", "Problem", "Paradigm", "Submitter", "Date",
+        "Package", "Method", "Problem ID", "Problem", "Paradigm", "Submitter", "Affiliation", "Date",
         "Instances", "Files", "Workflow", "Algorithm", "Hardware", "Source files",
     ];
     const data = groups.map((group) => {
@@ -193,6 +196,7 @@ function downloadSubmissionsCsv() {
             problem?.name || "",
             (qCATS[groupCategory(group)] || qCATS.classical).label,
             profile.submitter || "",
+            profile.affiliation || "",
             date ? qFmtDate(date) : "",
             (group.instances || []).length,
             (group.source_files || []).length,

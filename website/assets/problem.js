@@ -34,7 +34,7 @@ const {
 // ---------------------------------------------------------------------------
 // Performance section for the problem's instance family — four charts that
 // share one "by paradigm / by submission" grouping toggle (so a given method
-// keeps the same colour across all four):
+// keeps the same color across all four):
 //   • Cactus  — runtime to reach the best-known objective. Solid line + filled
 //               circle = proven exact; dashed line + open diamond = heuristic.
 //   • TTS     — same cactus layout using time-to-solution instead of total runtime.
@@ -335,7 +335,7 @@ function layoutDescriptionImage(descRoot, problem) {
 
     // Prefer our own theme-aware inline SVG (assets/problem_figures.js), keyed by
     // the problem slug. It replaces any figure embedded in the README so every
-    // problem shows a figure in the site colour scheme, light or dark.
+    // problem shows a figure in the site color scheme, light or dark.
     const figureSvg = (window.QOBLIB_PROBLEM_FIGURES || {})[problem?.slug];
 
     const content = document.createElement("div");

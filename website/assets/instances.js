@@ -259,7 +259,7 @@ function renderMipChart(points) {
         .join("");
 
     // Each point is a small visible dot (.mip-dot) plus a much larger transparent
-    // hit circle (.mip-point) sharing the same centre. The r="4" dot alone is only
+    // hit circle (.mip-point) sharing the same center. The r="4" dot alone is only
     // ~9px across — too small to reliably hover/tap; the hit circle widens the
     // pointer/touch target to ~24px without cluttering the scatter. The hit circle
     // carries all the data + interaction (it sits on top, so it catches the event);
@@ -427,7 +427,7 @@ function getFilteredInstances() {
 
 function downloadInstancesCsv() {
     let rows = getFilteredInstances();
-    // Honour the user's clicked-column sort so the CSV matches the visible table.
+    // Honor the user's clicked-column sort so the CSV matches the visible table.
     const table = document.querySelector("#instances-table table");
     if (table) rows = qOrderRowsByTable(table, rows, rows.map((r) => `${r.problem_id}::${r.name}`));
     const headers = ["Problem ID", "Problem", "Instance", "Parameters", "Best objective", "Optimal", "Source", "Source URL", "Status", "Raw URL"];
