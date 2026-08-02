@@ -9,7 +9,7 @@ This directory contains the submission for the problem **qbench_16_sparse_id6**.
 | Affiliation | Qoro Quantum Ltd. |
 | Date | 2026-08-02 |
 | ====== |  |
-| Reference | https://github.com/QoroQuantum/grant-sparq |
+| Reference | N/A |
 | Best Objective Value | 5.707420e-03 |
 | Optimality Bound | N/A |
 | ====== |  |
