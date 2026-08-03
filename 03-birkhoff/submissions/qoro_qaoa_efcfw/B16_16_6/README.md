@@ -1,16 +1,16 @@
-# Submission for qbench_16_sparse_id6
+# Submission for B16_16_6
 
-This directory contains the submission for the problem **qbench_16_sparse_id6**.
+This directory contains the submission for the problem **B16_16_6**.
 
 | Field | Value 1 |
 | --- | --- |
-| Problem | qbench_16_sparse_id6 |
+| Problem | B16_16_6 |
 | Submitter | Stephen DiAdamo |
 | Affiliation | Qoro Quantum Ltd. |
-| Date | 2026-08-02 |
+| Date | 2026-08-03 |
 | ====== |  |
 | Reference | N/A |
-| Best Objective Value | 5.707420e-03 |
+| Best Objective Value | 5 |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | QUBO |
@@ -22,7 +22,7 @@ This directory contains the submission for the problem **qbench_16_sparse_id6**.
 | Coefficients Type | Integer |
 | Coefficients Range | [0, 100000] |
 | ====== |  |
-| Workflow | E-FCFW Partitioned Matching |
+| Workflow | Partitioned QAOA E-FCFW with beam-search aggregation |
 | Algorithm Type | Quantum-Classical Hybrid |
 | Paradigm | QAOA |
 | # Runs | 1 |
@@ -30,13 +30,13 @@ This directory contains the submission for the problem **qbench_16_sparse_id6**.
 | # Successful Runs | 1 |
 | Success Threshold | 1e-3 |
 | ====== |  |
-| Hardware Specifications | IBM Pittsburgh (via Qoro Cloud Services) |
+| Hardware Specifications | Qoro Cloud Simulator / MPS |
 | ====== |  |
-| Total Runtime | 787.28 |
-| Time to Solution | 787.28 |
-| CPU Runtime | 0.00 |
-| GPU Runtime | 0.00 |
-| QPU Runtime | 225.00 |
-| Other HW Runtime | 0.00 |
+| Total Runtime | 237.43 |
+| Time to Solution | 237.43 |
+| CPU Runtime | 237.43 |
+| GPU Runtime | N/A |
+| QPU Runtime | N/A |
+| Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | Partitioned QAOA via Divi 0.13.0 with edge-swap local refinement executed on ibm_pittsburgh |
+| Remarks | Partitioned QAOA via Divi with edge-swap local refinement and beam-search aggregation. Joint work by E.ON and Qoro Quantum. |
