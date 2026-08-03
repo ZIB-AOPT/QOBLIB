@@ -77,11 +77,13 @@
     --serif: "Source Serif 4", serif;
     --r: 8px;
     --rl: 10px;
-    /* Shared content column width. The fluid `60% + 8rem` keeps generous
-       gutters on wide screens (~70%) but expands toward full width on phones,
-       capped at 1600px. max-width can never exceed the parent, so it never
-       overflows on narrow viewports. */
-    --content-w: min(1600px, 60% + 8rem);
+    /* Shared content column width. A flat 84% keeps a tasteful ~8% gutter on
+       each side across laptop/desktop widths, capped at 1600px (the cap kicks in
+       around 1905px). The old `60% + 8rem` left ~30% of mid-size screens
+       (1200–1800px) as empty gutters, which made the full-width nav bar look
+       disproportionately wide next to the narrow content. max-width can never
+       exceed the parent, so this never overflows; phones override it to 100%. */
+    --content-w: min(1600px, 84%);
 }
 
 body {
@@ -1379,34 +1381,18 @@ a.inst-nav-btn:hover {
     cursor: pointer;
 }
 
-/* Phones: the prev / pos / search / next controls can't share one row without
-   crushing the prev/next labels. Wrap, keep prev · pos · next on the top line,
-   and drop the search onto its own full-width line below. */
+/* Phones: the position counter and "Jump to…" search can't share the row with
+   the prev/next labels without landing in awkward, cramped spots. Drop them and
+   keep just the two prev/next buttons, one pinned to each end. */
 @media (max-width: 640px) {
-    .inst-nav {
-        flex-wrap: wrap;
+    .inst-nav-pos,
+    .inst-nav-search-wrap {
+        display: none;
     }
 
     .inst-nav-btn {
-        /* Let prev/next take the row's width around the centered position marker
-           instead of being squeezed by the (now full-width) search. */
-        flex: 1 1 40%;
-    }
-
-    .inst-nav-search-wrap {
-        order: 1;
-        flex: 1 1 100%;
-    }
-
-    .inst-nav-search {
-        width: 100%;
-    }
-
-    .inst-nav-dropdown {
-        left: 0;
-        right: 0;
-        transform: none;
-        max-width: none;
+        flex: 0 1 auto;
+        max-width: 50%;
     }
 }
 
@@ -2835,7 +2821,20 @@ textarea.invalid {
     border-color: var(--accent);
 }
 
-@media (max-width: 760px) {
+/* Mid widths (1281–1440px): the 8 links fit the 84% column but the search
+   omnibox tips the bar over the edge. Hide the omnibox here — it reappears once
+   the full bar has room above 1440px, and the hamburger takes over below 1280. */
+@media (max-width: 1440px) {
+    .gsearch-wrap {
+        display: none;
+    }
+}
+
+/* Collapse the nav to a hamburger below this width. Even without the omnibox the
+   logo + 8 links + theme toggle + GitHub need ~1000px, which the 84% content
+   column doesn't provide until ~1280px; below here the bar overflows and the
+   page scrolls sideways. */
+@media (max-width: 1280px) {
     .nav-inner {
         position: relative;
         gap: 0.55rem;
@@ -2846,9 +2845,9 @@ textarea.invalid {
         display: inline-flex;
     }
 
-    /* The omnibox needs more room than a phone top bar can spare (its 9rem input
+    /* The omnibox needs more room than a compact top bar can spare (its 9rem input
        expands to 14rem on focus and pushes the logo/GitHub/hamburger off-screen).
-       Hide it on narrow viewports — the hamburger menu covers navigation, and
+       Hide it on tablets and phones — the hamburger menu covers navigation, and
        the Problems / Instances pages have their own in-page search. */
     .gsearch-wrap {
         display: none;
