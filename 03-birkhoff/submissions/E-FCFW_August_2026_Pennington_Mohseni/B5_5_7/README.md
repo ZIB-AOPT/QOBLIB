@@ -39,4 +39,4 @@ This directory contains the submission for the problem **B5_5_7**.
 | QPU Runtime | 25 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Approximate cost is $f(X) = 1/n^2 \\| X - D^* \\|^2_F$ where $D^*$ is the $n$ by $n$ target doubly stochastic matrix and $X$ its (approximate) decomposition.  |
+| Remarks | Approximate cost is $f(X) = (1/n^2) \\| X - D^* \\|^2_F$ where $D^*$ is the $n$ by $n$ target doubly stochastic matrix and $X$ its (approximate) decomposition.  |
