@@ -1,0 +1,10 @@
+[
+[
+    {"Time": "N/A", "Incumbent": 0.0, "Error": 0.048407382},
+    {"Time": "N/A", "Incumbent": 1.0, "Error": 0.018276065360000003},
+    {"Time": "N/A", "Incumbent": 2.0, "Error": 0.002523508758333333},
+    {"Time": "N/A", "Incumbent": 3.0, "Error": 0.001239432547252747},
+    {"Time": "N/A", "Incumbent": 4.0, "Error": 2.653974683544301e-05},
+    {"Time": "310.7757649421692", "Incumbent": 5.0, "Error": 3.767118971221433e-33}
+]
+]

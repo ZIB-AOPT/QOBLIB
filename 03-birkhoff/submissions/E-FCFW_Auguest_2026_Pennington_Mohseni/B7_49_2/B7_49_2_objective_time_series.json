@@ -1,0 +1,30 @@
+[
+[
+    {"Time": "N/A", "Incumbent": 0.0, "Error": 0.012977132857142859},
+    {"Time": "N/A", "Incumbent": 1.0, "Error": 0.008386972142857142},
+    {"Time": "N/A", "Incumbent": 2.0, "Error": 0.005587898542274053},
+    {"Time": "N/A", "Incumbent": 3.0, "Error": 0.0035218777696793004},
+    {"Time": "N/A", "Incumbent": 4.0, "Error": 0.002296092055393586},
+    {"Time": "N/A", "Incumbent": 5.0, "Error": 0.0014592616833697765},
+    {"Time": "N/A", "Incumbent": 6.0, "Error": 0.0008642030894485454},
+    {"Time": "N/A", "Incumbent": 7.0, "Error": 0.0005718626632283349},
+    {"Time": "N/A", "Incumbent": 8.0, "Error": 0.000413977733212406},
+    {"Time": "N/A", "Incumbent": 9.0, "Error": 0.0002778486141219518},
+    {"Time": "N/A", "Incumbent": 10.0, "Error": 0.00022852349790790697},
+    {"Time": "N/A", "Incumbent": 11.0, "Error": 0.00018170685843703463},
+    {"Time": "N/A", "Incumbent": 12.0, "Error": 0.0001313863305306609},
+    {"Time": "N/A", "Incumbent": 13.0, "Error": 9.26006866942378e-05},
+    {"Time": "N/A", "Incumbent": 14.0, "Error": 7.110538263585645e-05},
+    {"Time": "N/A", "Incumbent": 15.0, "Error": 5.647150815733345e-05},
+    {"Time": "N/A", "Incumbent": 16.0, "Error": 3.564027637829072e-05},
+    {"Time": "N/A", "Incumbent": 17.0, "Error": 2.685508966454814e-05},
+    {"Time": "N/A", "Incumbent": 18.0, "Error": 2.04196132583246e-05},
+    {"Time": "N/A", "Incumbent": 19.0, "Error": 1.5272022302281806e-05},
+    {"Time": "N/A", "Incumbent": 20.0, "Error": 9.902690751752144e-06},
+    {"Time": "N/A", "Incumbent": 21.0, "Error": 7.49389886633254e-06},
+    {"Time": "N/A", "Incumbent": 22.0, "Error": 5.220461752158265e-06},
+    {"Time": "N/A", "Incumbent": 23.0, "Error": 3.868846222171585e-06},
+    {"Time": "N/A", "Incumbent": 24.0, "Error": 1.9135271848175815e-06},
+    {"Time": "1158.7285611629486", "Incumbent": 25.0, "Error": 7.74472992512094e-07}
+]
+]
