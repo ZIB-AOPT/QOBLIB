@@ -7,7 +7,7 @@ const {
     parseDate: qParseDate,
     fmtDate: qFmtDate,
     loadIndex: qLoadIndex,
-    loadProblemData: qLoadProblemData,
+    loadLeaderboard: qLoadLeaderboard,
     instanceUrl: qInstanceUrl,
     problemUrl: qProblemUrl,
     submissionUrl: qSubmissionUrl,
@@ -167,14 +167,12 @@ async function initLeaderboardPage() {
     try {
         indexData = await qLoadIndex();
         const problems = indexData.problems || [];
-        // allSettled so one problem's data failing to load doesn't blank the whole
-        // leaderboard — the failed problem is skipped (logged) and the rest render.
-        const settled = await Promise.allSettled(problems.map((p) => qLoadProblemData(p.id)));
-        const datas = [];
-        settled.forEach((r, i) => {
-            if (r.status === "fulfilled") datas.push(r.value);
-            else console.warn(`Leaderboard: skipping problem ${problems[i]?.id}: ${r.reason?.message || r.reason}`);
-        });
+        // One request for the whole leaderboard (aggregated + trimmed at build
+        // time) instead of fanning out to meta + instances + instance_submissions
+        // for every problem. Shape: { problems: [{id, name, minimize, instances,
+        // instance_submissions}] } — the same per-problem shape this code expects.
+        const lb = await qLoadLeaderboard();
+        const datas = lb.problems || [];
 
         records = [];
         quantumRecords = [];
@@ -321,7 +319,14 @@ function renderParadigmBests() {
 // Main render
 // ---------------------------------------------------------------------------
 
-function renderLeaderboard() {
+// Rows to render at once (kept in sync with _LB_PAGE in overview_pages.py). The
+// full record set (765) is more DOM than a viewport needs; reveal the rest via
+// "Show more" so initial parse/layout stays cheap. Reset whenever filters change.
+const LB_PAGE = 100;
+let lbShown = LB_PAGE;
+
+function renderLeaderboard(resetPage = true) {
+    if (resetPage) lbShown = LB_PAGE;
     const pid = document.getElementById("lb-prob")?.value || "";
     const paradigm = document.getElementById("lb-paradigm")?.value || "";
 
@@ -387,7 +392,7 @@ function renderLeaderboard() {
             </tr>
         </thead>
         <tbody>
-            ${rows.map((r) => {
+            ${rows.slice(0, lbShown).map((r) => {
                 let gapCell = "";
                 if (showGap) {
                     // Re-read best_known from instanceMeta for this instance.
@@ -422,7 +427,19 @@ function renderLeaderboard() {
             }).join("")}
         </tbody>
     </table></div>
-    <div class="table-legend" style="margin:.4rem 0 .6rem;color:var(--muted)">One record per instance: the ${viewLabel}${paradigmExtra} and who holds it. ★ = reaches the best-known objective. "Subs" counts the ranked feasible submissions for that instance${activeView === "quantum" ? " (quantum only)" : ""}. Gap = |quantum best − global best| / |global best|.</div>`;
+    <div class="table-legend" style="margin:.4rem 0 .6rem;color:var(--muted)">One record per instance: the ${viewLabel}${paradigmExtra} and who holds it. ★ = reaches the best-known objective. "Subs" counts the ranked feasible submissions for that instance${activeView === "quantum" ? " (quantum only)" : ""}. Gap = |quantum best − global best| / |global best|.</div>
+    ${(() => {
+        const remaining = rows.length - Math.min(lbShown, rows.length);
+        return remaining > 0
+            ? `<div class="table-more"><button class="btn btn-ghost btn-sm" type="button" id="lb-more-btn">Show ${Math.min(LB_PAGE, remaining)} more (${remaining} hidden)</button></div>`
+            : "";
+    })()}`;
+
+    // Reveal the next page without resetting the current page count.
+    document.getElementById("lb-more-btn")?.addEventListener("click", () => {
+        lbShown += LB_PAGE;
+        renderLeaderboard(false);
+    });
 
     if (prevSort) {
         const table = content.querySelector("table");

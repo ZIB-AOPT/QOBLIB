@@ -148,12 +148,29 @@ def _write_problem_chunks(problem_id: str, problem_dir: Path, data: dict, proble
         "instance_submissions": submissions_by_instance,
     })
 
+    # The objective time-series arrays are ~85% of instance_submissions.json but
+    # are read by exactly one view (the instance-page convergence chart). Split
+    # them into a separate per-instance/per-submission file so every other
+    # consumer (problem, leaderboard, submission, submit pages) no longer pulls
+    # megabytes of plot data. Charts are already rendered above (server-side) from
+    # the in-memory copy, so stripping the written JSON costs nothing there.
+    # Key each series by "<instance>::<_source_file>" so instance.js can re-attach
+    # it to the right submission on demand.
+    time_series: dict[str, list] = {}
+    for inst_name, subs in submissions_by_instance.items():
+        for s in subs:
+            ts = s.pop("time_series", None)
+            if ts:
+                key = f"{inst_name}::{s.get('_source_file') or s.get('_source_dir') or ''}"
+                time_series[key] = ts
+
     _write_json(chunk_dir / "meta.json", data)
     _write_json(chunk_dir / "instances.json", {"problem_id": problem_id, "instances": instances})
     _write_json(chunk_dir / "submissions.json", {"problem_id": problem_id, "entries": submissions})
     _write_json(chunk_dir / "submission_groups.json", {"problem_id": problem_id, "entries": submission_groups})
     _write_json(chunk_dir / "solutions.json", {"problem_id": problem_id, "entries": solutions})
     _write_json(chunk_dir / "instance_submissions.json", {"problem_id": problem_id, "entries": submissions_by_instance})
+    _write_json(chunk_dir / "time_series.json", {"problem_id": problem_id, "entries": time_series})
     _write_json(chunk_dir / "charts.json", {"problem_id": problem_id, "entries": charts})
     _write_json(chunk_dir / "mip.json", {"problem_id": problem_id, "points": mip_points})
 
@@ -249,11 +266,13 @@ def build_data(out_dir: Path, built_at: str | None = None) -> dict:
     all_submission_groups: list[dict] = []
     instance_subs_by_problem: dict[str, dict] = {}
     problem_details: list[dict] = []  # full per-problem payloads for the deep-page pre-render
+    _minimize_by_problem: dict[str, bool] = {}
     total_instances = 0
 
     for problem_id, problem_dir in problem_dirs:
         print(f"Processing {problem_dir.name}…")
         data = build_problem(problem_id, problem_dir)
+        _minimize_by_problem[problem_id] = data.get("minimize", True) is not False
         index_problems.append(_index_problem_summary(data))
         # Snapshot the per-instance fields the home-page landscape scatter needs,
         # before _write_problem_chunks pops instances/flags off the payload.
@@ -306,10 +325,34 @@ def build_data(out_dir: Path, built_at: str | None = None) -> dict:
     _write_json(data_root / "landscape.json", landscape)
     print(f"→ {data_root / 'landscape.json'}")
 
-    # Aggregated leaderboard: sort by problem, then instance, then value.
-    all_submissions.sort(key=lambda s: (s.get("problem_id", ""), s.get("instance", ""), s.get("value") or 0))
-    _write_json(data_root / "leaderboard.json", {"entries": all_submissions})
-    print(f"\n→ {data_root / 'leaderboard.json'}  ({len(all_submissions)} submissions)")
+    # Aggregated leaderboard payload: a single self-contained file the page uses
+    # to compute one champion record per instance, instead of fanning out to
+    # meta + instances + instance_submissions for all ten problems (was ~30
+    # requests / several MB). Trimmed to exactly the fields lbChampion /
+    # lbMakeRecord read; keyed per problem so the page keeps its existing shape.
+    _LB_SUB_FIELDS = ("value", "n_feasible", "runtime_total", "date", "category",
+                      "submitter", "author", "_source_dir")
+    _LB_INST_FIELDS = ("name", "status", "best_value", "bkv")
+    leaderboard_problems = []
+    for grp in instances_groups:
+        pid = grp["id"]
+        subs = instance_subs_by_problem.get(pid, {})
+        trimmed_subs = {
+            name: [{k: s[k] for k in _LB_SUB_FIELDS if k in s} for s in rows]
+            for name, rows in subs.items()
+        }
+        leaderboard_problems.append({
+            "id": pid,
+            "name": grp.get("name", pid),
+            "minimize": _minimize_by_problem.get(pid, True),
+            "instances": [
+                {k: inst[k] for k in _LB_INST_FIELDS if k in inst}
+                for inst in grp.get("instances", [])
+            ],
+            "instance_submissions": trimmed_subs,
+        })
+    _write_json(data_root / "leaderboard.json", {"problems": leaderboard_problems})
+    print(f"\n→ {data_root / 'leaderboard.json'}  ({len(all_submissions)} submissions, aggregated)")
 
     # Aggregated, trimmed Instances-list payload: lets the Instances page load in
     # a single request instead of fetching every problem's full instances.json +

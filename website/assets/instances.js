@@ -452,18 +452,14 @@ function downloadInstancesCsv() {
     qDownloadCsv("qoblib_instances.csv", headers, data);
 }
 
-function renderInstances() {
-    const rows = getFilteredInstances();
+// How many rows to render at once. The full instance family (1351) is far more
+// DOM than a viewport needs; cap it and reveal the rest on demand so initial
+// parse/layout stays cheap. Filtering/search/CSV still work over the full set.
+const INST_PAGE = 100;
+let instShown = INST_PAGE;
 
-    const countEl = document.getElementById("i-count");
-    if (countEl) countEl.textContent = `${rows.length.toLocaleString()} instance${rows.length !== 1 ? "s" : ""}`;
-
-    const tbody = document.getElementById("i-tbody");
-    if (!tbody) return;
-    tbody.innerHTML =
-        rows
-            .map(
-                (r) => `
+function instanceRowHtml(r) {
+    return `
                 <tr data-export-key="${qEsc(String(r.problem_id) + "::" + r.name)}">
                     <td><a class="rlink mono" href="${qInstanceUrl(r.problem_id, r.name)}">${qEsc(r.name)}</a></td>
                     <td><a class="badge b-type" href="${qProblemUrl(r.problem_id)}">${String(r.problem_id).padStart(2, "0")} ${qEsc(r.problem_name)}</a></td>
@@ -472,13 +468,39 @@ function renderInstances() {
                     <td>${r.best_source_url ? `<a class="dl" href="${qEsc(r.best_source_url)}" target="_blank" rel="noopener">${qEsc(r.best_source_label || r.best_source_type || "source")}</a>` : "-"}</td>
                     <td>${qStatusPill(r.status)}</td>
                     <td>${r.raw_url ? `<a class="dl" href="${qSafeHref(r.raw_url)}" target="_blank" rel="noopener">↓ raw</a>` : "-"}</td>
-                </tr>`,
-            )
-            .join("") || '<tr><td colspan="7" class="text-center padded">No instances match the current filters.</td></tr>';
+                </tr>`;
+}
+
+function renderInstances(resetPage = true) {
+    const rows = getFilteredInstances();
+    if (resetPage) instShown = INST_PAGE;
+
+    const countEl = document.getElementById("i-count");
+    if (countEl) countEl.textContent = `${rows.length.toLocaleString()} instance${rows.length !== 1 ? "s" : ""}`;
+
+    const tbody = document.getElementById("i-tbody");
+    if (!tbody) return;
+    const page = rows.slice(0, instShown);
+    tbody.innerHTML =
+        page.map(instanceRowHtml).join("") ||
+        '<tr><td colspan="7" class="text-center padded">No instances match the current filters.</td></tr>';
 
     // Re-apply the user's column sort to the freshly rendered rows so filtering or
     // searching doesn't silently snap the table back to the default name order.
     document.querySelector("#instances-table table")?.reapplySort?.();
+
+    // "Show more" control below the table, revealing the next page on click.
+    const moreWrap = document.getElementById("i-more");
+    if (moreWrap) {
+        const remaining = rows.length - page.length;
+        moreWrap.innerHTML = remaining > 0
+            ? `<button class="btn btn-ghost btn-sm" type="button" id="i-more-btn">Show ${Math.min(INST_PAGE, remaining).toLocaleString()} more (${remaining.toLocaleString()} hidden)</button>`
+            : "";
+        document.getElementById("i-more-btn")?.addEventListener("click", () => {
+            instShown += INST_PAGE;
+            renderInstances(false);
+        });
+    }
 }
 
 window.renderInstances = renderInstances;

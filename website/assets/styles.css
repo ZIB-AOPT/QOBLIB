@@ -1160,6 +1160,20 @@ textarea:focus {
     white-space: nowrap;
 }
 
+/* "Show more" control below the large paginated tables (instances, leaderboard). */
+.table-more {
+    display: flex;
+    justify-content: center;
+    margin: 0.9rem 0 0.2rem;
+}
+
+.table-more-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0.9rem 0 0.2rem;
+}
+
 .tw {
     background: var(--surface);
     border: 1px solid var(--border);

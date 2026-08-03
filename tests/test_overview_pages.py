@@ -259,6 +259,22 @@ class TestRenderInstances(unittest.TestCase):
         # ms_03_050_002 sorts before ms_03_050_010 (numeric-aware).
         self.assertLess(out.index("ms_03_050_002"), out.index("ms_03_050_010"))
 
+    def test_pagination_caps_prerendered_rows(self):
+        # More instances than the page cap: only _INST_PAGE rows are pre-rendered,
+        # and a no-JS note points to the full list.
+        big = [{
+            "id": "01", "name": "Big", "columns": [],
+            "instances": [
+                {"name": f"inst_{i:04d}", "status": "open", "raw_url": "https://ex/r"}
+                for i in range(O._INST_PAGE + 25)
+            ],
+        }]
+        out = O._render_instances(_shell("instances.html"), big, PROBLEMS)
+        self.assertEqual(out.count('data-export-key'), O._INST_PAGE)
+        self.assertIn(f"Showing the first {O._INST_PAGE:,} of {O._INST_PAGE + 25:,} instances", out)
+        # The 101st instance is not in the pre-rendered HTML.
+        self.assertNotIn("inst_0100", out)
+
 
 class TestRenderSubmissions(unittest.TestCase):
     def test_rows_stats_filter(self):

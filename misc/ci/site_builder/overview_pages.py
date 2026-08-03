@@ -515,6 +515,16 @@ def _instance_sort_key(name: str):
     return [int(t) if t.isdigit() else t.lower() for t in re.split(r"(\d+)", str(name))]
 
 
+# Rows to pre-render in the big tables. The full lists (1351 instances / 765
+# leaderboard records) are far more DOM than a viewport needs and dominate the
+# page's initial parse. Pre-render a first page; instances.js / leaderboard.js
+# reveal the rest via a "Show more" button (kept in sync with INST_PAGE / LB_PAGE
+# in those files). No-JS users see this first page plus a note pointing to the
+# per-problem pages (which list every instance of that problem).
+_INST_PAGE = 100
+_LB_PAGE = 100
+
+
 def _render_instances(html_text: str, instances_groups, problems) -> str:
     rows = []
     for group in instances_groups:
@@ -524,11 +534,21 @@ def _render_instances(html_text: str, instances_groups, problems) -> str:
         for inst in group.get("instances", []):
             rows.append((inst, pid, pname, columns))
     rows.sort(key=lambda r: _instance_sort_key(r[0]["name"]))
-    body = "".join(_instance_row(inst, pid, pname, cols) for inst, pid, pname, cols in rows)
+    total = len(rows)
+    page = rows[:_INST_PAGE]
+    body = "".join(_instance_row(inst, pid, pname, cols) for inst, pid, pname, cols in page)
     if not body:
         body = '<tr><td colspan="7" class="text-center padded">No instances match the current filters.</td></tr>'
     html_text = _replace_container(html_text, "i-tbody", body)
     html_text = _inject_options(html_text, "i-prob", _problem_options(problems, include_dash=False))
+    # No-JS note when the list is truncated (the button needs JS; the full list
+    # per problem is reachable without it via the problem pages).
+    if total > len(page):
+        hidden = total - len(page)
+        note = (f'<noscript><p class="table-more-note">Showing the first {len(page):,} of '
+                f'{total:,} instances. Enable JavaScript to load more, or browse every '
+                f'instance by problem from the <a href="problems.html">Problems</a> page.</p></noscript>')
+        html_text = _replace_container(html_text, "i-more", note)
     return html_text
 
 
@@ -688,6 +708,7 @@ def _render_leaderboard(html_text: str, problems, instances_groups, instance_sub
     if not records:
         content = '<div class="lb-empty">No submissions yet.</div>'
     else:
+        page = records[:_LB_PAGE]
         rows = "".join(
             f"""
                 <tr data-export-key="{_esc(str(r['problem_id']) + '::' + r['instance'])}">
@@ -701,8 +722,12 @@ def _render_leaderboard(html_text: str, problems, instances_groups, instance_sub
                     <td class="num">{_fmt_maybe_num(r['runtime'])}</td>
                     <td class="num">{r['n_subs']}</td>
                 </tr>"""
-            for r in records
+            for r in page
         )
+        more_note = ""
+        if len(records) > len(page):
+            more_note = (f'<noscript><p class="table-more-note">Showing the first {len(page):,} of '
+                         f'{len(records):,} records. Enable JavaScript to load more.</p></noscript>')
         content = f"""<div class="tw"><table>
         <thead>
             <tr>
@@ -720,7 +745,7 @@ def _render_leaderboard(html_text: str, problems, instances_groups, instance_sub
         <tbody>{rows}
         </tbody>
     </table></div>
-    <div class="table-legend" style="margin:.4rem 0 .6rem;color:var(--muted)">One record per instance: the best feasible submission and who holds it. ★ = reaches the best-known objective. "Subs" counts the ranked feasible submissions for that instance.</div>"""
+    <div class="table-legend" style="margin:.4rem 0 .6rem;color:var(--muted)">One record per instance: the best feasible submission and who holds it. ★ = reaches the best-known objective. "Subs" counts the ranked feasible submissions for that instance.</div>{more_note}"""
 
     html_text = _replace_container(html_text, "lb-content", content)
     html_text = _set_element_text(html_text, "lb-count", f"{len(records)} record{'' if len(records) == 1 else 's'}")

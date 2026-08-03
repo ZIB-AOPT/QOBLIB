@@ -12,6 +12,7 @@ const {
     niceLinearTicks: qNiceLinearTicks,
     niceLogAxis: qNiceLogAxis,
     loadProblemData: qLoadProblemData,
+    loadProblemTimeSeries: qLoadProblemTimeSeries,
     instanceUrl: qInstanceUrl,
     submissionUrl: qSubmissionUrl,
     problemUrl: qProblemUrl,
@@ -616,6 +617,17 @@ async function initInstancePage() {
             .join("");
 
         const submissions = [...(p.instance_submissions?.[instanceName] || [])];
+
+        // Re-attach objective time-series (split into a separate lazy file to keep
+        // instance_submissions.json small — see build.py). Keyed by
+        // "<instance>::<_source_file>". Only this page needs them.
+        try {
+            const ts = await qLoadProblemTimeSeries(problemId);
+            submissions.forEach((s) => {
+                const key = `${instanceName}::${s._source_file || s._source_dir || ""}`;
+                if (ts[key]) s.time_series = ts[key];
+            });
+        } catch (e) { /* plot simply omitted if unavailable */ }
         const parseMaybeNumber = (value) => {
             if (value == null) return Number.NaN;
             return Number(String(value).replace(/,/g, "").trim());

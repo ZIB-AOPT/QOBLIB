@@ -9,6 +9,7 @@ const SUBMISSIONS_CACHE = new Map();
 const SUBMISSION_GROUPS_CACHE = new Map();
 const CHARTS_CACHE = new Map();
 const MIP_POINTS_CACHE = new Map();
+const TIME_SERIES_CACHE = new Map();
 let ALL_SUBMISSION_GROUPS_CACHE = null;
 let TABLE_SORT_OBSERVER = null;
 
@@ -659,6 +660,23 @@ async function loadProblemMipPoints(id) {
     return points;
 }
 
+// Objective time-series arrays, split out of instance_submissions.json (they are
+// ~85% of its bytes but read only by the instance-page convergence chart). Keyed
+// by "<instance>::<_source_file>". Loaded on demand by instance.js so no other
+// page pays for the plot data. Returns {} when absent.
+async function loadProblemTimeSeries(id) {
+    if (TIME_SERIES_CACHE.has(id)) return TIME_SERIES_CACHE.get(id);
+    let entries = {};
+    try {
+        const d = await loadJSON(`data/problems/${id}/time_series.json`);
+        entries = d.entries || {};
+    } catch (e) {
+        entries = {};
+    }
+    TIME_SERIES_CACHE.set(id, entries);
+    return entries;
+}
+
 async function loadProblemData(id) {
     const [meta, instances, instanceSubs] = await Promise.all([
         loadProblemMeta(id),
@@ -706,6 +724,17 @@ async function loadInstancesList() {
     if (INSTANCES_LIST_CACHE) return INSTANCES_LIST_CACHE;
     INSTANCES_LIST_CACHE = await loadJSON("data/instances.json");
     return INSTANCES_LIST_CACHE;
+}
+
+// Aggregated leaderboard payload (one request instead of meta+instances+
+// instance_submissions for all ten problems). Shape:
+//   { problems: [ { id, name, minimize, instances: [...], instance_submissions: {...} } ] }
+// Trimmed to the fields the leaderboard's champion selection reads.
+let LEADERBOARD_CACHE = null;
+async function loadLeaderboard() {
+    if (LEADERBOARD_CACHE) return LEADERBOARD_CACHE;
+    LEADERBOARD_CACHE = await loadJSON("data/leaderboard.json");
+    return LEADERBOARD_CACHE;
 }
 
 function setActiveNav(navId) {
@@ -1403,8 +1432,10 @@ window.QOBLIB = {
     loadProblemSubmissionGroups,
     loadProblemCharts,
     loadProblemMipPoints,
+    loadProblemTimeSeries,
     loadAllSubmissionGroups,
     loadInstancesList,
+    loadLeaderboard,
     setPageMeta,
     openFigureLightbox,
     attachFigureExpand,
