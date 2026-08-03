@@ -10,7 +10,7 @@ This directory contains the submission for the problem **B16_16_6**.
 | Date | 2026-08-03 |
 | ====== |  |
 | Reference | N/A |
-| Best Objective Value | 5 |
+| Best Objective Value | 64 |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | QUBO |
@@ -32,9 +32,9 @@ This directory contains the submission for the problem **B16_16_6**.
 | ====== |  |
 | Hardware Specifications | Qoro Cloud Simulator / MPS |
 | ====== |  |
-| Total Runtime | 237.43 |
-| Time to Solution | 237.43 |
-| CPU Runtime | 237.43 |
+| Total Runtime | 0.43 |
+| Time to Solution | 0.43 |
+| CPU Runtime | 0.43 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
