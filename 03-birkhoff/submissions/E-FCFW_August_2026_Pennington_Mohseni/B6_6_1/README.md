@@ -7,7 +7,7 @@ This directory contains the submission for the problem **B6_6_1**.
 | Problem | B6_6_1 |
 | Submitter | George Pennington (1), Naeimeh Mohseni (2) |
 | Affiliation | (1) The Hartree Centre STFC, United Kingdom, (2) E.ON Digital Technology GmbH, Essen, Germany |
-| Date | July 31st, 2026 |
+| Date | August 3rd, 2026 |
 | ====== |  |
 | Reference | https://arxiv.org/pdf/2509.10657 |
 | Best Objective Value | 10 |
