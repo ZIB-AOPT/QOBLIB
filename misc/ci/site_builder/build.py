@@ -26,9 +26,13 @@
     <out>/data/problems/<id>/charts.json                — pre-rendered performance-chart SVGs
 
 ``build_site`` copies the static frontend (HTML/CSS/JS from ``website/``) into
-the output directory and then writes the generated data into ``<out>/data``.
-This builder never emits HTML — all markup lives in the static ``website/``
-files; the Python side only produces data.
+the output directory, writes the generated data into ``<out>/data``, and then
+post-processes the copied HTML: ``html_pages.enrich_site`` adds SEO/social meta
+and the crawlable per-problem pages, and ``overview_pages.render_overview_pages``
+pre-renders the overview pages' content (problem cards, instance / submission
+tables, leaderboard) into their containers so the site works without JavaScript.
+All page *structure* still lives in ``website/``; the Python side fills the
+data-driven regions the client would otherwise populate on load.
 """
 
 from __future__ import annotations
@@ -44,6 +48,7 @@ from .charts import build_problem_charts
 from .html_pages import enrich_site
 from .landscape import build_landscape
 from .metrics import build_mip_points
+from .overview_pages import render_overview_pages
 from .problem import build_problem
 
 
@@ -91,9 +96,11 @@ INSTANCE_LIST_FIELDS = (
 )
 
 
-def _write_problem_chunks(problem_id: str, problem_dir: Path, data: dict, problems_root: Path) -> tuple[list[dict], int, dict]:
+def _write_problem_chunks(problem_id: str, problem_dir: Path, data: dict, problems_root: Path) -> tuple[list[dict], int, dict, list[dict], dict, dict]:
     """Split one problem payload into the per-file chunks and return its
-    (submissions, instance_count, instances_group) for the global aggregates."""
+    (submissions, instance_count, instances_group, submission_groups,
+    submissions_by_instance, charts) for the global aggregates + overview /
+    problem-page pre-render."""
     chunk_dir = problems_root / problem_id
     chunk_dir.mkdir(parents=True, exist_ok=True)
 
@@ -166,7 +173,7 @@ def _write_problem_chunks(problem_id: str, problem_dir: Path, data: dict, proble
         f"  → {chunk_dir} "
         f"({len(instances)} instances, {data['solved_count']} solved, {len(submissions)} submissions)"
     )
-    return submissions, data["instance_count"], instances_group
+    return submissions, data["instance_count"], instances_group, submission_groups, submissions_by_instance, charts
 
 
 def _remove_path(path: Path) -> None:
@@ -220,7 +227,11 @@ def clean_site_output(root: Path, out_dir: Path, copy_static: bool) -> None:
 
 
 def build_data(out_dir: Path, built_at: str | None = None) -> dict:
-    """Scan the repository and write the split JSON payload under ``out_dir/data``."""
+    """Scan the repository and write the split JSON payload under ``out_dir/data``.
+
+    Returns a ``site_data`` dict with the site ``index`` plus the in-memory
+    aggregates the overview pre-render step consumes (``problems``,
+    ``instances_groups``, ``submission_groups``, ``instance_subs``)."""
     data_root = out_dir / "data"
     problems_root = data_root / "problems"
     data_root.mkdir(parents=True, exist_ok=True)
@@ -235,6 +246,9 @@ def build_data(out_dir: Path, built_at: str | None = None) -> dict:
     index_problems: list[dict] = []
     landscape_inputs: list[dict] = []
     instances_groups: list[dict] = []
+    all_submission_groups: list[dict] = []
+    instance_subs_by_problem: dict[str, dict] = {}
+    problem_details: list[dict] = []  # full per-problem payloads for the deep-page pre-render
     total_instances = 0
 
     for problem_id, problem_dir in problem_dirs:
@@ -268,14 +282,28 @@ def build_data(out_dir: Path, built_at: str | None = None) -> dict:
                 for inst in data.get("instances", [])
             ],
         })
-        submissions, instance_count, instances_group = _write_problem_chunks(problem_id, problem_dir, data, problems_root)
+        submissions, instance_count, instances_group, submission_groups, subs_by_instance, charts = _write_problem_chunks(
+            problem_id, problem_dir, data, problems_root
+        )
         all_submissions.extend(submissions)
         instances_groups.append(instances_group)
+        all_submission_groups.extend(submission_groups)
+        instance_subs_by_problem[problem_id] = subs_by_instance
         total_instances += instance_count
+        # Full per-problem payload for the deep-page pre-render: the meta (data,
+        # with instances/submissions already popped off) plus the trimmed instance
+        # list, this problem's submission packages, and its pre-baked charts.
+        problem_details.append({
+            **data,
+            "instances": instances_group["instances"],
+            "submission_groups": submission_groups,
+            "charts": charts,
+        })
 
     # Pre-render the home-page complexity-landscape scatter plots (MIP + QUBO)
     # once, here, instead of shipping static PNGs (see landscape.py).
-    _write_json(data_root / "landscape.json", build_landscape(landscape_inputs))
+    landscape = build_landscape(landscape_inputs)
+    _write_json(data_root / "landscape.json", landscape)
     print(f"→ {data_root / 'landscape.json'}")
 
     # Aggregated leaderboard: sort by problem, then instance, then value.
@@ -301,7 +329,18 @@ def build_data(out_dir: Path, built_at: str | None = None) -> dict:
     print(f"→ {data_root / 'index.json'}")
     print(f"\nDone. {len(problem_dirs)} problems, {total_instances} instances, {len(all_submissions)} submissions.")
 
-    return index
+    # Aggregates for the overview pre-render step (render_overview_pages). These
+    # mirror the JSON the frontend fetches, so the pre-rendered HTML matches the
+    # client-hydrated view. No extra files are written; this is in-memory only.
+    return {
+        "index": index,
+        "problems": index_problems,
+        "instances_groups": instances_groups,
+        "submission_groups": all_submission_groups,
+        "instance_subs": instance_subs_by_problem,
+        "landscape": landscape,
+        "problem_details": problem_details,
+    }
 
 
 def copy_static_frontend(root: Path, out_dir: Path) -> None:
@@ -335,9 +374,17 @@ def build_site(
     clean_site_output(root, out, copy_static=copy_static)
     if copy_static:
         copy_static_frontend(root, out)
-    index = build_data(out, built_at=built_at)
+    site_data = build_data(out, built_at=built_at)
+    index = site_data["index"]
     if copy_static:
-        enrich_site(out, index["problems"], base_url)
+        # Pass the full per-problem payloads so the deep problem/<id>/ pages are
+        # rendered with their instances table, submissions and charts (not just a
+        # summary) — usable without JS. Falls back to the summary if absent.
+        enrich_site(out, index["problems"], base_url, problem_details=site_data.get("problem_details"))
+        # Pre-render the overview pages' content into the copied HTML so the site
+        # is usable without JavaScript (the client scripts hydrate over it). Runs
+        # after enrich_site so meta/skip-link are already in place.
+        render_overview_pages(out, site_data)
     return {
         "problems": len(index["problems"]),
         "instances": index["total_instances"],

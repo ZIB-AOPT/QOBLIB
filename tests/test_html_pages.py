@@ -96,6 +96,33 @@ class TestRenderProblemPage(unittest.TestCase):
         # The loading placeholder is replaced by the server-rendered summary.
         self.assertNotIn("Loading problem data", self.page)
 
+    def test_full_detail_render_when_provided(self):
+        # With a full detail payload the deep page gets the instances table +
+        # submissions + charts, not just the summary.
+        detail = {
+            **PROBLEM,
+            "slug": "independentset",
+            "description": "The largest independent set.",
+            "columns": [{"key": "nodes", "label": "Nodes", "numeric": True}],
+            "instances": [{
+                "name": "mis_001", "status": "optimal", "best_value": 12,
+                "best_is_optimal": True, "raw_url": "https://ex/raw", "metrics": {"nodes": 45},
+            }],
+            "submission_groups": [{
+                "id": "20260101_QAOA_Team", "source_dir": "20260101_QAOA_Team",
+                "category": "quantum_hw",
+                "profile": {"submitter": "Q Team", "date": "2026-01-01"},
+                "instances": [{"instance": "mis_001"}],
+            }],
+            "charts": {"modes": {}, "has_cactus": False, "has_tts": False,
+                       "has_profile": False, "has_scaling": False},
+        }
+        page = H.render_problem_page(TEMPLATE, PROBLEM, BASE, detail=detail)
+        self.assertIn('id="prob-inst-tbody"', page)
+        self.assertIn("mis_001", page)
+        self.assertIn("Q Team", page)
+        self.assertNotIn("Loading problem data", page)
+
     def test_skip_link_resolves_to_self_under_base(self):
         # Relative to <base> (site root) this is the page's own #main anchor.
         self.assertIn('<a class="skip-link" href="problem/07/#main-content">', self.page)

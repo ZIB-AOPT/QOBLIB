@@ -146,6 +146,35 @@ _BODY_OPEN_RE = re.compile(r"(<body\b[^>]*>)")
 _MAIN_OPEN_RE = re.compile(r"(<main\b[^>]*?)(>)")
 _VIEWPORT_RE = re.compile(r'(<meta name="viewport"[^>]*>)')
 _LOADING_RE = re.compile(r'<div class="loading">Loading problem data</div>')
+# Leading indentation of the loading placeholder line, so the injected detail
+# body can be re-indented to the same column.
+_LOADING_INDENT_RE = re.compile(r'^([ \t]*)<div class="loading">Loading problem data</div>', re.MULTILINE)
+
+# The three Google Fonts <link> tags (2 preconnects + the stylesheet) as a single
+# block, so a successful self-host swaps them out wholesale for the local CSS.
+_GOOGLE_FONTS_RE = re.compile(
+    r'[ \t]*<link rel="preconnect" href="https://fonts\.googleapis\.com"[^>]*>\s*'
+    r'<link rel="preconnect" href="https://fonts\.gstatic\.com"[^>]*>\s*'
+    r'<link href="https://fonts\.googleapis\.com/css2[^"]*"[^>]*>',
+    re.DOTALL,
+)
+
+
+def _swap_font_tags(html_text, font_info) -> str:
+    """Replace the three Google Fonts tags with the self-hosted stylesheet.
+
+    The ``assets/fonts.css`` path is relative, so it resolves correctly on both
+    the top-level pages and the deep ``problem/<id>/`` pages (which carry a
+    ``<base href="../../">``). No-op if the tags aren't present.
+
+    We intentionally do not add ``<link rel=preload>`` for the fonts: fonts.css
+    is already a render-blocking stylesheet in <head>, so the faces are fetched
+    early anyway, and preloading them makes browsers warn when font application
+    lags the download on JS-heavy pages (see fonts.py)."""
+    if not font_info:
+        return html_text
+    replacement = f'<link rel="stylesheet" href="{_esc(font_info["css_path"])}" />'
+    return _GOOGLE_FONTS_RE.sub(lambda _m: replacement, html_text, count=1)
 
 
 def _set_title(html_text, title) -> str:
@@ -186,7 +215,39 @@ def _add_skip_link(html_text, main_href="#main-content") -> str:
     return html_text
 
 
-def enrich_static_page(html_text, filename, base_url) -> str:
+# A no-JS user still hits a spinner wherever content is loaded purely client-side
+# (the interactive detail views that aren't pre-rendered). For those, hide the
+# stuck spinner and show an honest "enable JavaScript" note via <noscript>, so JS
+# users still see the brief spinner but no-JS users learn why the page is empty.
+# Keyed by the exact placeholder text in the source shell.
+_NOJS_MESSAGES = {
+    "Loading instance data": "This page needs JavaScript to show the instance's metrics, charts and submissions. Please enable JavaScript, or browse the instance list on the Instances page.",
+    "Loading submission": "This page needs JavaScript to show the submission details. Please enable JavaScript, or see the Submissions page.",
+    "Loading problem data": "This page needs JavaScript. Please enable it, or browse the problem pages linked from the Problems page.",
+    "Loading MIP metrics": "The interactive instance map needs JavaScript. The instance table below works without it.",
+}
+
+# Hide any stuck ".loading" spinner when scripts are off, so it never sits there
+# implying content is still on its way. Injected once into every page's <head>.
+_NOJS_HIDE_SPINNER = '<noscript><style>.loading{display:none}</style></noscript>'
+
+
+def _add_nojs_notices(html_text) -> str:
+    """After each remaining ``<div class="loading">TEXT</div>`` placeholder (the
+    genuinely client-only spots), add a ``<noscript>`` note explaining JS is
+    required. Pre-rendered containers no longer carry a loading div, so they are
+    untouched."""
+    def repl(m):
+        text = m.group(1).strip()
+        msg = _NOJS_MESSAGES.get(text)
+        if not msg:
+            return m.group(0)
+        return m.group(0) + f'<noscript><div class="error-box" role="alert">{_esc(msg)}</div></noscript>'
+
+    return re.sub(r'<div class="loading">([^<]*)</div>', repl, html_text)
+
+
+def enrich_static_page(html_text, filename, base_url, font_info=None) -> str:
     """Inject title, meta/social tags, canonical and a skip link into a static page."""
     meta = PAGE_META.get(filename, {"title": SITE_NAME, "description": DEFAULT_DESCRIPTION})
     title = meta.get("title", SITE_NAME)
@@ -196,8 +257,10 @@ def enrich_static_page(html_text, filename, base_url) -> str:
     canonical = f"{base_url}/{rel}" if rel else f"{base_url}/"
     og_image = f"{base_url}/{DEFAULT_OG_IMAGE}"
     html_text = _set_title(html_text, title)
-    html_text = _inject_into_head(html_text, _meta_block(title, desc, canonical, og_image))
+    html_text = _inject_into_head(html_text, _meta_block(title, desc, canonical, og_image) + f"    {_NOJS_HIDE_SPINNER}\n")
     html_text = _add_skip_link(html_text)
+    html_text = _add_nojs_notices(html_text)
+    html_text = _swap_font_tags(html_text, font_info)
     return html_text
 
 
@@ -235,11 +298,17 @@ def _problem_summary_block(p) -> str:
     )
 
 
-def render_problem_page(template_html, p, base_url) -> str:
+def render_problem_page(template_html, p, base_url, detail=None, figure_svg=None, font_info=None) -> str:
     """Build a deep pretty-URL page (``/problem/<id>/``) from the problem.html
     template: a relative <base> so the client's relative fetches resolve at the
     deploy root, per-problem meta, a data-problem-id hook for problem.js, and a
-    server-rendered summary."""
+    server-rendered body.
+
+    ``detail`` is the full per-problem payload (meta + instances +
+    submission_groups + charts). When present the page gets the complete no-JS
+    render (header, description, performance charts, submissions, instances);
+    otherwise it falls back to the lightweight crawlable summary. Either way the
+    client overwrites ``#prob-detail`` on load."""
     pid = str(p.get("id", ""))
     name = p.get("name", "")
     title = f"{name} — {SITE_NAME}"
@@ -258,6 +327,8 @@ def render_problem_page(template_html, p, base_url) -> str:
     html_text = _inject_base(html_text, PROBLEM_PAGE_BASE)
     html_text = _set_title(html_text, title)
     html_text = _inject_into_head(html_text, _meta_block(title, desc, canonical, og_image, og_type="article"))
+    # Self-host fonts (relative assets/ paths resolve under the deep page's <base>).
+    html_text = _swap_font_tags(html_text, font_info)
     # Tell problem.js which problem to load (no ?id= query on these static URLs).
     html_text = _BODY_OPEN_RE.sub(
         lambda m: m.group(1)[:-1] + f' data-problem-id="{_esc(pid)}">',
@@ -265,7 +336,19 @@ def render_problem_page(template_html, p, base_url) -> str:
         count=1,
     )
     html_text = _add_skip_link(html_text, main_href)
-    html_text = _LOADING_RE.sub(lambda _m: _problem_summary_block(p), html_text, count=1)
+    if detail is not None:
+        from .overview_pages import _pretty_fragment, render_problem_detail
+        body = render_problem_detail(detail, figure_svg=figure_svg)
+        # Indent the injected body to match the placeholder's column (12 spaces in
+        # the shell) so the generated page reads cleanly rather than as one line.
+        indent = _LOADING_INDENT_RE.search(html_text)
+        base = indent.group(1) if indent else "            "
+        # The placeholder already sits at `base` indentation, so emit the first
+        # line inline (lstrip) and close on a fresh line at the container indent.
+        body = _pretty_fragment(body, base).lstrip() + "\n" + base
+    else:
+        body = _problem_summary_block(p)
+    html_text = _LOADING_RE.sub(lambda _m: body, html_text, count=1)
     return html_text
 
 
@@ -374,10 +457,24 @@ def not_found_page(base_url) -> str:
 # --------------------------------------------------------------------------- #
 # Orchestration
 # --------------------------------------------------------------------------- #
-def enrich_site(out_dir, problems, base_url) -> None:
-    """Generate per-problem pages, enrich every static page, and emit SEO files."""
+def enrich_site(out_dir, problems, base_url, problem_details=None) -> None:
+    """Generate per-problem pages, enrich every static page, and emit SEO files.
+
+    ``problem_details`` (optional) maps problem id → full per-problem payload so
+    the deep pages render their complete no-JS body; when absent they fall back
+    to the lightweight summary."""
     out_dir = Path(out_dir)
     base_url = base_url.rstrip("/")
+    details_by_id = {str(d.get("id")): d for d in (problem_details or [])}
+    # Per-problem illustration SVGs (keyed by slug) for the no-JS description layout.
+    from .overview_pages import _load_problem_figures
+    figures = _load_problem_figures(out_dir)
+
+    # Self-host the webfonts (best-effort). On success every page's Google Fonts
+    # tags are swapped for the local stylesheet + preloads; on failure font_info
+    # is None and the original Google Fonts tags are kept.
+    from .fonts import build_fonts
+    font_info = build_fonts(out_dir)
 
     # 1. Generate deep per-problem pages from the (raw, copied) template.
     generated_ids: list = []
@@ -388,7 +485,9 @@ def enrich_site(out_dir, problems, base_url) -> None:
             pid = p.get("id")
             if not pid:
                 continue
-            page = render_problem_page(template, p, base_url)
+            detail = details_by_id.get(str(pid))
+            figure_svg = figures.get(p.get("slug")) if detail else None
+            page = render_problem_page(template, p, base_url, detail=detail, figure_svg=figure_svg, font_info=font_info)
             page_dir = out_dir / "problem" / str(pid)
             page_dir.mkdir(parents=True, exist_ok=True)
             (page_dir / "index.html").write_text(page, encoding="utf-8")
@@ -397,7 +496,7 @@ def enrich_site(out_dir, problems, base_url) -> None:
     # 2. Enrich the hand-authored static pages (including the problem.html shell).
     for html_file in sorted(out_dir.glob("*.html")):
         text = html_file.read_text(encoding="utf-8")
-        html_file.write_text(enrich_static_page(text, html_file.name, base_url), encoding="utf-8")
+        html_file.write_text(enrich_static_page(text, html_file.name, base_url, font_info=font_info), encoding="utf-8")
 
     # 3. SEO support files.
     (out_dir / "sitemap.xml").write_text(build_sitemap(base_url, generated_ids), encoding="utf-8")
