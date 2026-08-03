@@ -34,7 +34,7 @@ This directory contains the submission for the problem **B7_7_10**.
 | ====== |  |
 | Total Runtime | 319.48 |
 | Time to Solution | N/A |
-| CPU Runtime | 0 |
+| CPU Runtime | N/A |
 | GPU Runtime | 0 |
 | QPU Runtime | 55 |
 | Other HW Runtime | 0 |
