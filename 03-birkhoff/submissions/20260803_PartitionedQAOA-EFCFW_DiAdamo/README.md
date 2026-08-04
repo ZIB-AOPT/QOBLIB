@@ -1,4 +1,4 @@
-e done# Partitioned QAOA E-FCFW Submission
+# Partitioned QAOA E-FCFW Submission
 
 This folder contains benchmarking results for the Birkhoff decomposition problem using a
 quantum-classical hybrid approach combining Partitioned QAOA with Enhanced Frank-Wolfe
@@ -45,5 +45,5 @@ Each subfolder `B{X}_{Y}_{Z}` holds the result for one instance:
 
 ## References
 
-- E-FCFW framework: Pennington & Mohseni, arXiv:2412.07254
+- Pennington, George, et al. "Boosting Sparsity in Graph Decompositions with QAOA Sampling." arXiv preprint arXiv:2509.10657 (2025).
 - QOBLIB benchmark: https://arxiv.org/pdf/2504.03832
