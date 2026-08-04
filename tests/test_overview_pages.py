@@ -223,6 +223,39 @@ class TestRenderIndex(unittest.TestCase):
         self.assertRegex(out, r'class="affil-track running"[^>]*--affil-duration')
 
 
+class TestHeroFontPreload(unittest.TestCase):
+    LOCAL_LINK = '<link rel="stylesheet" href="assets/fonts.css" />'
+
+    def test_preloads_when_selfhosted(self):
+        # When the self-hosted fonts.css link is present, the home page emits a
+        # crossorigin preload for each hero font, placed before the stylesheet.
+        html = O._preload_hero_fonts(f"<head>{self.LOCAL_LINK}</head>")
+        for href in O._HERO_PRELOAD_FONTS:
+            self.assertIn(
+                f'<link rel="preload" as="font" type="font/woff2" href="{href}" crossorigin />',
+                html,
+            )
+        self.assertLess(html.index('rel="preload"'), html.index(self.LOCAL_LINK))
+        # crossorigin is mandatory (else the font downloads twice).
+        self.assertEqual(html.count("crossorigin"), len(O._HERO_PRELOAD_FONTS))
+        # Only the `latin` subset is preloaded, never `latin-ext`.
+        self.assertNotIn("latin-ext", html)
+
+    def test_no_preload_on_google_fonts_fallback(self):
+        # Raw source (Google Fonts tags, no local fonts.css) → no dead preloads.
+        html = O._preload_hero_fonts(_shell("index.html"))
+        self.assertNotIn('rel="preload"', html)
+
+    def test_render_index_injects_preloads(self):
+        # End to end: a shell carrying the local link comes out with the preloads.
+        shell = _shell("index.html").replace(
+            '<link href="https://fonts.googleapis.com/css2', "<!--x", 1
+        ) + self.LOCAL_LINK
+        out = O._render_index(shell, PROBLEMS, INDEX, TestRenderIndex.LANDSCAPE)
+        self.assertIn('rel="preload"', out)
+        self.assertIn("source-serif-4-400-normal-latin.woff2", out)
+
+
 class TestAffiliationCounts(unittest.TestCase):
     def test_multi_author_org_counted_once_per_package(self):
         # An org repeated across co-authors in one package counts once.

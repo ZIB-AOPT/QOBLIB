@@ -53,7 +53,14 @@ from .problem import build_problem
 
 
 def _write_json(path: Path, payload) -> None:
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    # Compact separators (no indent, no post-separator spaces): this data is read
+    # by the client JS, never by humans, so pretty-printing is pure transfer
+    # weight — it roughly halves the raw payload (~27 MB → ~15 MB across the tree,
+    # led by the multi-MB per-problem time_series.json). Parses identically.
+    path.write_text(
+        json.dumps(payload, separators=(",", ":"), ensure_ascii=False),
+        encoding="utf-8",
+    )
 
 
 def _index_problem_summary(data: dict) -> dict:

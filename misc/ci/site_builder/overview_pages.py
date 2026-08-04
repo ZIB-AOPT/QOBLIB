@@ -447,7 +447,47 @@ def _render_affiliations(html_text: str, submission_groups) -> str:
     return html_text
 
 
+# The two webfont files the home-page hero paints in immediately: Source Serif
+# 400 (the .hero-desc — the largest above-the-fold paint) and Syne (the <h1> at
+# weight 700, plus the eyebrow and body text; after the build's content-dedup all
+# Syne weights share the single 400 variable file). Only the `latin` subset is
+# needed — the hero text is plain English — so `latin-ext` is left lazily loaded.
+_HERO_PRELOAD_FONTS = (
+    "assets/fonts/source-serif-4-400-normal-latin.woff2",
+    "assets/fonts/syne-400-normal-latin.woff2",
+)
+# The local stylesheet link that a self-hosted-fonts build produces (see
+# fonts.py / html_pages._swap_font_tags). Absent on the Google-Fonts fallback
+# build, where the local woff2 files don't exist — so we key the preloads off it
+# and emit nothing when it's missing (no dead preloads pointing at absent files).
+_LOCAL_FONTS_LINK = '<link rel="stylesheet" href="assets/fonts.css" />'
+
+
+def _preload_hero_fonts(html_text: str) -> str:
+    """Home-page only: hint the browser to fetch the two hero webfonts in
+    parallel with ``fonts.css`` instead of waiting to discover them inside it.
+
+    ``crossorigin`` is required even though the fonts are same-origin: fonts are
+    always fetched in CORS mode, and a non-CORS preload would be a *different*
+    request than the one ``fonts.css`` triggers, so the file would download twice.
+
+    Scoped to the home page on purpose. A global preload would make the JS-heavy
+    problem pages (big chart SVGs, KaTeX) apply these fonts seconds after the
+    download, tripping Firefox's "preloaded resource not used within a few
+    seconds" warning. The hero uses both fonts on first paint, so no warning here.
+    """
+    if _LOCAL_FONTS_LINK not in html_text:
+        return html_text
+    preloads = "".join(
+        f'    <link rel="preload" as="font" type="font/woff2" href="{_esc(href)}" crossorigin />\n'
+        for href in _HERO_PRELOAD_FONTS
+    )
+    # Place the hints just before the stylesheet so they're discovered first.
+    return html_text.replace(_LOCAL_FONTS_LINK, preloads + _LOCAL_FONTS_LINK, 1)
+
+
 def _render_index(html_text: str, problems, index, landscape, submission_groups=None) -> str:
+    html_text = _preload_hero_fonts(html_text)
     cards = "".join(_problem_card(p) for p in problems)
     html_text = _replace_container(html_text, "pgrid", cards)
     # Pre-fill the stat numbers (JS animateCount overwrites them on load); drop

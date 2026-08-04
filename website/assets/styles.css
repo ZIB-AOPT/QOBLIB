@@ -385,13 +385,6 @@ body[data-nav="home"] .stats-bar {
     color: var(--faint);
 }
 
-.plot-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 2.5rem;
-}
-
 .plot-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -888,22 +881,6 @@ a.badge:hover {
 .chart-card {
     margin-bottom: 1.2rem;
     padding: 1rem;
-}
-
-/* Lay the submission-history plots side by side when there is room,
-   wrapping to a stack on narrower viewports. */
-.chart-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    align-items: stretch;
-    margin-bottom: 1.2rem;
-}
-
-.chart-row > .chart-card {
-    flex: 1 1 360px;
-    min-width: 0;
-    margin-bottom: 0;
 }
 
 .chart-head {
@@ -2087,20 +2064,6 @@ a.inst-nav-btn:hover {
     grid-column: 1 / -1;
 }
 
-.submit-btn {
-    margin-top: 0.75rem;
-    background: var(--accent);
-    color: #fff;
-    padding: 0.5rem 1.2rem;
-    border-radius: var(--r);
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.submit-btn:hover {
-    background: var(--accent-d);
-}
-
 .code-pre {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -2198,8 +2161,7 @@ a.inst-nav-btn:hover {
         max-width: none;
     }
 
-    .fg,
-    .plot-grid {
+    .fg {
         grid-template-columns: 1fr;
     }
 
@@ -3013,22 +2975,6 @@ textarea.invalid {
     max-height: 360px;
 }
 
-/* Observable Plot output container inside each chart card.
-   Plot emits a bare <svg> (or <figure>) directly — make it fill the card width
-   and cap height so tall narrow viewports don't blow up the card. */
-.perf-plot {
-    width: 100%;
-    overflow-x: auto;  /* let the fixed-width SVG scroll rather than clip */
-}
-
-.perf-plot > svg,
-.perf-plot > figure > svg {
-    display: block;
-    width: 100%;
-    height: auto;
-    max-height: 320px;
-}
-
 /* Stack the charts one per row on narrow screens. This override must follow the
    base .perf-charts rule above: both have equal specificity, so source order is
    what makes it win once the viewport is narrow. */
@@ -3693,17 +3639,6 @@ textarea.invalid {
     margin-top: 0.2rem;
 }
 
-/* =========================================================================
-   Best-practices card icon (non-emoji symbol variant replacing .bp-icon)
-   ========================================================================= */
-
-.bp-card-icon {
-    font-size: 0.55rem;
-    color: var(--accent);
-    margin-bottom: 0.5rem;
-    line-height: 1;
-    letter-spacing: 0.15em;
-}
 
 /* =========================================================================
    Leaderboard — view toggle (Overall / Quantum)
