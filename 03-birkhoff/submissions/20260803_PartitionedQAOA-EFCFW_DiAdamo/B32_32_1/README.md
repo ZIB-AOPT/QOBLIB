@@ -7,10 +7,10 @@ This directory contains the submission for the problem **B32_32_1**.
 | Problem | B32_32_1 |
 | Submitter | Stephen DiAdamo |
 | Affiliation | Qoro Quantum Ltd. |
-| Date | 2026-08-03 |
+| Date | 2026-08-04 |
 | ====== |  |
 | Reference | N/A |
-| Best Objective Value | 150 |
+| Best Objective Value | 164 |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | QUBO |
@@ -23,20 +23,20 @@ This directory contains the submission for the problem **B32_32_1**.
 | Coefficients Range | [0, 1000000] |
 | ====== |  |
 | Workflow | Partitioned QAOA E-FCFW with beam-search aggregation |
-| Algorithm Type | Quantum-Classical Hybrid |
-| Paradigm | QAOA |
+| Algorithm Type | Stochastic |
+| Paradigm | Quantum Hardware |
 | # Runs | 1 |
 | # Feasible Runs | 1 |
 | # Successful Runs | 1 |
 | Success Threshold | 1e-3 |
 | ====== |  |
-| Hardware Specifications | IBM Pittsburgh (ibm_pittsburgh) via Qoro Cloud Services |
+| Hardware Specifications | IBM Marrakesh (ibm_marrakesh) via Qoro Cloud Services |
 | ====== |  |
-| Total Runtime | 1.59 |
-| Time to Solution | 1.59 |
-| CPU Runtime | 1.59 |
+| Total Runtime | 1310.42 |
+| Time to Solution | 1310.42 |
+| CPU Runtime | 905.42 |
 | GPU Runtime | N/A |
-| QPU Runtime | N/A |
+| QPU Runtime | 405.00 |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | Partitioned QAOA via Divi with edge-swap local refinement and beam-search aggregation. Joint work by E.ON and Qoro Quantum. |
+| Remarks | Partitioned QAOA via Divi with edge-swap local refinement and beam-search aggregation. Total runtime includes hardware queue wait time. Joint work by E.ON and Qoro Quantum. |
