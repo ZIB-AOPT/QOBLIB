@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script>(function(){try{var t=localStorage.getItem("qoblib-theme");if(t!=="dark"&&t!=="light"){t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+    <script>(function () { try { var t = localStorage.getItem("qoblib-theme"); if (t !== "dark" && t !== "light") { t = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } document.documentElement.setAttribute("data-theme", t); } catch (e) { } })();</script>
     <title>QOBLIB - Steering Committee</title>
     <link rel="icon" type="image/svg+xml" href="assets/images/qoblib-favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png" />
@@ -13,9 +14,12 @@
     <meta name="theme-color" content="#14191b" media="(prefers-color-scheme: dark)" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="assets/styles.css" />
 </head>
+
 <body data-nav="committee">
     <nav>
         <div class="nav-inner">
@@ -30,7 +34,8 @@
                 <a class="nl" data-nav="participate" href="participate.html">Participate</a>
                 <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode"
+                title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
@@ -65,8 +70,10 @@
                             submission validation and best-known-value tracking.
                         </p>
                         <div class="committee-contact">
-                            <a class="committee-link" href="https://www.schicker.org" target="_blank" rel="noopener">Website ↗</a>
-                            <a class="committee-link committee-email" data-e="schicker" data-d="zib.de" href="#">Email</a>
+                            <a class="committee-link" href="https://www.schicker.org" target="_blank"
+                                rel="noopener">Website ↗</a>
+                            <a class="committee-link committee-email" data-e="schicker" data-d="zib.de"
+                                href="#">Email</a>
                         </div>
                     </div>
                 </div>
@@ -82,7 +89,8 @@
                             Provides oversight of problem class design and benchmark methodology.
                         </p>
                         <div class="committee-contact">
-                            <a class="committee-link" href="https://www.zib.de/koch" target="_blank" rel="noopener">Website ↗</a>
+                            <a class="committee-link" href="https://www.zib.de/koch" target="_blank"
+                                rel="noopener">Website ↗</a>
                         </div>
                     </div>
                 </div>
@@ -98,7 +106,8 @@
                             classification and quantum submission evaluation.
                         </p>
                         <div class="committee-contact">
-                            <a class="committee-link" href="https://www.linkedin.com/in/christa-zoufal/" target="_blank" rel="noopener">LinkedIn ↗</a>
+                            <a class="committee-link" href="https://www.linkedin.com/in/christa-zoufal/" target="_blank"
+                                rel="noopener">LinkedIn ↗</a>
                         </div>
                     </div>
                 </div>
@@ -114,7 +123,8 @@
                             QOBLIB and its role in advancing quantum advantage assessment.
                         </p>
                         <div class="committee-contact">
-                            <a class="committee-link" href="https://research.ibm.com/people/stefan-worner" target="_blank" rel="noopener">Website ↗</a>
+                            <a class="committee-link" href="https://research.ibm.com/people/stefan-worner"
+                                target="_blank" rel="noopener">Website ↗</a>
                         </div>
                     </div>
                 </div>
@@ -130,7 +140,8 @@
                             and mathematical optimization.
                         </p>
                         <div class="committee-contact">
-                            <a class="committee-link" href="https://engineering.purdue.edu/ME/people/ptProfile?id=261888" target="_blank" rel="noopener">Website ↗</a>
+                            <a class="committee-link" href="https://secquoia.github.io/1-bernalde.html" target="_blank"
+                                rel="noopener">Website ↗</a>
                         </div>
                     </div>
                 </div>
@@ -187,12 +198,14 @@
                 <h2>Join the effort</h2>
                 <p>
                     The best way to engage is to submit results, report issues, or start a discussion on GitHub.
-                    For deeper collaboration or questions about benchmark design, reach out to any committee member directly.
+                    For deeper collaboration or questions about benchmark design, reach out to any committee member
+                    directly.
                 </p>
             </div>
             <div class="callout-actions">
                 <a class="btn btn-navy" href="participate.html">How to participate</a>
-                <a class="btn btn-ghost" href="https://github.com/ZIB-AOPT/QOBLIB/discussions" target="_blank" rel="noopener">GitHub Discussions ↗</a>
+                <a class="btn btn-ghost" href="https://github.com/ZIB-AOPT/QOBLIB/discussions" target="_blank"
+                    rel="noopener">GitHub Discussions ↗</a>
             </div>
         </section>
     </main>
@@ -206,17 +219,18 @@
     <script>
         window.QOBLIB.initCommon();
         // Decode obfuscated email links at click time — never expose raw addresses in HTML.
-        document.querySelectorAll(".committee-email").forEach(function(a) {
-            a.addEventListener("click", function(e) {
+        document.querySelectorAll(".committee-email").forEach(function (a) {
+            a.addEventListener("click", function (e) {
                 e.preventDefault();
                 var addr = a.dataset.e + "@" + a.dataset.d;
                 window.location.href = "mailto:" + addr;
             });
-            a.addEventListener("mouseenter", function() {
+            a.addEventListener("mouseenter", function () {
                 var addr = a.dataset.e + "@" + a.dataset.d;
                 a.title = addr;
             });
         });
     </script>
 </body>
+
 </html>
