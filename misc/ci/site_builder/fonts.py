@@ -109,6 +109,14 @@ def localize_css(css_text: str, download_fn, *, keep_subsets=_KEEP_SUBSETS):
     """
     out_blocks: list[str] = []
     files: dict[str, bytes] = {}
+    # Download cache (same URL fetched once) and content dedup (identical bytes
+    # stored once). Variable fonts — Syne here — are the reason: Google's css2
+    # returns the SAME variable woff2 for every requested weight (400/500/600/700),
+    # so all four faces share one file. Without dedup we'd write it four times
+    # under different weight-named filenames, defeating the browser's own URL
+    # dedup and downloading ~148 KB of identical bytes. See module docstring.
+    by_url: dict[str, bytes] = {}
+    name_by_content: dict[bytes, str] = {}
 
     for subset, block in _BLOCK_RE.findall(css_text):
         if subset not in keep_subsets:
@@ -130,9 +138,22 @@ def localize_css(css_text: str, download_fn, *, keep_subsets=_KEEP_SUBSETS):
         wgt = weight.group(1) if weight else "400"
         name = f"{_slug(fam)}-{wgt}-{sty}-{_slug(subset)}.woff2"
 
-        files[name] = download_fn(woff2_url)
+        data = by_url.get(woff2_url)
+        if data is None:
+            data = download_fn(woff2_url)
+            by_url[woff2_url] = data
+
+        # Reuse an already-stored file if these exact bytes were seen before; the
+        # @font-face rule keeps its own font-weight, so a variable font still maps
+        # each weight to the shared file correctly.
+        target = name_by_content.get(data)
+        if target is None:
+            target = name
+            files[name] = data
+            name_by_content[data] = name
+
         # Rewrite the src to the local copy (relative to assets/fonts.css).
-        out_blocks.append(_WOFF2_RE.sub(f"url(fonts/{name})", block, count=1))
+        out_blocks.append(_WOFF2_RE.sub(f"url(fonts/{target})", block, count=1))
 
     if not files:
         raise ValueError("no matching font faces found in CSS")

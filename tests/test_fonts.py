@@ -91,6 +91,36 @@ class TestLocalizeCss(unittest.TestCase):
         with self.assertRaises(ValueError):
             F.localize_css("/* greek */\n", fake_download)
 
+    def test_dedupes_variable_font_shared_bytes(self):
+        # A variable font: Google returns the SAME woff2 for several weights.
+        # We must store the bytes once and point every face at that one file,
+        # while each @font-face keeps its own font-weight.
+        var_css = (
+            "/* latin */\n@font-face { font-family: 'Syne'; font-style: normal; "
+            "font-weight: 400; src: url(https://fonts.gstatic.com/s/syne/v.woff2) "
+            "format('woff2'); unicode-range: U+0000-00FF; }\n"
+            "/* latin */\n@font-face { font-family: 'Syne'; font-style: normal; "
+            "font-weight: 700; src: url(https://fonts.gstatic.com/s/syne/v.woff2) "
+            "format('woff2'); unicode-range: U+0000-00FF; }\n"
+        )
+        calls = []
+
+        def dl(url):
+            calls.append(url)
+            return b"SHARED-VARIABLE-BYTES"
+
+        css, files = F.localize_css(var_css, dl)
+        # Downloaded once, stored once.
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(len(files), 1)
+        # Both faces reference the single shared file...
+        self.assertEqual(css.count("url(fonts/syne-400-normal-latin.woff2)"), 2)
+        # ...and both weights are still declared.
+        self.assertIn("font-weight: 400", css)
+        self.assertIn("font-weight: 700", css)
+        # No second (700-named) file is written.
+        self.assertNotIn("syne-700-normal-latin.woff2", files)
+
     def test_rejects_non_gstatic_host(self):
         # A src pointing at an unexpected host (tampered response) is refused, and
         # the download function is never invoked for it.
