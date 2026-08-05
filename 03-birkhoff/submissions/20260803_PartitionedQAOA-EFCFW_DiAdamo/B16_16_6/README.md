@@ -7,7 +7,7 @@ This directory contains the submission for the problem **B16_16_6**.
 | Problem | B16_16_6 |
 | Submitter | Stephen DiAdamo |
 | Affiliation | Qoro Quantum Ltd. |
-| Date | 2026-08-03 |
+| Date | 2026-08-05 |
 | ====== |  |
 | Reference | N/A |
 | Best Objective Value | 66 |
@@ -25,18 +25,18 @@ This directory contains the submission for the problem **B16_16_6**.
 | Workflow | Partitioned QAOA E-FCFW with beam-search aggregation |
 | Algorithm Type | Stochastic |
 | Paradigm | Quantum Hardware |
-| # Runs | 1 |
-| # Feasible Runs | 1 |
-| # Successful Runs | 1 |
-| Success Threshold | 1e-3 |
+| # Runs | 5 |
+| # Feasible Runs | 5 |
+| # Successful Runs | 5 |
+| Success Threshold | N/A |
 | ====== |  |
-| Hardware Specifications | IBM Pittsburgh (ibm_pittsburgh) via Qoro Cloud Services |
+| Hardware Specifications | IBM Marrakesh (ibm_marrakesh) via Qoro Cloud Services |
 | ====== |  |
-| Total Runtime | 8980.47 |
-| Time to Solution | 8980.47 |
-| CPU Runtime | 8740.47 |
+| Total Runtime | 432.74 |
+| Time to Solution | 432.74 |
+| CPU Runtime | N/A |
 | GPU Runtime | N/A |
-| QPU Runtime | 240.00 |
+| QPU Runtime | 225.00 |
 | Other HW Runtime | N/A |
 | ====== |  |
 | Remarks | Partitioned QAOA via Divi with edge-swap local refinement and beam-search aggregation. Total runtime includes hardware queue wait time. Joint work by E.ON and Qoro Quantum. |
