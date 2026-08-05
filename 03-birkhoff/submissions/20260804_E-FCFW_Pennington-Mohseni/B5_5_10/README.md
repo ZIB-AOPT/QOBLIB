@@ -16,7 +16,7 @@ This directory contains the submission for the problem **B5_5_10**.
 | Modeling Approach | E-FCFW with QAOA sampling and CPLEX weights recomputation. |
 | # Decision Variables | 97 |
 | # Binary Variables | 61 |
-| # Integer Variables | N/A |
+| # Integer Variables | 0 |
 | # Continuous Variables | 36 |
 | # Non-Zero Coefficients | 72 |
 | Coefficients Type | Integer |
@@ -30,13 +30,13 @@ This directory contains the submission for the problem **B5_5_10**.
 | # Successful Runs | 1 |
 | Success Threshold | 1e-6 |
 | ====== |  |
-| Hardware Specifications | IBM_Boston; MacBook Pro (16-inch, 2021) Apple M1 Max 10-core CPU, 32-core GPU, 64GB RAM |
+| Hardware Specifications | IBM_Boston; Apple MacBook Pro (2021) M1 Max 32GB RAM |
 | ====== |  |
-| Total Runtime | 980.45 |
+| Total Runtime | 87 |
 | Time to Solution | 87 |
 | CPU Runtime | 62 |
-| GPU Runtime | N/A |
+| GPU Runtime | 0 |
 | QPU Runtime | 25 |
-| Other HW Runtime | N/A |
+| Other HW Runtime | 0 |
 | ====== |  |
 | Remarks | Approximate cost is $f(X) = (1/n^2)  \\| X - D^* \\|^2_F$ where $D^*$ is the $n$ by $n$ target doubly stochastic matrix and $X$ its (approximate) decomposition. The algorithm is executed over $k$ sequential steps, with the number of decision variables increasing at each step. The reported number of decision variables corresponds to the final step, which has the largest number of decision variables. The CPU time is computed using the total usage time in the IBM Quantum platform, minus the QPU time.  |
