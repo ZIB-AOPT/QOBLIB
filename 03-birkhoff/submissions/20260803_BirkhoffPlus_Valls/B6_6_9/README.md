@@ -30,7 +30,7 @@ This directory contains the submission for the problem **B6_6_9**.
 | # Successful Runs | 1 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | MacBook Pro (16-inch, 2021) Apple M1 Max 10-core CPU, 32-core GPU, 64GB RAM |
+| Hardware Specifications | Apple MacBook Pro (2021) M1 Max 32GB RAM |
 | ====== |  |
 | Total Runtime | 0.002 |
 | Time to Solution | 0.002 |
