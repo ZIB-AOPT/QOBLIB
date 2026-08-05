@@ -1,0 +1,106 @@
+[
+  [
+    {
+      "Time": 0.0,
+      "Incumbent": 1000000.0,
+      "Normalized_Frobenius_Error": 1.0,
+      "Stage": "Initial"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 1005.41,
+      "Normalized_Frobenius_Error": 0.0010054077154,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 492.73,
+      "Normalized_Frobenius_Error": 0.00049272826466,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 237.38,
+      "Normalized_Frobenius_Error": 0.0002373842504,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 105.41,
+      "Normalized_Frobenius_Error": 0.00010540933661,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 49.05,
+      "Normalized_Frobenius_Error": 4.9051785563e-05,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 24.66,
+      "Normalized_Frobenius_Error": 2.4656575701e-05,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 11.8,
+      "Normalized_Frobenius_Error": 1.1801463734e-05,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 5.25,
+      "Normalized_Frobenius_Error": 5.2540255586e-06,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 2.57,
+      "Normalized_Frobenius_Error": 2.5736389785e-06,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 1.53,
+      "Normalized_Frobenius_Error": 1.5279733242e-06,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 0.76,
+      "Normalized_Frobenius_Error": 7.6030158398e-07,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 0.46,
+      "Normalized_Frobenius_Error": 4.5553144336e-07,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 0.34,
+      "Normalized_Frobenius_Error": 3.3810036719e-07,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 0.27,
+      "Normalized_Frobenius_Error": 2.740491875e-07,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 0.23,
+      "Normalized_Frobenius_Error": 2.3287924805e-07,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 0.0,
+      "Normalized_Frobenius_Error": 0.0,
+      "Stage": "Hungarian Exact Completion"
+    }
+  ]
+]
