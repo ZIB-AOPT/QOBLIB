@@ -1,0 +1,16 @@
+[
+[
+    {"Time": "N/A", "Incumbent": 0, "Error": 0.027516499444444446},
+    {"Time": "N/A", "Incumbent": 1, "Error": 0.015496410444444449},
+    {"Time": "N/A", "Incumbent": 2, "Error": 0.00805636923611111},
+    {"Time": "N/A", "Incumbent": 3, "Error": 0.0027145687070105826},
+    {"Time": "N/A", "Incumbent": 4, "Error": 0.0010167792085953881},
+    {"Time": "N/A", "Incumbent": 5, "Error": 0.00039008776825492323},
+    {"Time": "N/A", "Incumbent": 6, "Error": 0.0001422721976119759},
+    {"Time": "N/A", "Incumbent": 7, "Error": 0.00010030430013206897},
+    {"Time": "N/A", "Incumbent": 8, "Error": 1.9292913193210907e-05},
+    {"Time": "N/A", "Incumbent": 9, "Error": 5.625855499037418e-06},
+    {"Time": "N/A", "Incumbent": 10, "Error": 3.537837001673593e-06},
+    {"Time": "430.79", "Incumbent": 11, "Error": 1.198088919570893e-32}
+]
+]
