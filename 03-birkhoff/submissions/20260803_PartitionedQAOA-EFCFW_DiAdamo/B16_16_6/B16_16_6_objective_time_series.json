@@ -2,8 +2,8 @@
   [
     {
       "Time": 0.0,
-      "Incumbent": 100000.0,
-      "Normalized_Frobenius_Error": 1.0,
+      "Incumbent": 1090.34,
+      "Normalized_Frobenius_Error": 0.01090335297890625,
       "Stage": "Initial"
     },
     {
