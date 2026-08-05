@@ -2,6 +2,6 @@
 [
     {"Time": "N/A", "Incumbent": 0, "Error": 0.10005866666666667},
     {"Time": "N/A", "Incumbent": 1, "Error": 0.012696000000000002},
-    {"Time": "1674.39", "Incumbent": 2, "Error": 0.0}
+    {"Time": 105, "Incumbent": 2, "Error": 0.0}
 ]
 ]

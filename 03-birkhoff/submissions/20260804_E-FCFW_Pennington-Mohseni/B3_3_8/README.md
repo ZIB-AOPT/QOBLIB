@@ -24,7 +24,7 @@ This directory contains the submission for the problem **B3_3_8**.
 | ====== |  |
 | Workflow | Each iteration of E-FCFW calls: 1) QAOA sampling 2) CPLEX weight recomputation |
 | Algorithm Type | Stochastic |
-| Paradigm | Classical and Quantum |
+| Paradigm | Quantum Hardware |
 | # Runs | 1 |
 | # Feasible Runs | 1 |
 | # Successful Runs | 1 |

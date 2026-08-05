@@ -14,6 +14,6 @@
     {"Time": "N/A", "Incumbent": 11, "Error": 2.944594699939204e-06},
     {"Time": "N/A", "Incumbent": 12, "Error": 1.9949907137198027e-06},
     {"Time": "N/A", "Incumbent": 13, "Error": 1.2517512627492572e-06},
-    {"Time": "861.47", "Incumbent": 14, "Error": 7.979751528156753e-07}
+    {"Time": 605, "Incumbent": 14, "Error": 7.979751528156753e-07}
 ]
 ]
