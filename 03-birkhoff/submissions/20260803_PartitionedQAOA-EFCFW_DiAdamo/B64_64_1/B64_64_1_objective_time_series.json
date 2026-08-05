@@ -9,91 +9,91 @@
     {
       "Time": 0.0,
       "Incumbent": 382.26,
-      "Normalized_Frobenius_Error": 0.00038226065329,
+      "Normalized_Frobenius_Error": 0.00038226065328808594,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
       "Incumbent": 226.59,
-      "Normalized_Frobenius_Error": 0.00022659223829,
+      "Normalized_Frobenius_Error": 0.00022659223829492184,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
       "Incumbent": 142.11,
-      "Normalized_Frobenius_Error": 0.00014210793623,
+      "Normalized_Frobenius_Error": 0.000142107936234375,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
       "Incumbent": 88.89,
-      "Normalized_Frobenius_Error": 8.8887433955e-05,
+      "Normalized_Frobenius_Error": 8.888743395458985e-05,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
       "Incumbent": 53.8,
-      "Normalized_Frobenius_Error": 5.3804873803e-05,
+      "Normalized_Frobenius_Error": 5.3804873802734374e-05,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
       "Incumbent": 33.27,
-      "Normalized_Frobenius_Error": 3.3271639981e-05,
+      "Normalized_Frobenius_Error": 3.327163998095703e-05,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
       "Incumbent": 20.98,
-      "Normalized_Frobenius_Error": 2.0980424961e-05,
+      "Normalized_Frobenius_Error": 2.09804249609375e-05,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
       "Incumbent": 13.78,
-      "Normalized_Frobenius_Error": 1.3776095293e-05,
+      "Normalized_Frobenius_Error": 1.3776095293457031e-05,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
       "Incumbent": 9.36,
-      "Normalized_Frobenius_Error": 9.3572379995e-06,
+      "Normalized_Frobenius_Error": 9.357237999511717e-06,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
       "Incumbent": 6.33,
-      "Normalized_Frobenius_Error": 6.3262728926e-06,
+      "Normalized_Frobenius_Error": 6.326272892578125e-06,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
       "Incumbent": 4.24,
-      "Normalized_Frobenius_Error": 4.2414661001e-06,
+      "Normalized_Frobenius_Error": 4.241466100097656e-06,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
-      "Incumbent": 3.17,
-      "Normalized_Frobenius_Error": 3.1749031968e-06,
+      "Incumbent": 2.94,
+      "Normalized_Frobenius_Error": 2.9410360610351567e-06,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
-      "Incumbent": 2.12,
-      "Normalized_Frobenius_Error": 2.1231211372e-06,
+      "Incumbent": 1.98,
+      "Normalized_Frobenius_Error": 1.980459146972656e-06,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
-      "Incumbent": 1.46,
-      "Normalized_Frobenius_Error": 1.4625690044e-06,
+      "Incumbent": 1.38,
+      "Normalized_Frobenius_Error": 1.3769278271484376e-06,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
       "Time": 0.0,
-      "Incumbent": 1.11,
-      "Normalized_Frobenius_Error": 1.1101211274e-06,
+      "Incumbent": 1.04,
+      "Normalized_Frobenius_Error": 1.0375738764648438e-06,
       "Stage": "QAOA Sampling / E-FCFW"
     },
     {
