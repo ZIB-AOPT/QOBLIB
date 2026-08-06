@@ -1388,6 +1388,8 @@
         "optimal": false,
         "n": 16,
         "k": 66,
-        "scale": 100000
+        "scale": 100000,
+        "cpu_runtime": 4.30,
+        "qpu_runtime": 225.00
     }
 }

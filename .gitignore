@@ -7,3 +7,4 @@ _site/
 
 # Ignore Rust target directory
 target/
+.DS_Store
