@@ -6,7 +6,7 @@ This directory contains the submission for the problem **B7_49_1**.
 | --- | --- |
 | Problem | B7_49_1 |
 | Submitter | George Pennington (1), Naeimeh Mohseni (2) |
-| Affiliation | (1) The Hartree Centre STFC, United Kingdom, (2) E.ON Digital Technology GmbH, Essen, Germany |
+| Affiliation | (1) The Hartree Centre STFC (United Kingdom), (2) E.ON Digital Technology GmbH (Germany) |
 | Date | August 4th, 2026 |
 | ====== |  |
 | Reference | https://arxiv.org/pdf/2509.10657 |
