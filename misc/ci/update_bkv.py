@@ -179,7 +179,8 @@ def compute_records(problem_dir: Path, minimize: bool, feasibility: bool = False
     # <instance>_summary.csv filename, instead of creating a bogus instance.
     known = set(ref_map.keys())
     subs = {} if feasibility else read_csv_submissions_folder(
-        problem_dir / "submissions", known_instances=known or None)
+        problem_dir / "submissions", known_instances=known or None,
+        problem_id=problem_dir.name.split("-", 1)[0])
 
     instances = set(ref_map) | set(subs)
     records: dict[str, dict] = {}

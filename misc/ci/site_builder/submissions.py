@@ -125,7 +125,28 @@ def _load_time_series(path: Path) -> list | None:
     return result or None
 
 
-def read_csv_submissions_folder(submissions_dir: Path, known_instances: set[str] | None = None) -> dict:
+def _needs_portfolio_qubo_negation(problem_id: str | None, approach: str) -> bool:
+    """Portfolio (06) QUBO submissions store the *negated* objective.
+
+    The repository model minimises ``(λ·risk − profit + costs)`` (see
+    06-portfolio/README.md; the .zpl declares ``minimize risk``), and the
+    reference .sol files carry that minimisation value (e.g. −110541). The QUBO
+    encoding maps it to an energy of the equivalent maximisation form, so a QUBO
+    submission reports the sign-flipped value (+110541 for the same solution).
+    Left as-is it would display with the wrong sign and, on a QUBO-only instance,
+    define a wrong-signed "best" value. Negating it back at read time makes every
+    downstream consumer (table, best-value, leaderboard, charts) agree on one
+    convention. Scoped to 06 only: other problems' QUBO submissions (LABS, MIS,
+    Market Split) already use the correct sign, so a blanket rule would corrupt
+    them."""
+    return problem_id == "06" and "qubo" in (approach or "").lower()
+
+
+def read_csv_submissions_folder(
+    submissions_dir: Path,
+    known_instances: set[str] | None = None,
+    problem_id: str | None = None,
+) -> dict:
     """
     Walk submissions_dir recursively.  Collects:
       • all *_summary.csv files anywhere in the tree
@@ -138,6 +159,9 @@ def read_csv_submissions_folder(submissions_dir: Path, known_instances: set[str]
     ``known_instances`` (the problem's real instance names) lets a row whose
     ``Problem`` column is not a valid instance fall back to the instance encoded
     in its ``<instance>/<instance>_summary.csv`` path (see _resolve_instance).
+
+    ``problem_id`` enables per-problem value conventions — currently only the
+    portfolio (06) QUBO sign normalisation (see _needs_portfolio_qubo_negation).
     """
     import csv as csvmod
 
@@ -182,6 +206,14 @@ def read_csv_submissions_folder(submissions_dir: Path, known_instances: set[str]
                         value: float | None = float(val_str)
                     except (ValueError, TypeError):
                         value = None
+
+                    # Portfolio QUBO submissions store the negated objective —
+                    # flip it back to the repo's minimisation convention so it is
+                    # comparable to the reference and to non-QUBO submissions.
+                    if value is not None and _needs_portfolio_qubo_negation(
+                        problem_id, get_col(row, "modeling_approach")
+                    ):
+                        value = -value
 
                     sub: dict = {
                         "instance": instance,

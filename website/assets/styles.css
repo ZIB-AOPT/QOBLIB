@@ -2956,6 +2956,44 @@ textarea.invalid {
     margin: 0 0 0.6rem;
 }
 
+/* Portfolio λ panel: the selector plus a short explanatory caption, framed so
+   the risk-aversion sweep reads as one unit above the per-λ instance body. */
+.lambda-panel {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    margin: 0.4rem 0 1.4rem;
+    background: var(--surface, transparent);
+}
+.lambda-help {
+    margin: 0.7rem 0 0;
+    max-width: 70ch;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+/* Portfolio λ selector: a labelled segmented control above the instance body.
+   Left-aligns the label with the sweep buttons and lets the buttons wrap on
+   narrow viewports (the sweep can be 8+ values). */
+.lambda-selector {
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0;
+}
+.lambda-selector .seg-toggle {
+    flex-wrap: wrap;
+}
+.lambda-selector-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
 /* Two charts per row to keep the section compact. Each chart stays one column
    wide, so a third chart sits bottom-left and leaves the bottom-right cell open
    for a future fourth plot. */

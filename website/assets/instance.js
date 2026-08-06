@@ -431,6 +431,74 @@ function buildConvergenceChart(series, opts) {
     return `<svg class="conv-svg" viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet">${grid}${axes}${yLabels}${xLabels}${drawn}</svg>`;
 }
 
+// Efficient-frontier chart for a portfolio λ sweep: objective (y) across the
+// discrete risk-aversion λ values (x). x is categorical (evenly spaced, one slot
+// per λ, labelled with the λ value) rather than a log scale — the sweep includes
+// λ=0 (which a log axis can't place) and is a small discrete set, so even spacing
+// reads more clearly than a true numeric axis. y is linear (objectives may be
+// negative). `points` = [{label, y, selected}] already ordered low→high λ.
+function buildFrontierChart(points) {
+    const pts = points.filter((p) => Number.isFinite(p.y));
+    if (pts.length < 2) return "";  // a single point is not a frontier
+    const W = 720, H = 300;
+    const m = { t: 16, r: 18, b: 44, l: 66 };
+    const ys = pts.map((p) => p.y);
+    let yMin = Math.min(...ys), yMax = Math.max(...ys);
+    const span = (yMax - yMin) || Math.abs(yMax) || 1;
+    yMin -= span * 0.1; yMax += span * 0.1;
+
+    const n = points.length;
+    const xPx = (i) => m.l + (W - m.l - m.r) * (n === 1 ? 0.5 : i / (n - 1));
+    const yPx = (y) => H - m.b - (H - m.t - m.b) * ((y - yMin) / ((yMax - yMin) || 1));
+
+    const yticks = qNiceLinearTicks(yMin, yMax, { integer: ys.every((y) => Number.isInteger(y)), target: 4 })
+        .filter((v) => v >= yMin - 1e-9 && v <= yMax + 1e-9);
+    const f1 = (x) => x.toFixed(1);
+    const grid = yticks.map((v) =>
+        `<line class="conv-grid" x1="${m.l}" y1="${f1(yPx(v))}" x2="${W - m.r}" y2="${f1(yPx(v))}" />`
+    ).join("");
+    const axes =
+        `<line class="conv-axis-line" x1="${m.l}" y1="${m.t}" x2="${m.l}" y2="${H - m.b}" />` +
+        `<line class="conv-axis-line" x1="${m.l}" y1="${H - m.b}" x2="${W - m.r}" y2="${H - m.b}" />`;
+    const yLabels = yticks.map((v) =>
+        `<text class="conv-tick" text-anchor="end" x="${m.l - 8}" y="${f1(yPx(v) + 3)}">${qEsc(fmtTick(v))}</text>`
+    ).join("");
+    const xLabels = points.map((p, i) =>
+        `<text class="conv-tick" text-anchor="middle" x="${f1(xPx(i))}" y="${H - m.b + 16}">${qEsc(p.label)}</text>`
+    ).join("");
+    const xTitle = `<text class="conv-axis-title" text-anchor="middle" x="${f1((m.l + W - m.r) / 2)}" y="${H - 4}">risk aversion λ →</text>`;
+    const yCy = f1((m.t + H - m.b) / 2);
+    const yTitle = `<text class="conv-axis-title" text-anchor="middle" transform="rotate(-90 14 ${yCy})" x="14" y="${yCy}">objective</text>`;
+
+    // Line through the points that have a value (skip gaps), then dots. The
+    // currently-selected λ gets a larger ring so the page and chart stay in sync.
+    const linePts = points.map((p, i) => ({ i, y: p.y })).filter((p) => Number.isFinite(p.y));
+    let d = "";
+    linePts.forEach((p, k) => { d += `${k === 0 ? "M" : "L"} ${f1(xPx(p.i))} ${f1(yPx(p.y))} `; });
+    const line = `<path d="${d}" fill="none" style="stroke:var(--accent)" stroke-width="2" stroke-linejoin="round" />`;
+    const dots = points.map((p, i) => {
+        if (!Number.isFinite(p.y)) return "";
+        const cx = f1(xPx(i)), cy = f1(yPx(p.y));
+        const ring = p.selected ? `<circle cx="${cx}" cy="${cy}" r="6" fill="none" style="stroke:var(--accent)" stroke-width="2" />` : "";
+        return ring +
+            `<circle cx="${cx}" cy="${cy}" r="3.6" style="fill:var(--accent)" />` +
+            `<circle cx="${cx}" cy="${cy}" r="10" fill="transparent" style="cursor:pointer"><title>λ ${qEsc(p.label)} · ${qEsc(fmtTick(p.y))}</title></circle>`;
+    }).join("");
+
+    return `<svg class="conv-svg" viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet">${grid}${axes}${yLabels}${xLabels}${xTitle}${yTitle}${line}${dots}</svg>`;
+}
+
+function frontierChartCard(points) {
+    const svg = buildFrontierChart(points);
+    if (!svg) return "";
+    return `<section class="tw chart-card">
+        <div class="chart-head">
+            <div><h3>Efficient frontier</h3><p>Best objective at each risk-aversion λ across the sweep. Each point is one λ instance; the ringed point is the λ shown below.</p></div>
+        </div>
+        ${svg}
+    </section>`;
+}
+
 function convChartCard(title, desc, series, svg) {
     const legend = series
         .filter((s) => s.points.length)
@@ -607,27 +675,29 @@ async function initInstancePage() {
         }
         qSetPageMeta({ title: `${inst.name} · ${p.name} — QOBLIB` });
 
-        // Problem-specific metric rows (e.g. Nodes / Edges for MIS).
-        const metricRows = (Array.isArray(p.columns) ? p.columns : [])
-            .filter((c) => inst.metrics && inst.metrics[c.key] != null && inst.metrics[c.key] !== "")
-            .map(
-                (c) =>
-                    `<div class="mr"><span class="mk">${qEsc(c.label)}</span><span class="mv">${c.numeric ? qFmtNum(inst.metrics[c.key]) : qEsc(inst.metrics[c.key])}</span></div>`,
-            )
-            .join("");
+        // Portfolio (06) instances are collapsed to one base per data set, with the
+        // risk-aversion λ sweep carried in `inst.lambdas`. The page renders one λ at
+        // a time (selected via a segmented control) and, above it, an efficient-
+        // frontier chart of objective vs λ across the whole sweep. Every other
+        // problem has no `lambdas` and renders exactly as before (sweep === null).
+        const sweep = Array.isArray(inst.lambdas) && inst.lambdas.length ? inst.lambdas : null;
+        // Default to the first λ that actually has a submission or reference value,
+        // else the first entry — so the page opens on something populated.
+        let selectedLambdaIdx = 0;
+        if (sweep) {
+            const firstPop = sweep.findIndex(
+                (c) => c.has_submissions || Number.isFinite(Number(c.best_value ?? c.reference_solution_value)),
+            );
+            selectedLambdaIdx = firstPop >= 0 ? firstPop : 0;
+        }
 
-        const submissions = [...(p.instance_submissions?.[instanceName] || [])];
-
-        // Re-attach objective time-series (split into a separate lazy file to keep
-        // instance_submissions.json small — see build.py). Keyed by
-        // "<instance>::<_source_file>". Only this page needs them.
+        // The lazy per-submission time-series file, fetched once and shared across
+        // λ re-renders (keyed "<instance>::<_source_file>").
+        let timeSeriesMap = {};
         try {
-            const ts = await qLoadProblemTimeSeries(problemId);
-            submissions.forEach((s) => {
-                const key = `${instanceName}::${s._source_file || s._source_dir || ""}`;
-                if (ts[key]) s.time_series = ts[key];
-            });
-        } catch (e) { /* plot simply omitted if unavailable */ }
+            timeSeriesMap = await qLoadProblemTimeSeries(problemId);
+        } catch (e) { /* plots simply omitted if unavailable */ }
+
         const parseMaybeNumber = (value) => {
             if (value == null) return Number.NaN;
             return Number(String(value).replace(/,/g, "").trim());
@@ -642,51 +712,12 @@ async function initInstancePage() {
             const nFeasible = parseMaybeNumber(submission?.n_feasible);
             return Number.isFinite(nFeasible) && nFeasible === 0;
         };
-        submissions.sort((a, b) => {
-            const aInfeasible = isInfeasibleSubmission(a);
-            const bInfeasible = isInfeasibleSubmission(b);
-            if (aInfeasible !== bInfeasible) {
-                return aInfeasible ? 1 : -1;
-            }
-
-            const av = parseMaybeNumber(a.value);
-            const bv = parseMaybeNumber(b.value);
-            if (Number.isFinite(av) && Number.isFinite(bv) && av !== bv) {
-                return minimize ? av - bv : bv - av;
-            }
-            if (Number.isFinite(av) !== Number.isFinite(bv)) {
-                return Number.isFinite(av) ? -1 : 1;
-            }
-
-            const ar = parseMaybeNumber(a.runtime_total);
-            const br = parseMaybeNumber(b.runtime_total);
-            if (Number.isFinite(ar) && Number.isFinite(br) && ar !== br) {
-                return ar - br;
-            }
-            if (Number.isFinite(ar) !== Number.isFinite(br)) {
-                return Number.isFinite(ar) ? -1 : 1;
-            }
-
-            const ad = parseMaybeDate(a.date);
-            const bd = parseMaybeDate(b.date);
-            if (Number.isFinite(ad) && Number.isFinite(bd) && ad !== bd) {
-                return ad - bd;
-            }
-            if (Number.isFinite(ad) !== Number.isFinite(bd)) {
-                return Number.isFinite(ad) ? -1 : 1;
-            }
-
-            return String(a._source_dir || "").localeCompare(String(b._source_dir || ""));
-        });
-
         const rankSymbol = (rank) => {
             if (rank === 1) return "▲";
             if (rank === 2) return "◆";
             if (rank === 3) return "●";
             return "·";
         };
-
-        const bestKnown = parseMaybeNumber(inst.best_value ?? inst.bkv);
         const isSameObjective = (value, target) => {
             const v = parseMaybeNumber(value);
             if (!Number.isFinite(target) || !Number.isFinite(v)) return false;
@@ -694,29 +725,77 @@ async function initInstancePage() {
             return Math.abs(v - target) <= 1e-9 * scale;
         };
 
-        const feasibleSubmissions = submissions.filter((s) => !isInfeasibleSubmission(s));
-        const submittedObjectives = feasibleSubmissions.map((s) => parseMaybeNumber(s.value)).filter((v) => Number.isFinite(v));
-        const bestSubmittedObjective = submittedObjectives.length
-            ? (minimize ? Math.min(...submittedObjectives) : Math.max(...submittedObjectives))
-            : Number.NaN;
-        const hasBestKnownMatch = feasibleSubmissions.some((s) => isSameObjective(s.value, bestKnown));
-        const markerObjective = hasBestKnownMatch ? bestKnown : bestSubmittedObjective;
+        // Resolve the "view" for a given λ selection: which instance record supplies
+        // the header/objective/models (the sweep child for portfolio, else the base
+        // instance itself) and which name keys its submissions + time-series.
+        const viewFor = (childIdx) => {
+            if (!sweep) return { view: inst, name: instanceName };
+            const child = sweep[childIdx] || sweep[0];
+            // Merge the per-λ child over the base so shared fields (raw_url,
+            // size_bytes, metrics) survive while λ-specific ones override.
+            return { view: { ...inst, ...child }, name: child.name };
+        };
 
-        const firstBestKnownSubmission = feasibleSubmissions
-            .filter((s) => isSameObjective(s.value, markerObjective))
-            .map((s) => ({
-                s,
-                t: parseMaybeDate(s.date),
-            }))
-            .sort((a, b) => {
-                if (Number.isFinite(a.t) && Number.isFinite(b.t) && a.t !== b.t) return a.t - b.t;
-                if (Number.isFinite(a.t) !== Number.isFinite(b.t)) return Number.isFinite(a.t) ? -1 : 1;
-                const ar = parseMaybeNumber(a.s.runtime_total);
-                const br = parseMaybeNumber(b.s.runtime_total);
+        // Build the sorted submissions + best-known marker for one view. Pulls the
+        // objective time-series onto each submission from the shared lazy map.
+        const submissionsFor = (viewInst, viewName) => {
+            const subs = [...(p.instance_submissions?.[viewName] || [])];
+            subs.forEach((s) => {
+                const key = `${viewName}::${s._source_file || s._source_dir || ""}`;
+                if (timeSeriesMap[key]) s.time_series = timeSeriesMap[key];
+            });
+            subs.sort((a, b) => {
+                const aInfeasible = isInfeasibleSubmission(a);
+                const bInfeasible = isInfeasibleSubmission(b);
+                if (aInfeasible !== bInfeasible) return aInfeasible ? 1 : -1;
+                const av = parseMaybeNumber(a.value);
+                const bv = parseMaybeNumber(b.value);
+                if (Number.isFinite(av) && Number.isFinite(bv) && av !== bv) return minimize ? av - bv : bv - av;
+                if (Number.isFinite(av) !== Number.isFinite(bv)) return Number.isFinite(av) ? -1 : 1;
+                const ar = parseMaybeNumber(a.runtime_total);
+                const br = parseMaybeNumber(b.runtime_total);
                 if (Number.isFinite(ar) && Number.isFinite(br) && ar !== br) return ar - br;
                 if (Number.isFinite(ar) !== Number.isFinite(br)) return Number.isFinite(ar) ? -1 : 1;
-                return String(a.s._source_dir || "").localeCompare(String(b.s._source_dir || ""));
-            })[0]?.s;
+                const ad = parseMaybeDate(a.date);
+                const bd = parseMaybeDate(b.date);
+                if (Number.isFinite(ad) && Number.isFinite(bd) && ad !== bd) return ad - bd;
+                if (Number.isFinite(ad) !== Number.isFinite(bd)) return Number.isFinite(ad) ? -1 : 1;
+                return String(a._source_dir || "").localeCompare(String(b._source_dir || ""));
+            });
+
+            const bestKnown = parseMaybeNumber(viewInst.best_value ?? viewInst.bkv);
+            const feasibleSubmissions = subs.filter((s) => !isInfeasibleSubmission(s));
+            const submittedObjectives = feasibleSubmissions.map((s) => parseMaybeNumber(s.value)).filter((v) => Number.isFinite(v));
+            const bestSubmittedObjective = submittedObjectives.length
+                ? (minimize ? Math.min(...submittedObjectives) : Math.max(...submittedObjectives))
+                : Number.NaN;
+            const hasBestKnownMatch = feasibleSubmissions.some((s) => isSameObjective(s.value, bestKnown));
+            const markerObjective = hasBestKnownMatch ? bestKnown : bestSubmittedObjective;
+            const firstBestKnownSubmission = feasibleSubmissions
+                .filter((s) => isSameObjective(s.value, markerObjective))
+                .map((s) => ({ s, t: parseMaybeDate(s.date) }))
+                .sort((a, b) => {
+                    if (Number.isFinite(a.t) && Number.isFinite(b.t) && a.t !== b.t) return a.t - b.t;
+                    if (Number.isFinite(a.t) !== Number.isFinite(b.t)) return Number.isFinite(a.t) ? -1 : 1;
+                    const ar = parseMaybeNumber(a.s.runtime_total);
+                    const br = parseMaybeNumber(b.s.runtime_total);
+                    if (Number.isFinite(ar) && Number.isFinite(br) && ar !== br) return ar - br;
+                    if (Number.isFinite(ar) !== Number.isFinite(br)) return Number.isFinite(ar) ? -1 : 1;
+                    return String(a.s._source_dir || "").localeCompare(String(b.s._source_dir || ""));
+                })[0]?.s;
+            return { subs, firstBestKnownSubmission };
+        };
+
+        // Frontier points across the whole sweep (base-level, λ-independent).
+        const frontierPoints = sweep
+            ? sweep
+                .filter((c) => c.risk_lambda !== "n/a")
+                .map((c) => ({
+                    label: c.risk_lambda,
+                    y: parseMaybeNumber(c.best_value ?? c.reference_solution_value ?? c.bkv),
+                    idx: sweep.indexOf(c),
+                }))
+            : [];
 
         // Instance navigation: alphabetical order, wraps around at both ends.
         const allInstances = [...(p.instances || [])].sort((a, b) =>
@@ -741,42 +820,78 @@ async function initInstancePage() {
                 : `<span class="inst-nav-btn inst-nav-disabled"></span>`}
         </div>`;
 
-        container.innerHTML = `
-            <a class="back" href="${qProblemUrl(p.id)}">← Back to ${String(p.id).padStart(2, "0")} ${qEsc(p.name)}</a>
-            ${instNavHtml}
-            <div class="dh">
-                <div>
-                    <div class="d-num">${String(p.id).padStart(2, "0")} / ${qEsc(p.slug)}</div>
-                    <h1 class="d-title">${qEsc(inst.name)}</h1>
-                    <div class="d-sub">${qEsc(p.name)}</div>
-                    <div class="pcard-foot">
-                        <a class="badge b-type" href="${qProblemUrl(p.id)}" title="Open the ${qEsc(p.name)} problem overview">${String(p.id).padStart(2, "0")} ${qEsc(p.name)}</a>
-                        ${qStatusPill(inst.status)}
-                        ${inst.vars != null ? `<span class="badge b-vars">${qFmtInt(inst.vars)} vars</span>` : ""}
+        // λ selector (portfolio only): a segmented control over the sweep, reusing
+        // the .seg-toggle idiom from problem.js. "n/a" entries (budget-less
+        // submissions) are labelled distinctly.
+        const lambdaSelectorHtml = sweep
+            ? `<div class="lambda-panel">
+                <div class="perf-toolbar lambda-selector">
+                    <span class="lambda-selector-label">Risk aversion λ</span>
+                    <div class="seg-toggle" role="tablist" aria-label="Risk aversion λ">
+                        ${sweep.map((c, i) =>
+                            `<button type="button" class="seg-btn${i === selectedLambdaIdx ? " on" : ""}" role="tab"
+                                     data-lambda-idx="${i}" aria-selected="${i === selectedLambdaIdx ? "true" : "false"}"
+                            >${c.risk_lambda === "n/a" ? "λ n/a" : qEsc(c.risk_lambda)}</button>`
+                        ).join("")}
                     </div>
                 </div>
-                <div class="d-meta">
-                    ${metricRows}
-                    <div class="mr"><span class="mk">Best objective</span><span class="mv">${qFmtNum(inst.best_value ?? inst.bkv)}</span></div>
-                    <div class="mr"><span class="mk">Reference objective</span><span class="mv">${inst.reference_solution_value != null ? qFmtNum(inst.reference_solution_value) : "-"}</span></div>
-                    <div class="mr"><span class="mk">Submissions</span><span class="mv">${submissions.length}</span></div>
-                    <div class="mr"><span class="mk">Models</span><span class="mv">${(inst.models || []).length}</span></div>
-                </div>
+                <p class="lambda-help">
+                    This instance shares one dataset across a sweep of risk-aversion weights λ.
+                    A larger λ penalises portfolio risk more heavily relative to return, so each λ
+                    is a distinct objective — together they trace the risk–return efficient frontier
+                    below. Objectives are minimised (lower is better; values are negative expected
+                    return net of risk and costs). Pick a λ to see its models, submissions and best
+                    known value.
+                </p>
+            </div>`
+            : "";
+
+        // Frontier chart (portfolio only): objective vs λ across the whole sweep.
+        const renderFrontier = (activeIdx) => sweep
+            ? frontierChartCard(frontierPoints.map((pt) => ({ ...pt, selected: pt.idx === activeIdx })))
+            : "";
+
+        // Everything below the header that depends on the selected λ. Rebuilt on
+        // each λ change; for non-portfolio problems it renders once with the base
+        // instance (viewFor returns it unchanged).
+        const renderLambdaBody = (childIdx) => {
+            const { view: viewInst, name: viewName } = viewFor(childIdx);
+            const { subs, firstBestKnownSubmission } = submissionsFor(viewInst, viewName);
+            const metricRows = (Array.isArray(p.columns) ? p.columns : [])
+                .filter((c) => viewInst.metrics && viewInst.metrics[c.key] != null && viewInst.metrics[c.key] !== "")
+                .map((c) => `<div class="mr"><span class="mk">${qEsc(c.label)}</span><span class="mv">${c.numeric ? qFmtNum(viewInst.metrics[c.key]) : qEsc(viewInst.metrics[c.key])}</span></div>`)
+                .join("");
+            // For portfolio, surface the selected λ as its own meta row (it's no
+            // longer a base-level column).
+            const lambdaRow = sweep && viewInst.risk_lambda && viewInst.risk_lambda !== "n/a"
+                ? `<div class="mr"><span class="mk">Risk λ</span><span class="mv">${qEsc(viewInst.risk_lambda)}</span></div>`
+                : "";
+
+            return `
+            <div class="d-meta">
+                ${metricRows}
+                ${lambdaRow}
+                <div class="mr"><span class="mk">Best objective</span><span class="mv">${qFmtNum(viewInst.best_value ?? viewInst.bkv)}</span></div>
+                <div class="mr"><span class="mk">Reference objective</span><span class="mv">${viewInst.reference_solution_value != null ? qFmtNum(viewInst.reference_solution_value) : "-"}</span></div>
+                <div class="mr"><span class="mk">Submissions</span><span class="mv">${subs.length}</span></div>
+                <div class="mr"><span class="mk">Models</span><span class="mv">${(viewInst.models || []).length}</span></div>
             </div>
 
-            <div class="hero-actions" style="margin-bottom:1.5rem">
-                ${inst.raw_url ? `<a class="btn btn-ghost" href="${qSafeHref(inst.raw_url)}" target="_blank" rel="noopener">Download Instance</a>` : ""}
-                ${inst.reference_solution_url ? `<a class="btn btn-ghost" href="${qSafeHref(inst.reference_solution_url)}" target="_blank" rel="noopener">Download Solution</a>` : ""}
+            <div class="hero-actions" style="margin:1rem 0 1.5rem">
+                ${viewInst.raw_url ? `<a class="btn btn-ghost" href="${qSafeHref(viewInst.raw_url)}" target="_blank" rel="noopener">Download Instance</a>` : ""}
+                ${viewInst.reference_solution_url ? `<a class="btn btn-ghost" href="${qSafeHref(viewInst.reference_solution_url)}" target="_blank" rel="noopener">Download Solution</a>` : ""}
             </div>
 
-            ${renderSubmissionPlots(p, inst, submissions)}
+            ${renderFrontier(childIdx)}
 
-            <div class="ss-title">Uploaded Models (${(inst.models || []).length})</div>
-            ${qDetailModelList(inst.models || [])}
+            ${renderSubmissionPlots(p, viewInst, subs)}
 
-            <div class="ss-title">Submissions (${submissions.length})</div>
+            <div class="ss-title">Uploaded Models (${(viewInst.models || []).length})</div>
+            ${qDetailModelList(viewInst.models || [])}
+
+            <div class="ss-title">Submissions (${subs.length})</div>
             ${
-                submissions.length
+                subs.length
                     ? `<div class="tw">
                         <table>
                             <thead>
@@ -793,7 +908,7 @@ async function initInstancePage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                ${submissions
+                                ${subs
                                     .map(
                                         (s, idx) => {
                                             const infeasible = isInfeasibleSubmission(s);
@@ -819,15 +934,58 @@ async function initInstancePage() {
                     <div class="table-legend" style="margin:.25rem 0 .6rem;color:var(--muted)">Rank markers: 1 ▲, 2 ◆, 3 ●, ★ = first submission to reach the best known/best submitted objective.</div>
                     `
                     : '<div class="empty-state">No submissions are available for this instance yet.</div>'
-            }
+            }`;
+        };
+
+        container.innerHTML = `
+            <a class="back" href="${qProblemUrl(p.id)}">← Back to ${String(p.id).padStart(2, "0")} ${qEsc(p.name)}</a>
+            ${instNavHtml}
+            <div class="dh">
+                <div>
+                    <div class="d-num">${String(p.id).padStart(2, "0")} / ${qEsc(p.slug)}</div>
+                    <h1 class="d-title">${qEsc(inst.name)}</h1>
+                    <div class="d-sub">${qEsc(p.name)}</div>
+                    <div class="pcard-foot">
+                        <a class="badge b-type" href="${qProblemUrl(p.id)}" title="Open the ${qEsc(p.name)} problem overview">${String(p.id).padStart(2, "0")} ${qEsc(p.name)}</a>
+                        ${qStatusPill(inst.status)}
+                        ${inst.vars != null ? `<span class="badge b-vars">${qFmtInt(inst.vars)} vars</span>` : ""}
+                        ${sweep ? `<span class="badge b-tag">${sweep.filter((c) => c.risk_lambda !== "n/a").length} λ</span>` : ""}
+                    </div>
+                </div>
+            </div>
+            ${lambdaSelectorHtml}
+            <div id="inst-lambda-body">${renderLambdaBody(selectedLambdaIdx)}</div>
         `;
 
-        container.querySelectorAll(".resource-desc").forEach((el) => qRenderMath(el));
-        qEnableTableSorting(container);
-        wireTsToggles(container);
-        qEnhanceFigures(container); // expand affordance on the submission-history charts
+        // Post-render wiring, factored out so it re-runs after each λ swap.
+        const wireLambdaBody = () => {
+            container.querySelectorAll(".resource-desc").forEach((el) => qRenderMath(el));
+            qEnableTableSorting(container);
+            wireTsToggles(container);
+            qEnhanceFigures(container); // expand affordance on the submission-history charts
+        };
+        wireLambdaBody();
 
-        // Expandable remarks toggle
+        // λ selector: swap the body to the chosen λ and re-wire it.
+        if (sweep) {
+            const toggle = container.querySelector(".lambda-selector .seg-toggle");
+            const body = container.querySelector("#inst-lambda-body");
+            toggle?.addEventListener("click", (e) => {
+                const btn = e.target.closest(".seg-btn[data-lambda-idx]");
+                if (!btn) return;
+                selectedLambdaIdx = Number(btn.dataset.lambdaIdx);
+                toggle.querySelectorAll(".seg-btn").forEach((b) => {
+                    const on = b === btn;
+                    b.classList.toggle("on", on);
+                    b.setAttribute("aria-selected", on ? "true" : "false");
+                });
+                body.innerHTML = renderLambdaBody(selectedLambdaIdx);
+                wireLambdaBody();
+            });
+        }
+
+        // Expandable remarks toggle (delegated on the container, so it survives
+        // λ-body re-renders).
         container.addEventListener("click", (e) => {
             const btn = e.target.closest(".remarks-toggle");
             if (!btn) return;

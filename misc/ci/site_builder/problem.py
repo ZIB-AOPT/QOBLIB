@@ -28,13 +28,16 @@ from pathlib import Path
 from . import config
 from .classify import classify_submission, is_infeasible_sub
 from .instances import (
+    _load_portfolio_manifest,
     build_birkhoff_instances,
     collect_generic_instance_sources,
+    collect_portfolio_instance_sources,
+    portfolio_canonical_base,
     synthesize_instance_entry,
 )
 from .metrics import attach_instance_metrics
 from .models import scan_model_files
-from .solutions import read_solutions_folder
+from .solutions import load_reference_map, read_solutions_folder
 from .submissions import read_csv_submissions_folder
 from .text import (
     extract_problem_intro,
@@ -78,7 +81,16 @@ def _collect_instances(problem_id: str, problem_dir: Path, bkv_map: dict,
     if problem_id == "02":
         all_names = set(bkv_map) | set(model_map)
     elif problem_id == "06":
-        all_names = set(model_map) | {normalize_portfolio_lambda(name) for name in csv_subs}
+        # Portfolio instances live as directory bundles the generic file scan can't
+        # see, so use the dedicated collector. Crucially, union in set(sources): an
+        # instance must appear even when it has no model file (the large a200/a400
+        # data dirs never got models generated), matching the generic branch below.
+        sources = collect_portfolio_instance_sources(problem_dir)
+        all_names = (
+            set(sources)
+            | set(model_map)
+            | {normalize_portfolio_lambda(name) for name in csv_subs}
+        )
     elif problem_id == "08":
         all_names = {
             name for name in set(bkv_map) | set(model_map) | set(csv_subs)
@@ -380,7 +392,17 @@ def build_problem(problem_id: str, problem_dir: Path) -> dict:
     solutions_dir = problem_dir / "solutions"
     submissions_dir = problem_dir / "submissions"
 
-    bkv_map = read_solutions_folder(solutions_dir, problem_id)
+    # Portfolio (06) ships its reference solutions as per-base .tar.gz bundles
+    # (one .sol per λ inside), which the generic folder reader can't open — so
+    # portfolio best-values would otherwise come only from submissions. Use the
+    # format-aware reference reader (via load_reference_map, which dispatches 06 →
+    # load_portfolio_solution_map) so each λ gets its reference objective; this is
+    # the y-source for the instance page's efficient-frontier chart even when an
+    # instance has no submissions.
+    if problem_id == "06":
+        bkv_map = load_reference_map(problem_dir)
+    else:
+        bkv_map = read_solutions_folder(solutions_dir, problem_id)
     model_map = scan_model_files(problem_dir)
 
     # --- Read README for long description (fallback to static meta) ---
@@ -396,7 +418,7 @@ def build_problem(problem_id: str, problem_dir: Path) -> dict:
     # "Problem" column holds a label rather than the instance id (see
     # _resolve_instance); their path encodes the true instance.
     known_instances = set(bkv_map) | set(model_map)
-    csv_subs = read_csv_submissions_folder(submissions_dir, known_instances)
+    csv_subs = read_csv_submissions_folder(submissions_dir, known_instances, problem_id=problem_id)
 
     instances = _collect_instances(problem_id, problem_dir, bkv_map, model_map, csv_subs)
 
@@ -485,6 +507,54 @@ def build_problem(problem_id: str, problem_dir: Path) -> dict:
     n_quantum_sim_solved = len(solved_sim)
     vars_list = [i["vars"] for i in instances if "vars" in i]
 
+    # Portfolio (06) is browsed as one row per base data set (the 8 λ are folded
+    # into a sweep on the instance page), so the headline counts report *bases*,
+    # not per-λ instances. A base is "solved" only when its whole λ frontier is
+    # solved, "open" only when nothing on it is, "best_known" otherwise — the same
+    # 3-way partition collapse_portfolio_instances uses, so the numbers agree with
+    # the collapsed table. The classical/quantum four-segment progress-bar counts
+    # (classical_best_known/found, quantum_*) intentionally stay per-λ: each λ is
+    # genuine independent work, so the bars measure the full ~352-point workload.
+    if problem_id == "06":
+        budget_by_assets, _grid = _load_portfolio_manifest(problem_dir)
+        base_status: dict[str, dict[str, int]] = {}
+        for i in instances:
+            name = i.get("name")
+            if not name:
+                continue
+            base = portfolio_canonical_base(name, budget_by_assets)
+            agg = base_status.setdefault(base, {"solved": 0, "open": 0, "classical": 0, "total": 0})
+            # Budget-less submission names (no ``_l<λ>`` suffix, e.g. the Arvak
+            # po_a010_t10_orig rows) fold into their base as an "unspecified λ"
+            # entry that doesn't count toward the frontier aggregate — mirror
+            # collapse_portfolio_instances so the counts match the collapsed table.
+            if not re.search(r"_l[0-9.eE+-]+$", name):
+                continue
+            agg["total"] += 1
+            is_solved = i.get("status") in ("optimal", "solved")
+            if is_solved:
+                agg["solved"] += 1
+                if (
+                    name in solved_classical_sub
+                    or i.get("reference_solution_url")
+                    or isinstance(i.get("reference_solution_value"), (int, float))
+                ):
+                    agg["classical"] += 1
+            elif i.get("status") == "open":
+                agg["open"] += 1
+        n_bases = len(base_status)
+        n_solved = sum(1 for a in base_status.values() if a["total"] and a["solved"] == a["total"])
+        n_open = sum(1 for a in base_status.values() if a["total"] and a["open"] == a["total"])
+        n_best_known = n_bases - n_solved - n_open
+        # A base is classically solved only when every λ is both solved and backed
+        # by a classical result — the base-level counterpart of the per-λ rule.
+        n_classical_solved = sum(
+            1 for a in base_status.values() if a["total"] and a["classical"] == a["total"]
+        )
+        instance_count = n_bases
+    else:
+        instance_count = len(instances)
+
     return {
         "id": problem_id,
         "slug": meta.get("slug", problem_dir.name.split("-", 1)[-1]),
@@ -501,7 +571,7 @@ def build_problem(problem_id: str, problem_dir: Path) -> dict:
         "columns": config.PROBLEM_COLUMNS.get(problem_id, []),
         "vars_min": min(vars_list) if vars_list else None,
         "vars_max": max(vars_list) if vars_list else None,
-        "instance_count": len(instances),
+        "instance_count": instance_count,
         "solved_count": n_solved,
         "solved_classical_count": n_classical_solved,
         "classical_best_known_count": classical_best_known,

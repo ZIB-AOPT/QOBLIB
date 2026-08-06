@@ -464,7 +464,7 @@ function instanceRowHtml(r) {
                     <td><a class="rlink mono" href="${qInstanceUrl(r.problem_id, r.name)}">${qEsc(r.name)}</a></td>
                     <td><a class="badge b-type" href="${qProblemUrl(r.problem_id)}">${String(r.problem_id).padStart(2, "0")} ${qEsc(r.problem_name)}</a></td>
                     <td class="notes-cell" title="${r.metrics_text || ""}">${r.metrics_text || "-"}</td>
-                    <td class="num">${(() => { const v = qFmtNum(r.best_value ?? r.bkv); return r.best_is_optimal && v !== "-" ? `<strong>${v}</strong>` : v; })()}</td>
+                    <td class="num">${(() => { const v = qFmtNum(r.best_value ?? r.bkv); if (v === "-" && r.lambda_count) return `<span class="muted">${qFmtNum(r.lambda_count)} λ</span>`; return r.best_is_optimal && v !== "-" ? `<strong>${v}</strong>` : v; })()}</td>
                     <td>${r.best_source_url ? `<a class="dl" href="${qEsc(r.best_source_url)}" target="_blank" rel="noopener">${qEsc(r.best_source_label || r.best_source_type || "source")}</a>` : "-"}</td>
                     <td>${qStatusPill(r.status)}</td>
                     <td>${r.raw_url ? `<a class="dl" href="${qSafeHref(r.raw_url)}" target="_blank" rel="noopener">↓ raw</a>` : "-"}</td>

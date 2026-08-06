@@ -167,6 +167,12 @@ def attach_instance_metrics(problem_id: str, problem_dir: Path, instances: list[
             if g:
                 m["assets"] = int(g.group(1))
                 m["periods"] = int(g.group(2))
+            bg = re.search(r"_b(\d+)", name)
+            if bg:
+                m["budget"] = int(bg.group(1))
+            # risk_lambda is kept on the per-λ instance so the collapse helper can
+            # surface it on each sweep child (the collapsed base row shows Budget
+            # instead; see config.PROBLEM_COLUMNS["06"]).
             lg = re.search(r"_l([0-9.]+(?:[eE]-?\d+)?)$", name)
             if lg:
                 m["risk_lambda"] = lg.group(1)

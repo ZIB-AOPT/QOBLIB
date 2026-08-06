@@ -38,6 +38,22 @@ def to_int(value) -> int | None:
         return None
 
 
+def format_portfolio_lambda(value) -> str:
+    """Canonical *display* form for a risk-aversion λ, uniform everywhere.
+
+    The λ values reach us in mixed spellings (``0.0001``, ``1e-06``, ``5e-05``,
+    ``0.01``); a bare decimal point parses badly and reads inconsistently next to
+    the scientific ones. Render every non-zero λ in single-mantissa scientific
+    notation with a 2-digit exponent (``1e-04``, ``5e-05``, ``1e-02``) and zero as
+    a plain ``0``. Returns the input unchanged if it isn't numeric (e.g. ``n/a``)."""
+    num = num_or_none(value)
+    if num is None:
+        return str(value)
+    if num == 0:
+        return "0"
+    return f"{num:.0e}"
+
+
 # --- dates -------------------------------------------------------------------
 
 def parse_date_str(s: str) -> str:

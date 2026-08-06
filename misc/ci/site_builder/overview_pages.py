@@ -528,6 +528,10 @@ def _instance_row(inst, problem_id, problem_name, columns) -> str:
     best = _best_value(inst)
     best_str = _fmt_num(best)
     best_cell = f"<strong>{best_str}</strong>" if inst.get("best_is_optimal") and best_str != "-" else best_str
+    # A collapsed portfolio base has no single objective (its λ are different,
+    # non-comparable objectives) — show the sweep size instead of a value.
+    if best_str == "-" and inst.get("lambda_count"):
+        best_cell = f'<span class="muted">{_esc(inst["lambda_count"])} λ</span>'
 
     src = inst.get("best_source_url")
     src_cell = (
@@ -1038,6 +1042,9 @@ def _problem_instances_section(pid, instances, columns) -> str:
         best = _best_value(inst)
         best_str = _fmt_num(best)
         best_cell = f"<strong>{best_str}</strong>" if inst.get("best_is_optimal") and best_str != "-" else best_str
+        # Collapsed portfolio base: no single objective — show the λ sweep size.
+        if best_str == "-" and inst.get("lambda_count"):
+            best_cell = f'<span class="muted">{_esc(inst["lambda_count"])} λ</span>'
         src = inst.get("best_source_url")
         src_cell = (
             f'<a class="dl" href="{_esc(src)}" target="_blank" rel="noopener">'
@@ -1180,6 +1187,9 @@ def render_overview_pages(out_dir, site_data) -> None:
     index = site_data["index"]
     problems = site_data["problems"]
     instances_groups = site_data["instances_groups"]
+    # Per-λ groups for the leaderboard (portfolio keeps its 8× rows here); falls
+    # back to the collapsed groups for any run that predates the split.
+    lb_instances_groups = site_data.get("lb_instances_groups", instances_groups)
     submission_groups = site_data["submission_groups"]
     instance_subs = site_data["instance_subs"]
     landscape = site_data.get("landscape") or {}
@@ -1189,7 +1199,7 @@ def render_overview_pages(out_dir, site_data) -> None:
         "index.html": lambda h: _render_index(h, problems, index, landscape, submission_groups),
         "instances.html": lambda h: _render_instances(h, instances_groups, problems),
         "submissions.html": lambda h: _render_submissions(h, submission_groups, problems),
-        "leaderboard.html": lambda h: _render_leaderboard(h, problems, instances_groups, instance_subs),
+        "leaderboard.html": lambda h: _render_leaderboard(h, problems, lb_instances_groups, instance_subs),
     }
     for filename, render in pages.items():
         path = out_dir / filename

@@ -49,6 +49,7 @@ from .html_pages import enrich_site
 from .landscape import build_landscape
 from .metrics import build_mip_points
 from .overview_pages import render_overview_pages
+from .instances import _load_portfolio_manifest, collapse_portfolio_instances
 from .problem import build_problem
 
 
@@ -97,17 +98,31 @@ def _index_problem_summary(data: dict) -> dict:
 # The only per-instance fields the Instances *list* page reads. The aggregate
 # data/instances.json carries just these (plus the MIP points) so the page makes
 # one trimmed request instead of fetching every problem's full instances.json.
+# ``lambda_count`` is portfolio-only: a collapsed base has no single objective
+# (its 8 λ are different, non-comparable objective functions), so the list shows
+# "N λ" instead of a best value (see instances.js / problem.js).
 INSTANCE_LIST_FIELDS = (
     "name", "status", "best_value", "bkv", "best_is_optimal",
     "best_source_url", "best_source_label", "best_source_type", "raw_url", "metrics",
+    "lambda_count",
 )
 
+# Per-instance fields the leaderboard aggregate reads. Trimmed per-λ list keyed by
+# instance name (portfolio keeps one champion row per λ; see _write_problem_chunks).
+_LB_INST_FIELDS = ("name", "status", "best_value", "bkv")
 
-def _write_problem_chunks(problem_id: str, problem_dir: Path, data: dict, problems_root: Path) -> tuple[list[dict], int, dict, list[dict], dict, dict]:
+
+def _write_problem_chunks(problem_id: str, problem_dir: Path, data: dict, problems_root: Path) -> tuple[list[dict], int, dict, list[dict], dict, dict, list[dict]]:
     """Split one problem payload into the per-file chunks and return its
     (submissions, instance_count, instances_group, submission_groups,
-    submissions_by_instance, charts) for the global aggregates + overview /
-    problem-page pre-render."""
+    submissions_by_instance, charts, lb_instances) for the global aggregates +
+    overview / problem-page pre-render.
+
+    ``instances_group`` carries the *browsable* instance list — collapsed to one
+    base per data set for portfolio (06). ``lb_instances`` carries the trimmed
+    *per-λ* list the leaderboard needs (portfolio keeps one champion row per λ,
+    since each λ is a distinct objective). For every other problem the two are
+    identical."""
     chunk_dir = problems_root / problem_id
     chunk_dir.mkdir(parents=True, exist_ok=True)
 
@@ -131,6 +146,10 @@ def _write_problem_chunks(problem_id: str, problem_dir: Path, data: dict, proble
         if not inst_name:
             continue
         detailed_subs = inst.pop("submissions", [])
+        # Record whether this instance has submissions before the list is popped,
+        # so the portfolio collapse (which runs after this loop) can surface it on
+        # each λ child without re-reading the now-removed field.
+        inst["_has_subs"] = bool(detailed_subs)
         if detailed_subs:
             submissions_by_instance[inst_name] = detailed_subs
 
@@ -171,8 +190,23 @@ def _write_problem_chunks(problem_id: str, problem_dir: Path, data: dict, proble
                 key = f"{inst_name}::{s.get('_source_file') or s.get('_source_dir') or ''}"
                 time_series[key] = ts
 
+    # Portfolio (06) is browsed as one row per base data set: collapse the per-λ
+    # list into base entries (each carrying a `lambdas[]` sweep the instance page
+    # drives its selector + frontier chart from). Every downstream artifact above
+    # (mip, submissions_by_instance, solutions, charts, time_series) stays per-λ —
+    # only the browsable instance list collapses. Other problems pass through.
+    if problem_id == "06":
+        budget_by_assets, _grid = _load_portfolio_manifest(problem_dir)
+        written_instances = collapse_portfolio_instances(instances, budget_by_assets)
+    else:
+        written_instances = instances
+    # Drop the internal has-submissions marker (consumed only by the collapse
+    # above) so it never leaks into any written per-instance JSON.
+    for inst in instances:
+        inst.pop("_has_subs", None)
+
     _write_json(chunk_dir / "meta.json", data)
-    _write_json(chunk_dir / "instances.json", {"problem_id": problem_id, "instances": instances})
+    _write_json(chunk_dir / "instances.json", {"problem_id": problem_id, "instances": written_instances})
     _write_json(chunk_dir / "submissions.json", {"problem_id": problem_id, "entries": submissions})
     _write_json(chunk_dir / "submission_groups.json", {"problem_id": problem_id, "entries": submission_groups})
     _write_json(chunk_dir / "solutions.json", {"problem_id": problem_id, "entries": solutions})
@@ -181,23 +215,32 @@ def _write_problem_chunks(problem_id: str, problem_dir: Path, data: dict, proble
     _write_json(chunk_dir / "charts.json", {"problem_id": problem_id, "entries": charts})
     _write_json(chunk_dir / "mip.json", {"problem_id": problem_id, "points": mip_points})
 
-    # Trimmed group for the aggregated Instances-list payload (data/instances.json).
+    # Trimmed group for the aggregated Instances-list payload (data/instances.json)
+    # — collapsed for portfolio, matching the per-problem instances.json above.
     instances_group = {
         "id": problem_id,
         "name": data.get("name", problem_id),
         "columns": data.get("columns", []),
         "instances": [
             {k: inst[k] for k in INSTANCE_LIST_FIELDS if k in inst}
-            for inst in instances
+            for inst in written_instances
         ],
         "points": mip_points,
     }
 
+    # Per-λ trimmed list for the leaderboard aggregate (keeps one champion per λ).
+    # For non-portfolio problems this equals the collapsed list (written_instances
+    # is `instances`), so the leaderboard is unchanged everywhere else.
+    lb_instances = [
+        {k: inst[k] for k in _LB_INST_FIELDS if k in inst}
+        for inst in instances
+    ]
+
     print(
         f"  → {chunk_dir} "
-        f"({len(instances)} instances, {data['solved_count']} solved, {len(submissions)} submissions)"
+        f"({len(written_instances)} instances, {data['solved_count']} solved, {len(submissions)} submissions)"
     )
-    return submissions, data["instance_count"], instances_group, submission_groups, submissions_by_instance, charts
+    return submissions, data["instance_count"], instances_group, submission_groups, submissions_by_instance, charts, lb_instances
 
 
 def _remove_path(path: Path) -> None:
@@ -272,6 +315,9 @@ def build_data(out_dir: Path, built_at: str | None = None) -> dict:
     instances_groups: list[dict] = []
     all_submission_groups: list[dict] = []
     instance_subs_by_problem: dict[str, dict] = {}
+    # Per-λ trimmed instance lists for the leaderboard (portfolio keeps its 8× rows
+    # here even though the browsable list collapses to bases).
+    lb_instances_by_problem: dict[str, list[dict]] = {}
     problem_details: list[dict] = []  # full per-problem payloads for the deep-page pre-render
     _minimize_by_problem: dict[str, bool] = {}
     total_instances = 0
@@ -308,13 +354,14 @@ def build_data(out_dir: Path, built_at: str | None = None) -> dict:
                 for inst in data.get("instances", [])
             ],
         })
-        submissions, instance_count, instances_group, submission_groups, subs_by_instance, charts = _write_problem_chunks(
+        submissions, instance_count, instances_group, submission_groups, subs_by_instance, charts, lb_instances = _write_problem_chunks(
             problem_id, problem_dir, data, problems_root
         )
         all_submissions.extend(submissions)
         instances_groups.append(instances_group)
         all_submission_groups.extend(submission_groups)
         instance_subs_by_problem[problem_id] = subs_by_instance
+        lb_instances_by_problem[problem_id] = lb_instances
         total_instances += instance_count
         # Full per-problem payload for the deep-page pre-render: the meta (data,
         # with instances/submissions already popped off) plus the trimmed instance
@@ -339,7 +386,6 @@ def build_data(out_dir: Path, built_at: str | None = None) -> dict:
     # lbMakeRecord read; keyed per problem so the page keeps its existing shape.
     _LB_SUB_FIELDS = ("value", "n_feasible", "runtime_total", "date", "category",
                       "submitter", "author", "_source_dir")
-    _LB_INST_FIELDS = ("name", "status", "best_value", "bkv")
     leaderboard_problems = []
     for grp in instances_groups:
         pid = grp["id"]
@@ -352,10 +398,9 @@ def build_data(out_dir: Path, built_at: str | None = None) -> dict:
             "id": pid,
             "name": grp.get("name", pid),
             "minimize": _minimize_by_problem.get(pid, True),
-            "instances": [
-                {k: inst[k] for k in _LB_INST_FIELDS if k in inst}
-                for inst in grp.get("instances", [])
-            ],
+            # Per-λ list (already trimmed to _LB_INST_FIELDS in _write_problem_chunks)
+            # so portfolio keeps one champion row per λ; matches instance_submissions.
+            "instances": lb_instances_by_problem.get(pid, []),
             "instance_submissions": trimmed_subs,
         })
     _write_json(data_root / "leaderboard.json", {"problems": leaderboard_problems})
@@ -382,10 +427,20 @@ def build_data(out_dir: Path, built_at: str | None = None) -> dict:
     # Aggregates for the overview pre-render step (render_overview_pages). These
     # mirror the JSON the frontend fetches, so the pre-rendered HTML matches the
     # client-hydrated view. No extra files are written; this is in-memory only.
+    # Per-λ groups for the leaderboard pre-render — mirrors `instances_groups`'
+    # shape but keeps portfolio's per-λ rows (the collapsed base names in
+    # instances_groups wouldn't match the per-λ instance_submissions keys).
+    lb_instances_groups = [
+        {"id": grp["id"], "name": grp.get("name", grp["id"]),
+         "instances": lb_instances_by_problem.get(grp["id"], [])}
+        for grp in instances_groups
+    ]
+
     return {
         "index": index,
         "problems": index_problems,
         "instances_groups": instances_groups,
+        "lb_instances_groups": lb_instances_groups,
         "submission_groups": all_submission_groups,
         "instance_subs": instance_subs_by_problem,
         "landscape": landscape,
