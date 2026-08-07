@@ -23,7 +23,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
 
-const VERSION: &str = "1.1";
+const VERSION: &str = "1.2";
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Instance {
@@ -46,7 +46,7 @@ struct InstanceFile {
 #[derive(Debug, Deserialize, Serialize)]
 struct Solution {
     scaled_doubly_stochastic_matrix: Vec<u32>,
-    weights: Vec<u32>,
+    weights: Vec<f64>,
     permutations: Vec<u32>,
     id: String,
 }
@@ -93,9 +93,10 @@ fn check_birkhoff_decomposition(
     // Get target matrix
     let target_matrix: Vec<u32> = instance.scaled_doubly_stochastic_matrix.clone();
 
-    // Check that weights sum to scale (always exact)
-    let weight_sum: u32 = solution.weights.iter().sum();
-    if weight_sum != instance.scale {
+    // Check that weights sum to scale (exact)
+    let weight_sum: f64 = solution.weights.iter().sum();
+    let scale_f = instance.scale as f64;
+    if weight_sum != scale_f {
         println!(
             "    Weight sum {} does not equal scale {}",
             weight_sum, instance.scale
@@ -116,7 +117,7 @@ fn check_birkhoff_decomposition(
     }
 
     // Reconstruct the matrix from the Birkhoff decomposition
-    let mut reconstructed = vec![0u32; n * n];
+    let mut reconstructed = vec![0f64; n * n];
 
     for i in 0..num_perms {
         // Extract the i-th permutation vector
@@ -143,17 +144,31 @@ fn check_birkhoff_decomposition(
     }
 
     // Count non-zero weights
-    let num_nonzero_weights = solution.weights.iter().filter(|&&w| w > 0u32).count();
+    let num_nonzero_weights = solution.weights.iter().filter(|&&w| w != 0.0).count();
+
+    // Compute normalised squared Frobenius norm
+    //   (1 / (n² · scale²)) · Σ (target[i] - reconstructed[i])²
+    let sq_frob: f64 = target_matrix
+        .iter()
+        .zip(reconstructed.iter())
+        .map(|(&t, &r)| {
+            let d = t as f64 - r;
+            d * d
+        })
+        .sum();
+    let normalised_sq_frob = sq_frob / ((n * n) as f64 * scale_f * scale_f);
 
     if tolerance == 0.0 {
-        // Exact integer match: check cell-by-cell without computing the norm
-        for i in 0..(n * n) {
-            if reconstructed[i] != target_matrix[i] {
-                println!(
-                    "    Reconstruction mismatch at index {}: expected {}, got {}",
-                    i, target_matrix[i], reconstructed[i]
-                );
-                return Ok(false);
+        if normalised_sq_frob != 0.0 {
+            // Find first mismatch for a helpful message
+            for i in 0..(n * n) {
+                if (target_matrix[i] as f64 - reconstructed[i]).abs() != 0.0 {
+                    println!(
+                        "    Reconstruction mismatch at index {}: expected {}, got {}",
+                        i, target_matrix[i], reconstructed[i]
+                    );
+                    return Ok(false);
+                }
             }
         }
         println!(
@@ -161,20 +176,6 @@ fn check_birkhoff_decomposition(
             num_nonzero_weights
         );
     } else {
-        // Approximate match: compute normalised squared Frobenius norm
-        //   (1 / (n² · scale²)) · Σ (target[i] - reconstructed[i])²
-        // Use u64 for the accumulator: worst case is n²=10_000 cells each with
-        // diff² up to scale²=10^14, giving a sum up to 10^18 < u64::MAX (~1.8×10^19).
-        let scale_f = instance.scale as f64;
-        let sq_frob: u64 = target_matrix
-            .iter()
-            .zip(reconstructed.iter())
-            .map(|(&t, &r)| {
-                let d = t.abs_diff(r) as u64;
-                d * d
-            })
-            .sum();
-        let normalised_sq_frob = sq_frob as f64 / ((n * n) as f64 * scale_f * scale_f);
         println!(
             "    {} permutation matrices, normalised Frobenius² = {:.6e} (tolerance {:.6e})",
             num_nonzero_weights, normalised_sq_frob, tolerance
