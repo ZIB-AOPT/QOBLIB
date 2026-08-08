@@ -10,7 +10,7 @@ This directory contains the submission for the problem **B100_100_1**.
 | Date | 2026-08-06 |
 | ====== |  |
 | Reference | N/A |
-| Best Objective Value | 512 |
+| Best Objective Value | 60 |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | QUBO |
@@ -32,11 +32,11 @@ This directory contains the submission for the problem **B100_100_1**.
 | ====== |  |
 | Hardware Specifications | Qoro Cloud Simulator / MPS |
 | ====== |  |
-| Total Runtime | 6369.28 |
-| Time to Solution | 6369.28 |
+| Total Runtime | 6024.15 |
+| Time to Solution | 6024.15 |
 | CPU Runtime | 849.00 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
-| Other HW Runtime | 5520.28 |
+| Other HW Runtime | 5175.15 |
 | ====== |  |
 | Remarks | Partitioned QAOA via Divi with edge-swap local refinement and beam-search aggregation. Other HW Runtime corresponds to Qoro Cloud Simulator / MPS execution time. Joint work by E.ON and Qoro Quantum. |

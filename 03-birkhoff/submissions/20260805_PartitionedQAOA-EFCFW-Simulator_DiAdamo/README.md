@@ -25,11 +25,9 @@ To scale QAOA sampling to large-scale benchmark instances ($16\times 16$, $32\ti
 * **Beam-Search Aggregation**: Candidate partition measurement samples are recombined into valid global matchings using a beam-search aggregation strategy.
 * **Edge-Swap Local Refinement**: Local edge-swap moves are applied post-aggregation to further enhance matching weights prior to inclusion in the candidate pool.
 
-### 3. Exact Birkhoff Completion & Metadata
-* **Exact Completion (QOBLIB Requirement)**: While the original paper evaluates E-FCFW for approximate graph decompositions under an error tolerance $\epsilon$, the QOBLIB `03-birkhoff` benchmark strictly requires a mathematically **exact Birkhoff decomposition** ($\sum_{i=1}^k w_i P_i = M$ with zero residual error).
-  * After completing the QAOA sampling rounds, any remaining residual matrix entries $M_{\text{res}} > 0$ are exact-completed using the classical Birkhoff algorithm via **Hungarian matching** (`scipy.optimize.linear_sum_assignment`).
-  * This guarantees that the final output in `*_solution.json` is a 100% exact Birkhoff permutation decomposition (verified by `check_birkhoff.rs`).
-* **Success Threshold Metric (`N/A`)**: `Success Threshold` is set to `N/A` in the summary CSV metadata, as the solver produces exact decompositions for all reported runs.
+### 3. Decomposition Output & Metadata
+* **QAOA Decomposition (QOBLIB PR #34 Compliant)**: Following the relaxation of the exact integer matching constraint in QOBLIB (PR #34), this submission reports the decomposition directly achieved via **Partitioned QAOA sampling and E-FCFW weight optimization** without appending classical Hungarian completion matchings.
+* **Success Threshold Metric (`N/A`)**: `Success Threshold` is set to `N/A` in the summary CSV metadata.
 
 ---
 
@@ -37,7 +35,7 @@ To scale QAOA sampling to large-scale benchmark instances ($16\times 16$, $32\ti
 
 - **Divi** (Qoro Quantum): QAOA circuit construction, graph partitioning, and compilation.
 - **Quantum Hardware Simulation**: All simulations were done with Maestro MPS simulation with bond dimension set to 64 via Qoro's cloud services.
-- **SciPy**: Exact classical Hungarian matching (`scipy.optimize.linear_sum_assignment`) for residual completion.
+- **SciPy**: Convex quadratic optimization / non-negative least squares for E-FCFW weight optimization.
 - **NetworkX**: Graph representation and utilities.
 
 ---

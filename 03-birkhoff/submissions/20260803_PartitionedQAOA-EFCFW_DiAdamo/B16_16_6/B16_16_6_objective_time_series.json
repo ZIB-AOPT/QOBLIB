@@ -111,13 +111,6 @@
       "Normalized_Frobenius_Error": 0.0,
       "Matrix_Residual": 0.0,
       "Stage": "QAOA Sampling / E-FCFW"
-    },
-    {
-      "Time": 0.0,
-      "Incumbent": 66,
-      "Normalized_Frobenius_Error": 0.0,
-      "Matrix_Residual": 0.0,
-      "Stage": "Hungarian Exact Completion"
     }
   ]
 ]

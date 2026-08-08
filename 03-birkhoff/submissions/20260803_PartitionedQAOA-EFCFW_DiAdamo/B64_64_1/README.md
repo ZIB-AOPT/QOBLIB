@@ -10,7 +10,7 @@ This directory contains the submission for the problem **B64_64_1**.
 | Date | 2026-08-05 |
 | ====== |  |
 | Reference | N/A |
-| Best Objective Value | 280 |
+| Best Objective Value | 75 |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | QUBO |
