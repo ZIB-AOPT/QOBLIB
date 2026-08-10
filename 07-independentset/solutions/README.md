@@ -24,8 +24,8 @@ We give the solutions to this problem in two different formats:
 | C4000-5 | 18 | best known | [20250715_Abs2_Schicker](../submissions/20250715_Abs2_Schicker) | 2025-07-15 |
 | C500-9 | 57 | best known | [20250715_Abs2_Schicker](../submissions/20250715_Abs2_Schicker) | 2025-07-15 |
 | MANN-a9 | 3 | optimal | reference | — |
-| R_1000_005_1 | 117 | best known | reference | — |
-| R_500_005_1 | 91 | best known | reference | — |
+| R_1000_005_1 | 117 | best known | [20260806_ParallelILS_Hegade](../submissions/20260806_ParallelILS_Hegade) | 2026-08-06 |
+| R_500_005_1 | 91 | best known | [20260806_ParallelILS_Hegade](../submissions/20260806_ParallelILS_Hegade) | 2026-08-06 |
 | aves-sparrow-social | 13 | optimal | reference | — |
 | brock200-1 | 6 | optimal | reference | — |
 | brock200-2 | 12 | optimal | reference | — |
@@ -41,11 +41,11 @@ We give the solutions to this problem in two different formats:
 | es60fst04 | 78 | optimal | reference | — |
 | farm | 10 | optimal | reference | — |
 | football | 16 | optimal | reference | — |
-| frb100-40 | 94 | best known | reference | — |
+| frb100-40 | 96 | best known | [20260806_ParallelILS_Hegade](../submissions/20260806_ParallelILS_Hegade) | 2026-08-06 |
 | frb45-21-3 | 45 | optimal | reference | — |
 | frb50-23-3 | 50 | optimal | reference | — |
-| frb53-24-1 | 52 | best known | reference | — |
-| frb59-26-2 | 58 | best known | reference | — |
+| frb53-24-1 | 53 | best known | [20260806_ParallelILS_Hegade](../submissions/20260806_ParallelILS_Hegade) | 2026-08-06 |
+| frb59-26-2 | 58 | best known | [20260806_ParallelILS_Hegade](../submissions/20260806_ParallelILS_Hegade) | 2026-08-06 |
 | gen200_p0-9_44 | 44 | optimal | reference | — |
 | hamming10-4 | 40 | best known | [20250715_Abs2_Schicker](../submissions/20250715_Abs2_Schicker) | 2025-07-15 |
 | hamming6-2 | 2 | optimal | reference | — |
@@ -69,6 +69,6 @@ We give the solutions to this problem in two different formats:
 | socfb-haverford76 | 282 | best known | [20250715_Abs2_Schicker](../submissions/20250715_Abs2_Schicker) | 2025-07-15 |
 | socfb-trinity100 | 499 | best known | [20250715_Abs2_Schicker](../submissions/20250715_Abs2_Schicker) | 2025-07-15 |
 | sorrell4 | 24 | optimal | reference | — |
-| sorrell7 | 198 | best known | reference | — |
+| sorrell7 | 198 | best known | [20260806_ParallelILS_Hegade](../submissions/20260806_ParallelILS_Hegade) | 2026-08-06 |
 
 <!-- BKV:END -->
