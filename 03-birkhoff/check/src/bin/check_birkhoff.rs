@@ -24,6 +24,7 @@ use std::collections::HashMap;
 use std::fs;
 
 const VERSION: &str = "1.2";
+const CONVEXITY_REL_TOL: f64 = 1e-6;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Instance {
@@ -93,13 +94,14 @@ fn check_birkhoff_decomposition(
     // Get target matrix
     let target_matrix: Vec<u32> = instance.scaled_doubly_stochastic_matrix.clone();
 
-    // Check that weights sum to scale (exact)
+    // Check that weights sum to scale (with relative tolerance for floating-point algorithms)
     let weight_sum: f64 = solution.weights.iter().sum();
     let scale_f = instance.scale as f64;
-    if weight_sum != scale_f {
+
+    if (weight_sum - scale_f).abs() > CONVEXITY_REL_TOL * scale_f {
         println!(
-            "    Weight sum {} does not equal scale {}",
-            weight_sum, instance.scale
+            "    Weight sum {} does not equal scale {} (relative tolerance {:.6e})",
+            weight_sum, instance.scale, CONVEXITY_REL_TOL
         );
         return Ok(false);
     }
