@@ -5,11 +5,11 @@ This directory contains the submission for the problem **po_a003_t02_orig**.
 | Field | Value 1 |
 | --- | --- |
 | Problem | po_a003_t02_orig |
-| Submitter | Danel Arias<sup>1</sup>, Manuel Martín Cordero<sup>1</sup>, Daniel García<sup>1</sup>, Álvaro Nodar<sup>1</sup> |
-| Affiliation | <sup>1</sup>Global Data Quantum, Gran Vía de Don Diego López de Haro, 1, 48001 Bilbo, Bizkaia, Spain |
+| Submitter | Danel Arias [1], Manuel Martín Cordero [1], Daniel García [1], Álvaro Nodar [1] |
+| Affiliation | [1] Global Data Quantum, Gran Vía de Don Diego López de Haro, 1, 48001 Bilbo, Bizkaia, Spain |
 | Date | 2026-08-05 |
 | ====== |  |
-| Reference | This submission builds on the ISQR post-processing routine introduced in [[I. de León et al., arXiv:2512.22001 (2025)](https://arxiv.org/abs/2512.22001)] and applies it to a random sample. ISQR adapts the SQD method to QUBO problems, and its extension to the QOBLIB formulation is straightforward. The table below summarizes the hyperparameter values selected to ensure convergence. <br><br>**ISQR Hyperparameters:**<br><table><tr><th>Hyperparameter</th><th>Value</th><th>Description</th></tr><tr><td>n_shots</td><td>25000</td><td>Uniform-random bitstrings sampled per seed before ISQR post-processing</td></tr><tr><td>isqr_n_batches (M)</td><td>100</td><td>Number of batches the sampled bitstrings are split into</td></tr><tr><td>isqr_samples_per_batch (Nb)</td><td>1000</td><td>Bitstrings per batch (n_shots = M x Nb)</td></tr><tr><td>isqr_iterations</td><td>10</td><td>Maximum number of Configuration Recovery (CR) refinement iterations</td></tr><tr><td>isqr_tol</td><td>0.05</td><td>Convergence threshold: CR stops early if the relative change in optimization cost between consecutive iterations falls below this value</td></tr><tr><td>isqr_eps</td><td>0.01</td><td>Filling-factor / leaky-ReLU threshold parameter of the CR bit-flip probability function</td></tr></table> |
+| Reference | This submission builds on the ISQR post-processing routine introduced in [I. de León et al., arXiv:2512.22001 (2025)](https://arxiv.org/abs/2512.22001) and applies it to a random sample. ISQR adapts the SQD method to QUBO problems; its extension to the QOBLIB formulation is straightforward. The QUBO follows the model in `06-portfolio/info/model_setting.pdf`, with risk factor λ = 1e-05 and constraint penalty P = 5.0. Full ISQR hyperparameters and the variable mapping are documented in the submission-root README ([../README.md](../README.md)). |
 | Best Objective Value | -204.0878963861868 |
 | Optimality Bound | N/A |
 | ====== |  |
@@ -32,9 +32,9 @@ This directory contains the submission for the problem **po_a003_t02_orig**.
 | ====== |  |
 | Hardware Specifications | AMD Ryzen 5 PRO 3600 6-Core Processor, 12 logical cores |
 | ====== |  |
-| Total Runtime | N/A |
+| Total Runtime | 131 |
 | Time to Solution | N/A |
-| CPU Runtime | N/A |
+| CPU Runtime | 131 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
