@@ -7,3 +7,9 @@ _site/
 
 # Ignore Rust target directory
 target/
+/.idea/misc.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/QOBLIB.iml
+/.idea/vcs.xml
+/.idea/workspace.xml
