@@ -58,6 +58,13 @@ from .text import (
 _PORTFOLIO_BUDGET_BY_ASSETS = {3: 3, 4: 4, 5: 4, 10: 4, 50: 20, 200: 50, 400: 100}
 _PORTFOLIO_LAMBDAS = ("0", "0.000001", "0.00001", "0.00005", "0.0001", "0.0005", "0.001", "0.01")
 
+# Auxiliary files that live under a problem's ``instances/`` folder but are not
+# themselves benchmark instances. ``bounds.csv`` (Topology, 10) is a table of
+# diameter lower/upper bounds; without this exclusion it was collected as an
+# instance named "bounds" with status "open", inflating the instance and open
+# counts. Compared case-insensitively against the file name.
+_NON_INSTANCE_FILES = {"readme.md", "bounds.csv", "manifest.json"}
+
 
 def _load_portfolio_manifest(problem_dir: Path) -> tuple[dict[int, int], tuple[str, ...]]:
     """Read ``instances/manifest.json`` (the single source of truth for the
@@ -310,7 +317,7 @@ def collect_generic_instance_sources(problem_id: str, problem_dir: Path) -> dict
 
     file_iter = instances_dir.rglob('*') if problem_id == "05" else instances_dir.iterdir()
     for inst_file in sorted(p for p in file_iter if p.is_file()):
-        if inst_file.name.startswith('.') or inst_file.name.lower() == 'readme.md':
+        if inst_file.name.startswith('.') or inst_file.name.lower() in _NON_INSTANCE_FILES:
             continue
         name = canonical_name_from_filename(inst_file.name)
         sources[name] = {

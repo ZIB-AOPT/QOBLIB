@@ -462,10 +462,25 @@ def _diamond(cx: float, cy: float, r: float) -> str:
     return f'<polygon points="{pts}"'
 
 
-def _svg(w, h, body) -> str:
+_SVG_TITLE_SEQ = [0]
+
+
+def _svg(w, h, body, aria_label=None) -> str:
+    if not aria_label:
+        return (
+            f'<svg class="conv-svg" viewBox="0 0 {w} {h}" role="img" '
+            f'preserveAspectRatio="xMidYMid meet">{body}</svg>'
+        )
+    # Accessible name via a <title> referenced by aria-labelledby (so it takes
+    # precedence over the per-mark <title> tooltips inside the body). The id must
+    # be unique per rendered SVG on the page; a monotonic counter keeps it so
+    # across the several charts baked into one problem page.
+    _SVG_TITLE_SEQ[0] += 1
+    title_id = f"conv-svg-title-{_SVG_TITLE_SEQ[0]}"
     return (
         f'<svg class="conv-svg" viewBox="0 0 {w} {h}" role="img" '
-        f'preserveAspectRatio="xMidYMid meet">{body}</svg>'
+        f'aria-labelledby="{title_id}" preserveAspectRatio="xMidYMid meet">'
+        f'<title id="{title_id}">{_esc(aria_label)}</title>{body}</svg>'
     )
 
 
@@ -588,7 +603,13 @@ def _cactus_body(series, field, dims, y_title_txt) -> str:
         parts.append(f'<g data-series="{_esc(s["key"])}">{line}{"".join(dot_parts)}</g>')
 
     body = grid + _axes(m_l, m_t, m_b, m_r, w, h) + y_labels + x_labels + x_title_el + y_title_el + "".join(parts)
-    return _svg(w, h, body)
+    metric = "time-to-solution" if field == "tts" else "total runtime"
+    label = (
+        f"Cactus plot: cumulative number of instances solved (horizontal) versus "
+        f"{metric} in seconds on a log scale (vertical), one line per method group; "
+        f"lower-right is better."
+    )
+    return _svg(w, h, body, aria_label=label)
 
 
 def _cactus_svg(series, dims) -> str:
@@ -674,7 +695,12 @@ def _profile_svg(groups, ref_n, dims) -> str:
         parts.append(f'<g data-series="{_esc(g["key"])}">{path}{"".join(dots)}</g>')
 
     body = grid + _axes(m_l, m_t, m_b, m_r, w, h) + y_labels + x_labels + x_title + y_title + "".join(parts)
-    return _svg(w, h, body)
+    label = (
+        "Performance profile: share of instances (vertical) reached within a given "
+        "optimality gap of the best-known objective (horizontal), one line per method "
+        "group; higher is better."
+    )
+    return _svg(w, h, body, aria_label=label)
 
 
 def _scaling_svg(groups, size_label, dims) -> str:
@@ -771,7 +797,11 @@ def _scaling_svg(groups, size_label, dims) -> str:
         parts.append(f'<g data-series="{_esc(g["key"])}">{circles}</g>')
 
     body = grid + _axes(m_l, m_t, m_b, m_r, w, h) + y_labels + x_labels + x_title + y_title + "".join(parts)
-    return _svg(w, h, body)
+    label = (
+        f"Scaling plot: fastest feasible runtime in seconds on a log scale (vertical) "
+        f"versus {size_label} (horizontal), one series per method group."
+    )
+    return _svg(w, h, body, aria_label=label)
 
 
 # --------------------------------------------------------------------------- #

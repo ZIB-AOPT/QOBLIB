@@ -17,6 +17,7 @@ const {
     submissionDate: qSubmissionDate,
     submissionMethod: qSubmissionMethod,
     showError: qShowError,
+    populateProblemFilter: qPopulateProblemFilter,
 } = window.QOBLIB;
 
 let allGroups = [];
@@ -77,13 +78,12 @@ function renderStats(groups) {
 }
 
 function populateProblemFilter(indexData) {
-    const select = document.getElementById("sub-prob");
-    (indexData.problems || []).forEach((problem) => {
-        const option = document.createElement("option");
-        option.value = problem.id;
-        option.textContent = formatProblemLabel(problem);
-        select.appendChild(option);
-    });
+    // Idempotent against the server-pre-rendered options — see the shared helper.
+    qPopulateProblemFilter(
+        document.getElementById("sub-prob"),
+        indexData.problems || [],
+        formatProblemLabel,
+    );
 }
 
 function getFilteredGroups() {

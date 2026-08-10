@@ -218,6 +218,22 @@ nav {
     outline-offset: 2px;
 }
 
+/* Visually hidden but exposed to assistive tech (the standard clip pattern).
+   Used for content that has a purely-visual equivalent — e.g. the animated,
+   aria-hidden Contributing Organizations ticker gets a static text list here so
+   screen-reader users can read the org names the marquee shows sighted users. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* Horizontal rule used to separate top-level page sections, replacing the
    per-section top/bottom borders that used to live on .hero/.community/.callout. */
 .section-divider {
@@ -276,7 +292,10 @@ body[data-nav="home"] .stats-bar {
 .hero-eyebrow {
     font-family: var(--mono);
     font-size: 0.72rem;
-    color: var(--warm);
+    /* --warm (#b25c2e on the light hero bg) is only 4.38:1 — under AA for this
+       small uppercase mono. --warm-d clears it in both themes (light #8a4422 ≈
+       6.5:1; dark #e6a884 is light-on-dark). */
+    color: var(--warm-d);
     letter-spacing: 0.12em;
     text-transform: uppercase;
     margin-bottom: 0.75rem;
@@ -1895,6 +1914,18 @@ a.inst-nav-btn:hover {
     outline-offset: 2px;
 }
 
+/* The section title is a real <h2> for the document outline (h1 → h2 → the
+   chart cards' h3), but must look identical to the surrounding <summary> text —
+   so reset the browser's default heading font/margins and inherit. */
+.prob-section-title {
+    margin: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+    display: inline;
+}
+
 .prob-section-body {
     padding-top: 0.9rem;
 }
@@ -2317,11 +2348,18 @@ a.inst-nav-btn:hover {
 
 .site-footer a {
     color: var(--accent);
+    /* Footer links sit inside body text, so colour alone isn't a sufficient
+       distinction (WCAG 1.4.1 / axe link-in-text-block). A subtle underline
+       marks them as links without shouting. */
+    text-decoration: underline;
+    text-decoration-color: var(--border-mid);
+    text-underline-offset: 0.15em;
 }
 
 .site-footer a:hover {
     color: var(--accent-d);
     text-decoration: underline;
+    text-decoration-color: currentColor;
 }
 
 @media (max-width: 640px) {
@@ -2563,10 +2601,30 @@ a.inst-nav-btn:hover {
 .srow-head {
     display: grid;
     /* Problem · Instance (widest, for the autocomplete) · Best objective.
-       Three columns for the three controls — no trailing empty column. */
-    grid-template-columns: 160px minmax(220px, 1.7fr) minmax(150px, 1fr);
+       Three columns for the three controls — no trailing empty column.
+       The `minmax(0, …)` lower bounds let the tracks shrink below their
+       content's intrinsic width; without them a text input's default size
+       (plus .fi-grow's min-width) blows the grid past the viewport on narrow
+       screens (classic min-width:auto grid overflow). */
+    grid-template-columns: minmax(0, 160px) minmax(0, 1.7fr) minmax(0, 1fr);
     gap: 0.6rem;
     align-items: end;
+}
+
+/* Grid/flex children default to min-width:auto, refusing to shrink below their
+   content — pin them to 0 so the tracks (not the viewport) absorb the overflow,
+   and keep every control filling its cell. */
+.srow-head > *,
+.srow-head .ff,
+.srow-head .fi-grow {
+    min-width: 0;
+}
+
+.srow-head input,
+.srow-head select,
+.srow-head .ac,
+.srow-head .fi-grow {
+    width: 100%;
 }
 
 /* Custom instance autocomplete (replaces the native <datalist>). */
@@ -2763,7 +2821,9 @@ textarea.invalid {
 
 @media (max-width: 760px) {
     .srow-head {
-        grid-template-columns: 1fr 1fr;
+        /* minmax(0, …) so the two columns can shrink instead of forcing the row
+           (and the whole page) to scroll horizontally on phones. */
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     }
 
     .sp-actions {
@@ -3267,15 +3327,21 @@ textarea.invalid {
 .info-card code {
     font-family: var(--mono);
     font-size: 0.82em;
-    background: rgba(0,0,0,0.06);
+    /* A translucent black wash over the coloured card tint (--blue-l etc.) muddies
+       the chip and drops the code text under AA. Use a solid near-white chip with
+       an explicit dark text colour so contrast is well above 4.5:1 on every tint. */
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
     padding: 0.1em 0.35em;
     border-radius: 3px;
 }
 
-/* The black-alpha chip wash is nearly invisible on the dark card tints; invert
-   it to a light-alpha wash so inline code keeps a visible chip in dark mode. */
+/* In dark mode the same solid surface chip keeps inline code legible on the
+   darker card tints (the old translucent wash was nearly invisible). */
 :root[data-theme="dark"] .info-card code {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--surface);
+    color: var(--text);
 }
 
 .info-card-head {

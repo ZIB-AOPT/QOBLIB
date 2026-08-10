@@ -423,7 +423,11 @@ def build_problem(problem_id: str, problem_dir: Path) -> dict:
     instances = _collect_instances(problem_id, problem_dir, bkv_map, model_map, csv_subs)
 
     # Attach problem-specific metric columns (nodes/edges, assets/periods, ...).
+    # This also sets the authoritative per-instance `vars` (from LP metrics / the
+    # .dat header), so re-sort afterwards: the sort in _collect_instances ran
+    # before `vars` existed and fell back to the name.
     attach_instance_metrics(problem_id, problem_dir, instances)
+    instances.sort(key=lambda x: (x.get("vars") or 0, x.get("name", "")))
 
     solved_hw, solved_sim, solved_classical_sub = _resolve_best_values(
         problem_dir, meta, instances, bkv_map, csv_subs

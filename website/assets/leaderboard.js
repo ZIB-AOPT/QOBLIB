@@ -21,6 +21,7 @@ const {
     orderRowsByTable: qOrderRowsByTable,
     fmtMaybeNum: qFmtMaybeNum,
     enableTableSorting: qEnableTableSorting,
+    populateProblemFilter: qPopulateProblemFilter,
 } = window.QOBLIB;
 
 // ---------------------------------------------------------------------------
@@ -214,13 +215,10 @@ async function initLeaderboardPage() {
             });
         });
 
-        const lbProb = document.getElementById("lb-prob");
-        problems.forEach((p) => {
-            const o = document.createElement("option");
-            o.value = p.id;
-            o.textContent = `${String(p.id).padStart(2, "0")} - ${p.name}`;
-            lbProb.appendChild(o);
-        });
+        // Idempotent: the overview build pre-renders these options for no-JS, so
+        // appending here would list every problem twice. qPopulateProblemFilter
+        // replaces any pre-rendered set instead of adding to it.
+        qPopulateProblemFilter(document.getElementById("lb-prob"), problems);
 
         renderLeaderboard();
     } catch (error) {

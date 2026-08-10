@@ -400,8 +400,14 @@ _NOT_FOUND_CSS = """
 """
 
 
-def not_found_page(base_url) -> str:
-    """A self-contained, on-theme 404 served from arbitrary paths (absolute assets)."""
+def not_found_page(base_url, font_info=None) -> str:
+    """A self-contained, on-theme 404 served from arbitrary paths (absolute assets).
+
+    Assets are referenced with absolute (base_url-rooted) URLs because the 404 is
+    served from arbitrary deep paths, so relative links would break. ``font_info``
+    (present when the build self-hosted fonts) points the page at the local
+    ``assets/fonts.css`` instead of Google Fonts, keeping the no-third-party
+    guarantee the other pages get — otherwise the page falls back to Google Fonts."""
     base = base_url.rstrip("/")
     home = f"{base}/"
     problems = f"{base}/problems.html"
@@ -410,10 +416,19 @@ def not_found_page(base_url) -> str:
     icon_png32 = f"{base}/assets/images/favicon-32.png"
     icon_png192 = f"{base}/assets/images/qoblib-icon-192.png"
     icon_apple = f"{base}/assets/images/apple-touch-icon.png"
-    fonts = (
-        "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700"
-        "&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap"
-    )
+    if font_info:
+        # Self-hosted: one same-origin stylesheet, no fonts.googleapis.com hit.
+        font_links = f'<link rel="stylesheet" href="{_esc(base + "/" + font_info["css_path"])}" />'
+    else:
+        fonts = (
+            "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700"
+            "&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap"
+        )
+        font_links = (
+            '<link rel="preconnect" href="https://fonts.googleapis.com" />\n'
+            '    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n'
+            f'    <link href="{_esc(fonts)}" rel="stylesheet" />'
+        )
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -428,9 +443,7 @@ def not_found_page(base_url) -> str:
     <link rel="apple-touch-icon" href="{_esc(icon_apple)}" />
     <meta name="theme-color" content="#1d6f78" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#14191b" media="(prefers-color-scheme: dark)" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="{_esc(fonts)}" rel="stylesheet" />
+    {font_links}
     <link rel="stylesheet" href="{_esc(css)}" />
     <style>{_NOT_FOUND_CSS}</style>
 </head>
@@ -501,4 +514,4 @@ def enrich_site(out_dir, problems, base_url, problem_details=None) -> None:
     # 3. SEO support files.
     (out_dir / "sitemap.xml").write_text(build_sitemap(base_url, generated_ids), encoding="utf-8")
     (out_dir / "robots.txt").write_text(robots_txt(base_url), encoding="utf-8")
-    (out_dir / "404.html").write_text(not_found_page(base_url), encoding="utf-8")
+    (out_dir / "404.html").write_text(not_found_page(base_url, font_info=font_info), encoding="utf-8")

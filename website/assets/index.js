@@ -160,6 +160,15 @@ async function renderAffiliations() {
 
         fill(trackA, rowA, false);
         fill(trackB, rowB, true);
+
+        // Screen-reader-only static list mirroring the aria-hidden ticker, so the
+        // org names are actually available to assistive tech (finding #7).
+        const list = document.getElementById("affil-list");
+        if (list) {
+            list.innerHTML = orgs
+                .map(([n, c]) => `<li>${esc(n)} — ${c} instance${c === 1 ? "" : "s"}</li>`)
+                .join("");
+        }
     } catch {
         if (section) section.remove();
     }

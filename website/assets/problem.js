@@ -79,9 +79,9 @@ function performanceSection(charts) {
         `<section class="tw chart-card"><div class="chart-head"><div><h3>${qEsc(title)}</h3><p>${qEsc(desc)}</p></div></div><div id="${id}"></div></section>`;
 
     return `<div class="perf-toolbar">
-            <div class="seg-toggle" role="tablist" aria-label="Grouping">
-                <button type="button" class="seg-btn on" data-mode="paradigm">By paradigm</button>
-                <button type="button" class="seg-btn" data-mode="submission">By submission</button>
+            <div class="seg-toggle" role="group" aria-label="Grouping">
+                <button type="button" class="seg-btn on" data-mode="paradigm" aria-pressed="true">By paradigm</button>
+                <button type="button" class="seg-btn" data-mode="submission" aria-pressed="false">By submission</button>
             </div>
         </div>
         <div class="perf-charts">
@@ -227,7 +227,11 @@ function wirePerformance() {
     if (!tb || !PERF) return;
     tb.querySelectorAll(".seg-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
-            tb.querySelectorAll(".seg-btn").forEach((b) => b.classList.toggle("on", b === btn));
+            tb.querySelectorAll(".seg-btn").forEach((b) => {
+                const active = b === btn;
+                b.classList.toggle("on", active);
+                b.setAttribute("aria-pressed", active ? "true" : "false");
+            });
             PERF_MODE = btn.dataset.mode;
             renderPerf();
         });
@@ -253,7 +257,7 @@ window.addEventListener("resize", () => {
 function collapsibleSection(title, bodyHtml, count = null) {
     const label = count != null ? `${qEsc(title)} <span class="ps-count">(${count})</span>` : qEsc(title);
     return `<details class="prob-section" open>
-        <summary class="prob-section-head">${label}</summary>
+        <summary class="prob-section-head"><h2 class="prob-section-title">${label}</h2></summary>
         <div class="prob-section-body">${bodyHtml}</div>
     </details>`;
 }

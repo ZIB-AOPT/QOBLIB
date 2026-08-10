@@ -137,34 +137,43 @@ def extract_problem_intro(readme_text: str) -> str:
 
 def parse_filename_generic(stem: str) -> dict:
     """
-    Best-effort parser. Looks for numeric tokens that could be variable counts.
-    E.g. ms_05_100_003 -> tries [5, 100, 3] and picks the largest as n_vars.
-    This is a heuristic — proper parsing per format is preferred.
+    Best-effort parser for the trailing instance *index* only.
+
+    Historically this also guessed a variable count from the largest numeric
+    token in the stem (``ms_05_100_003 -> 100``). That heuristic was wrong for
+    most problem classes — the "largest number" is a coefficient range (01), a
+    difficulty label (05), a λ token (06) or the trailing index itself (09) far
+    more often than it is the variable count. The authoritative variable count
+    comes from the generated LP ``metrics.csv`` (or the ``.dat`` header for 01),
+    attached in :mod:`.metrics`; a wrong badge is worse than no badge, so this
+    parser no longer emits ``vars`` or a guessed ``n_constraints`` at all.
     """
     tokens = re.split(r"[_\-]", stem)
     nums = [int(t) for t in tokens if t.isdigit()]
     result: dict = {}
     if nums:
-        result["vars"] = max(nums)
-        if len(nums) >= 3:
-            result["n_constraints"] = nums[1] if nums[0] < 20 else None
         result["index"] = nums[-1]
     return result
 
 
 def parse_ms_filename(stem: str) -> dict:
-    # ms_<m>_<n>_<idx>  e.g. ms_05_100_003
+    # ms_<m>_<coeff_range>_<idx>  e.g. ms_05_100_003. The 2nd token is the
+    # coefficient range, NOT the variable count (see metrics.read_marketsplit_dims,
+    # which reads the true n from the .dat header). Only the constraint count (m)
+    # and index are reliably encoded here.
     m = re.match(r"ms_(\d+)_(\d+)_(\d+)", stem)
     if m:
-        return {"n_constraints": int(m.group(1)), "vars": int(m.group(2)), "index": int(m.group(3))}
+        return {"n_constraints": int(m.group(1)), "index": int(m.group(3))}
     return parse_filename_generic(stem)
 
 
 def parse_labs_filename(stem: str) -> dict:
-    # labs_<n>_<idx> or labs_n<n>_<idx>
+    # labs_<n>_<idx> or labs_n<n>_<idx>. The LABS sequence length N is the model's
+    # variable count, but it is surfaced as the "length" metric (and the
+    # authoritative vars) in :mod:`.metrics`; keep only the index here.
     m = re.match(r"labs[_\-]n?(\d+)[_\-](\d+)", stem, re.IGNORECASE)
     if m:
-        return {"vars": int(m.group(1)), "index": int(m.group(2))}
+        return {"index": int(m.group(2))}
     return parse_filename_generic(stem)
 
 

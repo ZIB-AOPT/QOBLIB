@@ -431,6 +431,12 @@ def _render_affiliations(html_text: str, submission_groups) -> str:
             "affil-track-b": [o for i, o in enumerate(orgs) if i % 2 == 1]}
 
     html_text = _set_element_text(html_text, "affil-count", str(len(orgs)))
+    # Screen-reader-only static list mirroring the aria-hidden ticker (finding #7):
+    # pre-render it so no-JS assistive-tech users still get the org names.
+    sr_items = "".join(
+        f'<li>{_esc(name)} — {n} instance{"" if n == 1 else "s"}</li>' for name, n in orgs
+    )
+    html_text = _replace_container(html_text, "affil-list", sr_items)
     for tid, row in rows.items():
         # Two copies of the set for the seamless CSS loop (as the JS does).
         chips = "".join(_affil_chip(n, c) for n, c in row) + "".join(_affil_chip(n, c, dup=True) for n, c in row)
@@ -947,7 +953,8 @@ _PERF_CHARTS = [
 def _collapsible(title, body_html, count=None) -> str:
     label = f'{_esc(title)} <span class="ps-count">({count})</span>' if count is not None else _esc(title)
     return (
-        f'<details class="prob-section" open><summary class="prob-section-head">{label}</summary>'
+        f'<details class="prob-section" open><summary class="prob-section-head">'
+        f'<h2 class="prob-section-title">{label}</h2></summary>'
         f'<div class="prob-section-body">{body_html}</div></details>'
     )
 
@@ -974,9 +981,9 @@ def _perf_section(charts) -> str:
             f'<div id="{cid}">{svg}</div></section>'
         )
     return (
-        '<div class="perf-toolbar"><div class="seg-toggle" role="tablist" aria-label="Grouping">'
-        '<button type="button" class="seg-btn on" data-mode="paradigm">By paradigm</button>'
-        '<button type="button" class="seg-btn" data-mode="submission">By submission</button>'
+        '<div class="perf-toolbar"><div class="seg-toggle" role="group" aria-label="Grouping">'
+        '<button type="button" class="seg-btn on" data-mode="paradigm" aria-pressed="true">By paradigm</button>'
+        '<button type="button" class="seg-btn" data-mode="submission" aria-pressed="false">By submission</button>'
         '</div></div>'
         f'<div class="perf-charts">{"".join(cards)}</div>'
     )

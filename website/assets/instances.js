@@ -15,6 +15,7 @@ const {
     initCommon: qInitCommon,
     downloadCsv: qDownloadCsv,
     orderRowsByTable: qOrderRowsByTable,
+    populateProblemFilter: qPopulateProblemFilter,
 } = window.QOBLIB;
 
 let allInstances = [];
@@ -375,15 +376,11 @@ async function initInstancesPage() {
         const agg = await qLoadInstancesList();
         const problems = agg.problems || [];
 
-        const filter = document.getElementById("i-prob");
         problemNames = new Map();
-        problems.forEach((p) => {
-            problemNames.set(String(p.id).padStart(2, "0"), p.name);
-            const o = document.createElement("option");
-            o.value = p.id;
-            o.textContent = `${String(p.id).padStart(2, "0")} - ${p.name}`;
-            filter.appendChild(o);
-        });
+        problems.forEach((p) => problemNames.set(String(p.id).padStart(2, "0"), p.name));
+        // Idempotent against the server-pre-rendered options (avoids listing every
+        // problem twice once this script runs).
+        qPopulateProblemFilter(document.getElementById("i-prob"), problems);
 
         allInstances = problems.flatMap((p) => {
             const cols = Array.isArray(p.columns) ? p.columns : [];

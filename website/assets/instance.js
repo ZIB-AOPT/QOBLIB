@@ -827,10 +827,10 @@ async function initInstancePage() {
             ? `<div class="lambda-panel">
                 <div class="perf-toolbar lambda-selector">
                     <span class="lambda-selector-label">Risk aversion λ</span>
-                    <div class="seg-toggle" role="tablist" aria-label="Risk aversion λ">
+                    <div class="seg-toggle" role="group" aria-label="Risk aversion λ">
                         ${sweep.map((c, i) =>
-                            `<button type="button" class="seg-btn${i === selectedLambdaIdx ? " on" : ""}" role="tab"
-                                     data-lambda-idx="${i}" aria-selected="${i === selectedLambdaIdx ? "true" : "false"}"
+                            `<button type="button" class="seg-btn${i === selectedLambdaIdx ? " on" : ""}"
+                                     data-lambda-idx="${i}" aria-pressed="${i === selectedLambdaIdx ? "true" : "false"}"
                             >${c.risk_lambda === "n/a" ? "λ n/a" : qEsc(c.risk_lambda)}</button>`
                         ).join("")}
                     </div>
@@ -896,7 +896,7 @@ async function initInstancePage() {
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="text-align:center">Rank</th>
+                                    <th style="text-align:center" data-sort-type="number">Rank</th>
                                     <th style="text-align:right">Objective</th>
                                     <th>Submitter</th>
                                     <th>Date</th>
@@ -977,7 +977,7 @@ async function initInstancePage() {
                 toggle.querySelectorAll(".seg-btn").forEach((b) => {
                     const on = b === btn;
                     b.classList.toggle("on", on);
-                    b.setAttribute("aria-selected", on ? "true" : "false");
+                    b.setAttribute("aria-pressed", on ? "true" : "false");
                 });
                 body.innerHTML = renderLambdaBody(selectedLambdaIdx);
                 wireLambdaBody();

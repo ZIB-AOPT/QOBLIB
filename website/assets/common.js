@@ -235,6 +235,35 @@ function fmtText(v) {
     return v == null || v === "" ? "-" : esc(v);
 }
 
+// Populate a problem-class filter <select> with one <option> per problem.
+//
+// Idempotent: the overview pages PRE-RENDER these options server-side (so the
+// filter works without JS), then the page script runs and would otherwise append
+// a second copy of every problem — the cause of the "each problem twice" bug.
+// We remove every existing real option (any with a non-empty value — i.e. the
+// server-rendered problems) and keep only the leading placeholder (value=""),
+// then add the current set. So calling this over a pre-rendered select replaces
+// rather than duplicates, and it's safe to call more than once.
+//
+// `label` builds each option's text (defaults to "01 - Name"); pass a custom one
+// for pages that format it differently.
+function populateProblemFilter(select, problems, label) {
+    if (!select) return;
+    const fmt =
+        label || ((p) => `${String(p.id).padStart(2, "0")} - ${p.name}`);
+    Array.from(select.options).forEach((o) => {
+        if (o.value !== "") o.remove();
+    });
+    const frag = document.createDocumentFragment();
+    (problems || []).forEach((p) => {
+        const o = document.createElement("option");
+        o.value = p.id;
+        o.textContent = fmt(p);
+        frag.appendChild(o);
+    });
+    select.appendChild(frag);
+}
+
 // --- dates -------------------------------------------------------------------
 // Submission dates reach the frontend in assorted shapes depending on how each
 // author wrote them in the source CSV / submission directory name (ISO,
@@ -434,11 +463,29 @@ function renderMarkdown(md) {
     if (!md) return "";
     if (!window.marked?.parse) {
         // marked CDN unavailable: degrade to readable escaped text rather than one
-        // undifferentiated blob — split on blank lines into paragraphs and keep
-        // single line breaks. Not Markdown, but legible prose during a CDN outage.
+        // undifferentiated blob. Split on blank lines into paragraphs and keep
+        // single line breaks. Not full Markdown, but legible prose during a CDN
+        // outage — and crucially we strip the syntax that reads as noise without a
+        // renderer: ATX heading markers (## Overview → a bold line) and $$…$$ /
+        // \[…\] math fences (KaTeX is down too, so raw TeX is unreadable — drop it
+        // rather than show `$$ \sum ... $$`).
+        const softenBlock = (block) => {
+            const trimmed = block.trim();
+            // Whole-block display math fence: hide it entirely.
+            if (/^(\$\$[\s\S]*\$\$|\\\[[\s\S]*\\\])$/.test(trimmed)) return "";
+            const heading = trimmed.match(/^#{1,6}\s+(.*)$/);
+            if (heading) {
+                return `<p class="md-fallback-h"><strong>${esc(heading[1].trim())}</strong></p>`;
+            }
+            return `<p>${esc(trimmed).replace(/\n/g, "<br>")}</p>`;
+        };
         return String(md)
+            // Strip inline display-math fences that aren't on their own block.
+            .replace(/\$\$[\s\S]+?\$\$/g, "")
+            .replace(/\\\[[\s\S]+?\\\]/g, "")
             .split(/\n{2,}/)
-            .map((para) => `<p>${esc(para).replace(/\n/g, "<br>")}</p>`)
+            .map(softenBlock)
+            .filter(Boolean)
             .join("");
     }
     // Shield math from the Markdown processor: marked would otherwise strip TeX
@@ -777,6 +824,10 @@ function currentTheme() {
     return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
 }
 
+// Browser-chrome colours matching the two <meta name="theme-color"> tags in the
+// page head (light accent teal / dark near-black).
+const THEME_COLORS = { light: "#1d6f78", dark: "#14191b" };
+
 function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
     try {
@@ -790,6 +841,19 @@ function applyTheme(theme) {
         btn.setAttribute("aria-pressed", dark ? "true" : "false");
         btn.title = dark ? "Switch to light mode" : "Switch to dark mode";
     });
+    // The static <meta name="theme-color"> tags key off prefers-color-scheme only,
+    // so a manual toggle against the OS preference leaves the browser chrome the
+    // wrong colour. Drive a single unconditional (media-less) tag from the active
+    // theme so the chrome follows the toggle. A media-less theme-color overrides
+    // the media-scoped ones, so this wins whenever JS is available.
+    let meta = document.querySelector('meta[name="theme-color"][data-managed]');
+    if (!meta) {
+        meta = document.createElement("meta");
+        meta.setAttribute("name", "theme-color");
+        meta.setAttribute("data-managed", "");
+        document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", THEME_COLORS[theme] || THEME_COLORS.light);
 }
 
 function initTheme() {
@@ -868,6 +932,41 @@ function enableTableSorting(root = document, options = {}) {
         .filter(Boolean)
         .forEach((name) => defaultExcluded.add(name));
 
+    // Cells are displayed via toLocaleString(), so the grouping/decimal separators
+    // depend on the browser locale (e.g. en-ZA groups with spaces and uses a comma
+    // decimal → "3 997 732,5"; de-DE → "3.997.732,5"; en-US → "3,997,732.5"). To
+    // sort those back to numbers we must normalize against the *actual* locale
+    // separators — the old code only stripped ASCII commas, so a space- or
+    // period-grouped value fell through to a leading-digits match and every row
+    // collapsed to its first group (all "3 997 732" sorted as 3).
+    const localeSeparators = () => {
+        try {
+            let group = "";
+            let decimal = ".";
+            for (const p of new Intl.NumberFormat().formatToParts(12345.6)) {
+                if (p.type === "group") group = p.value;
+                else if (p.type === "decimal") decimal = p.value;
+            }
+            return { group, decimal };
+        } catch {
+            return { group: ",", decimal: "." };
+        }
+    };
+    const { group: GROUP_SEP, decimal: DECIMAL_SEP } = localeSeparators();
+
+    // Turn a locale-formatted numeric string into a plain [+-]?digits[.digits] form
+    // that Number() and the numeric regex below can read, regardless of locale.
+    const normalizeNumeric = (text) => {
+        let s = text.replace(/\s/g, ""); // drop grouping spaces (incl. NBSP/narrow-NBSP)
+        if (GROUP_SEP && GROUP_SEP.trim()) s = s.split(GROUP_SEP).join("");
+        // ASCII comma is a common grouping separator in stored data too — strip it
+        // unless the locale uses comma as the decimal point.
+        if (DECIMAL_SEP !== ",") s = s.split(",").join("");
+        // Fold the locale decimal separator to a plain dot.
+        if (DECIMAL_SEP !== ".") s = s.split(DECIMAL_SEP).join(".");
+        return s;
+    };
+
     const parseSortValue = (raw) => {
         const text = String(raw || "").replace(/\s+/g, " ").trim();
         if (!text) return { type: "text", value: "" };
@@ -877,7 +976,7 @@ function enableTableSorting(root = document, options = {}) {
             if (Number.isFinite(ts)) return { type: "number", value: ts };
         }
 
-        const compact = text.replace(/,/g, "");
+        const compact = normalizeNumeric(text);
         if (/^[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?$/.test(compact)) {
             const n = Number(compact);
             if (Number.isFinite(n)) return { type: "number", value: n };
@@ -892,21 +991,40 @@ function enableTableSorting(root = document, options = {}) {
         return { type: "text", value: text.toLowerCase() };
     };
 
-    const sortRowsByColumn = (table, colIdx, dir) => {
+    // The sort type is a property of the COLUMN, not of individual cells, so it is
+    // declared once on the <th> (data-sort-type, defaulted from the numeric
+    // right-alignment marker in resolveSortType) rather than re-inferred per cell.
+    // This keeps a numeric column numeric even when some rows read "-" / "N/A", and
+    // is locale-proof: a space- or period-grouped "3 997 732" no longer has to
+    // pass a per-cell number test to sort numerically.
+    const sortRowsByColumn = (table, colIdx, dir, colType) => {
         const body = table.tBodies?.[0];
         if (!body) return;
 
+        const numeric = colType === "number";
         const rows = Array.from(body.rows);
         const decorated = rows.map((row, idx) => {
             const cellText = row.cells?.[colIdx]?.textContent || "";
-            return { row, idx, parsed: parseSortValue(cellText) };
+            const parsed = parseSortValue(cellText);
+            return { row, idx, parsed };
         });
 
         decorated.sort((a, b) => {
             const av = a.parsed;
             const bv = b.parsed;
 
-            if (av.type === "number" && bv.type === "number") {
+            if (numeric) {
+                // Declared-numeric column: compare as numbers. Cells that aren't
+                // numeric (blank, "-", "N/A") have no meaningful magnitude, so they
+                // always sink to the bottom regardless of sort direction.
+                const an = av.type === "number";
+                const bn = bv.type === "number";
+                if (an && bn) {
+                    if (av.value !== bv.value) return dir === "asc" ? av.value - bv.value : bv.value - av.value;
+                } else if (an !== bn) {
+                    return an ? -1 : 1;
+                }
+            } else if (av.type === "number" && bv.type === "number") {
                 if (av.value !== bv.value) return dir === "asc" ? av.value - bv.value : bv.value - av.value;
             } else {
                 // Numeric-aware so "network10" sorts after "network2", not before.
@@ -917,6 +1035,18 @@ function enableTableSorting(root = document, options = {}) {
         });
 
         decorated.forEach((item) => body.appendChild(item.row));
+    };
+
+    // A column's sort type, declared on the header. Explicit data-sort-type wins;
+    // otherwise a right-aligned numeric column (the site's convention for numeric
+    // cells — see the `numeric` flag in the builders) is treated as numeric.
+    const resolveSortType = (th) => {
+        const explicit = (th.dataset.sortType || "").trim().toLowerCase();
+        if (explicit === "number" || explicit === "text") return explicit;
+        const alignedRight =
+            th.style.textAlign === "right" ||
+            /text-align:\s*right/i.test(th.getAttribute("style") || "");
+        return alignedRight ? "number" : "text";
     };
 
     const tables = root.querySelectorAll ? root.querySelectorAll("table") : [];
@@ -949,6 +1079,10 @@ function enableTableSorting(root = document, options = {}) {
             if (excluded) return;
             hasSortableHeader = true;
 
+            // Resolve (and record) the column's sort type once, up front.
+            const colType = resolveSortType(th);
+            th.dataset.sortType = colType;
+
             th.style.cursor = "pointer";
             th.title = "Click or press Enter to sort";
             // Make the header operable and discoverable for keyboard / AT users.
@@ -959,8 +1093,8 @@ function enableTableSorting(root = document, options = {}) {
             const doSort = () => {
                 const nextDir = th.dataset.sortDir === "asc" ? "desc" : "asc";
                 applySortIndicator(headers, th, nextDir);
-                sortRowsByColumn(table, colIdx, nextDir);
-                table.qoblibSort = { colIdx, dir: nextDir };
+                sortRowsByColumn(table, colIdx, nextDir, colType);
+                table.qoblibSort = { colIdx, dir: nextDir, colType };
             };
             th.addEventListener("click", doSort);
             th.addEventListener("keydown", (e) => {
@@ -981,7 +1115,7 @@ function enableTableSorting(root = document, options = {}) {
                 const s = table.qoblibSort;
                 if (!s || !headers[s.colIdx]) return;
                 applySortIndicator(headers, headers[s.colIdx], s.dir);
-                sortRowsByColumn(table, s.colIdx, s.dir);
+                sortRowsByColumn(table, s.colIdx, s.dir, s.colType ?? resolveSortType(headers[s.colIdx]));
             };
             // Reflect the table's initial sort (applied by the page's own render
             // code) in the header so it is visible without a click. A column opts
@@ -1450,4 +1584,5 @@ window.QOBLIB = {
     toCsv,
     downloadCsv,
     orderRowsByTable,
+    populateProblemFilter,
 };

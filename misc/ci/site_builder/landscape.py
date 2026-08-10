@@ -83,6 +83,10 @@ TIER_TOOLTIPS = {
 MAIN_DIMS = (720, 380)
 INSET_DIMS = (340, 220)
 
+# Monotonic counter for unique <title> ids on labelled scatters (the MIP and QUBO
+# main plots share a class + dimensions, so a derived id would collide).
+_SVG_TITLE_SEQ = [0]
+
 
 # --------------------------------------------------------------------------- #
 # Small helpers
@@ -274,7 +278,7 @@ def _scale(points):
 
 
 def _scatter_svg(points, scale, dims, *, style_of, radius, svg_class, with_labels,
-                 x_title=None, y_title=None, with_titles=True) -> str:
+                 x_title=None, y_title=None, with_titles=True, aria_label=None) -> str:
     x_lo, x_hi, y_lo, y_hi = scale["x_lo"], scale["x_hi"], scale["y_lo"], scale["y_hi"]
     w, h = dims
     if with_labels:
@@ -361,8 +365,25 @@ def _scatter_svg(points, scale, dims, *, style_of, radius, svg_class, with_label
 
     dots = "".join(_circle(p) for p in points)
 
+    if aria_label:
+        # Give the scatter an accessible name via a <title> (referenced by
+        # aria-labelledby so it wins over any child <title> tooltips), so screen
+        # readers announce a one-sentence data summary instead of "image". The id
+        # must be unique per page — the MIP and QUBO figures share a class and
+        # dimensions — so use a monotonic counter rather than deriving from those.
+        _SVG_TITLE_SEQ[0] += 1
+        title_id = f"landscape-svg-title-{_SVG_TITLE_SEQ[0]}"
+        title_el = f'<title id="{title_id}">{_esc(aria_label)}</title>'
+        return (
+            f'<svg class="{svg_class}" viewBox="0 0 {w} {h}" role="img" '
+            f'aria-labelledby="{title_id}" '
+            f'preserveAspectRatio="xMidYMid meet">{title_el}{grid}{axes}{labels}{dots}</svg>'
+        )
+    # Unlabelled scatter (the small insets): they duplicate the main plot's data
+    # and carry their own visible <figcaption> title + key, so hide them from the
+    # accessibility tree rather than announce a second unnamed image.
     return (
-        f'<svg class="{svg_class}" viewBox="0 0 {w} {h}" role="img" '
+        f'<svg class="{svg_class}" viewBox="0 0 {w} {h}" role="img" aria-hidden="true" '
         f'preserveAspectRatio="xMidYMid meet">{grid}{axes}{labels}{dots}</svg>'
     )
 
@@ -426,15 +447,31 @@ def _inset_block(svg, title, swatches) -> str:
     )
 
 
-def _figure(points, caption) -> str:
+def _figure(points, caption, kind="") -> str:
     if not points:
         return ""
     scale = _scale(points)
+    # One-sentence accessible summary: total instances plotted and how many any
+    # method has solved to optimality (classical or quantum), so a screen-reader
+    # user gets the plot's headline without the marks.
+    n_total = len(points)
+    n_solved = sum(
+        1 for p in points
+        if p.get("classical_tier") == "optimal" or p.get("quantum_tier") == "optimal"
+    )
+    family = f"{kind.upper()} " if kind else ""
+    aria_label = (
+        f"Scatter plot of {family}benchmark instances by number of variables "
+        f"(log scale, horizontal) and constraint density (log scale, vertical), "
+        f"coloured by problem class. {n_solved} of {n_total} instances plotted "
+        f"are solved to optimality."
+    )
     main = _scatter_svg(
         points, scale, MAIN_DIMS,
         style_of=_main_style, radius=3.2,
         svg_class="landscape-svg landscape-main", with_labels=True,
         x_title="Number of variables (log)", y_title="Density (log)",
+        aria_label=aria_label,
     )
     # Both insets mirror the problem-card bars: optimal · best-known · open. "Open"
     # is the grey base drawn for points matching no layer — this now also absorbs
@@ -490,6 +527,6 @@ def build_landscape(entries) -> dict:
     empty state).
     """
     return {
-        "mip": _figure(_collect_points(entries, "mip"), _CAPTIONS["mip"]),
-        "qubo": _figure(_collect_points(entries, "qubo"), _CAPTIONS["qubo"]),
+        "mip": _figure(_collect_points(entries, "mip"), _CAPTIONS["mip"], kind="mip"),
+        "qubo": _figure(_collect_points(entries, "qubo"), _CAPTIONS["qubo"], kind="qubo"),
     }

@@ -26,8 +26,8 @@
                 <a class="nl" data-nav="instances" href="instances.html">Instances</a>
                 <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
                 <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
-                <a class="nl" data-nav="submit" href="submit.html">Submit</a>
-                <a class="nl" data-nav="participate" href="participate.html">Participate</a>
+                <a class="nl" data-nav="submit" href="submit.html">Submit results</a>
+                <a class="nl" data-nav="participate" href="participate.html">How it works</a>
                 <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
             <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
@@ -90,6 +90,11 @@
                     <div class="affil-track affil-track-reverse" id="affil-track-b"></div>
                 </div>
             </div>
+            <!-- Static, screen-reader-only list of the same organizations: the
+                 animated ticker above is aria-hidden, so this is how assistive
+                 tech users learn which orgs contributed. Populated by index.js
+                 and pre-rendered server-side. -->
+            <ul class="sr-only" id="affil-list"></ul>
         </section>
 
         <hr class="section-divider" />
