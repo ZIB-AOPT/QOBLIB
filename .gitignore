@@ -7,8 +7,17 @@ _site/
 
 # Ignore Rust target directory
 target/
+<<<<<<< HEAD
 
 # Environment / secret files — never commit these
 .env
 .env.*
 *.local
+=======
+/.idea/misc.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/QOBLIB.iml
+/.idea/vcs.xml
+/.idea/workspace.xml
+>>>>>>> QOBLIB_main/main
