@@ -1,0 +1,25 @@
+# Cooperative parallel iterated local search: 18 threads share
+# Objective value = 23
+18
+20
+39
+85
+93
+134
+135
+178
+207
+234
+252
+304
+388
+445
+624
+635
+642
+651
+666
+669
+734
+766
+768
