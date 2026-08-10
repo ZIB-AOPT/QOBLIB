@@ -15,7 +15,8 @@
 # sh check_all.sh
 #
 # Checks every curated solution under ../solutions against the instances.
-# The instance directory is resolved from each solution's 'instance' header.
+# Solutions live under ../solutions/<instance-name>/*.sol; the instance
+# directory is the subdirectory name, which matches instances/<name>/.
 
 cargo build --release
 
@@ -23,13 +24,16 @@ PASSED=0
 FAILED=0
 ERRORS=0
 
-for i in ../solutions/*.opt.sol ../solutions/*.bst.sol
+for i in ../solutions/*/*.opt.sol ../solutions/*/*.bst.sol
 do
     [ -e "$i" ] || continue
     NAME=`basename $i`
+    # The parent directory name is the instance name (e.g. po_a010_t10_orig).
+    INST_NAME=`basename $(dirname $i)`
+    INST_DIR="../instances/$INST_NAME"
     echo "Checking $NAME..."
 
-    OUTPUT=$(target/release/check_portfolio ../instances "$i" 2>&1)
+    OUTPUT=$(target/release/check_portfolio "$INST_DIR" "$i" 2>&1)
     EXIT_CODE=$?
 
     echo "$OUTPUT" | sed 's/^/  /'

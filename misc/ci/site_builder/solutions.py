@@ -24,7 +24,6 @@ import gzip
 import json
 import lzma
 import re
-import tarfile
 from pathlib import Path
 
 from . import config
@@ -353,46 +352,15 @@ def load_birkhoff_solution_map(problem_dir: Path) -> dict[str, dict]:
 def load_portfolio_solution_map(problem_dir: Path) -> dict[str, dict]:
     """Reference map for 06-portfolio.
 
-    Reference solutions are shipped as per-base-instance ``.tar.gz`` bundles in two
-    families (``bqp`` and ``uqo``), each holding one ``.sol`` per λ sub-instance
-    (e.g. ``a010_t10_s00_b004_l0.0001``). The best-known baseline for a sub-instance
-    is the better (this is a minimisation) objective across the two families.
+    Reference solutions live under ``solutions/<instance-dir>/*.{opt,bst}.sol``,
+    one file per (instance, budget, lambda) key.  The instance directory name is
+    the base instance (e.g. ``po_a010_t10_orig``); the full sub-instance key is
+    the solution filename stem (e.g. ``po_a010_t10_orig_b004_l1e-4``).
     """
     result: dict[str, dict] = {}
     solutions_dir = problem_dir / "solutions"
-    for family in ("bqp", "uqo"):
-        family_dir = solutions_dir / family
-        if not family_dir.is_dir():
-            continue
-        for tar_path in sorted(family_dir.glob("*.tar.gz")):
-            try:
-                with tarfile.open(tar_path, "r:gz") as tf:
-                    for member in tf.getmembers():
-                        if not member.isfile() or not member.name.endswith(".sol"):
-                            continue
-                        inst = Path(member.name).name[: -len(".sol")]
-                        extracted = tf.extractfile(member)
-                        if extracted is None:
-                            continue
-                        value = _labelled_value(extracted.read().decode("utf-8", "replace"))
-                        if value is None:
-                            continue
-                        current = result.get(inst)
-                        if current is None or value < current["value"]:
-                            result[inst] = {
-                                "value": value,
-                                "status": "best_known",
-                                "source_file": config.rel_to_root(tar_path),
-                            }
-            except (tarfile.TarError, OSError):
-                continue
-
-    # Loose per-instance solution files at solutions/ root are winning submissions
-    # copied in by update_bkv (e.g. the `po_*` instances that have no tar baseline).
-    # Reading them back keeps the baseline in sync so re-runs are idempotent; a loose
-    # file wins when it is strictly better (portfolio minimises) or higher status.
-    for sol_file in sorted(solutions_dir.glob("*")):
-        if not sol_file.is_file() or _solution_ext(sol_file) not in READABLE_SOLUTION_EXTS:
+    for sol_file in sorted(solutions_dir.rglob("*.sol")):
+        if not sol_file.is_file():
             continue
         inst, status = normalise_solution_stem(sol_file)
         value = read_objective(sol_file, "06")
