@@ -32,9 +32,9 @@ This directory contains the submission for the problem **po_a004_t04_orig**.
 | ====== |  |
 | Hardware Specifications | AMD Ryzen 5 PRO 3600 6-Core Processor, 12 logical cores |
 | ====== |  |
-| Total Runtime | N/A |
+| Total Runtime | 3052 |
 | Time to Solution | N/A |
-| CPU Runtime | N/A |
+| CPU Runtime | 3052 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
