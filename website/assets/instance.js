@@ -85,12 +85,24 @@ function tsLabel(sub) {
     return m ? m[1] : (d || sub.submitter || "Unknown");
 }
 
+// An "approximation" series is one whose points carry a third element: the
+// approximation residual (for Birkhoff's incremental BirkhoffPlus method, the
+// squared normalized Frobenius norm ‖D − Σλᵢ·Pᵢ‖²_F / ‖D‖²_F). For these the
+// "Incumbent" value is the NUMBER OF PERMUTATION MATRICES used so far — a rising
+// count, not a feasible objective — so they are plotted on a dedicated
+// matrices-vs-residual chart (buildApproxChart) rather than the objective-over-
+// time axis, where the rise would read as a minimization going the wrong way.
+function seriesIsAccumulation(s) {
+    return (s.runs || []).some((run) => run.some((p) => p.length >= 3 && Number.isFinite(p[2])));
+}
+
 // Build a step-function SVG for objective time series data.
 // series: [{label, color, runs: [[[t,v],...], ...]}]
 // bkv:    best-known value in the problem's canonical direction (or null)
-// Each run is drawn faintly; the best-run envelope (min or max incumbent at
-// each time point across all runs) is drawn as a solid line.
+// Each run is drawn faintly; the best-run envelope (min or max incumbent at each
+// time point across all runs) is drawn as a solid line.
 function buildTsChart(series, minimize, bkv) {
+    const yTitleTxt = "incumbent";
     const W = 720, H = 300;
     const m = { t: 16, r: 36, b: 44, l: 66 };  // r=36 leaves room for "BKV" tag
 
@@ -101,9 +113,10 @@ function buildTsChart(series, minimize, bkv) {
     // Sign correction: an objective time series must be monotone in the problem's
     // optimization direction (non-decreasing for maximization, non-increasing for
     // minimization). If a run moves strictly the wrong way throughout, the submitter
-    // stored the negated QUBO objective — negate it back. Checked per run so a
-    // mixed series (some correct, some negated) is handled entry by entry.
-    // A single-point run has no direction to check and is left untouched.
+    // stored the negated QUBO objective — negate it back. Checked per run so a mixed
+    // series is handled entry by entry. A single-point run has no direction to check
+    // and is left untouched. (Accumulation/approximation series never reach here —
+    // they are split off to buildApproxChart before this is called.)
     const fixRun = (run) => {
         if (run.length < 2) return run;
         // Count steps in each direction (ignore flat steps).
@@ -116,7 +129,7 @@ function buildTsChart(series, minimize, bkv) {
         }
         // Only invert when every non-flat step goes the wrong way.
         return (nWrong > 0 && nRight === 0)
-            ? run.map(([t, v]) => [t, -v])
+            ? run.map((p) => [p[0], -p[1]])
             : run;
     };
     series = series.map((s) => ({ ...s, runs: s.runs.map(fixRun) }));
@@ -224,7 +237,7 @@ function buildTsChart(series, minimize, bkv) {
     ).join("");
     const xTitle = `<text class="conv-axis-title" text-anchor="middle" x="${f1((m.l + W - m.r) / 2)}" y="${H - 4}">time${useLogT ? " (s, log)" : " (s)"} →</text>`;
     const yCy = f1((m.t + H - m.b) / 2);
-    const yTitle = `<text class="conv-axis-title" text-anchor="middle" transform="rotate(-90 14 ${yCy})" x="14" y="${yCy}">incumbent</text>`;
+    const yTitle = `<text class="conv-axis-title" text-anchor="middle" transform="rotate(-90 14 ${yCy})" x="14" y="${yCy}">${qEsc(yTitleTxt)}</text>`;
 
     // Draw each submission's runs.
     const parts = series.map((s) => {
@@ -291,6 +304,95 @@ function buildTsChart(series, minimize, bkv) {
     }).join("");
 
     return `<svg class="conv-svg" viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet">${grid}${bkvEl}${axes}${yLabels}${xLabels}${xTitle}${yTitle}${parts}</svg>`;
+}
+
+// Approximation-progress chart for incremental methods (Birkhoff's BirkhoffPlus):
+// x = number of permutation matrices used (integer), y = the squared normalized
+// Frobenius reconstruction residual ‖D − Σλᵢ·Pᵢ‖²_F / ‖D‖²_F (the point's 3rd
+// element), plotted verbatim on a linear axis anchored at 0. This is NOT a
+// time series — it shows how quickly the decomposition converges as matrices are
+// added, so more-matrices/lower-residual (lower-left of the tail) is better.
+// series: [{label, color, runs: [[t, nMatrices, error], ...]}]
+function buildApproxChart(series) {
+    const W = 720, H = 300;
+    const m = { t: 16, r: 18, b: 44, l: 66 };
+
+    // Each run → [nMatrices, error] points (2nd and 3rd elements), sorted by count.
+    const norm = series.map((s) => ({
+        ...s,
+        curves: (s.runs || [])
+            .map((run) =>
+                run
+                    .filter((p) => p.length >= 3 && Number.isFinite(p[1]) && Number.isFinite(p[2]))
+                    .map((p) => [p[1], p[2]])
+                    .sort((a, b) => a[0] - b[0]),
+            )
+            .filter((c) => c.length),
+    }));
+    const allPts = norm.flatMap((s) => s.curves.flat());
+    if (!allPts.length) return "";
+
+    const xs = allPts.map((p) => p[0]);
+    const ys = allPts.map((p) => p[1]);
+    let xMin = Math.min(...xs), xMax = Math.max(...xs);
+    if (xMin === xMax) { xMin = Math.max(0, xMin - 1); xMax += 1; }
+    // Residual is ≥ 0 and its meaningful floor is exact reconstruction (0), so the
+    // y-axis is anchored at 0 with a small headroom pad above the largest residual.
+    const yMax = Math.max(...ys, 0);
+    const yLo = 0;
+    const yHi = yMax > 0 ? yMax * 1.05 : 1;
+
+    const xPad = (xMax - xMin || 1) * 0.05;
+    const xLo = Math.max(0, xMin - xPad), xHi = xMax + xPad;
+    const xPx = (v) => m.l + (W - m.l - m.r) * ((v - xLo) / ((xHi - xLo) || 1));
+    const yPx = (v) => H - m.b - (H - m.t - m.b) * ((v - yLo) / ((yHi - yLo) || 1));
+
+    const f1 = (x) => x.toFixed(1);
+    // X-ticks: integer matrix counts. Y-ticks: nice linear residual steps.
+    const xticks = qNiceLinearTicks(xMin, xMax, { integer: true, target: 6 })
+        .filter((v) => v >= xLo - 1e-9 && v <= xHi + 1e-9);
+    const yticks = qNiceLinearTicks(yLo, yHi, { integer: false, target: 5 })
+        .filter((v) => v >= yLo - 1e-9 && v <= yHi + 1e-9);
+
+    const grid = yticks.map((v) =>
+        `<line class="conv-grid" x1="${m.l}" y1="${f1(yPx(v))}" x2="${W - m.r}" y2="${f1(yPx(v))}" />`
+    ).join("");
+    const axes =
+        `<line class="conv-axis-line" x1="${m.l}" y1="${m.t}" x2="${m.l}" y2="${H - m.b}" />` +
+        `<line class="conv-axis-line" x1="${m.l}" y1="${H - m.b}" x2="${W - m.r}" y2="${H - m.b}" />`;
+    const yLabels = yticks.map((v) =>
+        `<text class="conv-tick" text-anchor="end" x="${m.l - 8}" y="${f1(yPx(v) + 3)}">${qEsc(fmtTick(v))}</text>`
+    ).join("");
+    const xLabels = xticks.map((v) =>
+        `<text class="conv-tick" text-anchor="middle" x="${f1(xPx(v))}" y="${H - m.b + 16}">${qEsc(fmtTick(v))}</text>`
+    ).join("");
+    const xTitle = `<text class="conv-axis-title" text-anchor="middle" x="${f1((m.l + W - m.r) / 2)}" y="${H - 4}">number of permutation matrices →</text>`;
+    const yCy = f1((m.t + H - m.b) / 2);
+    const yTitle = `<text class="conv-axis-title" text-anchor="middle" transform="rotate(-90 14 ${yCy})" x="14" y="${yCy}">normalized residual ‖·‖²_F</text>`;
+
+    const parts = norm.map((s) => {
+        if (!s.curves.length) return "";
+        const multi = s.curves.length > 1;
+        const line = (curve, faint) => {
+            let d = `M ${f1(xPx(curve[0][0]))} ${f1(yPx(curve[0][1]))}`;
+            for (let i = 1; i < curve.length; i++) d += ` L ${f1(xPx(curve[i][0]))} ${f1(yPx(curve[i][1]))}`;
+            const style = faint
+                ? `stroke:${s.color};stroke-width:1;stroke-opacity:0.3;stroke-dasharray:3 2`
+                : `stroke:${s.color};stroke-width:2`;
+            return `<path d="${d}" fill="none" style="${style}" stroke-linejoin="round" />`;
+        };
+        // Faint per-run lines when multiple runs; a bold line for the first (or only) run.
+        const faintLines = multi ? s.curves.map((c) => line(c, true)).join("") : "";
+        const boldCurve = s.curves[0];
+        const dots = boldCurve.map(([x, y]) =>
+            `<circle cx="${f1(xPx(x))}" cy="${f1(yPx(y))}" r="3" style="fill:${s.color}" />` +
+            `<circle cx="${f1(xPx(x))}" cy="${f1(yPx(y))}" r="10" fill="transparent" style="cursor:pointer">` +
+            `<title>${qEsc(s.label)} · ${x} matrices · residual ${qEsc(fmtTick(y))}</title></circle>`
+        ).join("");
+        return `<g data-series="${qEsc(s.key)}">${faintLines}${line(boldCurve, false)}${dots}</g>`;
+    }).join("");
+
+    return `<svg class="conv-svg" viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet">${grid}${axes}${yLabels}${xLabels}${xTitle}${yTitle}${parts}</svg>`;
 }
 
 function fmtDate(ms) {
@@ -568,7 +670,13 @@ function renderSubmissionPlots(p, inst, submissions) {
         }
     }
 
-    // Plot 3: objective time series — one series per submission that has time_series data.
+    // Plot 3: time series — one series per submission that has time_series data.
+    // Split into two charts: true incumbent-objective-over-time runs, and
+    // "approximation" runs whose reported value only rises for a minimization (or
+    // only falls for a maximization) — e.g. BirkhoffPlus reports the count of
+    // permutation matrices added over time, which climbs toward the objective and
+    // is not a feasible incumbent. Mixing the two on one axis made the objective
+    // chart appear to increase for a minimization problem.
     let plot3 = "";
     const tsSubs = (submissions || []).filter((s) => Array.isArray(s.time_series) && s.time_series.length);
     if (tsSubs.length) {
@@ -589,30 +697,58 @@ function renderSubmissionPlots(p, inst, submissions) {
             }
             tsSeries[seen.get(key)].runs.push(...sub.time_series);
         }
+
+        const approxSeries = tsSeries.filter((s) => seriesIsAccumulation(s));
+        const approxKeys = new Set(approxSeries.map((s) => s.key));
+        const incumbentSeries = tsSeries.filter((s) => !approxKeys.has(s.key));
         const bkv = pNum(inst.best_value ?? inst.bkv);
-        const svg = buildTsChart(tsSeries, minimize, Number.isFinite(bkv) ? bkv : null);
-        if (svg) {
-            const legend = tsSeries.map((s) =>
+
+        // Wrap a rendered chart SVG in a legend + chart-card shell (or "" if empty).
+        const chartCard = (svg, chartSeries, title, desc) => {
+            if (!svg) return "";
+            const legend = chartSeries.map((s) =>
                 `<span class="conv-leg" data-series="${qEsc(s.key)}">` +
                 `<span class="conv-dot" style="background:${s.color}"></span>` +
                 `<span class="conv-leg-label">${qEsc(s.label)}</span></span>`
             ).join("");
-            const nRuns = tsSeries.reduce((n, s) => n + s.runs.length, 0);
-            const hasMultiRun = tsSeries.some((s) => s.runs.length > 1);
-            const desc = hasMultiRun
-                ? `Incumbent objective vs. wall-clock time per submission (${nRuns} run${nRuns === 1 ? "" : "s"} total). Bold line = best-run envelope; faint dashed lines = individual runs. Click a legend entry to solo/toggle.`
-                : `Incumbent objective vs. wall-clock time per submission (${nRuns} run${nRuns === 1 ? "" : "s"} total). Click a legend entry to solo/toggle.`;
-            plot3 = `<section class="tw chart-card ts-chart-card">
+            return `<section class="tw chart-card ts-chart-card">
                 <div class="chart-head">
                     <div>
-                        <h3>Objective time series</h3>
+                        <h3>${qEsc(title)}</h3>
                         <p>${desc}</p>
                     </div>
                     <div class="conv-legend">${legend}</div>
                 </div>
                 ${svg}
             </section>`;
+        };
+
+        // Objective-over-time chart (true incumbent runs only).
+        let incumbentCard = "";
+        if (incumbentSeries.length) {
+            const svg = buildTsChart(incumbentSeries, minimize, Number.isFinite(bkv) ? bkv : null);
+            const nRuns = incumbentSeries.reduce((n, s) => n + s.runs.length, 0);
+            const hasMultiRun = incumbentSeries.some((s) => s.runs.length > 1);
+            const envNote = hasMultiRun
+                ? " Bold line = best-run envelope; faint dashed lines = individual runs."
+                : "";
+            const desc = `Incumbent objective vs. wall-clock time per submission (${nRuns} run${nRuns === 1 ? "" : "s"} total).${envNote} Click a legend entry to solo/toggle.`;
+            incumbentCard = chartCard(svg, incumbentSeries, "Objective time series", desc);
         }
+
+        // Approximation-progress chart: matrices (x) vs squared normalized Frobenius
+        // residual (y) — a convergence curve, not a time series.
+        let approxCard = "";
+        if (approxSeries.length) {
+            const svg = buildApproxChart(approxSeries);
+            const desc =
+                "Reconstruction residual (squared normalized Frobenius norm) vs. the number of " +
+                "permutation matrices used, for methods that build the decomposition incrementally. " +
+                "Lower is better; residual 0 = exact reconstruction. Click a legend entry to solo/toggle.";
+            approxCard = chartCard(svg, approxSeries, "Approximation progress", desc);
+        }
+
+        plot3 = incumbentCard + approxCard;
     }
 
     if (!plot1 && !plot2 && !plot3) return "";

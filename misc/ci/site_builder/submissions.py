@@ -93,11 +93,20 @@ def _resolve_instance(col_instance: str, path_instance: str | None, known: set[s
 def _load_time_series(path: Path) -> list | None:
     """Load an objective time series file (.json or .json.gz).
 
-    Returns a compact list-of-runs where each run is a list of
-    ``[time_seconds, incumbent_value]`` pairs — only the ``Time`` and
-    ``Incumbent`` keys from the original format, everything else dropped.
-    Returns ``None`` on any error or if the file is absent.
-    """
+    Returns a compact list-of-runs where each run is a list of points taken from
+    the ``Time`` and ``Incumbent`` keys of the original format:
+
+      * ``[time_seconds, incumbent_value]`` normally, or
+      * ``[time_seconds, incumbent_value, error]`` when the entry also carries an
+        ``Error`` key. That third element is the approximation residual — for the
+        Birkhoff (03) incremental "BirkhoffPlus" method it is the squared
+        normalized Frobenius norm ‖D − Σλᵢ·Pᵢ‖²_F / ‖D‖²_F, and ``Incumbent`` is
+        the number of permutation matrices used so far (a rising count, not a
+        feasible objective). The instance page plots those as a dedicated
+        matrices-vs-residual "approximation progress" chart rather than on the
+        objective-over-time axis. Everything else is dropped.
+
+    Returns ``None`` on any error or if the file is absent."""
     try:
         raw = gzip.open(path, "rb").read() if path.suffix == ".gz" else path.read_bytes()
         data = json.loads(raw)
@@ -118,8 +127,18 @@ def _load_time_series(path: Path) -> list | None:
                 v = float(entry["Incumbent"])
             except (KeyError, TypeError, ValueError):
                 continue
-            if t == t and v == v:  # NaN guard
-                pts.append([t, v])
+            if t != t or v != v:  # NaN guard
+                continue
+            point = [t, v]
+            # Carry the approximation residual when present (finite only).
+            if "Error" in entry:
+                try:
+                    err = float(entry["Error"])
+                except (TypeError, ValueError):
+                    err = None
+                if err is not None and err == err:
+                    point.append(err)
+            pts.append(point)
         if pts:
             result.append(pts)
     return result or None
