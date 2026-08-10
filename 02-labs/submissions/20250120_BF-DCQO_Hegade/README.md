@@ -1,7 +1,39 @@
-# Quantum Baseline Results
+# BF-DCQO Quantum Baseline for LABS
 
-The dataset contains results from solving the low autocorrelation binary optimization (LABS) problem with sequence length N=20. This problem is modeled as a Higher-order Unconstrained Binary Optimization (HUBO) problem. The problem formulation included 20 binary decision variables. The model featured 90 quadratic terms with coefficient 2 and 525 quartic terms with coefficient 4.
+Results from solving the low autocorrelation binary sequences (LABS) problem at sequence length $N = 20$ with BF-DCQO on IBM quantum hardware.
 
-A stochastic algorithm was employed, specifically using sampling with the BF-DCQO algorithm combined with local search sweeps in each iteration. Ten experimental runs were conducted, all of which successfully found feasible solutions. The total runtime for these experiments was 61.22 seconds, consisting of 0.42 seconds CPU runtime and 60.80 seconds Quantum Processing Unit (QPU) runtime.
+Reference: https://github.com/AlejoKQ/data_LABS_BF-DCQO_Benchmark
 
-There is also a file called "bitstrings.json" which shows the optimal bitstrings found for each trial.
+### Results
+
+Ten independent runs were executed. All ten reached $E = 26$, which matches the proven
+optimum for $N = 20$; the submission does not claim a proven bound, since BF-DCQO
+derives none of its own.
+
+| Run | Iterations | QPU [s] | Pre-proc. [s] | Post-proc. [s] | Total [s] | Ground-state prob. |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1  | 1 | 32  | 0.213 | 0.01 | 32.23  | 0.10 |
+| 2  | 1 | 32  | 0.241 | 0.01 | 32.25  | 0.23 |
+| 3  | 1 | 32  | 0.216 | 0.01 | 32.23  | 0.37 |
+| 4  | 1 | 32  | 0.226 | 0.01 | 32.24  | 0.45 |
+| 5  | 1 | 32  | 0.225 | 0.01 | 32.24  | 0.10 |
+| 6  | 3 | 96  | 0.665 | 0.01 | 96.68  | 0.25 |
+| 7  | 2 | 64  | 0.427 | 0.01 | 64.44  | 0.49 |
+| 8  | 2 | 64  | 0.408 | 0.01 | 64.42  | 0.13 |
+| 9  | 4 | 128 | 0.854 | 0.01 | 128.87 | 0.08 |
+| 10 | 3 | 96  | 0.630 | 0.01 | 96.64  | 0.12 |
+| **mean** | 1.9 | **60.8** | 0.4105 | 0.01 | **61.224** | 0.232 |
+
+The sequence found by each run is in `labs020/solutions/`, where run $n$ of the table
+corresponds to `labs020_solution_`$(n-1)$`.sol`. The ten runs produced five distinct
+ground states.
+
+`Time to Solution` is reported as `N/A` because no timestamp was recorded for when the
+optimum first appeared within a run.
+
+### Hardware and software
+
+- CPU: Apple M2 Pro
+- QPU: `ibm_marrakesh`
+- Qiskit 1.3.1, NumPy 2.0.2, SciPy 1.14.1
+
