@@ -58,8 +58,19 @@ jobs:
         shell: bash
         run: |
           set -uo pipefail
-          BASE="${{ github.event.pull_request.base.sha }}"
-          HEAD="${{ github.sha }}"
+          # Diff ONLY this PR's own changes. Two gotchas we must avoid:
+          #   * github.sha is the ephemeral merge commit (PR head merged into the
+          #     CURRENT main tip), not the PR head — so it includes whatever landed
+          #     on main since this PR opened.
+          #   * `git diff A B` is a two-dot (tree) diff, so if main advanced past
+          #     base.sha (another submission PR merged), that other PR's files show
+          #     up here and get mis-reported on this PR.
+          # Anchor to the merge base of the real PR head and its base instead, so
+          # only commits introduced by this PR are considered. Both the inline diff
+          # below and qoblib-check-bkv (which diffs base..head internally) then see
+          # the correct range. Requires fetch-depth: 0 (set on the checkout above).
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          BASE="$(git merge-base "${{ github.event.pull_request.base.sha }}" "$HEAD")"
 
           OUTDIR="$GITHUB_WORKSPACE/_validation"
           mkdir -p "$OUTDIR"

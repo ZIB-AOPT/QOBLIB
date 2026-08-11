@@ -1,0 +1,53 @@
+# converted from a010_t10_s01_b004_l0.0_solution.sol (uqo-index)
+instance po_a010_t10_s01
+budget 4
+lambda 0.0
+# period symbol long short
+0 AMZN 0 1
+0 GOOGL 1 0
+0 NVDA 0 1
+1 AAPL 1 0
+1 AMZN 0 1
+1 GOOGL 1 0
+1 MSFT 0 1
+2 AAPL 1 0
+2 AVGO 0 1
+2 MSFT 0 1
+3 AVGO 0 2
+3 GOOGL 0 1
+3 META 1 0
+3 NVDA 1 0
+3 TSLA 1 0
+3 WMT 1 0
+4 AVGO 0 2
+4 GOOGL 0 1
+4 META 1 0
+4 NVDA 1 0
+4 TSLA 2 0
+4 WMT 1 0
+5 AAPL 0 1
+5 AVGO 0 1
+5 GOOG 1 0
+5 GOOGL 0 2
+5 META 1 0
+5 TSLA 2 0
+5 WMT 1 0
+6 AAPL 0 1
+6 AMZN 1 0
+6 GOOG 1 0
+6 GOOGL 0 1
+6 TSLA 1 0
+7 AMZN 2 0
+7 GOOGL 0 1
+7 MSFT 0 1
+7 TSLA 1 0
+8 AMZN 1 0
+8 AVGO 1 0
+8 META 1 0
+8 MSFT 0 1
+8 TSLA 1 1
+9 AMZN 2 0
+9 AVGO 1 0
+9 GOOG 0 1
+9 META 1 0
+9 NVDA 1 0

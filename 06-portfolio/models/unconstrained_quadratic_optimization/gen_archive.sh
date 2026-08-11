@@ -66,7 +66,6 @@ for data_dir in "$DATA_DIR"/po_a0*; do
     for lambda in "${lambda_values[@]}"; do
       echo "Running with a=$a, t=$t, lambda=$lambda, B=$B"
 
-      # Define output filenames, embedding parameters a, t, lambda, replace them with the path you want.
       a_padded=$(printf "%03d" "$a")
       b_padded=$(printf "%03d" "$B")
 
@@ -74,7 +73,20 @@ for data_dir in "$DATA_DIR"/po_a0*; do
 
       mkdir -p "$QS_FILES/$SUB_DIR"
 
-      base_filename="uqo_a${a_padded}_t${t}_${s}_b${b_padded}_l${lambda}"
+      # Normalise lambda to a dot-free token (e.g. 0.0001 -> l1e-4)
+      case "$lambda" in
+        0)        lambda_tag="l0" ;;
+        0.000001) lambda_tag="l1e-6" ;;
+        0.00001)  lambda_tag="l1e-5" ;;
+        0.00005)  lambda_tag="l5e-5" ;;
+        0.0001)   lambda_tag="l1e-4" ;;
+        0.0005)   lambda_tag="l5e-4" ;;
+        0.001)    lambda_tag="l1e-3" ;;
+        0.01)     lambda_tag="l1e-2" ;;
+        *)        lambda_tag="l${lambda}" ;;
+      esac
+
+      base_filename="uqo_a${a_padded}_t${t}_${s}_b${b_padded}_${lambda_tag}"
 
       qs_file="${QS_FILES}/${SUB_DIR}/${base_filename}"
 
