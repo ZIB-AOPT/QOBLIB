@@ -218,6 +218,9 @@ def validate_csv(instance: str, csv_path: Path, strict_problem_match: bool, repo
 
     report.csv_rows = len(rows)
 
+    VALID_ALGORITHM_TYPES = {"Deterministic", "Stochastic"}
+    VALID_PARADIGMS = {"Classical", "Quantum Simulator", "Quantum Hardware"}
+
     for i, row in enumerate(rows, start=1):
         if strict_problem_match:
             prob = row.get("Problem","").strip()
@@ -227,6 +230,27 @@ def validate_csv(instance: str, csv_path: Path, strict_problem_match: bool, repo
         # ---- FIX: allow "N/A" (case insensitive) ----
         def is_na(v: str) -> bool:
             return v.strip().upper() in {"N/A", "NA"}
+
+        date_val = (row.get("Date") or "").strip()
+        if date_val and not is_na(date_val):
+            if not re.match(r"^\d{4}-\d{2}-\d{2}$", date_val):
+                report.fail(
+                    f"Row {i}: 'Date' must be in YYYY-MM-DD format, found '{date_val}'."
+                )
+
+        algo_type = (row.get("Algorithm Type") or "").strip()
+        if algo_type and not is_na(algo_type) and algo_type not in VALID_ALGORITHM_TYPES:
+            report.fail(
+                f"Row {i}: 'Algorithm Type' must be one of {sorted(VALID_ALGORITHM_TYPES)}, "
+                f"found '{algo_type}'."
+            )
+
+        paradigm = (row.get("Paradigm") or "").strip()
+        if paradigm and not is_na(paradigm) and paradigm not in VALID_PARADIGMS:
+            report.fail(
+                f"Row {i}: 'Paradigm' must be one of {sorted(VALID_PARADIGMS)}, "
+                f"found '{paradigm}'."
+            )
 
         for col in INT_COLUMNS:
             val = (row.get(col) or "").strip()

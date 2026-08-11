@@ -14,6 +14,8 @@
 
 from __future__ import annotations
 
+import csv
+import io
 import json
 import sys
 import tempfile
@@ -23,7 +25,12 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "misc" / "ci"))
 
-from check_submission import validate_objective_time_series, InstanceReport  # noqa: E402
+from check_submission import (  # noqa: E402
+    REQUIRED_COLUMNS,
+    InstanceReport,
+    validate_csv,
+    validate_objective_time_series,
+)
 
 
 def _report(instance: str = "inst") -> InstanceReport:
@@ -156,6 +163,123 @@ class TestObjectiveTimeSeriesMonotonicity(unittest.TestCase):
             validate_objective_time_series("inst", tmp, r, minimize=True)
             self.assertFalse(r.ok)
             self.assertTrue(any("Incumbent" in m for m in r.messages))
+
+
+class TestValidateCsvFieldChecks(unittest.TestCase):
+    """validate_csv enforces Date format, Algorithm Type, and Paradigm enums."""
+
+    def _write_csv(self, tmp: Path, instance: str, overrides: dict) -> Path:
+        """Write a minimal valid summary CSV with optional field overrides."""
+        row = {col: "" for col in REQUIRED_COLUMNS}
+        row.update({
+            "Problem": instance,
+            "Best Objective Value": "42",
+            "Date": "2024-12-22",
+            "Algorithm Type": "Deterministic",
+            "Paradigm": "Classical",
+        })
+        row.update(overrides)
+        csv_path = tmp / f"{instance}_summary.csv"
+        with csv_path.open("w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=REQUIRED_COLUMNS)
+            writer.writeheader()
+            writer.writerow(row)
+        return csv_path
+
+    def _validate(self, tmp: Path, instance: str, overrides: dict) -> InstanceReport:
+        import argparse
+        csv_path = self._write_csv(tmp, instance, overrides)
+        report = InstanceReport(instance=instance, path=tmp)
+        args = argparse.Namespace(strict_problem_match=False)
+        validate_csv(instance, csv_path, args.strict_problem_match, report)
+        return report
+
+    # --- Date ---
+
+    def test_date_valid_iso(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Date": "2024-12-22"})
+            self.assertTrue(r.ok)
+
+    def test_date_datetime_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Date": "2024-12-22 09:32:08"})
+            self.assertFalse(r.ok)
+            self.assertTrue(any("Date" in m for m in r.messages))
+
+    def test_date_two_digit_year_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Date": "15.07.25"})
+            self.assertFalse(r.ok)
+            self.assertTrue(any("Date" in m for m in r.messages))
+
+    def test_date_slash_format_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Date": "09/03/2025"})
+            self.assertFalse(r.ok)
+            self.assertTrue(any("Date" in m for m in r.messages))
+
+    def test_date_empty_allowed(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Date": ""})
+            self.assertTrue(r.ok)
+
+    # --- Algorithm Type ---
+
+    def test_algorithm_type_deterministic_valid(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Algorithm Type": "Deterministic"})
+            self.assertTrue(r.ok)
+
+    def test_algorithm_type_stochastic_valid(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Algorithm Type": "Stochastic"})
+            self.assertTrue(r.ok)
+
+    def test_algorithm_type_lowercase_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Algorithm Type": "stochastic"})
+            self.assertFalse(r.ok)
+            self.assertTrue(any("Algorithm Type" in m for m in r.messages))
+
+    def test_algorithm_type_empty_allowed(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Algorithm Type": ""})
+            self.assertTrue(r.ok)
+
+    # --- Paradigm ---
+
+    def test_paradigm_classical_valid(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Paradigm": "Classical"})
+            self.assertTrue(r.ok)
+
+    def test_paradigm_quantum_simulator_valid(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Paradigm": "Quantum Simulator"})
+            self.assertTrue(r.ok)
+
+    def test_paradigm_quantum_hardware_valid(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Paradigm": "Quantum Hardware"})
+            self.assertTrue(r.ok)
+
+    def test_paradigm_freeform_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Paradigm": "Quantum Hardware / Hybrid"})
+            self.assertFalse(r.ok)
+            self.assertTrue(any("Paradigm" in m for m in r.messages))
+
+    def test_paradigm_mixed_case_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Paradigm": "Quantum and classical Hardware"})
+            self.assertFalse(r.ok)
+            self.assertTrue(any("Paradigm" in m for m in r.messages))
+
+    def test_paradigm_empty_allowed(self):
+        with tempfile.TemporaryDirectory() as d:
+            r = self._validate(Path(d), "inst", {"Paradigm": ""})
+            self.assertTrue(r.ok)
 
 
 if __name__ == "__main__":
