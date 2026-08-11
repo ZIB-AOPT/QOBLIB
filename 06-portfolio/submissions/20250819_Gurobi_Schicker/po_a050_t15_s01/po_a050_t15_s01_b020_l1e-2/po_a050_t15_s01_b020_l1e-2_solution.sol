@@ -1,0 +1,39 @@
+# converted from a050_t15_s01_b020_l0.01_solution.sol (bqp-lp)
+instance po_a050_t15_s01
+budget 20
+lambda 0.01
+objective -13706
+# period symbol long short
+12 AAPL 1 0
+12 BX 0 1
+12 CAT 2 0
+12 GE 2 0
+12 HD 1 0
+12 IBM 0 1
+12 JNJ 1 0
+12 JPM 0 2
+12 KO 0 1
+12 MCD 2 0
+12 MRK 0 1
+12 MSFT 0 1
+12 PM 0 1
+12 TMUS 1 0
+12 TSLA 0 1
+12 XOM 1 0
+13 AAPL 1 0
+13 ABBV 1 0
+13 AMZN 1 0
+13 BAC 2 0
+13 CAT 0 1
+13 CRM 0 1
+13 CSCO 2 0
+13 DIS 1 0
+13 GOOG 0 1
+13 GS 1 0
+13 JNJ 1 0
+13 JPM 0 1
+13 MCD 0 1
+13 MS 0 1
+13 PEP 0 1
+13 TMO 0 2
+13 WFC 1 0

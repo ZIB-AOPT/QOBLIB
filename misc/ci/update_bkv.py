@@ -269,6 +269,22 @@ def compute_records(problem_dir: Path, minimize: bool, feasibility: bool = False
     return records
 
 
+def _portfolio_inst_dir(solutions_dir: Path, inst: str) -> Path:
+    """For 06-portfolio, derive the per-instance subdirectory from the sub-instance key.
+
+    The sub-instance key looks like ``po_a010_t10_orig_b004_l1e-4``.
+    The base instance (directory name) is everything up to the ``_b<B>`` part:
+    ``po_a010_t10_orig``.  Falls back to solutions_dir root for keys not matching
+    the expected pattern.
+    """
+    import re
+    m = re.match(r"^(po_a\d+_t\d+_\w+?)_b\d+", inst)
+    if m:
+        base = m.group(1)  # e.g. "po_a010_t10_orig"
+        return solutions_dir / base
+    return solutions_dir
+
+
 def apply_file_copies(
     problem_dir: Path,
     problem_id: str,
@@ -292,21 +308,29 @@ def apply_file_copies(
 
         marker = "opt" if rec["status"] == "optimal" else "bst"
         suffix = _solution_suffix(src, inst)
-        target = solutions_dir / f"{inst}.{marker}{suffix}"
+
+        # 06-portfolio: place the file in its per-instance subdirectory.
+        if problem_id == "06":
+            inst_dir = _portfolio_inst_dir(solutions_dir, inst)
+        else:
+            inst_dir = solutions_dir
+
+        target = inst_dir / f"{inst}.{marker}{suffix}"
 
         pv = rec.get("prev_value")
         pvs = "none" if pv is None else _fmt_value(pv)
         changes.append(
             f"  * {problem_dir.name}/{inst}: {pvs} -> {_fmt_value(rec['value'])} "
-            f"(source: {rec['sub_dir']}); {target.name}"
+            f"(source: {rec['sub_dir']}); {target.relative_to(solutions_dir)}"
         )
         if do_write:
+            inst_dir.mkdir(parents=True, exist_ok=True)
             # Remove any stale status-marked files for this instance to avoid duplicates.
-            for stale in solutions_dir.glob(f"{inst}.opt.*"):
+            for stale in inst_dir.glob(f"{inst}.opt.*"):
                 stale.unlink()
-            for stale in solutions_dir.glob(f"{inst}.bst.*"):
+            for stale in inst_dir.glob(f"{inst}.bst.*"):
                 stale.unlink()
-            for stale in solutions_dir.glob(f"{inst}.solved.*"):
+            for stale in inst_dir.glob(f"{inst}.solved.*"):
                 stale.unlink()
             shutil.copyfile(src, target)
 
