@@ -2,6 +2,7 @@
 instance po_a010_t15_s01
 budget 4
 lambda 0.0001
+objective 141340
 # period symbol long short
 0 AMZN 0 1
 0 META 0 1

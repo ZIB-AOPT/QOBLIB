@@ -2,6 +2,7 @@
 instance po_a010_t10_s02
 budget 4
 lambda 0.001
+objective 6053
 # period symbol long short
 0 META 1 0
 0 MSFT 0 1

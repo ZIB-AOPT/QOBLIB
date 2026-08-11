@@ -2,6 +2,7 @@
 instance po_a010_t10_orig
 budget 4
 lambda 5e-05
+objective 84980
 # period symbol long short
 0 AVGO 1 1
 0 NVDA 1 1

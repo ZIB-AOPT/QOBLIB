@@ -2,6 +2,7 @@
 instance po_a050_t15_s02
 budget 20
 lambda 0.0001
+objective 604145
 # period symbol long short
 0 AXP 1 1
 0 CVX 1 0

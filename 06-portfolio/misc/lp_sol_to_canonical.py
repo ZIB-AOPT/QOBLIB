@@ -45,7 +45,16 @@ Only the ``x`` variables carry information; the slack registers (``y``,
 
 Usage:
     python3 lp_sol_to_canonical.py <lp[.xz|.gz] | instance-dir> <solver.sol> \
-            <instance-name> <budget> <lambda> [out.sol] [--ub N]
+            <instance-name> <budget> <lambda> [out.sol] [--ub N] [--objective V]
+
+    --objective V   Override or supply the claimed objective value (integer).
+                    When present, the value is written to the ``objective``
+                    header and the checker will verify it matches the
+                    recomputed value exactly.  Use this when the solver does
+                    not emit a ``# Objective value = ...`` comment (e.g. QUBO
+                    samplers that report a QUBO energy rather than the
+                    portfolio objective).  If the value is wrong the checker
+                    exits with code 10 (INVALID_FILE).
 """
 import gzip
 import lzma
@@ -266,10 +275,16 @@ def detect_format(sol_path):
 def main():
     argv = [a for a in sys.argv[1:]]
     ub = DEFAULT_UB
-    if "--ub" in argv:
-        i = argv.index("--ub")
-        ub = int(argv[i + 1])
-        del argv[i:i + 2]
+    objective_override = None
+    for flag in ("--ub", "--objective"):
+        if flag in argv:
+            i = argv.index(flag)
+            val = argv[i + 1]
+            del argv[i:i + 2]
+            if flag == "--ub":
+                ub = int(val)
+            else:
+                objective_override = val
     if len(argv) < 5:
         raise SystemExit(__doc__)
     model_ref, sol_path, instance, budget, lam = argv[:5]
@@ -296,6 +311,10 @@ def main():
              f"instance {instance}",
              f"budget {budget}",
              f"lambda {lam}"]
+    # --objective overrides whatever the solver emitted (or fills the gap when
+    # the solver doesn't emit an objective comment at all).
+    if objective_override is not None:
+        objective = objective_override
     if objective is not None:
         # The reference objective is provably integer: every coefficient is a
         # Zimpl round(...) and all variables are binary (upscale = 1). Solvers

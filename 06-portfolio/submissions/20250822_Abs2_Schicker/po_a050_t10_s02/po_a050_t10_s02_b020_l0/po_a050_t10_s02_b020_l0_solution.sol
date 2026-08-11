@@ -2,6 +2,7 @@
 instance po_a050_t10_s02
 budget 20
 lambda 0.0
+objective 625562
 # period symbol long short
 0 AMD 1 0
 0 AMZN 0 1

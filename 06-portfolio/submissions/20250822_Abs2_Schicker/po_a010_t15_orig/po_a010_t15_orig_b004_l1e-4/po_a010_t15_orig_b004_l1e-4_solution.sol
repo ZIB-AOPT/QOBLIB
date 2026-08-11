@@ -2,6 +2,7 @@
 instance po_a010_t15_orig
 budget 4
 lambda 0.0001
+objective 102371
 # period symbol long short
 0 AAPL 1 1
 0 AVGO 1 0
