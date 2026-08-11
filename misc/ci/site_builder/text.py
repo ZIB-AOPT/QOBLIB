@@ -56,24 +56,70 @@ def format_portfolio_lambda(value) -> str:
 
 # --- dates -------------------------------------------------------------------
 
+_DATE_MONTHS = {
+    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
+    "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12,
+}
+
+
+def _expand_two_digit_year(year: int) -> int:
+    """Expand a 2-digit year to 4 digits. Submissions run 2024→, so a bare ``25``
+    means 2025; map every 2-digit value into the 2000s (``00``–``99`` → 2000–2099),
+    which covers the benchmark's lifetime without guessing a pivot."""
+    return 2000 + year if year < 100 else year
+
+
 def parse_date_str(s: str) -> str:
-    """Parse date strings like '22. Dec. 2024' or '2024-12-22' to YYYY-MM-DD."""
+    """Normalise a free-text submission date to the canonical ``YYYY-MM-DD``.
+
+    Authors write the ``Date`` column in assorted shapes; the checker only accepts
+    ISO on new submissions, but existing data carries several forms. This mirrors
+    the frontend ``parseDate`` (website/assets/common.js) so the pre-rendered HTML
+    and the client-hydrated view agree. Recognised inputs:
+
+      * ``2024-12-22`` / ``2024-12-22 09:32:08`` — ISO, optional time (year-first,
+        also ``/`` or ``.`` separators);
+      * ``20241206`` — compact YYYYMMDD (the submission-dir prefix);
+      * ``22. Dec. 2024`` / ``22 Dec 2024`` — day-first with a month name;
+      * ``Dec 22, 2024`` / ``August 5th, 2026`` / ``Nov. 17, 2025`` — month-name
+        first, tolerating an ordinal suffix (``5th``);
+      * ``09/03/2025`` / ``15.07.25`` — day-first numeric (European DD.MM.YY[YY]).
+
+    Two-digit years expand into the 2000s. An unrecognised string is returned
+    stripped but otherwise unchanged, so a novel format degrades to the author's
+    original text rather than an empty cell."""
     if not s:
         return ""
     s = s.strip()
-    if re.match(r"^\d{4}-\d{2}-\d{2}", s):
-        return s[:10]
-    months = {
-        "jan": "01", "feb": "02", "mar": "03", "apr": "04",
-        "may": "05", "jun": "06", "jul": "07", "aug": "08",
-        "sep": "09", "oct": "10", "nov": "11", "dec": "12",
-    }
-    m = re.match(r"(\d{1,2})[.\s]+(\w{3,})[.\s]+(\d{4})", s, re.IGNORECASE)
+    if not s:
+        return ""
+
+    y = mo = d = None
+
+    m = re.match(r"^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})", s)
     if m:
-        day, mon, year = m.group(1), m.group(2)[:3].lower(), m.group(3)
-        mon_num = months.get(mon)
-        if mon_num:
-            return f"{year}-{mon_num}-{int(day):02d}"
+        # Year-first: ISO 8601, YYYY-MM-DD, YYYY/MM/DD (any trailing time ignored).
+        y, mo, d = m.group(1), m.group(2), m.group(3)
+    elif re.match(r"^\d{8}$", s):
+        # Compact YYYYMMDD.
+        y, mo, d = s[:4], s[4:6], s[6:8]
+    elif (m := re.match(r"^(\d{1,2})[.\s]+([A-Za-z]{3,})\.?[,\s]+(\d{2,4})$", s)):
+        # Day-first with a month name: "22 Dec 2024", "22. Dec. 2024".
+        d, mo, y = m.group(1), _DATE_MONTHS.get(m.group(2)[:3].lower()), m.group(3)
+    elif (m := re.match(r"^([A-Za-z]{3,})\.?\s+(\d{1,2})(?:st|nd|rd|th)?[,.\s]+(\d{2,4})$", s)):
+        # Month name first, optional ordinal suffix: "Dec 22, 2024", "August 5th, 2026".
+        mo, d, y = _DATE_MONTHS.get(m.group(1)[:3].lower()), m.group(2), m.group(3)
+    elif (m := re.match(r"^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})$", s)):
+        # Day-first numeric, the common European source form: DD.MM.YY[YY].
+        d, mo, y = m.group(1), m.group(2), m.group(3)
+
+    if y is not None and mo is not None and d is not None:
+        try:
+            yi, moi, di = _expand_two_digit_year(int(y)), int(mo), int(d)
+        except (TypeError, ValueError):
+            return s
+        if 1 <= moi <= 12 and 1 <= di <= 31:
+            return f"{yi:04d}-{moi:02d}-{di:02d}"
     return s
 
 
