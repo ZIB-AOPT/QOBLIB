@@ -159,6 +159,32 @@ class TestPortfolioKeyJoins(unittest.TestCase):
         self.assertGreater(len(joined), 0, "no submissions joined any instance source")
         self.assertIn("a010_t10_orig_b004_l1e-04", self.subs)
 
+    def test_per_lambda_names_resolve_to_a_collapsed_base(self):
+        # The leaderboard and submission pages link to per-λ instance names
+        # (a010_t10_orig_b004_l1e-02), but the browsable instance list is collapsed
+        # to bases (a010_t10_orig_b004) with the λ folded into a lambdas[] sweep.
+        # instance.js resolves a per-λ link by finding the base whose lambdas[]
+        # contains that name; every per-λ name it might be handed must therefore be
+        # a child of exactly one collapsed base — else the page errors "not found".
+        from site_builder.instances import collapse_portfolio_instances, _load_portfolio_manifest
+        budget, _grid = _load_portfolio_manifest(PORTFOLIO_DIR)
+        # Build per-λ instance dicts from the sources (the shape collapse expects).
+        per_lambda = [{"name": n, "status": "open"} for n in self.sources]
+        bases = collapse_portfolio_instances(per_lambda, budget)
+
+        base_names = {b["name"] for b in bases}
+        child_names = {c["name"] for b in bases for c in b.get("lambdas", [])}
+
+        # Every per-λ source name is reachable as a lambdas[] child of some base.
+        unresolved = set(self.sources) - child_names
+        self.assertEqual(
+            unresolved, set(),
+            f"per-λ names not resolvable to any collapsed base: {sorted(unresolved)[:5]}",
+        )
+        # And a per-λ name is never itself a top-level (base) instance — that is
+        # exactly the mismatch that made the links dead.
+        self.assertEqual(set(self.sources) & base_names, set())
+
 
 @unittest.skipUnless(PORTFOLIO_DIR.is_dir(), "portfolio data not present")
 class TestPortfolioManifest(unittest.TestCase):

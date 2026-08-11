@@ -3786,6 +3786,96 @@ textarea.invalid {
 }
 
 /* =========================================================================
+   Leaderboard — per-problem collapsible sections
+   Native <details>; the summary reads as a section heading with a caret,
+   the problem badge/name on the left and record counts on the right.
+   ========================================================================= */
+
+.lb-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.lb-prob-section {
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    background: var(--surface);
+    overflow: hidden;
+}
+
+.lb-prob-section > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 0.9rem;
+    font-family: var(--sans);
+    user-select: none;
+    transition: background 0.12s;
+}
+
+.lb-prob-section > summary::-webkit-details-marker {
+    display: none;
+}
+
+.lb-prob-section > summary::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 5px solid currentColor;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+    color: var(--faint);
+}
+
+.lb-prob-section[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+.lb-prob-section > summary:hover {
+    background: var(--surface2);
+}
+
+.lb-prob-section > summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+.lb-sec-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+/* Counts pushed to the right edge of the summary row. */
+.lb-sec-counts {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.lb-sec-best {
+    color: var(--star);
+    font-variant-numeric: tabular-nums;
+}
+
+/* The table sits flush inside the section: drop its own rounded outer border
+   (the section already provides one) and keep only a top rule under the summary
+   so it doesn't read as a box-in-a-box. */
+.lb-prob-section > .tw {
+    border: none;
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+}
+
+/* =========================================================================
    Leaderboard — best-by-paradigm panel
    ========================================================================= */
 

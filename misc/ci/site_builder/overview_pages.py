@@ -565,14 +565,16 @@ def _instance_sort_key(name: str):
     return [int(t) if t.isdigit() else t.lower() for t in re.split(r"(\d+)", str(name))]
 
 
-# Rows to pre-render in the big tables. The full lists (1351 instances / 765
-# leaderboard records) are far more DOM than a viewport needs and dominate the
-# page's initial parse. Pre-render a first page; instances.js / leaderboard.js
-# reveal the rest via a "Show more" button (kept in sync with INST_PAGE / LB_PAGE
-# in those files). No-JS users see this first page plus a note pointing to the
-# per-problem pages (which list every instance of that problem).
+# Rows to pre-render in the big Instances table. The full list (1351 instances)
+# is far more DOM than a viewport needs and dominates the page's initial parse.
+# Pre-render a first page; instances.js reveals the rest via a "Show more" button
+# (kept in sync with INST_PAGE in that file). No-JS users see this first page plus
+# a note pointing to the per-problem pages (which list every instance).
+#
+# The leaderboard has no such global cap: it groups records into collapsible
+# per-problem <details> sections (each set is naturally bounded), so every record
+# is pre-rendered and reachable without JS — see _render_leaderboard.
 _INST_PAGE = 100
-_LB_PAGE = 100
 
 
 def _render_instances(html_text: str, instances_groups, problems) -> str:
@@ -715,56 +717,17 @@ def _feasible_count(raw_subs, feas) -> int:
     return n
 
 
-def _render_leaderboard(html_text: str, problems, instances_groups, instance_subs_by_problem) -> str:
-    inst_by_problem = {}
-    for group in instances_groups:
-        inst_by_problem[group.get("id")] = {i["name"]: i for i in group.get("instances", [])}
-
-    records = []  # (problem_id, inst, champ_v, no_value, reached_best, holder, cat, date, runtime, n_subs)
-    for p in problems:
-        pid = p["id"]
-        minimize = p.get("minimize") is not False
-        insts = inst_by_problem.get(pid, {})
-        feas = _is_feasibility_problem({"instances": list(insts.values())})
-        entries = instance_subs_by_problem.get(pid, {})
-        for name, inst in insts.items():
-            raw_subs = entries.get(name, [])
-            champ = _lb_champion(raw_subs, minimize, feas)
-            if not champ:
-                continue
-            sub, v, no_value = champ
-            best_known = _cnum(_best_value(inst))
-            scale = max(1.0, abs(best_known) if best_known is not None else 0.0, abs(v))
-            if feas:
-                reached_best = abs(v) <= 1e-9
-            else:
-                reached_best = best_known is not None and abs(v - best_known) <= 1e-9 * scale
-            records.append({
-                "problem_id": pid,
-                "instance": name,
-                "status": inst.get("status"),
-                "value": v,
-                "no_value": no_value and feas,
-                "reached_best": reached_best,
-                "holder": sub.get("submitter") or sub.get("author") or "",
-                "category": _cat_of(sub),
-                "date": sub.get("date") or "",
-                "runtime": sub.get("runtime_total"),
-                "n_subs": _feasible_count(raw_subs, feas),
-            })
-
-    records.sort(key=lambda r: (str(r["problem_id"]), str(r["instance"])))
-
-    if not records:
-        content = '<div class="lb-empty">No submissions yet.</div>'
-    else:
-        page = records[:_LB_PAGE]
-        rows = "".join(
-            f"""
+def _lb_record_row(r) -> str:
+    """One leaderboard <tr>. The Problem column is dropped here (the enclosing
+    <details> section already names the problem) — mirrors lbRecordRow in
+    leaderboard.js."""
+    obj = ('<span title="A feasible solution was found; this problem reports no objective value">feasible</span>'
+           if r["no_value"] else _fmt_num(r["value"]))
+    star = ' <span title="Reaches the best-known objective" style="color:var(--star)">★</span>' if r["reached_best"] else ""
+    return f"""
                 <tr data-export-key="{_esc(str(r['problem_id']) + '::' + r['instance'])}">
                     <td class="mono"><a class="rlink mono" href="instance.html?problem={_esc(r['problem_id'])}&amp;name={_esc(r['instance'])}">{_esc(r['instance'])}</a></td>
-                    <td><a class="badge b-type" href="problem/{_esc(r['problem_id'])}/">{_esc(_pad(r['problem_id']))}</a></td>
-                    <td class="num">{'<span title="A feasible solution was found; this problem reports no objective value">feasible</span>' if r['no_value'] else _fmt_num(r['value'])}{' <span title="Reaches the best-known objective" style="color:var(--star)">★</span>' if r['reached_best'] else ''}</td>
+                    <td class="num">{obj}{star}</td>
                     <td>{_status_pill(r['status'])}</td>
                     <td>{_fmt_text(r['holder'])}</td>
                     <td>{_cat_badge(r['category'])}</td>
@@ -772,17 +735,30 @@ def _render_leaderboard(html_text: str, problems, instances_groups, instance_sub
                     <td class="num">{_fmt_maybe_num(r['runtime'])}</td>
                     <td class="num">{r['n_subs']}</td>
                 </tr>"""
-            for r in page
-        )
-        more_note = ""
-        if len(records) > len(page):
-            more_note = (f'<noscript><p class="table-more-note">Showing the first {len(page):,} of '
-                         f'{len(records):,} records. Enable JavaScript to load more.</p></noscript>')
-        content = f"""<div class="tw"><table>
+
+
+def _lb_problem_section(pid, pname, records, open_section: bool) -> str:
+    """A collapsible <details> section for one problem's leaderboard records.
+
+    The summary carries the problem number + name, its record count and how many
+    of those records reach the best-known objective. Rendering every record here
+    (each problem's set is naturally bounded) is what lets the no-JS page show the
+    whole leaderboard without the old cross-problem "Show more" pagination."""
+    n = len(records)
+    n_best = sum(1 for r in records if r["reached_best"])
+    best_chip = (f'<span class="lb-sec-best" title="Records reaching the best-known objective">'
+                 f'★ {n_best:,}</span>') if n_best else ""
+    rows = "".join(_lb_record_row(r) for r in records)
+    return f"""<details class="lb-prob-section"{' open' if open_section else ''} data-problem="{_esc(pid)}">
+        <summary>
+            <a class="badge b-type" href="problem/{_esc(pid)}/" onclick="event.stopPropagation()">{_esc(_pad(pid))}</a>
+            <span class="lb-sec-name">{_esc(pname)}</span>
+            <span class="lb-sec-counts"><span class="lb-sec-recs">{n:,} record{'' if n == 1 else 's'}</span>{best_chip}</span>
+        </summary>
+        <div class="tw"><table>
         <thead>
             <tr>
                 <th>Instance</th>
-                <th>Problem</th>
                 <th style="text-align:right">Best objective</th>
                 <th>Status</th>
                 <th>Holder</th>
@@ -795,10 +771,73 @@ def _render_leaderboard(html_text: str, problems, instances_groups, instance_sub
         <tbody>{rows}
         </tbody>
     </table></div>
-    <div class="table-legend" style="margin:.4rem 0 .6rem;color:var(--muted)">One record per instance: the best feasible submission and who holds it. ★ = reaches the best-known objective. "Subs" counts the ranked feasible submissions for that instance.</div>{more_note}"""
+    </details>"""
+
+
+def _render_leaderboard(html_text: str, problems, instances_groups, instance_subs_by_problem) -> str:
+    inst_by_problem = {}
+    for group in instances_groups:
+        inst_by_problem[group.get("id")] = {i["name"]: i for i in group.get("instances", [])}
+
+    # Records grouped per problem, preserving the problem order from `problems`.
+    by_problem = []  # [(pid, pname, [record, ...])]
+    total = 0
+    for p in problems:
+        pid = p["id"]
+        pname = p.get("name", _pad(pid))
+        minimize = p.get("minimize") is not False
+        insts = inst_by_problem.get(pid, {})
+        feas = _is_feasibility_problem({"instances": list(insts.values())})
+        entries = instance_subs_by_problem.get(pid, {})
+        recs = []
+        for name, inst in insts.items():
+            raw_subs = entries.get(name, [])
+            champ = _lb_champion(raw_subs, minimize, feas)
+            if not champ:
+                continue
+            sub, v, no_value = champ
+            best_known = _cnum(_best_value(inst))
+            scale = max(1.0, abs(best_known) if best_known is not None else 0.0, abs(v))
+            if feas:
+                reached_best = abs(v) <= 1e-9
+            else:
+                reached_best = best_known is not None and abs(v - best_known) <= 1e-9 * scale
+            recs.append({
+                "problem_id": pid,
+                "instance": name,
+                "status": inst.get("status"),
+                "value": v,
+                "no_value": no_value and feas,
+                "reached_best": reached_best,
+                "holder": sub.get("submitter") or sub.get("author") or "",
+                "category": _cat_of(sub),
+                "date": sub.get("date") or "",
+                "runtime": sub.get("runtime_total"),
+                "n_subs": _feasible_count(raw_subs, feas),
+            })
+        if recs:
+            recs.sort(key=lambda r: _instance_sort_key(r["instance"]))
+            by_problem.append((pid, pname, recs))
+            total += len(recs)
+
+    if not by_problem:
+        content = '<div class="lb-empty">No submissions yet.</div>'
+    else:
+        # Every section starts collapsed, so the page opens as a compact index of
+        # problems the reader expands on demand. All records are still present in
+        # the HTML (no JS needed to reveal them once a section is opened).
+        sections = "".join(
+            _lb_problem_section(pid, pname, recs, open_section=False)
+            for pid, pname, recs in by_problem
+        )
+        legend = ('<div class="table-legend" style="margin:.4rem 0 .6rem;color:var(--muted)">'
+                  'Records are grouped by problem — expand a section for its table. One record per '
+                  'instance: the best feasible submission and who holds it. ★ = reaches the best-known '
+                  'objective. "Subs" counts the ranked feasible submissions for that instance.</div>')
+        content = f'<div class="lb-sections">{sections}</div>{legend}'
 
     html_text = _replace_container(html_text, "lb-content", content)
-    html_text = _set_element_text(html_text, "lb-count", f"{len(records)} record{'' if len(records) == 1 else 's'}")
+    html_text = _set_element_text(html_text, "lb-count", f"{total} record{'' if total == 1 else 's'}")
     html_text = _inject_options(html_text, "lb-prob", _problem_options(problems, include_dash=True))
     return html_text
 

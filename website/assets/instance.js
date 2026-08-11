@@ -805,26 +805,48 @@ async function initInstancePage() {
 
     try {
         const p = await qLoadProblemData(problemId);
-        const inst = (p.instances || []).find((i) => i.name === instanceName);
+        // Portfolio (06) instances are collapsed to one base per data set, with the
+        // risk-aversion λ sweep carried in `inst.lambdas`. The instance list and
+        // instance page know only the base names, but the leaderboard / submissions
+        // link to a *per-λ* name (e.g. "a010_t10_orig_b004_l1e-02"), which is one of
+        // the base's `lambdas[]` children — not a top-level instance. Resolve the
+        // requested name to its base and remember which λ child was asked for, so a
+        // per-λ deep link opens the base page pre-selected on that λ instead of
+        // erroring with "not found". Other problems: the direct match is the base.
+        let inst = (p.instances || []).find((i) => i.name === instanceName);
+        let requestedLambdaName = null;
+        if (!inst) {
+            inst = (p.instances || []).find(
+                (i) => Array.isArray(i.lambdas) && i.lambdas.some((c) => c.name === instanceName),
+            );
+            if (inst) requestedLambdaName = instanceName;
+        }
         if (!inst) {
             throw new Error(`Instance \"${instanceName}\" was not found in problem ${problemId}.`);
         }
         qSetPageMeta({ title: `${inst.name} · ${p.name} — QOBLIB` });
 
-        // Portfolio (06) instances are collapsed to one base per data set, with the
-        // risk-aversion λ sweep carried in `inst.lambdas`. The page renders one λ at
-        // a time (selected via a segmented control) and, above it, an efficient-
-        // frontier chart of objective vs λ across the whole sweep. Every other
-        // problem has no `lambdas` and renders exactly as before (sweep === null).
+        // See above: the page renders one λ at a time (selected via a segmented
+        // control) and, above it, an efficient-frontier chart of objective vs λ
+        // across the whole sweep. Non-portfolio problems have no `lambdas`
+        // (sweep === null) and render exactly as before.
         const sweep = Array.isArray(inst.lambdas) && inst.lambdas.length ? inst.lambdas : null;
-        // Default to the first λ that actually has a submission or reference value,
-        // else the first entry — so the page opens on something populated.
+        // If the URL named a specific λ child, open on it. Otherwise default to the
+        // first λ that actually has a submission or reference value, else the first
+        // entry — so the page opens on something populated.
         let selectedLambdaIdx = 0;
         if (sweep) {
-            const firstPop = sweep.findIndex(
-                (c) => c.has_submissions || Number.isFinite(Number(c.best_value ?? c.reference_solution_value)),
-            );
-            selectedLambdaIdx = firstPop >= 0 ? firstPop : 0;
+            const requestedIdx = requestedLambdaName
+                ? sweep.findIndex((c) => c.name === requestedLambdaName)
+                : -1;
+            if (requestedIdx >= 0) {
+                selectedLambdaIdx = requestedIdx;
+            } else {
+                const firstPop = sweep.findIndex(
+                    (c) => c.has_submissions || Number.isFinite(Number(c.best_value ?? c.reference_solution_value)),
+                );
+                selectedLambdaIdx = firstPop >= 0 ? firstPop : 0;
+            }
         }
 
         // The lazy per-submission time-series file, fetched once and shared across
@@ -938,7 +960,9 @@ async function initInstancePage() {
             a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
         );
         const n = allInstances.length;
-        const instIdx = allInstances.findIndex((i) => i.name === instanceName);
+        // Match on the resolved base (inst.name), not the raw URL name — a portfolio
+        // per-λ deep link (…_l1e-02) is not itself in the instance list.
+        const instIdx = allInstances.findIndex((i) => i.name === inst.name);
         const prevInst = n > 1 ? allInstances[(instIdx - 1 + n) % n] : null;
         const nextInst = n > 1 ? allInstances[(instIdx + 1) % n] : null;
         const instNavHtml = `<div class="inst-nav">

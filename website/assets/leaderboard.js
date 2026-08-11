@@ -317,14 +317,80 @@ function renderParadigmBests() {
 // Main render
 // ---------------------------------------------------------------------------
 
-// Rows to render at once (kept in sync with _LB_PAGE in overview_pages.py). The
-// full record set (765) is more DOM than a viewport needs; reveal the rest via
-// "Show more" so initial parse/layout stays cheap. Reset whenever filters change.
-const LB_PAGE = 100;
-let lbShown = LB_PAGE;
+// Problem id → display name (from index.json), for the section headers.
+function lbProblemName(pid) {
+    const p = (indexData?.problems || []).find((x) => String(x.id) === String(pid));
+    return p ? p.name : String(pid).padStart(2, "0");
+}
 
-function renderLeaderboard(resetPage = true) {
-    if (resetPage) lbShown = LB_PAGE;
+// One record <tr>. The Problem column is omitted — the enclosing <details>
+// section already names the problem (mirrors _lb_record_row in overview_pages.py).
+// `showGap` adds the Quantum-view "Gap to best" cell.
+function lbRecordRowHtml(r, showGap) {
+    let gapCell = "";
+    if (showGap) {
+        const m = (instanceMeta[r.problem_id] || {})[r.instance];
+        const bk = m ? lbNum(m.inst.best_value ?? m.inst.bkv) : NaN;
+        const feas = m?.feas ?? false;
+        if (r.noValue || feas) {
+            gapCell = '<td class="num">—</td>';
+        } else if (!Number.isFinite(bk)) {
+            gapCell = '<td class="num muted">N/A</td>';
+        } else if (r.reachedBest) {
+            gapCell = '<td class="num" style="color:var(--star)">0.00%</td>';
+        } else {
+            const gap = Math.abs(r.value - bk) / Math.max(1e-9, Math.abs(bk)) * 100;
+            const fmt = gap >= 100 ? gap.toFixed(0) : gap >= 10 ? gap.toFixed(1) : gap.toFixed(2);
+            gapCell = `<td class="num">${fmt}%</td>`;
+        }
+    }
+    return `<tr data-export-key="${qEsc(String(r.problem_id) + "::" + r.instance)}">
+        <td class="mono"><a class="rlink mono" href="${qInstanceUrl(r.problem_id, r.instance)}">${qEsc(r.instance)}</a></td>
+        <td class="num">${r.noValue ? '<span title="A feasible solution was found; this problem reports no objective value">feasible</span>' : qFmtNum(r.value)}${r.reachedBest ? ' <span title="Reaches the best-known objective" style="color:var(--star)">★</span>' : ""}</td>
+        ${gapCell}
+        <td>${qStatusPill(r.status)}</td>
+        <td>${r.source_dir ? `<a class="rlink" href="${qSubmissionUrl(r.problem_id, r.source_dir)}">${qFmtText(r.holder)}</a>` : qFmtText(r.holder)}</td>
+        <td>${qCatBadge(r.category)}</td>
+        <td class="mono">${qEsc(qFmtDate(r.date))}</td>
+        <td class="num">${qFmtMaybeNum(r.runtime)}</td>
+        <td class="num">${r.nSubs}</td>
+    </tr>`;
+}
+
+// A collapsible <details> section for one problem's records (mirrors
+// _lb_problem_section in overview_pages.py).
+function lbProblemSectionHtml(pid, recs, showGap, openSection) {
+    const nBest = recs.reduce((s, r) => s + (r.reachedBest ? 1 : 0), 0);
+    const bestChip = nBest
+        ? `<span class="lb-sec-best" title="Records reaching the best-known objective">★ ${nBest.toLocaleString()}</span>`
+        : "";
+    const rows = recs.map((r) => lbRecordRowHtml(r, showGap)).join("");
+    return `<details class="lb-prob-section"${openSection ? " open" : ""} data-problem="${qEsc(pid)}">
+        <summary>
+            <a class="badge b-type" href="${qProblemUrl(pid)}" onclick="event.stopPropagation()">${String(pid).padStart(2, "0")}</a>
+            <span class="lb-sec-name">${qEsc(lbProblemName(pid))}</span>
+            <span class="lb-sec-counts"><span class="lb-sec-recs">${recs.length.toLocaleString()} record${recs.length !== 1 ? "s" : ""}</span>${bestChip}</span>
+        </summary>
+        <div class="tw"><table>
+            <thead>
+                <tr>
+                    <th>Instance</th>
+                    <th style="text-align:right">Best objective</th>
+                    ${showGap ? '<th style="text-align:right" title="Gap to the global best-known value">Gap to best</th>' : ""}
+                    <th>Status</th>
+                    <th>Holder</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th style="text-align:right">Runtime (s)</th>
+                    <th style="text-align:right">Subs</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table></div>
+    </details>`;
+}
+
+function renderLeaderboard() {
     const pid = document.getElementById("lb-prob")?.value || "";
     const paradigm = document.getElementById("lb-paradigm")?.value || "";
 
@@ -358,7 +424,6 @@ function renderLeaderboard(resetPage = true) {
 
     const content = document.getElementById("lb-content");
     if (!content) return;
-    const prevSort = content.querySelector("table")?.qoblibSort;
 
     if (!rows.length) {
         const filtering = pid || document.getElementById("lb-inst")?.value || paradigm;
@@ -366,87 +431,40 @@ function renderLeaderboard(resetPage = true) {
         return;
     }
 
-    // Build a context label for the legend.
-    const viewLabel = activeView === "quantum" ? "best quantum submission" : "best feasible submission";
-    const paradigmExtra = paradigm ? ` (${(qCATS[paradigm] || qCATS.classical).label} only)` : "";
-
-    // In Quantum view: add a "Gap to best-known" column to show how the best
+    // In Quantum view: add a "Gap to best-known" column showing how the best
     // quantum result compares to the global best.
     const showGap = activeView === "quantum";
 
-    content.innerHTML = `<div class="tw"><table>
-        <thead>
-            <tr>
-                <th>Instance</th>
-                <th>Problem</th>
-                <th style="text-align:right">Best objective</th>
-                ${showGap ? '<th style="text-align:right" title="Gap to the global best-known value">Gap to best</th>' : ""}
-                <th>Status</th>
-                <th>Holder</th>
-                <th>Type</th>
-                <th>Date</th>
-                <th style="text-align:right">Runtime (s)</th>
-                <th style="text-align:right">Subs</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${rows.slice(0, lbShown).map((r) => {
-                let gapCell = "";
-                if (showGap) {
-                    // Re-read best_known from instanceMeta for this instance.
-                    const m = (instanceMeta[r.problem_id] || {})[r.instance];
-                    const bk = m ? lbNum(m.inst.best_value ?? m.inst.bkv) : NaN;
-                    const feas = m?.feas ?? false;
-                    if (r.noValue || feas) {
-                        gapCell = '<td class="num">—</td>';
-                    } else if (!Number.isFinite(bk)) {
-                        gapCell = '<td class="num muted">N/A</td>';
-                    } else if (r.reachedBest) {
-                        gapCell = '<td class="num" style="color:var(--star)">0.00%</td>';
-                    } else {
-                        // Gap = |quantum_best - global_best| / |global_best| × 100
-                        const gap = Math.abs(r.value - bk) / Math.max(1e-9, Math.abs(bk)) * 100;
-                        const fmt = gap >= 100 ? gap.toFixed(0) : gap >= 10 ? gap.toFixed(1) : gap.toFixed(2);
-                        gapCell = `<td class="num">${fmt}%</td>`;
-                    }
-                }
-                return `<tr data-export-key="${qEsc(String(r.problem_id) + "::" + r.instance)}">
-                    <td class="mono"><a class="rlink mono" href="${qInstanceUrl(r.problem_id, r.instance)}">${qEsc(r.instance)}</a></td>
-                    <td><a class="badge b-type" href="${qProblemUrl(r.problem_id)}">${String(r.problem_id).padStart(2, "0")}</a></td>
-                    <td class="num">${r.noValue ? '<span title="A feasible solution was found; this problem reports no objective value">feasible</span>' : qFmtNum(r.value)}${r.reachedBest ? ' <span title="Reaches the best-known objective" style="color:var(--star)">★</span>' : ""}</td>
-                    ${gapCell}
-                    <td>${qStatusPill(r.status)}</td>
-                    <td>${r.source_dir ? `<a class="rlink" href="${qSubmissionUrl(r.problem_id, r.source_dir)}">${qFmtText(r.holder)}</a>` : qFmtText(r.holder)}</td>
-                    <td>${qCatBadge(r.category)}</td>
-                    <td class="mono">${qEsc(qFmtDate(r.date))}</td>
-                    <td class="num">${qFmtMaybeNum(r.runtime)}</td>
-                    <td class="num">${r.nSubs}</td>
-                </tr>`;
-            }).join("")}
-        </tbody>
-    </table></div>
-    <div class="table-legend" style="margin:.4rem 0 .6rem;color:var(--muted)">One record per instance: the ${viewLabel}${paradigmExtra} and who holds it. ★ = reaches the best-known objective. "Subs" counts the ranked feasible submissions for that instance${activeView === "quantum" ? " (quantum only)" : ""}. Gap = |quantum best − global best| / |global best|.</div>
-    ${(() => {
-        const remaining = rows.length - Math.min(lbShown, rows.length);
-        return remaining > 0
-            ? `<div class="table-more"><button class="btn btn-ghost btn-sm" type="button" id="lb-more-btn">Show ${Math.min(LB_PAGE, remaining)} more (${remaining} hidden)</button></div>`
-            : "";
-    })()}`;
-
-    // Reveal the next page without resetting the current page count.
-    document.getElementById("lb-more-btn")?.addEventListener("click", () => {
-        lbShown += LB_PAGE;
-        renderLeaderboard(false);
-    });
-
-    if (prevSort) {
-        const table = content.querySelector("table");
-        if (table) {
-            qEnableTableSorting(content);
-            table.qoblibSort = prevSort;
-            table.reapplySort?.();
-        }
+    // Group the filtered rows by problem, keeping problem order from index.json
+    // (the order the sections appear in). Each problem becomes one <details>.
+    const order = (indexData?.problems || []).map((p) => String(p.id));
+    const byProblem = new Map();
+    for (const r of rows) {
+        const key = String(r.problem_id);
+        if (!byProblem.has(key)) byProblem.set(key, []);
+        byProblem.get(key).push(r);
     }
+    const orderedPids = [...byProblem.keys()].sort(
+        (a, b) => (order.indexOf(a) + 1 || Infinity) - (order.indexOf(b) + 1 || Infinity) || a.localeCompare(b),
+    );
+
+    // All sections start collapsed, so the page opens as a compact problem index.
+    // The one exception: when the user has narrowed to a single section (e.g. a
+    // problem filter leaves just one), open it — that's a deliberate drill-in, not
+    // the initial load.
+    const openAll = orderedPids.length === 1;
+    const sections = orderedPids
+        .map((p) => lbProblemSectionHtml(p, byProblem.get(p), showGap, openAll))
+        .join("");
+
+    const viewLabel = activeView === "quantum" ? "best quantum submission" : "best feasible submission";
+    const paradigmExtra = paradigm ? ` (${(qCATS[paradigm] || qCATS.classical).label} only)` : "";
+
+    content.innerHTML = `<div class="lb-sections">${sections}</div>
+    <div class="table-legend" style="margin:.4rem 0 .6rem;color:var(--muted)">Records are grouped by problem — expand a section for its table. One record per instance: the ${viewLabel}${paradigmExtra} and who holds it. ★ = reaches the best-known objective. "Subs" counts the ranked feasible submissions for that instance${activeView === "quantum" ? " (quantum only)" : ""}.${showGap ? " Gap = |quantum best − global best| / |global best|." : ""}</div>`;
+
+    // Each section's table is independently sortable by its column headers.
+    qEnableTableSorting(content);
 }
 
 // ---------------------------------------------------------------------------

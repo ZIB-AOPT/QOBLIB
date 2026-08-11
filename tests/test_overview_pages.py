@@ -339,6 +339,41 @@ class TestRenderLeaderboard(unittest.TestCase):
         # The open instance with no submissions produces no row.
         self.assertNotIn("ms_03_050_010", out)
 
+    def test_grouped_into_problem_sections(self):
+        out = O._render_leaderboard(_shell("leaderboard.html"), PROBLEMS, INSTANCES_GROUPS, INSTANCE_SUBS)
+        # Records live inside a collapsible per-problem <details> section, which
+        # carries the problem name and its record count in the summary.
+        self.assertIn('<details class="lb-prob-section"', out)
+        self.assertIn('data-problem="01"', out)
+        self.assertIn("Market Split", out)
+        self.assertIn("1 record", out)
+        # Every section starts collapsed on load — no <details> carries `open`.
+        self.assertNotRegex(out, r'<details class="lb-prob-section"[^>]*\bopen\b')
+        # Problem 07 has no submissions → no section for it.
+        self.assertNotIn('data-problem="07"', out)
+
+    def test_no_global_pagination_all_records_present(self):
+        # A problem with more records than the old 100-row cap must render every
+        # record without JS (grouping removes the cross-problem "Show more").
+        n = 150
+        groups = [{
+            "id": "01", "name": "Market Split", "columns": [],
+            "instances": [
+                {"name": f"ms_{i:04d}", "status": "best_known", "best_value": 1.0 * i, "raw_url": "https://ex/r"}
+                for i in range(n)
+            ],
+        }]
+        subs = {"01": {
+            f"ms_{i:04d}": [{"submitter": "Ada", "value": 1.0 * i, "n_feasible": "1",
+                             "date": "2026-01-02", "category": "classical", "_source_dir": "d"}]
+            for i in range(n)
+        }}
+        out = O._render_leaderboard(_shell("leaderboard.html"), PROBLEMS, groups, subs)
+        self.assertEqual(out.count("data-export-key"), n)
+        self.assertNotIn("Enable JavaScript to load more", out)
+        import re
+        self.assertEqual(re.search(r'id="lb-count"[^>]*>([^<]*)<', out).group(1), f"{n} records")
+
 
 class TestRenderProblemDetail(unittest.TestCase):
     def setUp(self):
