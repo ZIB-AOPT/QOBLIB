@@ -128,8 +128,6 @@ def _collect_instances(problem_id: str, problem_dir: Path, bkv_map: dict,
             if k in fn_meta and fn_meta[k] is not None:
                 inst_entry[k] = fn_meta[k]
         inst_subs = csv_subs.get(stem, [])
-        if problem_id == "06" and not inst_subs:
-            inst_subs = csv_subs.get(stem.replace("_l0.0", "_l0"), [])
         if inst_subs:
             inst_entry["submissions"] = inst_subs
 

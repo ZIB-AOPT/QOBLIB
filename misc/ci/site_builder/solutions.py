@@ -27,6 +27,7 @@ import re
 from pathlib import Path
 
 from . import config
+from .text import normalize_portfolio_lambda
 
 
 STATUS_PRIORITY = {
@@ -353,9 +354,15 @@ def load_portfolio_solution_map(problem_dir: Path) -> dict[str, dict]:
     """Reference map for 06-portfolio.
 
     Reference solutions live under ``solutions/<instance-dir>/*.{opt,bst}.sol``,
-    one file per (instance, budget, lambda) key.  The instance directory name is
+    one file per (instance, budget, lambda) key. The instance directory name is
     the base instance (e.g. ``po_a010_t10_orig``); the full sub-instance key is
     the solution filename stem (e.g. ``po_a010_t10_orig_b004_l1e-4``).
+
+    Keys are canonicalised (``po_`` prefix dropped, λ suffix normalised via
+    :func:`normalize_portfolio_lambda`) so they match the instance-source and
+    model keys the rest of the builder joins on — the regenerated solution files
+    use a compact λ tag (``_l1e-4``) while the instance grid feeds decimals
+    (``_l0.0001``); without normalisation the reference values never attach.
     """
     result: dict[str, dict] = {}
     solutions_dir = problem_dir / "solutions"
@@ -363,6 +370,7 @@ def load_portfolio_solution_map(problem_dir: Path) -> dict[str, dict]:
         if not sol_file.is_file():
             continue
         inst, status = normalise_solution_stem(sol_file)
+        inst = normalize_portfolio_lambda(inst.removeprefix("po_"))
         value = read_objective(sol_file, "06")
         if value is None:
             continue

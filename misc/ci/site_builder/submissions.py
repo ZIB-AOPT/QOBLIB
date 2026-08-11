@@ -25,7 +25,7 @@ import sys
 from pathlib import Path
 
 from .classify import classify_submission
-from .text import parse_date_str
+from .text import normalize_portfolio_lambda, parse_date_str
 
 
 # Canonical key -> accepted CSV header aliases.
@@ -220,6 +220,13 @@ def read_csv_submissions_folder(
                     instance = _resolve_instance(get_col(row, "instance"), path_instance, known_instances)
                     if not instance:
                         continue
+                    # Portfolio (06) submission folders carry a ``po_`` prefix and a
+                    # compact λ tag (``po_a010_t10_orig_b004_l1e-4``); canonicalise
+                    # to the same key the instance/solution/model producers use so
+                    # the rows attach to their instance instead of forming a stray
+                    # ``po_``-prefixed entry.
+                    if problem_id == "06":
+                        instance = normalize_portfolio_lambda(instance.removeprefix("po_"))
                     val_str = get_col(row, "value")
                     try:
                         value: float | None = float(val_str)
@@ -253,9 +260,15 @@ def read_csv_submissions_folder(
                     sub["date"] = parse_date_str(sub.get("date", ""))
                     sub["category"] = classify_submission(sub)
 
-                    # Attach objective time series if available alongside the CSV.
-                    # Canonical path: <submissions_dir>/<source_dir>/<instance>/<instance>_objective_time_series.json[.gz]
-                    ts_base = submissions_dir / source_dir / instance / f"{instance}_objective_time_series"
+                    # Attach objective time series if present. It sits beside the
+                    # summary CSV under the same ``<stem>_objective_time_series``
+                    # name, so resolve it from the CSV's own directory. This works
+                    # for both the flat layout (``<source_dir>/<inst>/…``) and the
+                    # deeper per-λ nesting portfolio now uses
+                    # (``<source_dir>/<base>/<inst>/…``), where the old
+                    # ``<source_dir>/<instance>/`` guess pointed at a missing dir.
+                    ts_stem = path_instance or instance
+                    ts_base = csv_file.parent / f"{ts_stem}_objective_time_series"
                     for suffix in (".json.gz", ".json"):
                         ts_path = Path(str(ts_base) + suffix)
                         if ts_path.exists():

@@ -89,20 +89,42 @@ def canonical_name_from_filename(name: str) -> str:
 
 
 def normalize_portfolio_lambda(name: str) -> str:
-    name = (name
-            .replace("_l0.000001", "_l1e-06")
-            .replace("_l0.00001", "_l1e-05")
-            .replace("_l0.00005", "_l5e-05"))
-    if name.endswith("_l0"):
-        name = f"{name}.0"
-    return name
+    """Canonical instance key for a portfolio (06) risk-aversion ``_l<λ>`` suffix.
+
+    The same logical instance reaches the builder under several λ spellings: the
+    manifest grid feeds decimals (``_l0.000001``, ``_l0.01``); the regenerated
+    solution / model / submission filenames use a compact scientific tag
+    (``_l1e-6``, ``_l0``, ``_l5e-5``); older data used yet other forms. Rewrite the
+    suffix to one uniform spelling so all four producers key identically — zero →
+    ``_l0``, every non-zero λ → single-mantissa scientific with a two-digit
+    exponent (``_l1e-06``, ``_l5e-05``, ``_l1e-02``). Matches the display form
+    produced by :func:`format_portfolio_lambda`.
+
+    The rewrite is deliberately conservative: it fires only on a portfolio λ token
+    (``0`` or a fractional / scientific value), never on a bare-integer suffix like
+    Steiner's ``_l4`` level marker, so calling it on any problem's stems is safe.
+    Names without a portfolio ``_l`` suffix are returned unchanged.
+    """
+    m = re.search(r"_l([0-9][0-9.eE+-]*)$", name)
+    if not m:
+        return name
+    tok = m.group(1)
+    if tok != "0" and not any(c in tok for c in ".eE"):
+        return name  # bare integer (e.g. Steiner ``_l4``) — not a portfolio λ
+    num = num_or_none(tok)
+    if num is None:
+        return name
+    tag = "0" if num == 0 else f"{num:.0e}"
+    return f"{name[:m.start()]}_l{tag}"
 
 
 def portfolio_base_name(instance_name: str) -> str:
     name = normalize_portfolio_lambda(instance_name)
     if name.startswith("po_"):
         name = name[3:]
-    name = re.sub(r"_l(?:0(?:\.\d+)?|\d+(?:e-\d+)?)$", "", name)
+    # Strip the canonical λ suffix produced by normalize_portfolio_lambda
+    # (``_l0`` or ``_l<m>e-<nn>``).
+    name = re.sub(r"_l(?:0|\d+e-\d+)$", "", name)
     return name
 
 
