@@ -2,7 +2,6 @@
 instance po_a050_t10_s00
 budget 20
 lambda 1e-05
-objective 484396
 # period symbol long short
 0 AXP 0 1
 0 CSCO 0 1

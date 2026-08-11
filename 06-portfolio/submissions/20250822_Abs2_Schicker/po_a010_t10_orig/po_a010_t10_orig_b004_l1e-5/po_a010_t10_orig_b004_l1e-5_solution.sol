@@ -2,7 +2,6 @@
 instance po_a010_t10_orig
 budget 4
 lambda 1e-05
-objective 103821
 # period symbol long short
 0 GOOGL 1 0
 0 MSFT 0 1

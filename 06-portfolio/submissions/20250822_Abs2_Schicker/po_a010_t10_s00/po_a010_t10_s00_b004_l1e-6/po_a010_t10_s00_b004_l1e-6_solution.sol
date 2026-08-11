@@ -2,7 +2,6 @@
 instance po_a010_t10_s00
 budget 4
 lambda 1e-06
-objective 227446
 # period symbol long short
 0 META 0 1
 0 NVDA 0 1

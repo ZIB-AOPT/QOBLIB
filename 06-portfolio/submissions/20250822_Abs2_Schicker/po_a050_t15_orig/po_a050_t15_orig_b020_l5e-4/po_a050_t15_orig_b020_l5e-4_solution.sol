@@ -2,7 +2,6 @@
 instance po_a050_t15_orig
 budget 20
 lambda 0.0005
-objective 397196
 # period symbol long short
 0 AAPL 1 0
 0 ABBV 0 1

@@ -2,7 +2,6 @@
 instance po_a010_t10_s01
 budget 4
 lambda 5e-05
-objective 103323
 # period symbol long short
 0 AAPL 1 0
 0 AVGO 1 2

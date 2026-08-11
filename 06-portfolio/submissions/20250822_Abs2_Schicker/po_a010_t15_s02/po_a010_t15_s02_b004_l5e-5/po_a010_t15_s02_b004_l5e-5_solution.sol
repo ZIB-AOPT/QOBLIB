@@ -2,7 +2,6 @@
 instance po_a010_t15_s02
 budget 4
 lambda 5e-05
-objective 121102
 # period symbol long short
 0 AAPL 0 1
 0 GOOG 1 0

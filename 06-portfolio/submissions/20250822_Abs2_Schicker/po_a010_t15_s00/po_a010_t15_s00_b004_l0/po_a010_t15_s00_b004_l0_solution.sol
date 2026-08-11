@@ -2,7 +2,6 @@
 instance po_a010_t15_s00
 budget 4
 lambda 0.0
-objective 305223
 # period symbol long short
 0 AMZN 1 0
 1 AAPL 1 0

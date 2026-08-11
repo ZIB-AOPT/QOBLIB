@@ -1,10 +1,10 @@
-# Submission for a010_t10_s01_b004_l0.01
+# Submission for po_a010_t10_s01_b004_l1e-2
 
-This directory contains the submission for the problem **a010_t10_s01_b004_l0.01**.
+This directory contains the submission for the problem **po_a010_t10_s01_b004_l1e-2**.
 
 | Field | Value 1 |
 | --- | --- |
-| Problem | a010_t10_s01_b004_l0.01 |
+| Problem | po_a010_t10_s01_b004_l1e-2 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
 | Date | 22. Dec. 2024 |
@@ -26,7 +26,7 @@ This directory contains the submission for the problem **a010_t10_s01_b004_l0.01
 | Algorithm Type | Deterministic |
 | Paradigm | Classical |
 | # Runs | 1 |
-| # Feasible Runs | 1 |
+| # Feasible Runs | 0 |
 | # Successful Runs | 0 |
 | Success Threshold | N/A |
 | ====== |  |

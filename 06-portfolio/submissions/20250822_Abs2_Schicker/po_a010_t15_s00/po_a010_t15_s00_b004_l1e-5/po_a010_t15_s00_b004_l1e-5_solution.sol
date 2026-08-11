@@ -2,7 +2,6 @@
 instance po_a010_t15_s00
 budget 4
 lambda 1e-05
-objective 260398
 # period symbol long short
 0 MSFT 1 1
 1 AAPL 1 0
