@@ -26,6 +26,7 @@ Higher $\lambda$ values indicate a greater emphasis on risk control within the m
 
 | Instance | Best Known | Status | Source | Date |
 | :------- | ---------: | :----- | :----- | :--- |
+| po_a003_t02_orig | -1595 | best known | [20260805_ISQR_García](../submissions/20260805_ISQR_García) | 2026-08-05 |
 | po_a010_t10_orig_b004_l0 | -110541 | optimal | reference | — |
 | po_a010_t10_orig_b004_l1e-2 | -1000 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
 | po_a010_t10_orig_b004_l1e-3 | -8397 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
