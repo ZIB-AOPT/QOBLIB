@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import gzip
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -144,6 +145,46 @@ def _load_time_series(path: Path) -> list | None:
     return result or None
 
 
+# Footnote-style affiliation marker, e.g. "[1]" / "[2, 3]" prefixing an entry.
+# Its presence signals the numbered convention (each affiliation is
+# "[N] Org, <postal address>") rather than the plain "Org1, Org2" one, so the
+# commas after the org name are its address and must NOT be split on.
+_AFFIL_MARKER_RE = re.compile(r"\[\d+(?:\s*[,;]\s*\d+)*\]")
+
+
+def normalize_affiliation(raw: str) -> str:
+    """Canonicalise the free-text ``Affiliation`` field to a clean list of orgs.
+
+    Two conventions appear in submissions:
+
+    * Plain — a comma-separated list of org names, one per author (the format the
+      submit form documents): ``"Math.Tec, IBM, AQT"``. Passed through unchanged.
+    * Footnote — a numbered list where each entry is ``"[N] Org, <full postal
+      address>"`` (e.g. Global Data Quantum). Here the commas after the org name
+      belong to its address, so a naive split invents bogus "orgs" from the
+      street / city / country fragments (``Bizkaia``, ``Spain``, …) and never
+      strips the ``[N]`` marker.
+
+    When any ``[N]`` marker is present we treat the field as footnote-style: split
+    on the markers, and keep only the org name (the text up to the first comma) of
+    each numbered block, deduplicated in order. Otherwise the field is returned
+    stripped but otherwise untouched, so the plain convention and the downstream
+    comma-splitters (index.js / overview_pages._affiliation_counts) are unaffected.
+    """
+    raw = (raw or "").strip()
+    if not raw or not _AFFIL_MARKER_RE.search(raw):
+        return raw
+    orgs: list[str] = []
+    for block in _AFFIL_MARKER_RE.split(raw):
+        block = block.strip().strip(",;").strip()
+        if not block:
+            continue
+        org = block.split(",", 1)[0].strip()
+        if org and org not in orgs:
+            orgs.append(org)
+    return ", ".join(orgs) if orgs else raw
+
+
 def _needs_portfolio_qubo_negation(problem_id: str | None, approach: str) -> bool:
     """Portfolio (06) QUBO submissions store the *negated* objective.
 
@@ -250,9 +291,11 @@ def read_csv_submissions_folder(
                     for key in COLUMN_MAP:
                         if key not in ("instance", "value"):
                             sub[key] = get_col(row, key)
-                    # Normalise affiliation: each comma-separated token that
-                    # matches /ibm/i is replaced with the canonical "IBM".
-                    raw_aff = sub.get("affiliation") or ""
+                    # Normalise affiliation: first collapse the footnote convention
+                    # ("[1] Org, <address>") down to bare org names (see
+                    # normalize_affiliation), then map each comma-separated token
+                    # that matches /ibm/i to the canonical "IBM".
+                    raw_aff = normalize_affiliation(sub.get("affiliation") or "")
                     if raw_aff:
                         tokens = [t.strip() for t in raw_aff.split(",")]
                         tokens = ["IBM" if t.lower().find("ibm") != -1 else t for t in tokens]
