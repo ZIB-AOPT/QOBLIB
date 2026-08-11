@@ -39,4 +39,4 @@ This directory contains the submission for the problem **po_a005_t04_orig**.
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | |
+| Remarks | Solution file is in the canonical QOBLIB position-line format (`instance`/`budget`/`lambda`/`objective` headers + `period symbol long short` lines), obtained by decoding the raw ISQR bitstring using the variable encoding described in the submission-root README; the bitstring itself is kept as a comment in the `.sol` file. The bitstring selected is the one with the best (lowest) raw QUBO cost among the sampled runs (-373.5225992075559, incl. constraint-penalty term `P=0.5`, not directly comparable to other QOBLIB submissions); that solution is, however, **INFEASIBLE**: total long+short units exceed budget B=4 in every period (12, 13, 10, 10). No canonical objective is reported. |
