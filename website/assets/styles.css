@@ -3849,11 +3849,18 @@ textarea.invalid {
     font-weight: 600;
     font-size: 0.95rem;
     color: var(--text);
+    /* Allow the name to shrink and ellipsize on narrow screens instead of
+       shoving the record counts off the row. */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-/* Counts pushed to the right edge of the summary row. */
+/* Counts pushed to the right edge of the summary row; never compressed. */
 .lb-sec-counts {
     margin-left: auto;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 0.6rem;

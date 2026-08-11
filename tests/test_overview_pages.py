@@ -374,6 +374,25 @@ class TestRenderLeaderboard(unittest.TestCase):
         import re
         self.assertEqual(re.search(r'id="lb-count"[^>]*>([^<]*)<', out).group(1), f"{n} records")
 
+    def test_records_sorted_numeric_aware(self):
+        # The pre-rendered order must be numeric-aware (ms_2 before ms_10), matching
+        # the JS getLeaderboardRows sort, so rows don't reshuffle on hydration.
+        groups = [{
+            "id": "01", "name": "Market Split", "columns": [],
+            "instances": [
+                {"name": nm, "status": "best_known", "best_value": 1.0, "raw_url": "https://ex/r"}
+                for nm in ("ms_10", "ms_2", "ms_1")
+            ],
+        }]
+        subs = {"01": {
+            nm: [{"submitter": "Ada", "value": 1.0, "n_feasible": "1",
+                  "date": "2026-01-02", "category": "classical", "_source_dir": "d"}]
+            for nm in ("ms_10", "ms_2", "ms_1")
+        }}
+        out = O._render_leaderboard(_shell("leaderboard.html"), PROBLEMS, groups, subs)
+        order = re.findall(r"name=(ms_\d+)", out)
+        self.assertEqual(order, ["ms_1", "ms_2", "ms_10"])
+
 
 class TestRenderProblemDetail(unittest.TestCase):
     def setUp(self):

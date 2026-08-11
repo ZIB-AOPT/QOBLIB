@@ -18,7 +18,6 @@ const {
     SUBMISSION_CATEGORIES: qCATS,
     catBadge: qCatBadge,
     downloadCsv: qDownloadCsv,
-    orderRowsByTable: qOrderRowsByTable,
     fmtMaybeNum: qFmtMaybeNum,
     enableTableSorting: qEnableTableSorting,
     populateProblemFilter: qPopulateProblemFilter,
@@ -233,9 +232,13 @@ async function initLeaderboardPage() {
 function setLeaderboardView(view) {
     activeView = view;
 
-    // Update button states
-    document.getElementById("lb-vt-overall")?.classList.toggle("lb-vt-active", view === "overall");
-    document.getElementById("lb-vt-quantum")?.classList.toggle("lb-vt-active", view === "quantum");
+    // Update button states (visual + aria-pressed for assistive tech).
+    const overallBtn = document.getElementById("lb-vt-overall");
+    const quantumBtn = document.getElementById("lb-vt-quantum");
+    overallBtn?.classList.toggle("lb-vt-active", view === "overall");
+    quantumBtn?.classList.toggle("lb-vt-active", view === "quantum");
+    overallBtn?.setAttribute("aria-pressed", String(view === "overall"));
+    quantumBtn?.setAttribute("aria-pressed", String(view === "quantum"));
 
     // In Quantum view the paradigm filter only makes sense for hw vs sim.
     const paradigmSel = document.getElementById("lb-paradigm");
@@ -486,7 +489,10 @@ function getLeaderboardRows() {
         .sort(
             (a, b) =>
                 String(a.problem_id).localeCompare(String(b.problem_id)) ||
-                String(a.instance).localeCompare(String(b.instance)),
+                // Numeric-aware so "ms_10" sorts after "ms_2" — matches the server
+                // pre-render (_instance_sort_key in overview_pages.py), otherwise the
+                // rows visibly reshuffle when the JS hydrates over the static HTML.
+                String(a.instance).localeCompare(String(b.instance), undefined, { numeric: true, sensitivity: "base" }),
         );
 }
 
@@ -496,13 +502,11 @@ function downloadLeaderboardCsv() {
         "Problem ID", "Instance", "Best objective", "Reaches best", "Status",
         "Holder", "Type", "Date", "Runtime (s)", "Submissions",
     ];
-    // Reflect the user's clicked-column sort (the table re-orders in place; our
-    // data list is in the page default order), so the CSV matches what's on screen.
-    const table = document.querySelector("#lb-content table");
-    const ordered = table
-        ? qOrderRowsByTable(table, rows, rows.map((r) => `${r.problem_id}::${r.instance}`))
-        : rows;
-    const data = ordered.map((r) => [
+    // Export in the default per-problem grouped order (grouped by problem, then
+    // numeric-aware by instance). Each problem's table now sorts independently, so
+    // there is no single on-screen order to mirror; the grouped order is stable and
+    // matches how the page reads top to bottom.
+    const data = rows.map((r) => [
         String(r.problem_id).padStart(2, "0"),
         r.instance,
         r.noValue ? "feasible" : r.value,
