@@ -632,6 +632,16 @@ def _build_auto_checker_cmd(
         terms = instances_dir / instance / "terms.dat"
         return [str(binary), "--arcs", str(arcs), "--terms", str(terms), "--sol", str(solution)]
 
+    if prob.startswith("06-"):
+        binary = _ensure_checker_built(check_dir, "check_portfolio")
+        if not binary:
+            return None
+        # The portfolio checker resolves the concrete instance directory from
+        # the solution file's `instance` header (submission dir names carry the
+        # budget/lambda variant, not the instance name), so it is handed the
+        # instances root. Budget and lambda are read from the solution header.
+        return [str(binary), str(instances_dir), str(solution)]
+
     if prob.startswith("07-"):
         binary = _ensure_checker_built(check_dir, "check_stableset")
         if not binary:

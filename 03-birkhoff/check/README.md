@@ -26,12 +26,23 @@ Given instance and solution files, this checker:
 
 1. **Parses** JSON-formatted instance and solution files.
 2. **Validates** each permutation matrix (ensures valid permutation of {1, ..., n}).
-3. **Verifies** that weights are non-negative and sum to the scale factor.
+3. **Verifies** that weights are non-negative and sum to the scale factor (always exact).
 4. **Reconstructs** the doubly stochastic matrix from the weighted permutation matrices.
-5. **Compares** the reconstruction against the original matrix.
-6. **Reports** the number of permutation matrices used (k value).
+5. **Measures** the reconstruction error as the normalised squared Frobenius norm.
+6. **Accepts** the solution if the error is within the specified tolerance (default: 0, i.e. exact match).
+7. **Reports** the number of permutation matrices used (k value) and the error metric.
 
 This program does **not** check for optimality.
+
+### Error metric
+
+The reconstruction quality is measured by the **normalised squared Frobenius norm**:
+
+$$\varepsilon = \frac{1}{n^2 \cdot \text{scale}^2} \sum_{i,j} \bigl(D_{ij} - \hat{D}_{ij}\bigr)^2$$
+
+where $D$ is the target (scaled) matrix and $\hat{D}$ is the reconstruction.
+This value is dimensionless and lies in $[0, 1]$ for any valid inputs.
+An exact decomposition gives $\varepsilon = 0$.
 
 ## Input Format
 
@@ -127,20 +138,27 @@ cargo build --release
 ### Command
 
 ```bash
-./target/release/check_birkhoff <instance-file> <solution-file>
+./target/release/check_birkhoff [--tolerance <t>] <instance-file> <solution-file>
 ```
 
 ### Arguments
 
+* `--tolerance <t>`: Optional. Maximum allowed normalised squared Frobenius error (default: `0`, meaning an exact reconstruction is required). Use a small positive value such as `1e-6` to accept approximate solutions.
 * `instance-file`: Path to the JSON file containing instance data
 * `solution-file`: Path to the JSON file containing solution data
 
 ### Examples
 
-Check a single instance set:
+Check a single instance set (exact match):
 
 ```bash
 ./target/release/check_birkhoff ../instances/qbench_03_dense.json ../solutions/qbench_03_dense.json
+```
+
+Check with a tolerance for approximate solutions:
+
+```bash
+./target/release/check_birkhoff --tolerance 1e-6 ../instances/qbench_03_dense.json solution.json
 ```
 
 Check all solutions:
@@ -171,21 +189,23 @@ For each solution, the checker reports:
 ### Validation Checks
 
 1. **Permutation validity**: Each permutation must contain each number from 1 to n exactly once
-2. **Weight sum**: All weights must be non-negative and sum to the scale factor
-3. **Matrix reconstruction**: The weighted sum of permutation matrices must equal the doubly stochastic matrix
+2. **Weight sum**: All weights must sum exactly to the scale factor (always enforced, regardless of `--tolerance`)
+3. **Matrix reconstruction**: The normalised squared Frobenius error between the reconstruction and the target must not exceed the tolerance (0 by default → exact match required)
 
 ## Exit Codes
 
-- **0**: All solutions are valid
-- **1**: One or more solutions are invalid
-- **2**: Error (e.g., file not found, parsing error)
+- **0** (`VALID`): All solutions pass verification
+- **21** (`INFEASIBLE`): One or more solutions fail verification (weight sum wrong, invalid permutation, or error exceeds tolerance)
+- **10** (`INVALID_FILE`): Solution file cannot be parsed
+- **2** (`USAGE`): Bad arguments or unreadable instance file
 
 ## Notes
 
-- The checker uses integer arithmetic with a scale factor (typically 1000) to avoid floating-point precision issues
+- The checker uses integer arithmetic with a scale factor (typically 1000) for reconstruction; the Frobenius error is computed in floating-point from those integers
 - Instance files may contain multiple instances; the checker matches solutions by ID
 - Missing solutions for some instances is acceptable; the checker only validates provided solutions
 - The `optimal` field in solutions is informational only and not verified by the checker
+- The weight-sum check is always enforced exactly; only the matrix-reconstruction comparison is softened by `--tolerance`
 
 ## License
 
@@ -194,4 +214,4 @@ Part of **QOBLIB**, released under [**Apache 2.0**](http://www.apache.org/licens
 ## Author
 
 **Maximilian Schicker**
-© 2025
+© 2026

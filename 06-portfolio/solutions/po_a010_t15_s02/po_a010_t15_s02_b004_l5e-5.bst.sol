@@ -1,0 +1,42 @@
+# converted from a010_t15_s02_b004_l5e-05.sol (bqp-lp)
+instance po_a010_t15_s02
+budget 4
+lambda 5e-05
+objective -121102
+# period symbol long short
+0 AVGO 1 0
+0 GOOG 0 1
+0 NVDA 1 0
+0 WMT 1 0
+1 AVGO 0 2
+1 NVDA 2 0
+2 NVDA 0 1
+2 TSLA 3 0
+3 AAPL 1 0
+3 GOOG 2 0
+3 NVDA 1 0
+4 GOOG 3 0
+4 TSLA 0 1
+5 AVGO 0 1
+5 NVDA 1 0
+5 TSLA 0 2
+6 AAPL 0 3
+6 AVGO 1 0
+7 AAPL 0 3
+7 TSLA 1 0
+8 AMZN 0 1
+8 AVGO 0 2
+8 NVDA 1 0
+9 AVGO 0 3
+9 NVDA 1 0
+10 AVGO 0 1
+10 MSFT 0 1
+10 NVDA 1 0
+10 TSLA 0 1
+11 AVGO 0 3
+11 NVDA 1 0
+12 AVGO 1 0
+12 GOOGL 0 2
+12 META 0 1
+13 TSLA 3 0
+13 WMT 1 0
