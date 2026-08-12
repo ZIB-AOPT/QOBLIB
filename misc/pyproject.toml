@@ -21,17 +21,17 @@ dependencies = []
 [project.optional-dependencies]
 # Heavy optimisation stack for the QUBO conversion / simplification tools.
 qubo = [
-    "qiskit",
-    "qiskit-optimization",
-    "gurobipy",
-    "docplex",
-    "networkx",
-    "numpy",
+    "qiskit>=1.0",
+    "qiskit-optimization>=0.6",
+    "gurobipy>=11.0",
+    "docplex>=2.25",
+    "networkx>=3.0",
+    "numpy>=1.26",
 ]
 # Model-metric extraction (get_metrics.py).
-metrics = ["pyscipopt"]
+metrics = ["pyscipopt>=5.0"]
 # Markdown table helpers (mdutils.py).
-tables = ["pandas"]
+tables = ["pandas>=2.0"]
 
 [project.scripts]
 qoblib-build-site = "build_site:main"

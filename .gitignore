@@ -7,7 +7,15 @@ _site/
 
 # Ignore Rust target directory
 target/
+<<<<<<< HEAD
 .DS_Store
+=======
+
+# Environment / secret files — never commit these
+.env
+.env.*
+*.local
+>>>>>>> origin/main
 /.idea/misc.xml
 /.idea/inspectionProfiles/profiles_settings.xml
 /.idea/inspectionProfiles/Project_Default.xml

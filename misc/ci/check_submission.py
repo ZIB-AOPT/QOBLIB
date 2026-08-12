@@ -80,6 +80,15 @@ import fnmatch
 import gzip
 import os
 
+# Import problem metadata for minimize/maximize direction lookup.
+# config.py lives in the same package; add its parent to the path when running
+# the checker standalone (outside the installed package).
+try:
+    from site_builder import config as _site_config
+    _PROBLEM_META = _site_config.PROBLEM_META
+except ImportError:
+    _PROBLEM_META = {}
+
 REQUIRED_COLUMNS: List[str] = [
     "Problem","Submitter","Affiliation","Date","Reference","Best Objective Value","Optimality Bound","Modeling Approach",
     "# Decision Variables","# Binary Variables","# Integer Variables","# Continuous Variables",
@@ -209,6 +218,9 @@ def validate_csv(instance: str, csv_path: Path, strict_problem_match: bool, repo
 
     report.csv_rows = len(rows)
 
+    VALID_ALGORITHM_TYPES = {"Deterministic", "Stochastic"}
+    VALID_PARADIGMS = {"Classical", "Quantum Simulator", "Quantum Hardware"}
+
     for i, row in enumerate(rows, start=1):
         if strict_problem_match:
             prob = row.get("Problem","").strip()
@@ -218,6 +230,27 @@ def validate_csv(instance: str, csv_path: Path, strict_problem_match: bool, repo
         # ---- FIX: allow "N/A" (case insensitive) ----
         def is_na(v: str) -> bool:
             return v.strip().upper() in {"N/A", "NA"}
+
+        date_val = (row.get("Date") or "").strip()
+        if date_val and not is_na(date_val):
+            if not re.match(r"^\d{4}-\d{2}-\d{2}$", date_val):
+                report.fail(
+                    f"Row {i}: 'Date' must be in YYYY-MM-DD format, found '{date_val}'."
+                )
+
+        algo_type = (row.get("Algorithm Type") or "").strip()
+        if algo_type and not is_na(algo_type) and algo_type not in VALID_ALGORITHM_TYPES:
+            report.fail(
+                f"Row {i}: 'Algorithm Type' must be one of {sorted(VALID_ALGORITHM_TYPES)}, "
+                f"found '{algo_type}'."
+            )
+
+        paradigm = (row.get("Paradigm") or "").strip()
+        if paradigm and not is_na(paradigm) and paradigm not in VALID_PARADIGMS:
+            report.fail(
+                f"Row {i}: 'Paradigm' must be one of {sorted(VALID_PARADIGMS)}, "
+                f"found '{paradigm}'."
+            )
 
         for col in INT_COLUMNS:
             val = (row.get(col) or "").strip()
@@ -298,7 +331,9 @@ def collect_solutions(instance: str, inst_dir: Path, report: InstanceReport) -> 
     return multis
 
 
-def validate_objective_time_series(instance: str, inst_dir: Path, report: InstanceReport) -> None:
+def validate_objective_time_series(
+    instance: str, inst_dir: Path, report: InstanceReport, *, minimize: bool
+) -> None:
     # Accept either plain JSON or gzipped JSON
     ts_name_json = f"{instance}{OBJECTIVE_TS_BASENAME}"              # e.g. foo_objective_time_series.json
     ts_name_gz   = f"{instance}{OBJECTIVE_TS_BASENAME}.gz"           # e.g. foo_objective_time_series.json.gz
@@ -325,16 +360,42 @@ def validate_objective_time_series(instance: str, inst_dir: Path, report: Instan
             report.fail(f"{ts_path.name}: must be a list of runs.")
             return
 
+        direction = "non-increasing" if minimize else "non-decreasing"
         for r_i, run in enumerate(data, start=1):
             if not isinstance(run, list):
                 report.fail(f"{ts_path.name}: run {r_i} must be a list.")
                 continue
+            prev_incumbent: Optional[float] = None
             for e_i, entry in enumerate(run, start=1):
                 if not isinstance(entry, dict):
                     report.fail(f"{ts_path.name}: run {r_i} entry {e_i} must be an object.")
                     continue
                 if "Time" not in entry or "Incumbent" not in entry:
                     report.fail(f"{ts_path.name}: run {r_i} entry {e_i} must contain 'Time' and 'Incumbent' keys.")
+                    continue
+                try:
+                    incumbent = float(entry["Incumbent"])
+                except (TypeError, ValueError):
+                    report.fail(
+                        f"{ts_path.name}: run {r_i} entry {e_i} 'Incumbent' must be numeric, "
+                        f"found {entry['Incumbent']!r}."
+                    )
+                    prev_incumbent = None
+                    continue
+                if prev_incumbent is not None:
+                    if minimize and incumbent > prev_incumbent:
+                        report.fail(
+                            f"{ts_path.name}: run {r_i} entry {e_i} breaks {direction} monotonicity "
+                            f"({prev_incumbent} → {incumbent}). Incumbent must only improve "
+                            f"(decrease) for a minimization problem."
+                        )
+                    elif not minimize and incumbent < prev_incumbent:
+                        report.fail(
+                            f"{ts_path.name}: run {r_i} entry {e_i} breaks {direction} monotonicity "
+                            f"({prev_incumbent} → {incumbent}). Incumbent must only improve "
+                            f"(increase) for a maximization problem."
+                        )
+                prev_incumbent = incumbent
 
     except (json.JSONDecodeError, OSError) as e:
         report.fail(f"{ts_path.name}: invalid JSON: {e}")
@@ -595,6 +656,16 @@ def _build_auto_checker_cmd(
         terms = instances_dir / instance / "terms.dat"
         return [str(binary), "--arcs", str(arcs), "--terms", str(terms), "--sol", str(solution)]
 
+    if prob.startswith("06-"):
+        binary = _ensure_checker_built(check_dir, "check_portfolio")
+        if not binary:
+            return None
+        # The portfolio checker resolves the concrete instance directory from
+        # the solution file's `instance` header (submission dir names carry the
+        # budget/lambda variant, not the instance name), so it is handed the
+        # instances root. Budget and lambda are read from the solution header.
+        return [str(binary), str(instances_dir), str(solution)]
+
     if prob.startswith("07-"):
         binary = _ensure_checker_built(check_dir, "check_stableset")
         if not binary:
@@ -787,6 +858,21 @@ def print_report(reports: List[InstanceReport], quiet: bool=False) -> None:
         print("Overall: OK")
 
 
+def _problem_minimizes(submission_root: Path) -> bool:
+    """Return the minimize direction for the problem owning this submission.
+
+    Looks up config.PROBLEM_META using the 2-digit problem ID extracted from the
+    submission path (e.g. ``01-marketsplit/submissions/…`` → ``"01"``). Defaults
+    to True (minimize) when the problem ID is unrecognised or metadata is unavailable.
+    """
+    try:
+        problem_dir = submission_root.resolve().parent.parent
+        problem_id = problem_dir.name[:2]
+        return _PROBLEM_META.get(problem_id, {}).get("minimize", True)
+    except Exception:
+        return True
+
+
 def validate_instance(
     submission_root: Path,
     inst_dir: Path,
@@ -803,8 +889,9 @@ def validate_instance(
     solutions = collect_solutions(instance, inst_dir, report)
     report.solutions = solutions
 
-    # 3) objective time series (optional)
-    validate_objective_time_series(instance, inst_dir, report)
+    # 3) objective time series (optional) — enforce monotonicity direction
+    minimize = _problem_minimizes(submission_root)
+    validate_objective_time_series(instance, inst_dir, report, minimize=minimize)
 
     # 4) README.md (optional or generate)
     readme_path = inst_dir / "README.md"

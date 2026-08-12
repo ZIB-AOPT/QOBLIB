@@ -24,10 +24,10 @@ import gzip
 import json
 import lzma
 import re
-import tarfile
 from pathlib import Path
 
 from . import config
+from .text import normalize_portfolio_lambda
 
 
 STATUS_PRIORITY = {
@@ -323,6 +323,134 @@ def read_solutions_folder(solutions_dir: Path, problem_id: str | None = None) ->
     return result
 
 
+# ---------------------------------------------------------------------------
+# Birkhoff (03) exactness gate.
+#
+# The 03 objective is the *minimum number of permutation matrices whose convex
+# combination equals the target doubly-stochastic matrix exactly*. An approximate
+# decomposition trivially wins on that count — you can always use fewer matrices
+# if you tolerate reconstruction error — so an approximate result is not comparable
+# to an exact one and must not be credited a best-known value, awarded attribution
+# on the leaderboard, or counted as "reached the optimum".
+#
+# A submission's self-reported ``# Feasible Runs``/objective cannot be trusted for
+# this: an approximate run legitimately reports a feasible, low objective. So we
+# reconstruct the target from the shipped solution file and require *entrywise*
+# agreement to within floating-point slack (``|target − reconstructed| ≤
+# BIRKHOFF_ENTRY_REL_TOL · scale``). This admits legitimate floating-point
+# decompositions (entries landing at e.g. 1940.0000000000002, residual ~1e-34)
+# while rejecting genuine approximations (residual ~1e-6). It is deliberately
+# stricter than the per-problem Rust checker's *approximate* mode
+# (``--tolerance > 0``, aggregate normalised Frobenius²), which exists to accept
+# approximations and is therefore the wrong criterion for attribution.
+BIRKHOFF_CONVEXITY_REL_TOL = 1e-6
+BIRKHOFF_ENTRY_REL_TOL = 1e-9
+
+# Cache parsed instance bundles: every 03 submission of a given (n, density) reads
+# the same qbench_*.json, so parse each at most once per build.
+_birkhoff_instance_cache: dict[Path, dict] = {}
+
+
+def birkhoff_instance_file(problem_dir: Path, inst: str) -> Path | None:
+    """Resolve the qbench instance file backing a Birkhoff instance name.
+
+    Mirrors check_submission._build_auto_checker_cmd: ``B{n}_{k}_{idx}`` maps to
+    ``qbench_{n:02d}_dense.json`` when ``k == n²`` and ``…_sparse.json`` otherwise.
+    """
+    m = re.match(r"B(\d+)_(\d+)_\d+", inst, re.IGNORECASE)
+    if not m:
+        return None
+    n, k = int(m.group(1)), int(m.group(2))
+    density = "dense" if k == n * n else "sparse"
+    f = problem_dir / "instances" / f"qbench_{n:02d}_{density}.json"
+    return f if f.exists() else None
+
+
+def find_birkhoff_submission_solution(problem_dir: Path, source_dir: str, instance: str) -> Path | None:
+    """Locate the solution file a submission provides for ``instance``.
+
+    Prefers a single ``<instance>_solution.<ext>``; otherwise the lowest-numbered
+    ``solutions/<instance>_solution_<N>.<ext>``. Shared with update_bkv so the BKV
+    generator and the site builder agree on which file to verify.
+    """
+    base = problem_dir / "submissions" / source_dir
+    if not base.is_dir():
+        return None
+    singles = [
+        p for p in sorted(base.rglob(f"{instance}_solution.*"))
+        if p.is_file() and "/solutions/" not in p.as_posix()
+    ]
+    if singles:
+        return singles[0]
+    numbered = sorted(p for p in base.rglob(f"{instance}_solution_*") if p.is_file())
+    return numbered[0] if numbered else None
+
+
+def birkhoff_solution_is_exact(problem_dir: Path, inst: str, sol_path: Path) -> bool:
+    """True iff the shipped Birkhoff solution reconstructs the target exactly.
+
+    "Exact" means entrywise agreement up to floating-point slack (see the section
+    note above). Returns False on any structural problem (missing/mismatched
+    instance, non-permutation, non-convex weights, dimension mismatch) — an
+    unverifiable solution is not eligible to define a best-known value.
+    """
+    inst_file = birkhoff_instance_file(problem_dir, inst)
+    if inst_file is None:
+        return False
+    inst_data = _birkhoff_instance_cache.get(inst_file)
+    if inst_data is None:
+        try:
+            inst_data = json.loads(inst_file.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return False
+        _birkhoff_instance_cache[inst_file] = inst_data
+    try:
+        sol_data = json.loads(sol_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+
+    entry = next(
+        (v for v in inst_data.values() if isinstance(v, dict) and v.get("id") == inst),
+        None,
+    )
+    if entry is None:
+        return False
+    sol = next(
+        (v for v in sol_data.values() if isinstance(v, dict) and v.get("id") == inst),
+        None,
+    )
+    if sol is None and len(sol_data) == 1:
+        only = next(iter(sol_data.values()))
+        sol = only if isinstance(only, dict) else None
+    if sol is None:
+        return False
+
+    try:
+        n = int(entry["n"])
+        scale = float(entry["scale"])
+        target = list(entry["scaled_doubly_stochastic_matrix"])
+        weights = [float(w) for w in sol["weights"]]
+        perms = list(sol["permutations"])
+    except (KeyError, TypeError, ValueError):
+        return False
+
+    if len(target) != n * n or len(perms) != len(weights) * n:
+        return False
+    if abs(sum(weights) - scale) > BIRKHOFF_CONVEXITY_REL_TOL * scale:
+        return False
+
+    reconstructed = [0.0] * (n * n)
+    for i, w in enumerate(weights):
+        perm = perms[i * n:(i + 1) * n]
+        if sorted(perm) != list(range(1, n + 1)):  # not a permutation of 1..n
+            return False
+        for row in range(n):
+            reconstructed[row * n + (perm[row] - 1)] += w
+
+    tol = BIRKHOFF_ENTRY_REL_TOL * scale
+    return all(abs(target[i] - reconstructed[i]) <= tol for i in range(n * n))
+
+
 def load_birkhoff_solution_map(problem_dir: Path) -> dict[str, dict]:
     result: dict[str, dict] = {}
     solutions_dir = problem_dir / 'solutions'
@@ -353,48 +481,24 @@ def load_birkhoff_solution_map(problem_dir: Path) -> dict[str, dict]:
 def load_portfolio_solution_map(problem_dir: Path) -> dict[str, dict]:
     """Reference map for 06-portfolio.
 
-    Reference solutions are shipped as per-base-instance ``.tar.gz`` bundles in two
-    families (``bqp`` and ``uqo``), each holding one ``.sol`` per λ sub-instance
-    (e.g. ``a010_t10_s00_b004_l0.0001``). The best-known baseline for a sub-instance
-    is the better (this is a minimisation) objective across the two families.
+    Reference solutions live under ``solutions/<instance-dir>/*.{opt,bst}.sol``,
+    one file per (instance, budget, lambda) key. The instance directory name is
+    the base instance (e.g. ``po_a010_t10_orig``); the full sub-instance key is
+    the solution filename stem (e.g. ``po_a010_t10_orig_b004_l1e-4``).
+
+    Keys are canonicalised (``po_`` prefix dropped, λ suffix normalised via
+    :func:`normalize_portfolio_lambda`) so they match the instance-source and
+    model keys the rest of the builder joins on — the regenerated solution files
+    use a compact λ tag (``_l1e-4``) while the instance grid feeds decimals
+    (``_l0.0001``); without normalisation the reference values never attach.
     """
     result: dict[str, dict] = {}
     solutions_dir = problem_dir / "solutions"
-    for family in ("bqp", "uqo"):
-        family_dir = solutions_dir / family
-        if not family_dir.is_dir():
-            continue
-        for tar_path in sorted(family_dir.glob("*.tar.gz")):
-            try:
-                with tarfile.open(tar_path, "r:gz") as tf:
-                    for member in tf.getmembers():
-                        if not member.isfile() or not member.name.endswith(".sol"):
-                            continue
-                        inst = Path(member.name).name[: -len(".sol")]
-                        extracted = tf.extractfile(member)
-                        if extracted is None:
-                            continue
-                        value = _labelled_value(extracted.read().decode("utf-8", "replace"))
-                        if value is None:
-                            continue
-                        current = result.get(inst)
-                        if current is None or value < current["value"]:
-                            result[inst] = {
-                                "value": value,
-                                "status": "best_known",
-                                "source_file": config.rel_to_root(tar_path),
-                            }
-            except (tarfile.TarError, OSError):
-                continue
-
-    # Loose per-instance solution files at solutions/ root are winning submissions
-    # copied in by update_bkv (e.g. the `po_*` instances that have no tar baseline).
-    # Reading them back keeps the baseline in sync so re-runs are idempotent; a loose
-    # file wins when it is strictly better (portfolio minimises) or higher status.
-    for sol_file in sorted(solutions_dir.glob("*")):
-        if not sol_file.is_file() or _solution_ext(sol_file) not in READABLE_SOLUTION_EXTS:
+    for sol_file in sorted(solutions_dir.rglob("*.sol")):
+        if not sol_file.is_file():
             continue
         inst, status = normalise_solution_stem(sol_file)
+        inst = normalize_portfolio_lambda(inst.removeprefix("po_"))
         value = read_objective(sol_file, "06")
         if value is None:
             continue

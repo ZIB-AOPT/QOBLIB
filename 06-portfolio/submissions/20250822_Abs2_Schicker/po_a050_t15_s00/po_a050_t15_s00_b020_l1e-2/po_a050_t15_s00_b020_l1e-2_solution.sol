@@ -1,0 +1,45 @@
+# converted from a050_t15_s00_b020_l0.01_solution.sol (uqo-index)
+instance po_a050_t15_s00
+budget 20
+lambda 0.01
+# period symbol long short
+0 AMZN 0 1
+0 HD 0 1
+0 PM 1 0
+1 AAPL 1 0
+1 V 1 0
+2 ADBE 0 1
+2 HD 0 1
+2 META 0 1
+3 AAPL 1 0
+3 ABBV 1 0
+3 XOM 1 0
+4 ABBV 0 1
+4 META 0 1
+4 NFLX 0 1
+5 NVDA 1 0
+5 XOM 1 0
+6 AVGO 0 1
+6 NFLX 0 1
+6 UNH 1 0
+7 NVDA 1 0
+7 UNH 1 0
+8 AVGO 0 1
+8 BAC 0 1
+9 GOOG 1 0
+9 UNH 1 0
+10 BAC 0 1
+10 JPM 0 1
+10 UNH 1 0
+11 ADBE 1 0
+11 COST 1 0
+11 GOOG 1 0
+12 ABBV 0 1
+12 BAC 0 1
+12 JPM 0 1
+13 ADBE 0 1
+13 AMZN 1 0
+13 BAC 0 1
+13 COST 1 0
+14 ABBV 0 1
+14 LLY 0 1

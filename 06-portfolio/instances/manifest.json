@@ -1,0 +1,26 @@
+{
+  "description": "Parametrization of the portfolio (06) benchmark. Each physical data directory (instances/po_<base>/) holds only the lambda-free data (covariance + stock prices); the risk-aversion lambda is an objective coefficient applied at model-generation time. The full logical instance set is the cross product bases x lambda_grid, with the budget for each base derived from its asset count via budget_by_assets. This file is the single source of truth for the site builder (misc/ci/site_builder). See models/*/gen_archive.sh for the authoritative generation.",
+  "lambda_grid": ["0", "0.000001", "0.00001", "0.00005", "0.0001", "0.0005", "0.001", "0.01"],
+  "budget_by_assets": {
+    "3": 3,
+    "4": 4,
+    "5": 4,
+    "10": 4,
+    "50": 20,
+    "200": 50,
+    "400": 100
+  },
+  "bases": [
+    "a003_t02_orig", "a003_t02_s00", "a003_t02_s01", "a003_t02_s02",
+    "a004_t04_orig", "a004_t04_s00", "a004_t04_s01", "a004_t04_s02",
+    "a005_t04_orig", "a005_t04_s00", "a005_t04_s01", "a005_t04_s02",
+    "a010_t10_orig", "a010_t10_s00", "a010_t10_s01", "a010_t10_s02",
+    "a010_t15_orig", "a010_t15_s00", "a010_t15_s01", "a010_t15_s02",
+    "a050_t10_orig", "a050_t10_s00", "a050_t10_s01", "a050_t10_s02",
+    "a050_t15_orig", "a050_t15_s00", "a050_t15_s01", "a050_t15_s02",
+    "a200_t10_orig", "a200_t10_s00", "a200_t10_s01", "a200_t10_s02",
+    "a200_t15_orig", "a200_t15_s00", "a200_t15_s01", "a200_t15_s02",
+    "a400_t10_orig", "a400_t10_s00", "a400_t10_s01", "a400_t10_s02",
+    "a400_t15_orig", "a400_t15_s00", "a400_t15_s01", "a400_t15_s02"
+  ]
+}

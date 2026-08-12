@@ -20,6 +20,32 @@ function fmtMaybeNum(v) {
     return Number.isFinite(num) ? qFmtNum(num) : qEsc(String(v));
 }
 
+// Parse a runtime cell to a finite number, or null (blank / "N/A" / non-numeric).
+function runtimeNum(v) {
+    if (v == null || v === "") return null;
+    const n = Number(String(v).replace(/,/g, "").trim());
+    return Number.isFinite(n) ? n : null;
+}
+
+// A runtime field is "present" for a submission if any row reports a value that
+// is strictly non-zero — a reported 0 s (or blank / N/A) carries no information,
+// so those breakdown columns are dropped rather than shown as a column of zeros.
+function hasNonZeroRuntime(rows, key) {
+    return rows.some((r) => {
+        const n = runtimeNum(r[key]);
+        return n != null && n !== 0;
+    });
+}
+
+// The optional per-hardware runtime breakdown columns, in display order. Total
+// Runtime and Time to Solution are always shown; these appear only when used.
+const RUNTIME_BREAKDOWN = [
+    { key: "runtime_cpu", label: "CPU (s)" },
+    { key: "runtime_gpu", label: "GPU (s)" },
+    { key: "runtime_qpu", label: "QPU (s)" },
+    { key: "runtime_other", label: "Other HW (s)" },
+];
+
 function fileDisplayName(path) {
     if (!path) return "submission file";
     const parts = String(path).split("/").filter(Boolean);
@@ -127,7 +153,7 @@ async function initSubmissionPage() {
             <div class="dh">
                 <div>
                     <div class="d-num">${String(problem.id).padStart(2, "0")} / submission package</div>
-                    <div class="d-title">${qEsc(submissionId)}</div>
+                    <h1 class="d-title">${qEsc(submissionId)}</h1>
                     <div class="d-sub">${qEsc(problem.name)}</div>
                     <div class="hero-actions submission-links" style="margin-top:0.6rem">
                         <a class="btn btn-ghost" href="${qProblemUrl(problem.id)}">Problem Overview</a>
@@ -151,7 +177,15 @@ async function initSubmissionPage() {
             ${renderDetailGrid(entries)}
 
             <div class="ss-title">Submitted Instances (${instances.length})</div>
-            ${instances.length ? `<div class="tw"><table>
+            ${instances.length ? (() => {
+                // Pair each instance with its CSV row once, then keep only the
+                // per-hardware runtime columns that carry a non-zero value in this
+                // submission. Total Runtime and Time to Solution are always shown;
+                // CPU/GPU/QPU/Other appear only when actually used, so a submission
+                // never shows columns of zeros for hardware it did not touch.
+                const csvRows = instances.map((row) => instanceSubmissionMap.get(row.instance) || {});
+                const activeCols = RUNTIME_BREAKDOWN.filter((c) => hasNonZeroRuntime(csvRows, c.key));
+                return `<div class="tw"><table>
                 <thead>
                     <tr>
                         <th data-sort-default="asc">Instance</th>
@@ -159,8 +193,7 @@ async function initSubmissionPage() {
                         <th style="text-align:right">Optimality Bound</th>
                         <th style="text-align:right">Runtime (s)</th>
                         <th style="text-align:right">Time to Sol. (s)</th>
-                        <th style="text-align:right">CPU (s)</th>
-                        <th style="text-align:right">GPU (s)</th>
+                        ${activeCols.map((c) => `<th style="text-align:right">${qEsc(c.label)}</th>`).join("")}
                         <th>Hardware</th>
                         <th style="text-align:right">Vars</th>
                     </tr>
@@ -168,8 +201,8 @@ async function initSubmissionPage() {
                 <tbody>
                     ${instances
                         .map(
-                            (row) => {
-                                const csvRow = instanceSubmissionMap.get(row.instance) || {};
+                            (row, i) => {
+                                const csvRow = csvRows[i];
                                 return `
                                 <tr>
                                     <td class="mono"><a class="rlink mono" href="${qInstanceUrl(problem.id, row.instance)}">${qEsc(row.instance)}</a></td>
@@ -177,8 +210,7 @@ async function initSubmissionPage() {
                                     <td class="num">${fmtMaybeNum(row.optimality_bound)}</td>
                                     <td class="num">${fmtMaybeNum(csvRow.runtime_total)}</td>
                                     <td class="num">${fmtMaybeNum(csvRow.time_to_solution)}</td>
-                                    <td class="num">${fmtMaybeNum(csvRow.runtime_cpu)}</td>
-                                    <td class="num">${fmtMaybeNum(csvRow.runtime_gpu)}</td>
+                                    ${activeCols.map((c) => `<td class="num">${fmtMaybeNum(csvRow[c.key])}</td>`).join("")}
                                     <td class="mono">${qEsc(csvRow.hardware || "")}</td>
                                     <td class="num">${fmtMaybeNum(csvRow.n_vars)}</td>
                                 </tr>`;
@@ -186,7 +218,8 @@ async function initSubmissionPage() {
                         )
                         .join("")}
                 </tbody>
-            </table></div>` : '<div class="empty-state">No instances were found for this submission.</div>'}
+            </table></div>`;
+            })() : '<div class="empty-state">No instances were found for this submission.</div>'}
         `;
     } catch (error) {
         qShowError(container, error.message);

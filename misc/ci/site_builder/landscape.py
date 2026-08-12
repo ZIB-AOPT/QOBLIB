@@ -83,6 +83,10 @@ TIER_TOOLTIPS = {
 MAIN_DIMS = (720, 380)
 INSET_DIMS = (340, 220)
 
+# Monotonic counter for unique <title> ids on labelled scatters (the MIP and QUBO
+# main plots share a class + dimensions, so a derived id would collide).
+_SVG_TITLE_SEQ = [0]
+
 
 # --------------------------------------------------------------------------- #
 # Small helpers
@@ -118,20 +122,64 @@ def _tier_title(label) -> str:
     return f' title="{_esc(tip)}"' if tip else ""
 
 
-def _fmt_tick(power: int) -> str:
-    """Axis tick label for 10**power — plain number in the readable range, else 1e±N."""
-    if -2 <= power <= 4:
-        v = 10 ** power
-        return f"{int(round(v)):,}" if power >= 0 else f"{v:g}"
-    return f"1e{power}"
+def _fmt_tick_value(v: float) -> str:
+    """Axis tick label for a value — plain number in the readable range, else 1e±N.
+    Mirrors ``formatLogTick`` in assets/instances.js."""
+    p = round(math.log10(v)) if v > 0 else 0
+    if -2 <= p <= 4:
+        if v >= 1:
+            return f"{int(round(v)):,}"
+        return f"{v:g}"
+    return f"1e{p}"
 
 
-def _log_ticks(p_lo: int, p_hi: int, max_ticks: int) -> list[int]:
-    ticks = list(range(p_lo, p_hi + 1))
-    if len(ticks) <= max_ticks:
-        return ticks
-    step = math.ceil(len(ticks) / max_ticks)
-    return [t for i, t in enumerate(ticks) if i % step == 0 or i == len(ticks) - 1]
+def _nice_log_bound(value: float, direction: int) -> float:
+    """Snap a positive value to the nearest 1-2-5×10ⁿ number (see charts.py /
+    assets/common.js). direction<0 rounds down, direction>0 rounds up."""
+    if not (value > 0) or not math.isfinite(value):
+        return 1.0
+    e = math.floor(math.log10(value))
+    base = 10.0 ** e
+    m = value / base
+    steps = [1, 2, 5, 10]
+    if direction < 0:
+        chosen = 1
+        for s in steps:
+            if s <= m + 1e-9:
+                chosen = s
+        return chosen * base
+    for s in steps:
+        if s >= m - 1e-9:
+            return s * base
+    return 10 * base
+
+
+def _nice_log_axis(min_val: float, max_val: float, *, max_major: int):
+    """Tight log axis snapped to nice 1-2-5 bounds (a max of 16 → 20, not 100).
+    Returns ``(lo, hi, major, minor)`` as real values."""
+    lo = _nice_log_bound(min(min_val, max_val), -1)
+    hi = _nice_log_bound(max(min_val, max_val), +1)
+    if not (lo > 0):
+        lo = 1.0
+    if hi <= lo:
+        hi = lo * 10
+    e_lo = math.floor(math.log10(lo) + 1e-9)
+    e_hi = math.ceil(math.log10(hi) - 1e-9)
+    uniq = sorted({
+        mm * 10.0 ** e
+        for e in range(e_lo, e_hi + 1)
+        for mm in (1, 2, 5)
+        if lo * (1 - 1e-9) <= mm * 10.0 ** e <= hi * (1 + 1e-9)
+    })
+    if len(uniq) <= max_major:
+        return lo, hi, uniq, []
+
+    def is_decade(v):
+        return abs(math.log10(v) - round(math.log10(v))) < 1e-9
+
+    major = [v for v in uniq if is_decade(v)]
+    minor = [v for v in uniq if not is_decade(v)] if (e_hi - e_lo) <= 3 else []
+    return lo, hi, major, minor
 
 
 # --------------------------------------------------------------------------- #
@@ -213,21 +261,25 @@ def _collect_points(entries, which: str) -> list[dict]:
 # SVG scatter rendering
 # --------------------------------------------------------------------------- #
 def _scale(points):
-    """Shared log-axis bounds (integer decade powers) for the main plot + insets."""
+    """Shared log-axis geometry for the main plot + insets: tight bounds snapped to
+    nice 1-2-5 values (a data max of 16 ends the axis at 20, not the decade 100),
+    plus the labelled tick + faint minor-guide values. Returns a dict with log10
+    endpoints (for positioning) and real tick values (for grid / labels)."""
     xs = [p["num_vars"] for p in points]
     ys = [p["density"] for p in points]
-    x_lo, x_hi = math.floor(math.log10(min(xs))), math.ceil(math.log10(max(xs)))
-    y_lo, y_hi = math.floor(math.log10(min(ys))), math.ceil(math.log10(max(ys)))
-    if x_lo == x_hi:
-        x_hi += 1
-    if y_lo == y_hi:
-        y_hi += 1
-    return x_lo, x_hi, y_lo, y_hi
+    x_lo_v, x_hi_v, x_major, x_minor = _nice_log_axis(min(xs), max(xs), max_major=8)
+    y_lo_v, y_hi_v, y_major, y_minor = _nice_log_axis(min(ys), max(ys), max_major=6)
+    return {
+        "x_lo": math.log10(x_lo_v), "x_hi": math.log10(x_hi_v),
+        "y_lo": math.log10(y_lo_v), "y_hi": math.log10(y_hi_v),
+        "x_major": x_major, "x_minor": x_minor,
+        "y_major": y_major, "y_minor": y_minor,
+    }
 
 
 def _scatter_svg(points, scale, dims, *, style_of, radius, svg_class, with_labels,
-                 x_title=None, y_title=None, with_titles=True) -> str:
-    x_lo, x_hi, y_lo, y_hi = scale
+                 x_title=None, y_title=None, with_titles=True, aria_label=None) -> str:
+    x_lo, x_hi, y_lo, y_hi = scale["x_lo"], scale["x_hi"], scale["y_lo"], scale["y_hi"]
     w, h = dims
     if with_labels:
         m_l, m_r, m_t, m_b = 58, 16, 14, 44
@@ -235,26 +287,43 @@ def _scatter_svg(points, scale, dims, *, style_of, radius, svg_class, with_label
         m_l = m_r = m_t = m_b = 10
     plot_w = w - m_l - m_r
     plot_h = h - m_t - m_b
-    x_rng = max(1e-9, x_hi - x_lo)
-    y_rng = max(1e-9, y_hi - y_lo)
+    # Pad the plotted domain ~5% beyond the axis bounds so points (and ticks) sit
+    # inset from the frame rather than flush against the edges.
+    PAD = 0.05
+    x_span = (x_hi - x_lo) or 1
+    y_span = (y_hi - y_lo) or 1
+    x_lo_p, x_hi_p = x_lo - x_span * PAD, x_hi + x_span * PAD
+    y_lo_p, y_hi_p = y_lo - y_span * PAD, y_hi + y_span * PAD
+    x_rng = max(1e-9, x_hi_p - x_lo_p)
+    y_rng = max(1e-9, y_hi_p - y_lo_p)
 
     def x_px(v):
-        return m_l + ((math.log10(v) - x_lo) / x_rng) * plot_w
+        return m_l + ((math.log10(v) - x_lo_p) / x_rng) * plot_w
 
     def y_px(v):
-        return m_t + (1 - (math.log10(v) - y_lo) / y_rng) * plot_h
+        return m_t + (1 - (math.log10(v) - y_lo_p) / y_rng) * plot_h
 
-    xticks = _log_ticks(x_lo, x_hi, 8 if with_labels else 4)
-    yticks = _log_ticks(y_lo, y_hi, 6 if with_labels else 4)
-
+    xticks = scale["x_major"]
+    yticks = scale["y_major"]
+    # Faint 2×/5× minor guides only on the labelled main plot (not the tiny insets).
+    x_minor = scale["x_minor"] if with_labels else []
+    y_minor = scale["y_minor"] if with_labels else []
     grid = "".join(
-        f'<line class="mip-grid-line" x1="{_f1(x_px(10 ** p))}" y1="{m_t}" '
-        f'x2="{_f1(x_px(10 ** p))}" y2="{_f1(h - m_b)}" />'
-        for p in xticks
+        f'<line class="mip-grid-minor" x1="{_f1(x_px(v))}" y1="{m_t}" '
+        f'x2="{_f1(x_px(v))}" y2="{_f1(h - m_b)}" />'
+        for v in x_minor
     ) + "".join(
-        f'<line class="mip-grid-line" x1="{m_l}" y1="{_f1(y_px(10 ** p))}" '
-        f'x2="{_f1(w - m_r)}" y2="{_f1(y_px(10 ** p))}" />'
-        for p in yticks
+        f'<line class="mip-grid-minor" x1="{m_l}" y1="{_f1(y_px(v))}" '
+        f'x2="{_f1(w - m_r)}" y2="{_f1(y_px(v))}" />'
+        for v in y_minor
+    ) + "".join(
+        f'<line class="mip-grid-line" x1="{_f1(x_px(v))}" y1="{m_t}" '
+        f'x2="{_f1(x_px(v))}" y2="{_f1(h - m_b)}" />'
+        for v in xticks
+    ) + "".join(
+        f'<line class="mip-grid-line" x1="{m_l}" y1="{_f1(y_px(v))}" '
+        f'x2="{_f1(w - m_r)}" y2="{_f1(y_px(v))}" />'
+        for v in yticks
     )
     axes = (
         f'<line class="mip-axis-line" x1="{m_l}" y1="{_f1(h - m_b)}" '
@@ -265,14 +334,14 @@ def _scatter_svg(points, scale, dims, *, style_of, radius, svg_class, with_label
     labels = ""
     if with_labels:
         labels += "".join(
-            f'<text class="mip-axis-tick" text-anchor="middle" x="{_f1(x_px(10 ** p))}" '
-            f'y="{_f1(h - m_b + 14)}">{_esc(_fmt_tick(p))}</text>'
-            for p in xticks
+            f'<text class="mip-axis-tick" text-anchor="middle" x="{_f1(x_px(v))}" '
+            f'y="{_f1(h - m_b + 14)}">{_esc(_fmt_tick_value(v))}</text>'
+            for v in xticks
         )
         labels += "".join(
             f'<text class="mip-axis-tick" text-anchor="end" x="{m_l - 6}" '
-            f'y="{_f1(y_px(10 ** p) + 3)}">{_esc(_fmt_tick(p))}</text>'
-            for p in yticks
+            f'y="{_f1(y_px(v) + 3)}">{_esc(_fmt_tick_value(v))}</text>'
+            for v in yticks
         )
         if x_title:
             labels += (
@@ -296,8 +365,25 @@ def _scatter_svg(points, scale, dims, *, style_of, radius, svg_class, with_label
 
     dots = "".join(_circle(p) for p in points)
 
+    if aria_label:
+        # Give the scatter an accessible name via a <title> (referenced by
+        # aria-labelledby so it wins over any child <title> tooltips), so screen
+        # readers announce a one-sentence data summary instead of "image". The id
+        # must be unique per page — the MIP and QUBO figures share a class and
+        # dimensions — so use a monotonic counter rather than deriving from those.
+        _SVG_TITLE_SEQ[0] += 1
+        title_id = f"landscape-svg-title-{_SVG_TITLE_SEQ[0]}"
+        title_el = f'<title id="{title_id}">{_esc(aria_label)}</title>'
+        return (
+            f'<svg class="{svg_class}" viewBox="0 0 {w} {h}" role="img" '
+            f'aria-labelledby="{title_id}" '
+            f'preserveAspectRatio="xMidYMid meet">{title_el}{grid}{axes}{labels}{dots}</svg>'
+        )
+    # Unlabelled scatter (the small insets): they duplicate the main plot's data
+    # and carry their own visible <figcaption> title + key, so hide them from the
+    # accessibility tree rather than announce a second unnamed image.
     return (
-        f'<svg class="{svg_class}" viewBox="0 0 {w} {h}" role="img" '
+        f'<svg class="{svg_class}" viewBox="0 0 {w} {h}" role="img" aria-hidden="true" '
         f'preserveAspectRatio="xMidYMid meet">{grid}{axes}{labels}{dots}</svg>'
     )
 
@@ -361,15 +447,31 @@ def _inset_block(svg, title, swatches) -> str:
     )
 
 
-def _figure(points, caption) -> str:
+def _figure(points, caption, kind="") -> str:
     if not points:
         return ""
     scale = _scale(points)
+    # One-sentence accessible summary: total instances plotted and how many any
+    # method has solved to optimality (classical or quantum), so a screen-reader
+    # user gets the plot's headline without the marks.
+    n_total = len(points)
+    n_solved = sum(
+        1 for p in points
+        if p.get("classical_tier") == "optimal" or p.get("quantum_tier") == "optimal"
+    )
+    family = f"{kind.upper()} " if kind else ""
+    aria_label = (
+        f"Scatter plot of {family}benchmark instances by number of variables "
+        f"(log scale, horizontal) and constraint density (log scale, vertical), "
+        f"coloured by problem class. {n_solved} of {n_total} instances plotted "
+        f"are solved to optimality."
+    )
     main = _scatter_svg(
         points, scale, MAIN_DIMS,
         style_of=_main_style, radius=3.2,
         svg_class="landscape-svg landscape-main", with_labels=True,
         x_title="Number of variables (log)", y_title="Density (log)",
+        aria_label=aria_label,
     )
     # Both insets mirror the problem-card bars: optimal · best-known · open. "Open"
     # is the grey base drawn for points matching no layer — this now also absorbs
@@ -425,6 +527,6 @@ def build_landscape(entries) -> dict:
     empty state).
     """
     return {
-        "mip": _figure(_collect_points(entries, "mip"), _CAPTIONS["mip"]),
-        "qubo": _figure(_collect_points(entries, "qubo"), _CAPTIONS["qubo"]),
+        "mip": _figure(_collect_points(entries, "mip"), _CAPTIONS["mip"], kind="mip"),
+        "qubo": _figure(_collect_points(entries, "qubo"), _CAPTIONS["qubo"], kind="qubo"),
     }

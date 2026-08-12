@@ -310,7 +310,7 @@ PROBLEM_COLUMNS: dict[str, list[dict]] = {
            {"key": "constraints", "label": "Constraints", "numeric": True}],
     "06": [{"key": "assets", "label": "Assets", "numeric": True},
            {"key": "periods", "label": "Periods", "numeric": True},
-           {"key": "risk_lambda", "label": "Risk λ", "numeric": False}],
+           {"key": "budget", "label": "Budget", "numeric": True}],
     "07": [{"key": "nodes", "label": "Nodes", "numeric": True},
            {"key": "edges", "label": "Edges", "numeric": True}],
     "08": [{"key": "variables", "label": "Variables", "numeric": True},

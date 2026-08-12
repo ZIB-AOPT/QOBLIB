@@ -253,12 +253,40 @@ class BuildSiteTests(unittest.TestCase):
         self.assertIn("ms_03_050_001", inst_subs)
         self.assertEqual(len(inst_subs["ms_03_050_001"]), 2)
 
+    def test_time_series_split_out_of_instance_submissions(self) -> None:
+        # time_series must NOT be embedded in instance_submissions.json (it is
+        # ~85% of the bytes); a separate time_series.json chunk carries it.
+        _root, out, _summary = self.build()
+        inst_subs = self.load(out, "data", "problems", "01", "instance_submissions.json")["entries"]
+        for rows in inst_subs.values():
+            for s in rows:
+                self.assertNotIn("time_series", s)
+        self.assertTrue((out / "data" / "problems" / "01" / "time_series.json").is_file())
+
+    def test_leaderboard_is_aggregated_per_problem(self) -> None:
+        # leaderboard.json is a single per-problem aggregate (not a flat entries
+        # list), trimmed to the champion-selection fields, so the page loads it in
+        # one request instead of fanning out over every problem's chunks.
+        _root, out, _summary = self.build()
+        lb = self.load(out, "data", "leaderboard.json")
+        self.assertIn("problems", lb)
+        self.assertNotIn("entries", lb)
+        p = lb["problems"][0]
+        self.assertEqual(set(p) >= {"id", "minimize", "instances", "instance_submissions"}, True)
+
     def test_submission_classification(self) -> None:
         _root, out, _summary = self.build()
-        entries = self.load(out, "data", "leaderboard.json")["entries"]
-        by_author = {e["author"]: e for e in entries}
-        self.assertEqual(by_author["Ada Example"]["category"], "classical")
-        self.assertEqual(by_author["Bogus Bot"]["category"], "classical")
+        # leaderboard.json is now a per-problem aggregate; classification lives on
+        # each trimmed submission row (keyed by submitter here).
+        subs = [
+            s
+            for p in self.load(out, "data", "leaderboard.json")["problems"]
+            for rows in p["instance_submissions"].values()
+            for s in rows
+        ]
+        by_submitter = {s.get("submitter"): s for s in subs}
+        self.assertEqual(by_submitter["Ada Example"]["category"], "classical")
+        self.assertEqual(by_submitter["Bogus Bot"]["category"], "classical")
 
     def test_submission_group_category(self) -> None:
         """Each submission package is tagged with its dominant compute paradigm
@@ -322,8 +350,13 @@ class BuildSiteTests(unittest.TestCase):
         out = root / "_site"
         build_site(out=out, root=root, copy_static=False, built_at="2026-01-01T00:00:00Z")
 
-        leaderboard = self.load(out, "data", "leaderboard.json")["entries"]
-        self.assertEqual([e["author"] for e in leaderboard], ["Deep Diver"])
+        lb_subs = [
+            s
+            for p in self.load(out, "data", "leaderboard.json")["problems"]
+            for rows in p["instance_submissions"].values()
+            for s in rows
+        ]
+        self.assertEqual([s.get("submitter") for s in lb_subs], ["Deep Diver"])
         inst_subs = self.load(out, "data", "problems", "01", "instance_submissions.json")["entries"]
         self.assertIn("ms_03_050_001", inst_subs)
         groups = self.load(out, "data", "problems", "01", "submission_groups.json")["entries"]
