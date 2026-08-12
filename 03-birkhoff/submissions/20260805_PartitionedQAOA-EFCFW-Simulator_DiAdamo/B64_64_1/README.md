@@ -28,7 +28,7 @@ This directory contains the submission for the problem **B64_64_1**.
 | # Runs | 5 |
 | # Feasible Runs | 5 |
 | # Successful Runs | 5 |
-| Success Threshold | N/A |
+| Success Threshold | 1e-5 |
 | ====== |  |
 | Hardware Specifications | Qoro Cloud Simulator / MPS |
 | ====== |  |
