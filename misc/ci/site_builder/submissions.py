@@ -109,7 +109,11 @@ def _load_time_series(path: Path) -> list | None:
 
     Returns ``None`` on any error or if the file is absent."""
     try:
-        raw = gzip.open(path, "rb").read() if path.suffix == ".gz" else path.read_bytes()
+        if path.suffix == ".gz":
+            with gzip.open(path, "rb") as f:
+                raw = f.read()
+        else:
+            raw = path.read_bytes()
         data = json.loads(raw)
     except Exception:
         return None

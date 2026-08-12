@@ -549,7 +549,7 @@ function problemInstanceRowsHtml(p, list) {
                 <td class="mono"><a class="rlink mono" href="${qInstanceUrl(p.id, i.name)}">${qEsc(i.name)}</a></td>
                 ${problemMetricCells(i, cols)}
                 <td class="num">${(() => { const v = qFmtNum(i.best_value ?? i.bkv); if (v === "-" && i.lambda_count) return `<span class="muted">${qFmtInt(i.lambda_count)} λ</span>`; return i.best_is_optimal && v !== "-" ? `<strong>${v}</strong>` : v; })()}</td>
-                <td>${i.best_source_url ? `<a class="dl" href="${qEsc(i.best_source_url)}" target="_blank" rel="noopener">${qEsc(i.best_source_label || i.best_source_type || "source")}</a>` : "-"}</td>
+                <td>${i.best_source_url ? `<a class="dl" href="${qSafeHref(i.best_source_url)}" target="_blank" rel="noopener">${qEsc(i.best_source_label || i.best_source_type || "source")}</a>` : "-"}</td>
                 <td>${qStatusPill(i.status)}</td>
                 <td>${i.raw_url ? `<a class="dl" href="${qSafeHref(i.raw_url)}" target="_blank" rel="noopener">↓ raw</a>` : "-"}</td>
             </tr>`,
