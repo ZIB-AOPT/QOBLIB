@@ -26,134 +26,134 @@ Higher $\lambda$ values indicate a greater emphasis on risk control within the m
 
 | Instance | Best Known | Status | Source | Date |
 | :------- | ---------: | :----- | :----- | :--- |
-| po_a003_t02_orig | -204.0878963861868 | best known | reference | — |
-| po_a010_t10_orig_b004_l0 | -110541 | optimal | reference | — |
-| po_a010_t10_orig_b004_l1e-2 | -1000 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_orig_b004_l1e-3 | -8397 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_orig_b004_l1e-4 | -69482 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_orig_b004_l1e-5 | -103821 | optimal | reference | — |
-| po_a010_t10_orig_b004_l1e-6 | -109847 | optimal | reference | — |
-| po_a010_t10_orig_b004_l5e-4 | -27044 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_orig_b004_l5e-5 | -84980 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s00_b004_l0 | -231120 | optimal | reference | — |
-| po_a010_t10_s00_b004_l1e-2 | -1000 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s00_b004_l1e-3 | -30171 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s00_b004_l1e-4 | -142819 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s00_b004_l1e-5 | -204770 | optimal | reference | — |
-| po_a010_t10_s00_b004_l1e-6 | -227446 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s00_b004_l5e-4 | -59949 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s00_b004_l5e-5 | -169115 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s01_b004_l0 | -146702 | optimal | reference | — |
-| po_a010_t10_s01_b004_l1e-2 | -1000 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s01_b004_l1e-3 | -22808 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s01_b004_l1e-4 | -86861 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s01_b004_l1e-5 | -133752 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s01_b004_l1e-6 | -145362 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s01_b004_l5e-4 | -39933 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s01_b004_l5e-5 | -103323 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s02_b004_l0 | -123121 | optimal | reference | — |
-| po_a010_t10_s02_b004_l1e-2 | -1000 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s02_b004_l1e-3 | -6053 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s02_b004_l1e-4 | -53255 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s02_b004_l1e-5 | -102157 | optimal | reference | — |
-| po_a010_t10_s02_b004_l1e-6 | -120706 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s02_b004_l5e-4 | -19633 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t10_s02_b004_l5e-5 | -67517 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_orig_b004_l0 | -173822 | optimal | reference | — |
-| po_a010_t15_orig_b004_l1e-2 | -1500 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_orig_b004_l1e-3 | -10304 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_orig_b004_l1e-4 | -102371 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_orig_b004_l1e-5 | -162439 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_orig_b004_l1e-6 | -172660 | optimal | reference | — |
-| po_a010_t15_orig_b004_l5e-4 | -34903 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_orig_b004_l5e-5 | -128828 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s00_b004_l0 | -305223 | optimal | reference | — |
-| po_a010_t15_s00_b004_l1e-2 | -1500 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s00_b004_l1e-3 | -34944 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s00_b004_l1e-4 | -174429 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s00_b004_l1e-5 | -260398 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s00_b004_l1e-6 | -297922 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s00_b004_l5e-4 | -71733 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s00_b004_l5e-5 | -209366 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s01_b004_l0 | -247943 | optimal | reference | — |
-| po_a010_t15_s01_b004_l1e-2 | -1500 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s01_b004_l1e-3 | -31250 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s01_b004_l1e-4 | -141340 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s01_b004_l1e-5 | -228862 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s01_b004_l1e-6 | -245915 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s01_b004_l5e-4 | -57907 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s01_b004_l5e-5 | -176875 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s02_b004_l0 | -192631 | optimal | reference | — |
-| po_a010_t15_s02_b004_l1e-2 | -1500 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s02_b004_l1e-3 | -16363 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s02_b004_l1e-4 | -100135 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s02_b004_l1e-5 | -166630 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s02_b004_l1e-6 | -189531 | optimal | reference | — |
-| po_a010_t15_s02_b004_l5e-4 | -37224 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a010_t15_s02_b004_l5e-5 | -121102 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_orig_b020_l0 | -501737 | optimal | reference | — |
-| po_a050_t10_orig_b020_l1e-2 | -37107 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_orig_b020_l1e-3 | -206239 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_orig_b020_l1e-4 | -370869 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_orig_b020_l1e-5 | -478956 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_orig_b020_l1e-6 | -499339 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_orig_b020_l5e-4 | -254972 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_orig_b020_l5e-5 | -417218 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s00_b020_l0 | -517725 | optimal | reference | — |
-| po_a050_t10_s00_b020_l1e-2 | -12340 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s00_b020_l1e-3 | -191879 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s00_b020_l1e-4 | -355530 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s00_b020_l1e-5 | -484396 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s00_b020_l1e-6 | -513409 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s00_b020_l5e-4 | -234259 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s00_b020_l5e-5 | -408937 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s01_b020_l0 | -431905 | optimal | reference | — |
-| po_a050_t10_s01_b020_l1e-2 | -2248 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s01_b020_l1e-3 | -141376 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s01_b020_l1e-4 | -301400 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s01_b020_l1e-5 | -402742 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s01_b020_l1e-6 | -428609 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s01_b020_l5e-4 | -183574 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s01_b020_l5e-5 | -342074 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s02_b020_l0 | -625562 | optimal | reference | — |
-| po_a050_t10_s02_b020_l1e-2 | -43565 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s02_b020_l1e-3 | -233766 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s02_b020_l1e-4 | -443357 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s02_b020_l1e-5 | -594866 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s02_b020_l1e-6 | -622388 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s02_b020_l5e-4 | -287872 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t10_s02_b020_l5e-5 | -507544 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_orig_b020_l0 | -773902 | optimal | reference | — |
-| po_a050_t15_orig_b020_l1e-2 | -31504 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_orig_b020_l1e-3 | -321907 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_orig_b020_l1e-4 | -572490 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_orig_b020_l1e-5 | -736833 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_orig_b020_l1e-6 | -769790 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_orig_b020_l5e-4 | -397497 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_orig_b020_l5e-5 | -639825 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s00_b020_l0 | -879572 | optimal | reference | — |
-| po_a050_t15_s00_b020_l1e-2 | -43792 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s00_b020_l1e-3 | -314736 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s00_b020_l1e-4 | -586823 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s00_b020_l1e-5 | -819899 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s00_b020_l1e-6 | -872055 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s00_b020_l5e-4 | -386990 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s00_b020_l5e-5 | -680124 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s01_b020_l0 | -672711 | optimal | reference | — |
-| po_a050_t15_s01_b020_l1e-2 | -13706 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s01_b020_l1e-3 | -243245 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s01_b020_l1e-4 | -473765 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s01_b020_l1e-5 | -626762 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s01_b020_l1e-6 | -667210 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s01_b020_l5e-4 | -304289 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s01_b020_l5e-5 | -533733 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-19 |
-| po_a050_t15_s02_b020_l0 | -885463 | optimal | reference | — |
-| po_a050_t15_s02_b020_l1e-2 | -40622 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-20 |
-| po_a050_t15_s02_b020_l1e-3 | -316799 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-20 |
-| po_a050_t15_s02_b020_l1e-4 | -604145 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-20 |
-| po_a050_t15_s02_b020_l1e-5 | -830838 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-20 |
-| po_a050_t15_s02_b020_l1e-6 | -879472 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-20 |
-| po_a050_t15_s02_b020_l5e-4 | -392668 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-20 |
-| po_a050_t15_s02_b020_l5e-5 | -692197 | best known | [20250819_Gurobi_Schicker](../submissions/20250819_Gurobi_Schicker) | 2025-08-20 |
+| a003_t02_orig | -204.0878963861868 | best known | reference | — |
+| a010_t10_orig_b004_l0 | -110541 | optimal | reference | — |
+| a010_t10_orig_b004_l1e-02 | -1000 | best known | reference | — |
+| a010_t10_orig_b004_l1e-03 | -8397 | best known | reference | — |
+| a010_t10_orig_b004_l1e-04 | -69482 | best known | reference | — |
+| a010_t10_orig_b004_l1e-05 | -103821 | optimal | reference | — |
+| a010_t10_orig_b004_l1e-06 | -109847 | optimal | reference | — |
+| a010_t10_orig_b004_l5e-04 | -27044 | best known | reference | — |
+| a010_t10_orig_b004_l5e-05 | -84980 | best known | reference | — |
+| a010_t10_s00_b004_l0 | -231120 | optimal | reference | — |
+| a010_t10_s00_b004_l1e-02 | -1000 | best known | reference | — |
+| a010_t10_s00_b004_l1e-03 | -30171 | best known | reference | — |
+| a010_t10_s00_b004_l1e-04 | -142819 | best known | reference | — |
+| a010_t10_s00_b004_l1e-05 | -204770 | optimal | reference | — |
+| a010_t10_s00_b004_l1e-06 | -227446 | best known | reference | — |
+| a010_t10_s00_b004_l5e-04 | -59949 | best known | reference | — |
+| a010_t10_s00_b004_l5e-05 | -169115 | best known | reference | — |
+| a010_t10_s01_b004_l0 | -146702 | optimal | reference | — |
+| a010_t10_s01_b004_l1e-02 | -1000 | best known | reference | — |
+| a010_t10_s01_b004_l1e-03 | -22808 | best known | reference | — |
+| a010_t10_s01_b004_l1e-04 | -86861 | best known | reference | — |
+| a010_t10_s01_b004_l1e-05 | -133752 | best known | reference | — |
+| a010_t10_s01_b004_l1e-06 | -145362 | best known | reference | — |
+| a010_t10_s01_b004_l5e-04 | -39933 | best known | reference | — |
+| a010_t10_s01_b004_l5e-05 | -103323 | best known | reference | — |
+| a010_t10_s02_b004_l0 | -123121 | optimal | reference | — |
+| a010_t10_s02_b004_l1e-02 | -1000 | best known | reference | — |
+| a010_t10_s02_b004_l1e-03 | -6053 | best known | reference | — |
+| a010_t10_s02_b004_l1e-04 | -53255 | best known | reference | — |
+| a010_t10_s02_b004_l1e-05 | -102157 | optimal | reference | — |
+| a010_t10_s02_b004_l1e-06 | -120706 | best known | reference | — |
+| a010_t10_s02_b004_l5e-04 | -19633 | best known | reference | — |
+| a010_t10_s02_b004_l5e-05 | -67517 | best known | reference | — |
+| a010_t15_orig_b004_l0 | -173822 | optimal | reference | — |
+| a010_t15_orig_b004_l1e-02 | -1500 | best known | reference | — |
+| a010_t15_orig_b004_l1e-03 | -10304 | best known | reference | — |
+| a010_t15_orig_b004_l1e-04 | -102371 | best known | reference | — |
+| a010_t15_orig_b004_l1e-05 | -162439 | best known | reference | — |
+| a010_t15_orig_b004_l1e-06 | -172660 | optimal | reference | — |
+| a010_t15_orig_b004_l5e-04 | -34903 | best known | reference | — |
+| a010_t15_orig_b004_l5e-05 | -128828 | best known | reference | — |
+| a010_t15_s00_b004_l0 | -305223 | optimal | reference | — |
+| a010_t15_s00_b004_l1e-02 | -1500 | best known | reference | — |
+| a010_t15_s00_b004_l1e-03 | -34944 | best known | reference | — |
+| a010_t15_s00_b004_l1e-04 | -174429 | best known | reference | — |
+| a010_t15_s00_b004_l1e-05 | -260398 | best known | reference | — |
+| a010_t15_s00_b004_l1e-06 | -297922 | best known | reference | — |
+| a010_t15_s00_b004_l5e-04 | -71733 | best known | reference | — |
+| a010_t15_s00_b004_l5e-05 | -209366 | best known | reference | — |
+| a010_t15_s01_b004_l0 | -247943 | optimal | reference | — |
+| a010_t15_s01_b004_l1e-02 | -1500 | best known | reference | — |
+| a010_t15_s01_b004_l1e-03 | -31250 | best known | reference | — |
+| a010_t15_s01_b004_l1e-04 | -141340 | best known | reference | — |
+| a010_t15_s01_b004_l1e-05 | -228862 | best known | reference | — |
+| a010_t15_s01_b004_l1e-06 | -245915 | best known | reference | — |
+| a010_t15_s01_b004_l5e-04 | -57907 | best known | reference | — |
+| a010_t15_s01_b004_l5e-05 | -176875 | best known | reference | — |
+| a010_t15_s02_b004_l0 | -192631 | optimal | reference | — |
+| a010_t15_s02_b004_l1e-02 | -1500 | best known | reference | — |
+| a010_t15_s02_b004_l1e-03 | -16363 | best known | reference | — |
+| a010_t15_s02_b004_l1e-04 | -100135 | best known | reference | — |
+| a010_t15_s02_b004_l1e-05 | -166630 | best known | reference | — |
+| a010_t15_s02_b004_l1e-06 | -189531 | optimal | reference | — |
+| a010_t15_s02_b004_l5e-04 | -37224 | best known | reference | — |
+| a010_t15_s02_b004_l5e-05 | -121102 | best known | reference | — |
+| a050_t10_orig_b020_l0 | -501737 | optimal | reference | — |
+| a050_t10_orig_b020_l1e-02 | -37107 | best known | reference | — |
+| a050_t10_orig_b020_l1e-03 | -206239 | best known | reference | — |
+| a050_t10_orig_b020_l1e-04 | -370869 | best known | reference | — |
+| a050_t10_orig_b020_l1e-05 | -478956 | best known | reference | — |
+| a050_t10_orig_b020_l1e-06 | -499339 | best known | reference | — |
+| a050_t10_orig_b020_l5e-04 | -254972 | best known | reference | — |
+| a050_t10_orig_b020_l5e-05 | -417218 | best known | reference | — |
+| a050_t10_s00_b020_l0 | -517725 | optimal | reference | — |
+| a050_t10_s00_b020_l1e-02 | -12340 | best known | reference | — |
+| a050_t10_s00_b020_l1e-03 | -191879 | best known | reference | — |
+| a050_t10_s00_b020_l1e-04 | -355530 | best known | reference | — |
+| a050_t10_s00_b020_l1e-05 | -484396 | best known | reference | — |
+| a050_t10_s00_b020_l1e-06 | -513409 | best known | reference | — |
+| a050_t10_s00_b020_l5e-04 | -234259 | best known | reference | — |
+| a050_t10_s00_b020_l5e-05 | -408937 | best known | reference | — |
+| a050_t10_s01_b020_l0 | -431905 | optimal | reference | — |
+| a050_t10_s01_b020_l1e-02 | -2248 | best known | reference | — |
+| a050_t10_s01_b020_l1e-03 | -141376 | best known | reference | — |
+| a050_t10_s01_b020_l1e-04 | -301400 | best known | reference | — |
+| a050_t10_s01_b020_l1e-05 | -402742 | best known | reference | — |
+| a050_t10_s01_b020_l1e-06 | -428609 | best known | reference | — |
+| a050_t10_s01_b020_l5e-04 | -183574 | best known | reference | — |
+| a050_t10_s01_b020_l5e-05 | -342074 | best known | reference | — |
+| a050_t10_s02_b020_l0 | -625562 | optimal | reference | — |
+| a050_t10_s02_b020_l1e-02 | -43565 | best known | reference | — |
+| a050_t10_s02_b020_l1e-03 | -233766 | best known | reference | — |
+| a050_t10_s02_b020_l1e-04 | -443357 | best known | reference | — |
+| a050_t10_s02_b020_l1e-05 | -594866 | best known | reference | — |
+| a050_t10_s02_b020_l1e-06 | -622388 | best known | reference | — |
+| a050_t10_s02_b020_l5e-04 | -287872 | best known | reference | — |
+| a050_t10_s02_b020_l5e-05 | -507544 | best known | reference | — |
+| a050_t15_orig_b020_l0 | -773902 | optimal | reference | — |
+| a050_t15_orig_b020_l1e-02 | -31504 | best known | reference | — |
+| a050_t15_orig_b020_l1e-03 | -321907 | best known | reference | — |
+| a050_t15_orig_b020_l1e-04 | -572490 | best known | reference | — |
+| a050_t15_orig_b020_l1e-05 | -736833 | best known | reference | — |
+| a050_t15_orig_b020_l1e-06 | -769790 | best known | reference | — |
+| a050_t15_orig_b020_l5e-04 | -397497 | best known | reference | — |
+| a050_t15_orig_b020_l5e-05 | -639825 | best known | reference | — |
+| a050_t15_s00_b020_l0 | -879572 | optimal | reference | — |
+| a050_t15_s00_b020_l1e-02 | -43792 | best known | reference | — |
+| a050_t15_s00_b020_l1e-03 | -314736 | best known | reference | — |
+| a050_t15_s00_b020_l1e-04 | -586823 | best known | reference | — |
+| a050_t15_s00_b020_l1e-05 | -819899 | best known | reference | — |
+| a050_t15_s00_b020_l1e-06 | -872055 | best known | reference | — |
+| a050_t15_s00_b020_l5e-04 | -386990 | best known | reference | — |
+| a050_t15_s00_b020_l5e-05 | -680124 | best known | reference | — |
+| a050_t15_s01_b020_l0 | -672711 | optimal | reference | — |
+| a050_t15_s01_b020_l1e-02 | -13706 | best known | reference | — |
+| a050_t15_s01_b020_l1e-03 | -243245 | best known | reference | — |
+| a050_t15_s01_b020_l1e-04 | -473765 | best known | reference | — |
+| a050_t15_s01_b020_l1e-05 | -626762 | best known | reference | — |
+| a050_t15_s01_b020_l1e-06 | -667210 | best known | reference | — |
+| a050_t15_s01_b020_l5e-04 | -304289 | best known | reference | — |
+| a050_t15_s01_b020_l5e-05 | -533733 | best known | reference | — |
+| a050_t15_s02_b020_l0 | -885463 | optimal | reference | — |
+| a050_t15_s02_b020_l1e-02 | -40622 | best known | reference | — |
+| a050_t15_s02_b020_l1e-03 | -316799 | best known | reference | — |
+| a050_t15_s02_b020_l1e-04 | -604145 | best known | reference | — |
+| a050_t15_s02_b020_l1e-05 | -830838 | best known | reference | — |
+| a050_t15_s02_b020_l1e-06 | -879472 | best known | reference | — |
+| a050_t15_s02_b020_l5e-04 | -392668 | best known | reference | — |
+| a050_t15_s02_b020_l5e-05 | -692197 | best known | reference | — |
 
 <!-- BKV:END -->
