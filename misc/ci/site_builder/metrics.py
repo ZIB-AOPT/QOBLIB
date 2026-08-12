@@ -125,6 +125,12 @@ def attach_instance_metrics(problem_id: str, problem_dir: Path, instances: list[
     for inst in instances:
         name = inst.get("name") or ""
         m: dict = {}
+        # Authoritative variable count for this instance, or None when no reliable
+        # source exists. This replaces the old "largest numeric token in the
+        # filename" guess (which was wrong for most classes — see text.py). It
+        # feeds the "N vars" badge and the per-problem vars_min–vars_max range; a
+        # missing value drops the badge, which is better than a wrong one.
+        vars_val: int | None = None
 
         if problem_id == "01":
             # Filename ms_<m>_<coeff_range>_<seed>: the 2nd token is the coefficient
@@ -135,17 +141,23 @@ def attach_instance_metrics(problem_id: str, problem_dir: Path, instances: list[
             if markets is not None:
                 m["markets"] = markets
                 m["variables"] = variables
+                vars_val = variables
             elif g:
                 m["markets"] = int(g.group(1))
             if g:
                 m["coeff_range"] = int(g.group(2))
         elif problem_id == "02":
+            # The LABS sequence length N is the QUBO variable count; surface it as
+            # both the "Length N" column and the authoritative vars.
             g = re.search(r"(\d+)", name)
             if g:
                 m["length"] = int(g.group(1))
+                vars_val = int(g.group(1))
         elif problem_id == "03":
+            # vars was set from the bundle JSON's `n` in build_birkhoff_instances.
             if inst.get("vars") is not None:
                 m["dimension"] = inst["vars"]
+                vars_val = to_int(inst["vars"])
         elif problem_id == "04":
             g = re.match(r"stp_s(\d+)_l(\d+)_t(\d+)_h(\d+)", name)
             if g:
@@ -153,6 +165,9 @@ def attach_instance_metrics(problem_id: str, problem_dir: Path, instances: list[
                 m["layers"] = int(g.group(2))
                 m["terminals"] = int(g.group(3))
                 m["holes"] = int(g.group(4))
+            row = lp_metrics().get(name)
+            if row:
+                vars_val = to_int(row.get("num_vars"))
         elif problem_id in ("05", "08"):
             row = lp_metrics().get(name)
             if row:
@@ -160,6 +175,7 @@ def attach_instance_metrics(problem_id: str, problem_dir: Path, instances: list[
                 c = to_int(row.get("num_constraints"))
                 if v is not None:
                     m["variables"] = v
+                    vars_val = v
                 if c is not None:
                     m["constraints"] = c
         elif problem_id == "06":
@@ -167,9 +183,18 @@ def attach_instance_metrics(problem_id: str, problem_dir: Path, instances: list[
             if g:
                 m["assets"] = int(g.group(1))
                 m["periods"] = int(g.group(2))
+            bg = re.search(r"_b(\d+)", name)
+            if bg:
+                m["budget"] = int(bg.group(1))
+            # risk_lambda is kept on the per-λ instance so the collapse helper can
+            # surface it on each sweep child (the collapsed base row shows Budget
+            # instead; see config.PROBLEM_COLUMNS["06"]).
             lg = re.search(r"_l([0-9.]+(?:[eE]-?\d+)?)$", name)
             if lg:
                 m["risk_lambda"] = lg.group(1)
+            row = lp_metrics().get(name)
+            if row:
+                vars_val = to_int(row.get("num_vars"))
         elif problem_id == "07":
             row = lp_metrics().get(name)
             if row:
@@ -177,6 +202,7 @@ def attach_instance_metrics(problem_id: str, problem_dir: Path, instances: list[
                 e = to_int(row.get("num_linear_constraints") or row.get("num_constraints"))
                 if v is not None:
                     m["nodes"] = v
+                    vars_val = v
                 if e is not None:
                     m["edges"] = e
         elif problem_id == "09":
@@ -184,11 +210,24 @@ def attach_instance_metrics(problem_id: str, problem_dir: Path, instances: list[
             if g:
                 m["customers"] = int(g.group(1))
                 m["vehicles"] = int(g.group(2))
+            row = lp_metrics().get(name)
+            if row:
+                vars_val = to_int(row.get("num_vars"))
         elif problem_id == "10":
             g = re.match(r"topology_(\d+)_(\d+)", name)
             if g:
                 m["nodes"] = int(g.group(1))
                 m["degree"] = int(g.group(2))
+            row = lp_metrics().get(name)
+            if row:
+                vars_val = to_int(row.get("num_vars"))
+
+        # Overwrite the (now unset) filename-derived vars with the authoritative
+        # value, or clear it entirely so no wrong badge is shown.
+        if vars_val is not None:
+            inst["vars"] = vars_val
+        else:
+            inst.pop("vars", None)
 
         if m:
             inst["metrics"] = m

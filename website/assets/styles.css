@@ -35,16 +35,16 @@
     --green-l: #edf5e8;
     --blue: #24586f;
     --blue-l: #e9f5fa;
-    /* Compute-paradigm indicator colours (category dots, chart lines/legends).
+    /* Compute-paradigm indicator colors (category dots, chart lines/legends).
        Routed through variables so they track the active theme — the dark
        overrides below soften them for dark backgrounds. */
     --cat-classical: #2f8f81;
     --cat-quantum-hw: #8d6fc9;
     --cat-quantum-sim: #c77d3a;
-    /* Problem-card progress bars (index page). Each paradigm uses a colour-blind
+    /* Problem-card progress bars (index page). Each paradigm uses a color-blind
        safe sequential ramp (ColorBrewer Greens / Purples): the three tiers differ
        in *lightness*, so they stay distinguishable in greyscale and for all
-       colour-vision types. */
+       color-vision types. */
     --bar-solved-classical: #006d2c;
     --bar-best-known-classical: #74c476;
     --bar-solved-quantum: #54278f;
@@ -60,7 +60,7 @@
     --bar-best-known: #8d90cc;
     --bar-open: #d6b06b;
     /* Status badges (optimal / best-known / submitted / open). bg = chip fill,
-       fg = label colour. Dark overrides below soften them for dark mode. */
+       fg = label color. Dark overrides below soften them for dark mode. */
     --pill-ok-bg: #edf5e8;
     --pill-ok-fg: #355f24;
     --pill-best-bg: #fff6de;
@@ -69,7 +69,7 @@
     --pill-sub-fg: #24586f;
     --pill-open-bg: #f4f4f1;
     --pill-open-fg: #5d6a70;
-    /* Kept as the primary "ink" / heading colour (no longer navy). */
+    /* Kept as the primary "ink" / heading color (no longer navy). */
     --navy: #1f2528;
     --shadow: 0 16px 38px rgba(31, 37, 40, 0.08);
     --mono: "IBM Plex Mono", monospace;
@@ -77,11 +77,13 @@
     --serif: "Source Serif 4", serif;
     --r: 8px;
     --rl: 10px;
-    /* Shared content column width. The fluid `60% + 8rem` keeps generous
-       gutters on wide screens (~70%) but expands toward full width on phones,
-       capped at 1600px. max-width can never exceed the parent, so it never
-       overflows on narrow viewports. */
-    --content-w: min(1600px, 60% + 8rem);
+    /* Shared content column width. A flat 84% keeps a tasteful ~8% gutter on
+       each side across laptop/desktop widths, capped at 1600px (the cap kicks in
+       around 1905px). The old `60% + 8rem` left ~30% of mid-size screens
+       (1200–1800px) as empty gutters, which made the full-width nav bar look
+       disproportionately wide next to the narrow content. max-width can never
+       exceed the parent, so this never overflows; phones override it to 100%. */
+    --content-w: min(1600px, 84%);
 }
 
 body {
@@ -103,6 +105,17 @@ button {
     border: none;
     background: none;
     color: inherit;
+}
+
+/* Global keyboard-focus ring. Many links only change color on focus, which is
+   easy to miss; give every keyboard-focused link/button a visible ring. Mouse
+   clicks don't trigger :focus-visible, so this stays invisible for pointer users.
+   Component-specific :focus-visible rules elsewhere still override this. */
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
 }
 
 nav {
@@ -205,6 +218,22 @@ nav {
     outline-offset: 2px;
 }
 
+/* Visually hidden but exposed to assistive tech (the standard clip pattern).
+   Used for content that has a purely-visual equivalent — e.g. the animated,
+   aria-hidden Contributing Organizations ticker gets a static text list here so
+   screen-reader users can read the org names the marquee shows sighted users. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* Horizontal rule used to separate top-level page sections, replacing the
    per-section top/bottom borders that used to live on .hero/.community/.callout. */
 .section-divider {
@@ -263,7 +292,10 @@ body[data-nav="home"] .stats-bar {
 .hero-eyebrow {
     font-family: var(--mono);
     font-size: 0.72rem;
-    color: var(--warm);
+    /* --warm (#b25c2e on the light hero bg) is only 4.38:1 — under AA for this
+       small uppercase mono. --warm-d clears it in both themes (light #8a4422 ≈
+       6.5:1; dark #e6a884 is light-on-dark). */
+    color: var(--warm-d);
     letter-spacing: 0.12em;
     text-transform: uppercase;
     margin-bottom: 0.75rem;
@@ -370,13 +402,6 @@ body[data-nav="home"] .stats-bar {
     content: "...";
     font-size: 1rem;
     color: var(--faint);
-}
-
-.plot-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 2.5rem;
 }
 
 .plot-card {
@@ -542,6 +567,27 @@ body[data-nav="home"] .stats-bar {
     }
 }
 
+/* Chart / plot legends use very small mono type (~0.62–0.7rem) that's hard to
+   read on a phone. Nudge every legend up a step and give the items a little more
+   breathing room on small screens. */
+@media (max-width: 600px) {
+    .ls-legend,
+    .landscape-inset figcaption,
+    .ls-inset-key {
+        font-size: 0.74rem;
+    }
+
+    .chart-legend,
+    .conv-legend {
+        font-size: 0.76rem;
+        gap: 0.5rem;
+    }
+
+    .mip-legend-hint {
+        font-size: 0.76rem;
+    }
+}
+
 .sh {
     display: flex;
     align-items: baseline;
@@ -669,7 +715,7 @@ body[data-nav="home"] .stats-bar {
 }
 
 /* Hairline separators between adjacent segments so tier boundaries stay crisp
-   even when two neighbouring colours are close in lightness. */
+   even when two neighboring colors are close in lightness. */
 .pcard-bar-fill + .pcard-bar-fill {
     box-shadow: inset 1px 0 0 var(--surface, #fff);
 }
@@ -838,6 +884,7 @@ a.badge:hover {
     margin-bottom: 2rem;
 }
 
+.ph h1,
 .ph h2 {
     font-size: 1.7rem;
     font-weight: 700;
@@ -855,22 +902,6 @@ a.badge:hover {
     padding: 1rem;
 }
 
-/* Lay the submission-history plots side by side when there is room,
-   wrapping to a stack on narrower viewports. */
-.chart-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    align-items: stretch;
-    margin-bottom: 1.2rem;
-}
-
-.chart-row > .chart-card {
-    flex: 1 1 360px;
-    min-width: 0;
-    margin-bottom: 0;
-}
-
 .chart-head {
     display: flex;
     align-items: flex-start;
@@ -879,6 +910,7 @@ a.badge:hover {
     margin-bottom: 0.85rem;
 }
 
+.chart-head h2,
 .chart-head h3 {
     color: var(--navy);
     font-size: 1rem;
@@ -941,8 +973,10 @@ a.badge:hover {
     width: 10px;
     height: 10px;
     border-radius: 999px;
-    background: #1f6f6c;
-    border: 1px solid #0e4f4d;
+    /* Theme-aware fallback swatch (the instances-page legend sets its own color
+       inline per series); the literal teal here didn't adapt to dark mode. */
+    background: var(--teal);
+    border: 1px solid var(--accent-d);
 }
 
 .mip-chart-wrap {
@@ -950,10 +984,6 @@ a.badge:hover {
     min-height: 440px;
     border: 1px solid var(--border);
     border-radius: var(--r);
-    /* background:
-        radial-gradient(circle at 12% 8%, #f8fbfd 0%, transparent 28%),
-        radial-gradient(circle at 90% 85%, #fbf5eb 0%, transparent 35%),
-        var(--surface); */
     position: relative;
     overflow: hidden;
 }
@@ -982,35 +1012,61 @@ a.badge:hover {
     stroke-width: 1;
 }
 
+/* Faint unlabeled 2×/5× guides between decades on log axes. */
+.mip-grid-minor {
+    stroke: rgba(122, 112, 97, 0.1);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
+}
+
 .mip-axis-line {
     stroke: rgba(106, 100, 89, 0.65);
     stroke-width: 1.2;
 }
 
-.mip-point {
-    fill: var(--p-fill, #1f6f6c);
-    stroke: var(--p-stroke, #0e4f4d);
+/* Visible scatter dot. Inert to pointer events — the transparent .mip-point
+   circle on top of it (a much larger hit target) catches hover/tap/focus. */
+.mip-dot {
+    /* JS sets --p-fill/--p-stroke inline per point; the fallbacks are theme-aware
+       so a dot with unset vars still reads in dark mode. */
+    fill: var(--p-fill, var(--teal));
+    stroke: var(--p-stroke, var(--accent-d));
     stroke-width: 1;
-    cursor: pointer;
-    transition: transform 0.12s ease, fill 0.12s ease;
+    pointer-events: none;
+    transition: r 0.12s ease, fill 0.12s ease, stroke 0.12s ease;
 }
 
-.mip-point:hover,
-.mip-point:focus-visible,
-.mip-point.active {
+/* Transparent hit circle (r≈12): a comfortable ~24px target on any device, so a
+   point no longer needs a pixel-perfect hover/tap. It carries the interaction;
+   the sibling .mip-dot below it gets the active/hover styling. */
+.mip-point {
+    fill: transparent;
+    stroke: none;
+    cursor: pointer;
+}
+
+/* Highlight the visible dot when its hit circle is hovered/focused/active. The
+   dot sits before the hit circle in the DOM, so we key off the parent group
+   (:has) rather than a next-sibling selector. */
+.mip-pt:hover .mip-dot,
+.mip-pt:has(.mip-point:focus-visible) .mip-dot,
+.mip-dot.active {
     fill: var(--warm);
     stroke: var(--warm-d);
+    r: 5.5;
 }
 
 .mip-point:focus-visible {
     outline: none;
 }
 
-.mip-point.active {
-    r: 5.5;
+/* Ring the dot when its hit circle has keyboard focus, since the transparent
+   target itself shows nothing. */
+.mip-pt:has(.mip-point:focus-visible) .mip-dot {
+    stroke-width: 2;
 }
 
-.mip-point.hidden {
+.mip-pt.hidden {
     display: none;
 }
 
@@ -1100,12 +1156,46 @@ textarea:focus {
     white-space: nowrap;
 }
 
+/* "Show more" control below the large paginated tables (instances, leaderboard). */
+.table-more {
+    display: flex;
+    justify-content: center;
+    margin: 0.9rem 0 0.2rem;
+}
+
+.table-more-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0.9rem 0 0.2rem;
+}
+
 .tw {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--rl);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+}
+
+/* Edge-fade hint on horizontally scrollable tables. The classes are toggled by
+   markScrollShadows() in common.js only while the table actually overflows, and
+   only on the side(s) with off-screen content, so a table that fits shows no
+   fade. Table cells are opaque (they'd cover a background scroll-shadow), so the
+   hint is a mask fade over the ~1rem cell padding at each scrollable edge. */
+.tw.scroll-x-start {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent 100%);
+    mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent 100%);
+}
+
+.tw.scroll-x-end {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 1.5rem);
+    mask-image: linear-gradient(to right, transparent 0, #000 1.5rem);
+}
+
+.tw.scroll-x-both {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 1.5rem, #000 calc(100% - 1.5rem), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 1.5rem, #000 calc(100% - 1.5rem), transparent 100%);
 }
 
 table {
@@ -1166,12 +1256,17 @@ td.num {
 
 .rlink {
     color: var(--navy);
-    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: var(--border-mid);
+    text-underline-offset: 2px;
+    cursor: pointer;
 }
 
 .rlink:hover {
     color: var(--accent);
-    text-decoration: underline;
+    text-decoration-style: solid;
+    text-decoration-color: var(--accent);
 }
 
 .dl {
@@ -1215,10 +1310,137 @@ td.num {
     gap: 0.35rem;
     font-size: 0.83rem;
     color: var(--muted);
-    margin-bottom: 1.4rem;
+    margin-bottom: 0.6rem;
 }
 
 .back:hover {
+    color: var(--navy);
+}
+
+/* Instance prev / pos / next navigation strip */
+.inst-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 1.4rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    padding: 0.3rem 0.5rem;
+    background: var(--surface);
+}
+
+.inst-nav-btn {
+    flex: 1 1 0;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: background 0.12s, color 0.12s;
+    min-width: 0;
+}
+
+a.inst-nav-btn:hover {
+    background: var(--surface2);
+    color: var(--navy);
+}
+
+.inst-nav-next {
+    text-align: right;
+}
+
+.inst-nav-disabled {
+    pointer-events: none;
+}
+
+.inst-nav-pos {
+    flex: 0 0 auto;
+    color: var(--faint);
+    text-align: center;
+    padding: 0 0.5rem;
+    white-space: nowrap;
+}
+
+.inst-nav-search-wrap {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.inst-nav-search {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.18rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text);
+    width: 10rem;
+    outline: none;
+    transition: border-color 0.12s;
+}
+
+.inst-nav-search:focus {
+    border-color: var(--navy);
+}
+
+.inst-nav-search::-webkit-search-cancel-button {
+    cursor: pointer;
+}
+
+/* Phones: the position counter and "Jump to…" search can't share the row with
+   the prev/next labels without landing in awkward, cramped spots. Drop them and
+   keep just the two prev/next buttons, one pinned to each end. */
+@media (max-width: 640px) {
+    .inst-nav-pos,
+    .inst-nav-search-wrap {
+        display: none;
+    }
+
+    .inst-nav-btn {
+        flex: 0 1 auto;
+        max-width: 50%;
+    }
+}
+
+.inst-nav-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 100%;
+    width: max-content;
+    max-width: 22rem;
+    max-height: 16rem;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    box-shadow: 0 4px 12px rgba(0,0,0,.10);
+    list-style: none;
+    margin: 0;
+    padding: 0.25rem 0;
+    z-index: 200;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+}
+
+.inst-nav-dropdown li {
+    padding: 0.3rem 0.75rem;
+    cursor: pointer;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    outline: none;
+}
+
+.inst-nav-dropdown li:hover,
+.inst-nav-dropdown li:focus {
+    background: var(--surface2);
     color: var(--navy);
 }
 
@@ -1241,6 +1463,7 @@ td.num {
     font-size: 1.9rem;
     font-weight: 700;
     color: var(--navy);
+    margin-top: 0;         /* reset the UA <h1> top margin when .d-title is an <h1> */
     margin-bottom: 0.2rem;
     line-height: 1.15;
 }
@@ -1399,6 +1622,22 @@ td.num {
     pointer-events: auto;
 }
 
+/* The expand button lives at the card's top-right — exactly where the chart
+   legend would otherwise be right-aligned. On cards that have the button, stack
+   the header so the legend drops to its own row below the title, clear of the
+   button (which then only overlaps the title row's empty right edge). */
+.has-fig-expand .chart-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+}
+
+/* Keep the legend flush to the card's right edge on its own row. */
+.has-fig-expand .chart-head .chart-legend,
+.has-fig-expand .chart-head .conv-legend {
+    justify-content: flex-end;
+}
+
 .fig-expand:hover {
     color: var(--accent-d);
     border-color: var(--accent);
@@ -1524,7 +1763,7 @@ td.num {
 }
 
 /* Inline problem figures (assets/problem_figures.js): theme-aware SVGs that use
-   the site's colour variables, so they sit on a surface backing rather than the
+   the site's color variables, so they sit on a surface backing rather than the
    forced-white backing the README PNGs needed. */
 .d-desc-visual svg.pfig {
     display: block;
@@ -1673,6 +1912,18 @@ td.num {
 .prob-section > summary:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+}
+
+/* The section title is a real <h2> for the document outline (h1 → h2 → the
+   chart cards' h3), but must look identical to the surrounding <summary> text —
+   so reset the browser's default heading font/margins and inherit. */
+.prob-section-title {
+    margin: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+    display: inline;
 }
 
 .prob-section-body {
@@ -1844,20 +2095,6 @@ td.num {
     grid-column: 1 / -1;
 }
 
-.submit-btn {
-    margin-top: 0.75rem;
-    background: var(--accent);
-    color: #fff;
-    padding: 0.5rem 1.2rem;
-    border-radius: var(--r);
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.submit-btn:hover {
-    background: var(--accent-d);
-}
-
 .code-pre {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -1867,39 +2104,6 @@ td.num {
     font-size: 0.78rem;
     white-space: pre-wrap;
     word-break: break-all;
-}
-
-.rank-num {
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 0.88rem;
-    text-align: center;
-}
-
-.r1 {
-    color: #b8860b;
-}
-
-.r2 {
-    color: #888;
-}
-
-.r3 {
-    color: #8b6347;
-}
-
-/* Brighter medals on dark surfaces — the light-mode gold/silver/bronze are too
-   dark to read on the dark leaderboard (the silver #888 especially). */
-:root[data-theme="dark"] .r1 {
-    color: #e0b84a;
-}
-
-:root[data-theme="dark"] .r2 {
-    color: #b9c0c4;
-}
-
-:root[data-theme="dark"] .r3 {
-    color: #c2906a;
 }
 
 .notes-cell {
@@ -1938,6 +2142,14 @@ td.num {
 .toast.show {
     opacity: 1;
     transform: none;
+}
+
+/* The toast background is set inline by JS to --green / --amber / --red. Those
+   tokens are dark in light mode (white text reads fine) but flip to LIGHT
+   pastels in dark mode, where white text fails WCAG. Use a dark ink on the
+   pastel backgrounds in dark mode so the message stays readable in both themes. */
+:root[data-theme="dark"] .toast {
+    color: #14191b;
 }
 
 .text-center {
@@ -1980,8 +2192,7 @@ td.num {
         max-width: none;
     }
 
-    .fg,
-    .plot-grid {
+    .fg {
         grid-template-columns: 1fr;
     }
 
@@ -1995,6 +2206,14 @@ td.num {
 }
 
 @media (max-width: 700px) {
+    /* On phones the fluid `60% + 8rem` content width leaves wide side gutters on
+       top of the .page padding, wasting horizontal space where it's scarcest.
+       Let the content span the full viewport so the compact .page/.nav/.footer
+       padding is the only margin. */
+    :root {
+        --content-w: 100%;
+    }
+
     .hero h1 {
         font-size: 1.9rem;
     }
@@ -2008,11 +2227,55 @@ td.num {
     }
 
     .page {
-        padding: 1.5rem 1rem 4rem;
+        padding: 1.5rem 0.9rem 4rem;
     }
 
     .nav-links {
         gap: 0;
+    }
+}
+
+/* Very small screens: the row of hero / callout action buttons wraps raggedly
+   and each button is a small tap target. Stack them full-width so every action
+   is easy to hit and the column reads cleanly. */
+@media (max-width: 480px) {
+    .hero-actions,
+    .callout-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-actions .btn,
+    .callout-actions .btn {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+/* Touch devices: several in-content controls (download chips, chart-legend
+   toggles, the remarks expander) are well under the ~44px recommended tap target.
+   Scoped to coarse pointers so mouse users keep the compact desktop density.
+   NB: the nav-bar GitHub link is deliberately excluded — enlarging it to 44px
+   blows it out of proportion in the compact 54px top bar (next to the equally
+   small theme toggle and hamburger). */
+@media (hover: none) and (pointer: coarse) {
+    .dl,
+    .committee-link {
+        padding: 0.5rem 0.7rem;
+        min-height: 2.75rem;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .chart-legend .legend-item,
+    .conv-leg[data-series] {
+        min-height: 2.25rem;
+        padding: 0.3rem 0.5rem;
+    }
+
+    .remarks-toggle {
+        min-width: 2.5rem;
+        min-height: 2.5rem;
     }
 }
 
@@ -2033,7 +2296,7 @@ td.num {
     gap: 1.5rem;
     margin: 0;
     padding: 0;
-    /* Separated from neighbours by .section-divider elements (like every other
+    /* Separated from neighbors by .section-divider elements (like every other
        top-level section), not its own borders — see index.html / leaderboard.html. */
 }
 
@@ -2085,11 +2348,18 @@ td.num {
 
 .site-footer a {
     color: var(--accent);
+    /* Footer links sit inside body text, so colour alone isn't a sufficient
+       distinction (WCAG 1.4.1 / axe link-in-text-block). A subtle underline
+       marks them as links without shouting. */
+    text-decoration: underline;
+    text-decoration-color: var(--border-mid);
+    text-underline-offset: 0.15em;
 }
 
 .site-footer a:hover {
     color: var(--accent-d);
     text-decoration: underline;
+    text-decoration-color: currentColor;
 }
 
 @media (max-width: 640px) {
@@ -2110,7 +2380,7 @@ td.num {
 /* =========================================================================
    Dark mode
    Activated by data-theme="dark" on <html> (set by the inline head script
-   and toggled from the nav button). Only colour tokens + a handful of
+   and toggled from the nav button). Only color tokens + a handful of
    hard-coded surfaces are overridden; layout is untouched.
    ========================================================================= */
 .theme-toggle {
@@ -2161,13 +2431,13 @@ td.num {
     --green-l: #20301a;
     --blue: #7db9d0;
     --blue-l: #1a2b33;
-    /* Muted paradigm + bar colours for dark backgrounds: lower saturation so
+    /* Muted paradigm + bar colors for dark backgrounds: lower saturation so
        the dots, chart lines and progress bars read softly rather than glaring. */
     --cat-classical: #569a8d;
     --cat-quantum-hw: #9082bd;
     --cat-quantum-sim: #c2895e;
     /* Dark theme inverts the ramp: optimal is the *brightest* tier and open the
-       darkest, so it stays lightness-monotonic (and colour-blind safe) against a
+       darkest, so it stays lightness-monotonic (and color-blind safe) against a
        dark card. */
     --bar-solved-classical: #7ce295;
     --bar-best-known-classical: #2c8f4f;
@@ -2191,7 +2461,7 @@ td.num {
     --pill-sub-fg: #88b6cc;
     --pill-open-bg: #232c30;
     --pill-open-fg: #9fadb1;
-    /* "ink"/heading colour becomes light in dark mode. */
+    /* "ink"/heading color becomes light in dark mode. */
     --navy: #e7eceb;
     --shadow: 0 16px 38px rgba(0, 0, 0, 0.45);
 }
@@ -2205,7 +2475,7 @@ td.num {
     border-color: #6a3329;
 }
 
-/* Form controls: recolour the inline dropdown arrow for contrast. */
+/* Form controls: recolor the inline dropdown arrow for contrast. */
 :root[data-theme="dark"] select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%239FADB1' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
 }
@@ -2234,13 +2504,18 @@ td.num {
     stroke: rgba(159, 173, 177, 0.16);
 }
 
+:root[data-theme="dark"] .mip-grid-minor {
+    stroke: rgba(159, 173, 177, 0.09);
+}
+
 :root[data-theme="dark"] .mip-axis-line {
     stroke: rgba(159, 173, 177, 0.5);
 }
 
-/* Plot images keep a white backing so the figures stay legible. */
+/* Plot images keep a white backing so the figures stay legible in dark mode. */
 :root[data-theme="dark"] .plot-card img {
-    background: #f3f5f4;
+    --plot-bg: #f3f5f4;
+    background: var(--plot-bg);
 }
 
 /* =========================================================================
@@ -2326,10 +2601,30 @@ td.num {
 .srow-head {
     display: grid;
     /* Problem · Instance (widest, for the autocomplete) · Best objective.
-       Three columns for the three controls — no trailing empty column. */
-    grid-template-columns: 160px minmax(220px, 1.7fr) minmax(150px, 1fr);
+       Three columns for the three controls — no trailing empty column.
+       The `minmax(0, …)` lower bounds let the tracks shrink below their
+       content's intrinsic width; without them a text input's default size
+       (plus .fi-grow's min-width) blows the grid past the viewport on narrow
+       screens (classic min-width:auto grid overflow). */
+    grid-template-columns: minmax(0, 160px) minmax(0, 1.7fr) minmax(0, 1fr);
     gap: 0.6rem;
     align-items: end;
+}
+
+/* Grid/flex children default to min-width:auto, refusing to shrink below their
+   content — pin them to 0 so the tracks (not the viewport) absorb the overflow,
+   and keep every control filling its cell. */
+.srow-head > *,
+.srow-head .ff,
+.srow-head .fi-grow {
+    min-width: 0;
+}
+
+.srow-head input,
+.srow-head select,
+.srow-head .ac,
+.srow-head .fi-grow {
+    width: 100%;
 }
 
 /* Custom instance autocomplete (replaces the native <datalist>). */
@@ -2526,7 +2821,9 @@ textarea.invalid {
 
 @media (max-width: 760px) {
     .srow-head {
-        grid-template-columns: 1fr 1fr;
+        /* minmax(0, …) so the two columns can shrink instead of forcing the row
+           (and the whole page) to scroll horizontally on phones. */
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     }
 
     .sp-actions {
@@ -2560,7 +2857,20 @@ textarea.invalid {
     border-color: var(--accent);
 }
 
-@media (max-width: 760px) {
+/* Mid widths (1281–1440px): the 8 links fit the 84% column but the search
+   omnibox tips the bar over the edge. Hide the omnibox here — it reappears once
+   the full bar has room above 1440px, and the hamburger takes over below 1280. */
+@media (max-width: 1440px) {
+    .gsearch-wrap {
+        display: none;
+    }
+}
+
+/* Collapse the nav to a hamburger below this width. Even without the omnibox the
+   logo + 8 links + theme toggle + GitHub need ~1000px, which the 84% content
+   column doesn't provide until ~1280px; below here the bar overflows and the
+   page scrolls sideways. */
+@media (max-width: 1280px) {
     .nav-inner {
         position: relative;
         gap: 0.55rem;
@@ -2569,6 +2879,14 @@ textarea.invalid {
 
     .nav-toggle {
         display: inline-flex;
+    }
+
+    /* The omnibox needs more room than a compact top bar can spare (its 9rem input
+       expands to 14rem on focus and pushes the logo/GitHub/hamburger off-screen).
+       Hide it on tablets and phones — the hamburger menu covers navigation, and
+       the Problems / Instances pages have their own in-page search. */
+    .gsearch-wrap {
+        display: none;
     }
 
     /* Logo stays left; the theme toggle, GitHub link and hamburger group right. */
@@ -2618,6 +2936,14 @@ textarea.invalid {
     stroke-width: 1;
 }
 
+/* Faint unlabeled 2×/5× guides between decades on log axes. */
+.conv-grid-minor {
+    stroke: var(--border);
+    stroke-width: 1;
+    stroke-opacity: 0.4;
+    stroke-dasharray: 2 3;
+}
+
 .conv-axis-line {
     stroke: var(--border-mid);
     stroke-width: 1.2;
@@ -2647,6 +2973,35 @@ textarea.invalid {
     gap: 0.32rem;
 }
 
+/* Legend items are clickable when they carry data-series (toggling). */
+.conv-leg[data-series] {
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.15s, color 0.15s;
+}
+
+.conv-leg[data-series]:hover {
+    opacity: 0.8;
+}
+
+/* Dimmed state: dot fades out strongly; text stays fully readable with
+   a strikethrough so users know it is toggled off but can still read it.
+   A title hint reinforces the "click to restore" affordance. */
+.conv-leg-off {
+    color: var(--muted);
+    opacity: 1;
+}
+
+.conv-leg-off .conv-dot,
+.conv-leg-off .conv-dot-heur {
+    opacity: 0.25;
+}
+
+.conv-leg-off .conv-leg-label {
+    text-decoration: line-through;
+    text-decoration-color: var(--muted);
+}
+
 .conv-axis-title {
     fill: var(--muted);
     font-family: var(--mono);
@@ -2659,6 +3014,44 @@ textarea.invalid {
     display: flex;
     justify-content: flex-end;
     margin: 0 0 0.6rem;
+}
+
+/* Portfolio λ panel: the selector plus a short explanatory caption, framed so
+   the risk-aversion sweep reads as one unit above the per-λ instance body. */
+.lambda-panel {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    margin: 0.4rem 0 1.4rem;
+    background: var(--surface, transparent);
+}
+.lambda-help {
+    margin: 0.7rem 0 0;
+    max-width: 70ch;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+/* Portfolio λ selector: a labelled segmented control above the instance body.
+   Left-aligns the label with the sweep buttons and lets the buttons wrap on
+   narrow viewports (the sweep can be 8+ values). */
+.lambda-selector {
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0;
+}
+.lambda-selector .seg-toggle {
+    flex-wrap: wrap;
+}
+.lambda-selector-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
 }
 
 /* Two charts per row to keep the section compact. Each chart stays one column
@@ -2724,6 +3117,20 @@ textarea.invalid {
     color: #fff;
 }
 
+/* Open diamond: heuristic series marker in the chart legend. */
+.conv-dot-heur {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 0;
+    transform: rotate(45deg);
+    background: transparent;
+    border-width: 1.5px;
+    border-style: solid;
+    /* border-color set inline from the series color */
+    flex-shrink: 0;
+}
+
 .conv-dot {
     width: 10px;
     height: 10px;
@@ -2751,4 +3158,1021 @@ textarea.invalid {
     border-radius: 999px;
     display: inline-block;
     flex-shrink: 0;
+}
+
+/* =========================================================================
+   Participate page — steps, info cards, requirement groups, best practices
+   Committee page — member cards, responsibility cards
+   ========================================================================= */
+
+.participate-lead {
+    font-family: var(--serif);
+    font-size: 0.97rem;
+    color: var(--muted);
+    line-height: 1.78;
+    max-width: 72ch;
+    margin-bottom: 1.6rem;
+}
+
+/* Hero actions on the participate page sit immediately under the .ph intro,
+   so pull them up slightly to close the gap and add bottom clearance. */
+.participate-hero-actions {
+    margin: -0.5rem 0 2rem;
+}
+
+/* Sub-section headings (.sh) used within a section — add top spacing so they
+   don't run into the preceding element. */
+.sh-mt    { margin-top: 1.25rem; }
+.sh-mt-sm { margin-top: 0.25rem; }
+.sh-mt-md { margin-top: 1rem; }
+.sh-mt-lg { margin-top: 1.5rem; }
+
+/* "Optional" label inside a section heading. */
+.sh-optional {
+    font-weight: 400;
+    font-size: 0.85em;
+    color: var(--muted);
+}
+
+/* Prose paragraphs that follow a sub-heading need a small top nudge. */
+.tl-desc-mt { margin-top: 0.5rem; }
+
+/* Requirement table variants with top/bottom spacing. */
+.req-table-mt  { margin-top: 1rem; }
+
+/* Info-card grids with explicit spacing overrides. */
+.info-cards-mt { margin-top: 1.25rem; }
+.info-cards-mb { margin-bottom: 1.5rem; }
+
+/* Lists inside info-cards: reset the default outer spacing so the card
+   padding alone controls the visual inset. */
+.req-list-inline {
+    margin: 0;
+    padding-left: 1.1rem;
+}
+
+/* Timeline list with top spacing. */
+.timeline-mt { margin-top: 1rem; }
+
+/* ---- Vertical step timeline ---- */
+.timeline {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 0;
+    position: relative;
+}
+
+/* dotted connector runs down the left alongside the nodes */
+.timeline::before {
+    content: "";
+    position: absolute;
+    top: 1.05rem;
+    left: 1.05rem;
+    width: 0;
+    height: calc(100% - 2.1rem);
+    border-left: 2px dashed var(--border);
+    z-index: 0;
+}
+
+.tl-item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    padding: 0 0 1.75rem 0;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.tl-item:last-child { padding-bottom: 0; }
+
+.tl-node {
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.tl-num {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.tl-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 0.25rem;
+}
+
+.tl-title {
+    font-weight: 700;
+    font-size: 0.93rem;
+    color: var(--navy);
+    margin-bottom: 0.35rem;
+    line-height: 1.35;
+}
+
+.tl-desc {
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.tl-desc a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.tl-desc a:hover { color: var(--accent-d); }
+
+/* ---- Three-column info cards (validity / feasibility / optimality) ---- */
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 0;
+}
+
+.info-card {
+    border-radius: var(--rl);
+    padding: 1.1rem 1.25rem;
+    border: 1px solid transparent;
+}
+
+.info-card p {
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    line-height: 1.72;
+    color: var(--muted);
+    margin: 0;
+}
+
+.info-card code {
+    font-family: var(--mono);
+    font-size: 0.82em;
+    /* A translucent black wash over the coloured card tint (--blue-l etc.) muddies
+       the chip and drops the code text under AA. Use a solid near-white chip with
+       an explicit dark text colour so contrast is well above 4.5:1 on every tint. */
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+}
+
+/* In dark mode the same solid surface chip keeps inline code legible on the
+   darker card tints (the old translucent wash was nearly invisible). */
+:root[data-theme="dark"] .info-card code {
+    background: var(--surface);
+    color: var(--text);
+}
+
+.info-card-head {
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.55rem;
+}
+
+.info-card-ok  { background: var(--green-l);  border-color: #b6d9a8; }
+.info-card-ok  .info-card-head { color: var(--green); }
+
+.info-card-amber { background: var(--amber-l); border-color: #e8d9a0; }
+.info-card-amber .info-card-head { color: var(--amber); }
+
+.info-card-blue  { background: var(--blue-l);  border-color: #a8ccdb; }
+.info-card-blue  .info-card-head { color: var(--blue); }
+
+/* ---- Required-information table ---- */
+.req-table-wrap { margin-bottom: 0; }
+
+/* The category cell spans multiple rows — keep it visually stable by not
+   letting row-level hover or striping bleed into it. All other cells use
+   the normal global table styles (stripe, hover). */
+.req-table .req-cat {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+    vertical-align: top;
+    border-right: 2px solid var(--border);
+    background: var(--surface2) !important;
+}
+
+/* Thick top border marks the start of each category group across all columns */
+.req-table .req-cat,
+.req-table .req-section-start {
+    border-top: 2px solid var(--border-mid);
+}
+
+/* First group has no top divider */
+.req-table tbody tr:first-child .req-cat,
+.req-table tbody tr:first-child .req-section-start {
+    border-top: none;
+}
+
+.req-table td.mono {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+/* ---- Code block (participate page) ---- */
+.code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--text);
+    overflow-x: auto;
+    margin: 0;
+}
+
+/* ---- Requirement groups (kept for potential reuse) ---- */
+.req-group { margin-bottom: 1.5rem; }
+
+.req-group-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 0.65rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.req-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+}
+
+.req-list li {
+    font-family: var(--serif);
+    font-size: 0.91rem;
+    color: var(--text);
+    line-height: 1.65;
+    padding-left: 1.2rem;
+    position: relative;
+}
+
+.req-list li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.req-list code {
+    font-family: var(--mono);
+    font-size: 0.82em;
+    background: var(--surface2);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    color: var(--text);
+}
+
+/* ---- Best practices 2×2 grid ---- */
+.bp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.bp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    padding: 1.15rem 1.3rem;
+}
+
+.bp-card-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--navy);
+    margin-bottom: 0.65rem;
+}
+
+.bp-card .req-list li { font-size: 0.86rem; }
+
+/* ---- Committee member cards ---- */
+.committee-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
+}
+
+.committee-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    padding: 1.3rem 1.4rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.committee-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+:root[data-theme="dark"] .committee-card:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+}
+
+.committee-info { min-width: 0; }
+
+.committee-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--navy);
+    margin-bottom: 0.12rem;
+}
+
+.committee-affil {
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--accent);
+    margin-bottom: 0.18rem;
+}
+
+.committee-role {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 0.65rem;
+}
+
+.committee-bio {
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0 0 0.7rem;
+}
+
+.committee-contact { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.committee-link {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+    transition: all 0.15s;
+}
+
+.committee-link:hover {
+    border-color: var(--accent);
+    background: var(--accent-l);
+    color: var(--accent-d);
+}
+
+/* ---- Responsibility cards ---- */
+.resp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.resp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--rl) var(--rl) 0;
+    padding: 1rem 1.2rem;
+}
+
+.resp-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--navy);
+    margin-bottom: 0.45rem;
+}
+
+.resp-desc {
+    font-family: var(--serif);
+    font-size: 0.87rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+    .info-cards,
+    .committee-grid,
+    .resp-grid,
+    .bp-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .committee-card { display: block; }
+}
+
+/* =========================================================================
+   Affiliations section (index page)
+   Two counter-scrolling rows of stat cards; a count-up number sits to the
+   right of the section heading.  Each card shows an org name + instance count.
+   ========================================================================= */
+
+/* Header row: title on left, animated count on right */
+.affil-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+}
+
+.affil-count-display {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+.affil-count-num {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--navy);
+    line-height: 1;
+}
+
+.affil-count-lbl {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+}
+
+/* Stack the two tracks with a small gap between them */
+.affil-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Each row clips overflow and fades at both edges */
+.affil-track-wrap {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+        to right, transparent 0%, #000 7%, #000 93%, transparent 100%
+    );
+    mask-image: linear-gradient(
+        to right, transparent 0%, #000 7%, #000 93%, transparent 100%
+    );
+}
+
+.affil-track {
+    display: flex;
+    align-items: stretch;
+    gap: 0.55rem;
+    width: max-content;
+    padding: 0.2rem 0;
+}
+
+/* Row A scrolls left; row B uses reverse direction for the counter-scroll */
+.affil-track.running {
+    animation: affil-scroll linear infinite;
+    animation-duration: var(--affil-duration, 70s);
+}
+
+.affil-track.affil-track-reverse.running {
+    animation-direction: reverse;
+}
+
+/* Pause both rows on hover */
+@media (hover: hover) {
+    .affil-rows:hover .affil-track.running {
+        animation-play-state: paused;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .affil-track.running { animation: none; }
+    .affil-track-wrap {
+        overflow-x: auto;
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+    .affil-rows {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+    }
+    .affil-track {
+        flex-wrap: wrap;
+        width: auto;
+        gap: 0.45rem;
+        padding: 0;
+    }
+    .affil-track.affil-track-reverse { display: contents; }
+    .affil-chip-dup { display: none; }
+}
+
+@keyframes affil-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(var(--affil-shift, -50%)); }
+}
+
+/* Stat card: name on top, instance count below */
+.affil-chip {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    user-select: none;
+    cursor: default;
+    padding: 0.5rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    transition: border-color 0.15s;
+    min-width: 9rem;
+}
+
+.affil-chip:hover {
+    border-color: var(--accent);
+}
+
+.affil-chip-name {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.25;
+}
+
+.affil-chip-stat {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+}
+
+
+/* =========================================================================
+   Leaderboard — view toggle (Overall / Quantum)
+   ========================================================================= */
+
+.lb-view-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    width: fit-content;
+}
+
+.lb-vt-btn {
+    padding: 0.38rem 1.1rem;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 500;
+    background: var(--surface);
+    color: var(--muted);
+    border: none;
+    cursor: pointer;
+    border-right: 1px solid var(--border);
+    transition: background 0.12s, color 0.12s;
+}
+
+.lb-vt-btn:last-child {
+    border-right: none;
+}
+
+.lb-vt-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+}
+
+.lb-vt-btn.lb-vt-active {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* =========================================================================
+   Leaderboard — per-problem collapsible sections
+   Native <details>; the summary reads as a section heading with a caret,
+   the problem badge/name on the left and record counts on the right.
+   ========================================================================= */
+
+.lb-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.lb-prob-section {
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    background: var(--surface);
+    overflow: hidden;
+}
+
+.lb-prob-section > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 0.9rem;
+    font-family: var(--sans);
+    user-select: none;
+    transition: background 0.12s;
+}
+
+.lb-prob-section > summary::-webkit-details-marker {
+    display: none;
+}
+
+.lb-prob-section > summary::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 5px solid currentColor;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+    color: var(--faint);
+}
+
+.lb-prob-section[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+.lb-prob-section > summary:hover {
+    background: var(--surface2);
+}
+
+.lb-prob-section > summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+}
+
+.lb-sec-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+    /* Allow the name to shrink and ellipsize on narrow screens instead of
+       shoving the record counts off the row. */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Counts pushed to the right edge of the summary row; never compressed. */
+.lb-sec-counts {
+    margin-left: auto;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.lb-sec-best {
+    color: var(--star);
+    font-variant-numeric: tabular-nums;
+}
+
+/* The table sits flush inside the section: drop its own rounded outer border
+   (the section already provides one) and keep only a top rule under the summary
+   so it doesn't read as a box-in-a-box. */
+.lb-prob-section > .tw {
+    border: none;
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+}
+
+/* =========================================================================
+   Leaderboard — best-by-paradigm panel
+   ========================================================================= */
+
+.lb-pdg-wrap {
+    margin-bottom: 1.4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    padding: 1rem 1.2rem 1.1rem;
+}
+
+.lb-pdg-title {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.8rem;
+}
+
+.lb-pdg-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.lb-pdg-card {
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 0.75rem 0.9rem;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.lb-pdg-card.lb-pdg-empty {
+    background: var(--surface2);
+    opacity: 0.7;
+}
+
+.lb-pdg-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    margin-bottom: 0.15rem;
+    flex-shrink: 0;
+}
+
+.lb-pdg-label {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.lb-pdg-value {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--text);
+    margin-top: 0.15rem;
+}
+
+.lb-pdg-holder {
+    font-size: 0.79rem;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lb-pdg-holder.lb-pdg-none {
+    font-style: italic;
+}
+
+.lb-pdg-date {
+    font-size: 0.72rem;
+    color: var(--faint);
+}
+
+@media (max-width: 600px) {
+    .lb-pdg-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   Global search omnibox
+   ============================================================ */
+
+.gsearch-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.gsearch-input {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.22rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    width: 9rem;
+    transition: border-color 0.12s, width 0.2s;
+}
+
+.gsearch-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    width: 14rem;
+}
+
+.gsearch-input::-webkit-search-cancel-button {
+    cursor: pointer;
+}
+
+.gsearch-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 22rem;
+    max-height: 18rem;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    list-style: none;
+    margin: 0;
+    padding: 0.3rem 0;
+    z-index: 300;
+    font-size: 0.8rem;
+}
+
+.gsearch-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.35rem 0.8rem;
+    cursor: pointer;
+    color: var(--text);
+    outline: none;
+}
+
+.gsearch-item:hover,
+.gsearch-item:focus {
+    background: var(--surface2);
+    color: var(--navy);
+}
+
+.gsearch-kind {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--faint);
+    flex-shrink: 0;
+    min-width: 3.5rem;
+}
+
+.gsearch-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gsearch-item.gsearch-problem .gsearch-kind { color: var(--accent); }
+.gsearch-item.gsearch-instance .gsearch-kind { color: var(--muted); }
+
+/* ============================================================
+   Scatter plot legend hint
+   ============================================================ */
+
+.mip-legend-hint {
+    font-size: 0.72rem;
+    color: var(--faint);
+    font-family: var(--mono);
+    padding: 0.15rem 0.25rem 0.4rem;
+    margin-top: -0.25rem;
+}
+
+/* ============================================================
+   Leaderboard filter reset notice
+   ============================================================ */
+
+.lb-filter-notice {
+    font-size: 0.78rem;
+    color: var(--amber);
+    background: var(--amber-l);
+    border: 1px solid var(--amber);
+    border-radius: var(--r);
+    padding: 0.4rem 0.8rem;
+    margin-bottom: 0.75rem;
+}
+
+/* ============================================================
+   Status badge non-color symbol cue
+   ============================================================ */
+
+.status-pill-sym {
+    font-size: 0.7em;
+    font-style: normal;
+    margin-right: 0.1em;
+}
+
+/* ============================================================
+   Submit page — draft restore banner
+   ============================================================ */
+
+.draft-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: var(--blue-l);
+    border: 1px solid var(--blue);
+    color: var(--blue);
+    border-radius: var(--r);
+    padding: 0.55rem 0.9rem;
+    font-size: 0.82rem;
+    margin-bottom: 1.25rem;
+}
+
+/* The `display: flex` above otherwise beats the `hidden` attribute, so the
+   Dismiss button (which toggles `hidden`) had no visible effect. */
+.draft-banner[hidden] {
+    display: none;
+}
+
+.draft-banner-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   Expandable remarks in submission tables
+   ============================================================ */
+
+.remarks-short {
+    cursor: pointer;
+}
+
+.remarks-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 0.8rem;
+    padding: 0 0.2rem;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.remarks-toggle:hover {
+    color: var(--accent-d);
+}
+
+/* ============================================================
+   Participate page — CI failure note inside timeline
+   ============================================================ */
+
+.tl-note {
+    margin-top: 0.65rem;
+    padding: 0.55rem 0.8rem;
+    background: var(--amber-l);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 var(--r) var(--r) 0;
+    font-size: 0.8rem;
+    color: var(--text);
+    line-height: 1.55;
+}
+
+/* ============================================================
+   Global reduced-motion safety net
+   Honor prefers-reduced-motion for every transition/animation, not just the
+   affiliations ticker (which has its own richer fallback above). Near-zero
+   rather than 0 so any transitionend-dependent JS still fires. The blinking
+   loading caret is stopped outright.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .loading::after {
+        animation: none;
+    }
 }

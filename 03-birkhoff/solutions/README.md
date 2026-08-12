@@ -13,199 +13,199 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 
 | Instance | Best Known | Status | Source | Date |
 | :------- | ---------: | :----- | :----- | :--- |
-| B100_100_1 | 484 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B100_100_10 | 484 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B100_100_2 | 487 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B100_100_3 | 488 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B100_100_4 | 493 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B100_100_5 | 492 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B100_100_6 | 488 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B100_100_7 | 492 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B100_100_8 | 488 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B100_100_9 | 491 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_100_1 | 55 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_100_10 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_100_2 | 56 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_100_3 | 56 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_100_4 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_100_5 | 54 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_100_6 | 55 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_100_7 | 55 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_100_8 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_100_9 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_10_1 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_10_10 | 22 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B10_10_2 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B10_10_3 | 14 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_10_4 | 13 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_10_5 | 23 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_10_6 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_10_7 | 15 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_10_8 | 16 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B10_10_9 | 16 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B11_11_1 | 44 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_11_10 | 21 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_11_2 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_11_3 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_11_4 | 17 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_11_5 | 41 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_11_6 | 16 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_11_7 | 26 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_11_8 | 39 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_11_9 | 46 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_121_1 | 63 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_121_10 | 60 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_121_2 | 62 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_121_3 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_121_4 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_121_5 | 63 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_121_6 | 63 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_121_7 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_121_8 | 62 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B11_121_9 | 62 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_12_1 | 48 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_12_10 | 12 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_12_2 | 13 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_12_3 | 43 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_12_4 | 47 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_12_5 | 34 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_12_6 | 49 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_12_7 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_12_8 | 47 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_12_9 | 46 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_144_1 | 67 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_144_10 | 70 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_144_2 | 66 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_144_3 | 68 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_144_4 | 67 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_144_5 | 68 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_144_6 | 66 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_144_7 | 69 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_144_8 | 67 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B12_144_9 | 68 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_13_1 | 50 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_13_10 | 46 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_13_2 | 49 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_13_3 | 50 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_13_4 | 47 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_13_5 | 28 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_13_6 | 50 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_13_7 | 23 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_13_8 | 44 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_13_9 | 50 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_169_1 | 74 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_169_10 | 73 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_169_2 | 73 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_169_3 | 75 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_169_4 | 73 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_169_5 | 72 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_169_6 | 74 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_169_7 | 74 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_169_8 | 72 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B13_169_9 | 74 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_14_1 | 55 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_14_10 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_14_2 | 54 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_14_3 | 43 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_14_4 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_14_5 | 52 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_14_6 | 52 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_14_7 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_14_8 | 56 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_14_9 | 53 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_196_1 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_196_10 | 79 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_196_2 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_196_3 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_196_4 | 80 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_196_5 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_196_6 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_196_7 | 80 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_196_8 | 80 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B14_196_9 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_15_1 | 54 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_15_10 | 53 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_15_2 | 56 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_15_3 | 60 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_15_4 | 63 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_15_5 | 59 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_15_6 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_15_7 | 46 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_15_8 | 58 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_15_9 | 63 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_225_1 | 83 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_225_10 | 84 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_225_2 | 85 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_225_3 | 85 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_225_4 | 84 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_225_5 | 86 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_225_6 | 87 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_225_7 | 84 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_225_8 | 85 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B15_225_9 | 84 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_16_1 | 64 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_16_10 | 62 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_16_2 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_16_3 | 62 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_16_4 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_16_5 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_16_6 | 59 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_16_7 | 60 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_16_8 | 66 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_16_9 | 64 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_256_1 | 90 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_256_10 | 90 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_256_2 | 89 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_256_3 | 90 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_256_4 | 89 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_256_5 | 92 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_256_6 | 91 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_256_7 | 89 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_256_8 | 88 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B16_256_9 | 89 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_24_1 | 91 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_24_10 | 90 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_24_2 | 90 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_24_3 | 87 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_24_4 | 92 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_24_5 | 87 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_24_6 | 83 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_24_7 | 89 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_24_8 | 88 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_24_9 | 82 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_576_1 | 129 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_576_10 | 129 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_576_2 | 130 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_576_3 | 133 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_576_4 | 129 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_576_5 | 130 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_576_6 | 128 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_576_7 | 130 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_576_8 | 130 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B24_576_9 | 130 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_1024_1 | 205 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_1024_10 | 206 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_1024_2 | 208 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_1024_3 | 204 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_1024_4 | 202 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_1024_5 | 205 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_1024_6 | 205 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_1024_7 | 206 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_1024_8 | 204 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_1024_9 | 209 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_32_1 | 142 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_32_10 | 142 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_32_2 | 142 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_32_3 | 143 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_32_4 | 148 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_32_5 | 141 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_32_6 | 141 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_32_7 | 142 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_32_8 | 147 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B32_32_9 | 146 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
+| B100_100_1 | 484 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B100_100_10 | 484 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B100_100_2 | 487 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B100_100_3 | 488 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B100_100_4 | 493 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B100_100_5 | 492 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B100_100_6 | 488 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B100_100_7 | 492 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B100_100_8 | 488 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B100_100_9 | 491 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_100_1 | 55 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_100_10 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_100_2 | 56 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_100_3 | 56 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_100_4 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_100_5 | 54 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_100_6 | 55 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_100_7 | 55 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_100_8 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_100_9 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_10_1 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_10_10 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_10_2 | 39 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_10_3 | 14 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_10_4 | 13 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_10_5 | 23 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_10_6 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_10_7 | 15 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_10_8 | 16 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_10_9 | 16 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_11_1 | 44 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_11_10 | 21 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_11_2 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_11_3 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_11_4 | 17 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_11_5 | 41 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_11_6 | 16 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_11_7 | 26 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_11_8 | 39 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_11_9 | 46 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_121_1 | 63 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_121_10 | 60 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_121_2 | 62 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_121_3 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_121_4 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_121_5 | 63 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_121_6 | 63 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_121_7 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_121_8 | 62 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B11_121_9 | 62 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_12_1 | 48 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_12_10 | 12 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_12_2 | 13 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_12_3 | 43 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_12_4 | 47 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_12_5 | 34 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_12_6 | 49 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_12_7 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_12_8 | 47 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_12_9 | 46 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_144_1 | 67 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_144_10 | 70 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_144_2 | 66 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_144_3 | 68 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_144_4 | 67 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_144_5 | 68 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_144_6 | 66 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_144_7 | 69 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_144_8 | 67 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B12_144_9 | 68 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_13_1 | 50 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_13_10 | 46 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_13_2 | 49 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_13_3 | 50 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_13_4 | 47 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_13_5 | 28 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_13_6 | 50 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_13_7 | 23 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_13_8 | 44 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_13_9 | 50 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_169_1 | 74 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_169_10 | 73 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_169_2 | 73 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_169_3 | 75 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_169_4 | 73 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_169_5 | 72 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_169_6 | 74 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_169_7 | 74 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_169_8 | 72 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B13_169_9 | 74 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_14_1 | 55 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_14_10 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_14_2 | 54 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_14_3 | 43 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_14_4 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_14_5 | 52 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_14_6 | 52 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_14_7 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_14_8 | 56 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_14_9 | 53 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_196_1 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_196_10 | 79 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_196_2 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_196_3 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_196_4 | 80 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_196_5 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_196_6 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_196_7 | 80 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_196_8 | 80 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B14_196_9 | 78 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_15_1 | 54 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_15_10 | 53 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_15_2 | 56 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_15_3 | 60 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_15_4 | 63 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_15_5 | 59 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_15_6 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_15_7 | 46 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_15_8 | 58 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_15_9 | 63 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_225_1 | 83 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_225_10 | 84 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_225_2 | 85 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_225_3 | 85 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_225_4 | 84 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_225_5 | 86 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_225_6 | 87 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_225_7 | 84 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_225_8 | 85 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B15_225_9 | 84 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_16_1 | 64 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_16_10 | 62 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_16_2 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_16_3 | 62 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_16_4 | 61 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_16_5 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_16_6 | 59 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_16_7 | 60 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_16_8 | 66 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_16_9 | 64 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_256_1 | 90 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_256_10 | 90 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_256_2 | 89 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_256_3 | 90 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_256_4 | 89 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_256_5 | 92 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_256_6 | 91 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_256_7 | 89 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_256_8 | 88 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B16_256_9 | 89 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_24_1 | 91 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_24_10 | 90 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_24_2 | 90 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_24_3 | 87 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_24_4 | 92 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_24_5 | 87 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_24_6 | 83 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_24_7 | 89 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_24_8 | 88 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_24_9 | 82 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_576_1 | 129 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_576_10 | 129 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_576_2 | 130 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_576_3 | 133 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_576_4 | 129 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_576_5 | 130 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_576_6 | 128 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_576_7 | 130 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_576_8 | 130 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B24_576_9 | 130 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_1024_1 | 205 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_1024_10 | 206 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_1024_2 | 208 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_1024_3 | 204 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_1024_4 | 202 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_1024_5 | 205 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_1024_6 | 205 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_1024_7 | 206 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_1024_8 | 204 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_1024_9 | 209 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_32_1 | 142 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_32_10 | 142 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_32_2 | 142 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_32_3 | 143 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_32_4 | 148 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_32_5 | 141 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_32_6 | 141 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_32_7 | 142 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_32_8 | 147 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B32_32_9 | 146 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B3_3_1 | 2 | optimal | reference | — |
 | B3_3_10 | 3 | optimal | reference | — |
-| B3_3_2 | 2 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
+| B3_3_2 | 3 | optimal | reference | — |
 | B3_3_3 | 3 | optimal | reference | — |
 | B3_3_4 | 3 | optimal | reference | — |
 | B3_3_5 | 3 | optimal | reference | — |
@@ -216,43 +216,43 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B3_9_1 | 5 | optimal | reference | — |
 | B3_9_10 | 4 | optimal | reference | — |
 | B3_9_2 | 5 | optimal | reference | — |
-| B3_9_3 | 4 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
+| B3_9_3 | 5 | optimal | reference | — |
 | B3_9_4 | 5 | optimal | reference | — |
 | B3_9_5 | 4 | optimal | reference | — |
 | B3_9_6 | 5 | optimal | reference | — |
 | B3_9_7 | 4 | optimal | reference | — |
 | B3_9_8 | 4 | optimal | reference | — |
 | B3_9_9 | 4 | optimal | reference | — |
-| B48_2304_1 | 294 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_2304_10 | 289 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_2304_2 | 290 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_2304_3 | 290 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_2304_4 | 293 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_2304_5 | 293 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_2304_6 | 292 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_2304_7 | 291 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_2304_8 | 293 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_2304_9 | 292 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_48_1 | 207 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_48_10 | 211 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_48_2 | 207 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_48_3 | 204 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_48_4 | 207 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_48_5 | 210 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_48_6 | 206 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_48_7 | 209 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_48_8 | 205 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B48_48_9 | 212 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B4_16_1 | 8 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
+| B48_2304_1 | 294 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_2304_10 | 289 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_2304_2 | 290 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_2304_3 | 290 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_2304_4 | 293 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_2304_5 | 293 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_2304_6 | 292 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_2304_7 | 291 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_2304_8 | 293 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_2304_9 | 292 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_48_1 | 207 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_48_10 | 211 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_48_2 | 207 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_48_3 | 204 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_48_4 | 207 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_48_5 | 210 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_48_6 | 206 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_48_7 | 209 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_48_8 | 205 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B48_48_9 | 212 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B4_16_1 | 9 | optimal | reference | — |
 | B4_16_10 | 9 | optimal | reference | — |
 | B4_16_2 | 10 | optimal | reference | — |
 | B4_16_3 | 8 | optimal | reference | — |
 | B4_16_4 | 10 | optimal | reference | — |
 | B4_16_5 | 10 | optimal | reference | — |
-| B4_16_6 | 9 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B4_16_7 | 9 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B4_16_8 | 8 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B4_16_9 | 8 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
+| B4_16_6 | 10 | optimal | reference | — |
+| B4_16_7 | 10 | optimal | reference | — |
+| B4_16_8 | 10 | optimal | reference | — |
+| B4_16_9 | 10 | optimal | reference | — |
 | B4_4_1 | 4 | optimal | reference | — |
 | B4_4_10 | 4 | optimal | reference | — |
 | B4_4_2 | 4 | optimal | reference | — |
@@ -265,8 +265,8 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B4_4_9 | 4 | optimal | reference | — |
 | B5_25_1 | 14 | optimal | reference | — |
 | B5_25_10 | 14 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
-| B5_25_2 | 13 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B5_25_3 | 13 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
+| B5_25_2 | 14 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
+| B5_25_3 | 14 | optimal | reference | — |
 | B5_25_4 | 13 | optimal | reference | — |
 | B5_25_5 | 14 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
 | B5_25_6 | 14 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
@@ -283,26 +283,26 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B5_5_7 | 5 | optimal | reference | — |
 | B5_5_8 | 5 | optimal | reference | — |
 | B5_5_9 | 3 | optimal | reference | — |
-| B64_64_1 | 269 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B64_64_10 | 271 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B64_64_2 | 260 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B64_64_3 | 275 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B64_64_4 | 271 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B64_64_5 | 277 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B64_64_6 | 272 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B64_64_7 | 267 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B64_64_8 | 267 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B64_64_9 | 274 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
+| B64_64_1 | 269 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B64_64_10 | 271 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B64_64_2 | 260 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B64_64_3 | 275 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B64_64_4 | 271 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B64_64_5 | 277 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B64_64_6 | 272 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B64_64_7 | 267 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B64_64_8 | 267 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B64_64_9 | 274 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B6_36_1 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
-| B6_36_10 | 17 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
+| B6_36_10 | 20 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
 | B6_36_2 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
-| B6_36_3 | 18 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B6_36_4 | 18 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
+| B6_36_3 | 21 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
+| B6_36_4 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
 | B6_36_5 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
-| B6_36_6 | 20 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B6_36_7 | 17 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
+| B6_36_6 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
+| B6_36_7 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
 | B6_36_8 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
-| B6_36_9 | 20 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
+| B6_36_9 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
 | B6_6_1 | 6 | optimal | reference | — |
 | B6_6_10 | 6 | optimal | reference | — |
 | B6_6_2 | 6 | optimal | reference | — |
@@ -313,66 +313,66 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B6_6_7 | 6 | optimal | reference | — |
 | B6_6_8 | 6 | optimal | reference | — |
 | B6_6_9 | 6 | optimal | reference | — |
-| B7_49_1 | 23 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B7_49_10 | 21 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B7_49_2 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B7_49_3 | 22 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B7_49_4 | 22 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B7_49_5 | 24 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B7_49_6 | 19 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B7_49_7 | 21 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B7_49_8 | 23 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B7_49_9 | 20 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B7_7_1 | 7 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B7_7_10 | 9 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B7_7_2 | 13 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B7_7_3 | 7 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B7_7_4 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B7_7_5 | 10 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B7_7_6 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B7_7_7 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B7_7_8 | 7 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B7_7_9 | 7 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_64_1 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_64_10 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_64_2 | 28 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_64_3 | 26 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_64_4 | 26 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_64_5 | 26 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_64_6 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_64_7 | 24 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_64_8 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_64_9 | 24 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_8_1 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B8_8_10 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B8_8_2 | 10 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B8_8_3 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B8_8_4 | 10 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_8_5 | 9 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B8_8_6 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B8_8_7 | 7 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B8_8_8 | 12 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B8_8_9 | 12 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_81_1 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_81_10 | 43 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_81_2 | 41 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_81_3 | 41 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_81_4 | 43 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_81_5 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_81_6 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_81_7 | 41 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_81_8 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_81_9 | 43 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_9_1 | 19 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B9_9_10 | 10 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_9_2 | 18 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_9_3 | 9 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_9_4 | 14 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B9_9_5 | 22 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_9_6 | 23 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B9_9_7 | 22 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
-| B9_9_8 | 15 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | August 5th, 2026 |
-| B9_9_9 | 9 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | August 4th, 2026 |
+| B7_49_1 | 30 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_10 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_2 | 32 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_3 | 32 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_4 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_5 | 32 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_6 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_7 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_8 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_9 | 33 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_7_1 | 7 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_7_10 | 9 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_7_2 | 13 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_7_3 | 7 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_7_4 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_7_5 | 10 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_7_6 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_7_7 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_7_8 | 7 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B7_7_9 | 7 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B8_64_1 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_10 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_2 | 36 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_3 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_4 | 36 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_5 | 37 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_6 | 35 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_7 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_8 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_9 | 37 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_8_1 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_8_10 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_8_2 | 10 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_8_3 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_8_4 | 10 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B8_8_5 | 9 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_8_6 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_8_7 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_8_8 | 12 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_8_9 | 12 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_81_1 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_81_10 | 43 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_81_2 | 41 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_81_3 | 41 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_81_4 | 43 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_81_5 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_81_6 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_81_7 | 41 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_81_8 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_81_9 | 43 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_9_1 | 27 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_9_10 | 10 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_9_2 | 18 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_9_3 | 9 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_9_4 | 16 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_9_5 | 22 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_9_6 | 25 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_9_7 | 22 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_9_8 | 15 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_9_9 | 9 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 
 <!-- BKV:END -->
 

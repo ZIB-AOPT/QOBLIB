@@ -75,8 +75,38 @@ const PROBLEM_CACHE = new Map();          // id -> loaded problem data
 const INSTANCE_INDEX = new Map();         // instance name -> problem id (best effort)
 let rowSeq = 0;
 let validated = false;                     // becomes true after "Check submission" / export
+let suppressUnloadGuard = false;           // set for intentional navigations (e.g. "start fresh")
 const shared = {};                        // shared field values
 const sharedTouched = new Set();          // shared cols the user edited by hand (import won't clobber these)
+
+// ---------------------------------------------------------------------------
+// Draft persistence (localStorage)
+// ---------------------------------------------------------------------------
+const DRAFT_KEY = "qoblib-submit-draft";
+
+function saveDraft() {
+    try {
+        const draft = {
+            shared: { ...shared },
+            sharedTouched: [...sharedTouched],
+            rows: rows.map((r) => ({ id: r.id, idx: r.idx, problemId: r.problemId, instance: r.instance, data: { ...r.data } })),
+            rowSeq,
+        };
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch { /* storage full or unavailable */ }
+}
+
+function clearDraft() {
+    try { localStorage.removeItem(DRAFT_KEY); } catch { }
+}
+
+function loadDraft() {
+    try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+    } catch { return null; }
+}
 
 const NA = (v) => String(v || "").trim().toUpperCase();
 const isNA = (v) => NA(v) === "N/A" || NA(v) === "NA";
@@ -121,21 +151,23 @@ function colId(prefix, col) {
     return `${prefix}-${String(col).replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase()}`;
 }
 
-function fieldInput(spec, value, oninput, idAttr) {
+function fieldInput(spec, value, rowId, idAttr) {
     const id = idAttr ? `id="${idAttr}"` : "";
     const ph = spec.placeholder ? `placeholder="${qEsc(spec.placeholder)}"` : "";
+    // rowId is "" for shared fields; row fields carry a numeric id.
+    const rid = rowId !== "" ? ` data-rid="${rowId}"` : "";
     if (spec.type === "textarea") {
-        return `<textarea ${id} data-col="${qEsc(spec.col)}" ${ph} oninput="${oninput}">${qEsc(value || "")}</textarea>`;
+        return `<textarea ${id} data-col="${qEsc(spec.col)}"${rid} ${ph}>${qEsc(value || "")}</textarea>`;
     }
     if (spec.type === "select") {
         // Case-insensitive match so an imported value (e.g. "Deterministic") still
         // selects its option even if the casing differs from the option list.
         const valLower = String(value ?? "").toLowerCase();
         const opts = (spec.options || []).map((o) => `<option value="${qEsc(o)}"${String(o).toLowerCase() === valLower ? " selected" : ""}>${qEsc(o || "—")}</option>`).join("");
-        return `<select ${id} data-col="${qEsc(spec.col)}" onchange="${oninput}">${opts}</select>`;
+        return `<select ${id} data-col="${qEsc(spec.col)}"${rid}>${opts}</select>`;
     }
     const type = spec.type === "date" ? "date" : "text";
-    return `<input ${id} data-col="${qEsc(spec.col)}" type="${type}" value="${qEsc(value || "")}" ${ph} oninput="${oninput}" />`;
+    return `<input ${id} data-col="${qEsc(spec.col)}"${rid} type="${type}" value="${qEsc(value || "")}" ${ph} />`;
 }
 
 function renderShared() {
@@ -146,7 +178,7 @@ function renderShared() {
         const hint = f.hint ? `<small class="ff-hint">${qEsc(f.hint)}</small>` : "";
         return `<div class="ff${full}">
             <label for="${id}">${qEsc(f.label)}${f.required ? "" : ' <span class="opt">(optional)</span>'}</label>
-            ${fieldInput(f, shared[f.col] || "", "onSharedInput(this)", id)}
+            ${fieldInput(f, shared[f.col] || "", "", id)}
             ${hint}
         </div>`;
     }).join("");
@@ -166,7 +198,7 @@ function rowTemplate(row) {
         const id = colId(`rf${row.id}`, f.col);
         return `<div class="ff">
             <label for="${id}">${qEsc(f.label)}${f.required ? "" : ' <span class="opt">(optional)</span>'}</label>
-            ${fieldInput(f, row.data[f.col] || "", `onRowInput(${row.id}, this)`, id)}
+            ${fieldInput(f, row.data[f.col] || "", row.id, id)}
         </div>`;
     };
     const advanced = ROW_FIELDS.filter((f) => !f.essential).map(fieldBlock).join("");
@@ -176,20 +208,20 @@ function rowTemplate(row) {
     <div class="srow" id="srow-${row.id}" data-rid="${row.id}">
         <div class="srow-top">
             <span class="srow-num">Row #${row.idx}</span>
-            <button class="srow-del" type="button" title="Remove this row" onclick="removeRow(${row.id})">✕ Remove row</button>
+            <button class="srow-del" type="button" data-action="remove-row" data-rid="${row.id}" title="Remove this row">✕ Remove row</button>
         </div>
         <div class="srow-head">
             <div class="ff">
                 <label for="prob-${row.id}">Problem class</label>
-                <select id="prob-${row.id}" data-role="problem" onchange="onProblemChange(${row.id}, this)">${problemOptions(row.problemId)}</select>
+                <select id="prob-${row.id}" data-role="problem" data-rid="${row.id}">${problemOptions(row.problemId)}</select>
             </div>
             <div class="ff fi-grow">
                 <label for="inst-${row.id}">Instance</label>
                 <div class="ac" data-rid="${row.id}">
                     <input id="inst-${row.id}" type="text" data-role="instance" autocomplete="off"
                            role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="acm-${row.id}"
-                           value="${qEsc(row.instance || "")}" placeholder="start typing an instance name…"
-                           oninput="onInstanceInput(${row.id}, this)" />
+                           data-rid="${row.id}"
+                           value="${qEsc(row.instance || "")}" placeholder="start typing an instance name…" />
                     <ul class="ac-menu" id="acm-${row.id}" role="listbox" hidden></ul>
                 </div>
             </div>
@@ -225,6 +257,7 @@ function addRow(initial = {}) {
         data: initial.data || {},
     });
     renderRows();
+    saveDraft();
 }
 
 function rowHasData(row) {
@@ -248,6 +281,7 @@ function removeRow(id) {
 
     rows.splice(i, 1);
     renderRows();
+    saveDraft();
 }
 
 // Cache the chosen problem's instance names on the row; the custom autocomplete
@@ -287,7 +321,9 @@ function closeAc(rowId) {
     menu.hidden = true;
     menu.innerHTML = "";
     menu.dataset.active = "-1";
-    acInput(rowId)?.setAttribute("aria-expanded", "false");
+    const input = acInput(rowId);
+    input?.setAttribute("aria-expanded", "false");
+    input?.removeAttribute("aria-activedescendant");
 }
 
 function closeAllAc(except) {
@@ -314,7 +350,7 @@ function renderAc(row) {
     const extra = matches.length - shown.length;
     menu.innerHTML =
         shown
-            .map((n) => `<li role="option" class="ac-item" data-rid="${row.id}" data-name="${qEsc(n)}">${qEsc(n)}</li>`)
+            .map((n, i) => `<li role="option" id="acm-${row.id}-${i}" class="ac-item" data-rid="${row.id}" data-name="${qEsc(n)}">${qEsc(n)}</li>`)
             .join("") +
         (extra > 0 ? `<li class="ac-more" aria-hidden="true">${extra} more — keep typing to narrow…</li>` : "");
     menu.hidden = false;
@@ -340,6 +376,10 @@ function chooseAc(row, name) {
     const input = acInput(row.id);
     if (input) input.value = name;
     closeAc(row.id);
+    // Programmatically setting input.value does not fire an "input" event, so the
+    // draft-saving handler on the field never runs — persist the pick explicitly
+    // (and the auto-detected problem) so it survives a reload.
+    saveDraft();
 }
 
 // Shared by typing and by picking a suggestion.
@@ -419,6 +459,7 @@ function onSharedInput(el) {
     shared[el.dataset.col] = el.value;
     sharedTouched.add(el.dataset.col);
     validateAll();
+    saveDraft();
 }
 
 function onRowInput(id, el) {
@@ -426,6 +467,7 @@ function onRowInput(id, el) {
     if (!row) return;
     row.data[el.dataset.col] = el.value;
     validateAll();
+    saveDraft();
 }
 
 function onProblemChange(id, el) {
@@ -433,6 +475,7 @@ function onProblemChange(id, el) {
     if (!row) return;
     row.problemId = el.value;
     loadRowInstances(row);
+    saveDraft();
 }
 
 function onInstanceInput(id, el) {
@@ -440,6 +483,7 @@ function onInstanceInput(id, el) {
     if (!row) return;
     setRowInstance(row, el.value);
     renderAc(row);
+    saveDraft();
 }
 
 // ---------------------------------------------------------------------------
@@ -490,7 +534,7 @@ function validateRow(row) {
                 out.errors.push("Best objective value is required (enter a value or N/A).");
             } else if (isNA(valRaw)) {
                 // Feasibility problems (e.g. Market Split) have no objective to
-                // optimise, so N/A is valid here — it is what the authoritative
+                // optimize, so N/A is valid here — it is what the authoritative
                 // checker accepts. There is nothing to cross-check against an optimum.
                 out.oks.push("Objective reported as N/A (no value to cross-check).");
             } else if (!Number.isFinite(Number(String(valRaw).replace(/,/g, "")))) {
@@ -518,14 +562,19 @@ function validateRow(row) {
         out.warns.push("Loading instance list to verify…");
     }
 
-    // Every per-instance field is required once the row is in use. Numeric
-    // fields accept "N/A" when they do not apply (e.g. QPU runtime on a CPU run).
+    // Match the authoritative checker (misc/ci/check_submission.py): a blank
+    // numeric / count / runtime cell is VALID — it just means "not reported / not
+    // applicable" (e.g. QPU runtime on a CPU run). So we do NOT force the user to
+    // type "N/A" into every column. Only the Best Objective Value is required
+    // (handled above); any value that IS entered is still range/format-checked by
+    // numericIssues() below. Non-numeric required text fields (none today beyond
+    // the objective) would still be enforced here.
     if (row.problemId && !isBlank(row.instance)) {
         ROW_FIELDS.forEach((f) => {
             if (!f.required || f.col === "Best Objective Value") return; // objective handled above
+            if (INT_COLUMNS.has(f.col) || FLOAT_COLUMNS.has(f.col)) return; // blank numeric ok
             if (isBlank(row.data[f.col])) {
-                const naHint = INT_COLUMNS.has(f.col) || FLOAT_COLUMNS.has(f.col) ? " (enter a value or N/A)" : "";
-                out.errors.push(`${f.label} is required${naHint}.`);
+                out.errors.push(`${f.label} is required.`);
             }
         });
     }
@@ -535,7 +584,7 @@ function validateRow(row) {
 }
 
 // Toggle the visual invalid state and the matching aria-invalid so the failure
-// is conveyed to assistive tech, not just by colour.
+// is conveyed to assistive tech, not just by color.
 function markInvalid(el, bad) {
     if (!el) return;
     el.classList.toggle("invalid", Boolean(bad));
@@ -777,20 +826,24 @@ async function downloadZip() {
         showToast("ZIP library failed to load — use Preview files to copy CSVs instead.", "error");
         return;
     }
-    const zip = new JSZip();
-    files.forEach((f) => zip.file(f.path, f.content));
-    zip.file(`SUBMISSION_README_${folder}.txt`, exportReadme(folder, files));
-    const blob = await zip.generateAsync({ type: "blob" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `qoblib_submission_${folder}.zip`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-    if (errs > 0) showToast(`ZIP downloaded with ${errs} unresolved error${errs > 1 ? "s" : ""} — fix before opening the PR.`, "warn");
-    else showToast(`ZIP downloaded — ${files.length} instance file${files.length > 1 ? "s" : ""}.`);
+    try {
+        const zip = new JSZip();
+        files.forEach((f) => zip.file(f.path, f.content));
+        zip.file(`SUBMISSION_README_${folder}.txt`, exportReadme(folder, files));
+        const blob = await zip.generateAsync({ type: "blob" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `qoblib_submission_${folder}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        if (errs > 0) showToast(`ZIP downloaded with ${errs} unresolved error${errs > 1 ? "s" : ""} — fix before opening the PR.`, "warn");
+        else showToast(`ZIP downloaded — ${files.length} instance file${files.length > 1 ? "s" : ""}.`);
+    } catch (e) {
+        showToast("Could not build the ZIP — use Preview files to copy the CSVs instead.", "error");
+    }
 }
 
 function previewFiles() {
@@ -810,7 +863,7 @@ function previewFiles() {
             <div class="file-block">
                 <div class="file-head">
                     <span class="mono">${qEsc(f.path)}</span>
-                    <button class="btn btn-ghost btn-sm" type="button" onclick="copyFile(${i})">Copy CSV</button>
+                    <button class="btn btn-ghost btn-sm" type="button" data-action="copy-file" data-file-idx="${i}">Copy CSV</button>
                 </div>
                 <pre class="code-pre" id="file-${i}">${qEsc(f.content)}</pre>
             </div>`).join("");
@@ -820,7 +873,15 @@ function previewFiles() {
 function copyFile(i) {
     const f = (window.__previewFiles || [])[i];
     if (!f) return;
-    navigator.clipboard.writeText(f.content).then(() => showToast("CSV copied to clipboard."));
+    // clipboard.writeText rejects on insecure origins or when permission is denied
+    // — tell the user to copy manually instead of failing silently.
+    if (!navigator.clipboard?.writeText) {
+        showToast("Clipboard unavailable — select the text and copy manually.", "warn");
+        return;
+    }
+    navigator.clipboard.writeText(f.content)
+        .then(() => showToast("CSV copied to clipboard."))
+        .catch(() => showToast("Couldn't copy — select the text and copy manually.", "warn"));
 }
 
 // ---------------------------------------------------------------------------
@@ -860,8 +921,9 @@ async function importCsvText(text) {
         showToast("That CSV has no 'Problem' column — is it a QOBLIB summary file?", "error");
         return 0;
     }
-    // Ensure all problems are indexed so we can map instance -> problem.
-    await Promise.all((SITE_INDEX.problems || []).map((p) => getProblem(p.id)));
+    // Ensure all problems are indexed so we can map instance -> problem. Use
+    // allSettled so one problem failing to load still lets the rest map instances.
+    await Promise.allSettled((SITE_INDEX.problems || []).map((p) => getProblem(p.id)));
 
     let added = 0;
     recs.slice(1).forEach((rec) => {
@@ -875,7 +937,7 @@ async function importCsvText(text) {
             if (f.col.startsWith("__")) return;
             let imported = get(f.col);
             if (isBlank(imported) || sharedTouched.has(f.col)) return;
-            // Normalise to the shapes the inputs/validator expect: dates → canonical
+            // Normalize to the shapes the inputs/validator expect: dates → canonical
             // YYYY-MM-DD (authors write timestamps, "22. Dec. 2024", …); select values
             // → the option's exact casing (real data uses "Deterministic").
             if (f.col === "Date") {
@@ -913,16 +975,31 @@ function onImportFiles(fileList) {
     if (!files.length) return;
     let total = 0;
     let pending = files.length;
+    const finish = () => {
+        pending -= 1;
+        if (pending !== 0) return;
+        if (note) {
+            note.style.display = "block";
+            note.textContent = `Imported ${total} row${total !== 1 ? "s" : ""} from ${files.length} file${files.length !== 1 ? "s" : ""}. Review the flagged items below.`;
+        }
+        showToast(`Imported ${total} row${total !== 1 ? "s" : ""}.`);
+    };
     files.forEach((file) => {
         const reader = new FileReader();
         reader.onload = async () => {
-            total += await importCsvText(String(reader.result || ""));
-            pending -= 1;
-            if (pending === 0) {
-                note.style.display = "block";
-                note.textContent = `Imported ${total} row${total !== 1 ? "s" : ""} from ${files.length} file${files.length !== 1 ? "s" : ""}. Review the flagged items below.`;
-                showToast(`Imported ${total} row${total !== 1 ? "s" : ""}.`);
+            // A single bad/unreadable CSV (or a network failure resolving its
+            // problems) shouldn't abort the whole import or leave an unhandled
+            // rejection — count what parsed and keep going.
+            try {
+                total += await importCsvText(String(reader.result || ""));
+            } catch (e) {
+                showToast(`Couldn't import ${file.name || "a file"} — skipped.`, "warn");
             }
+            finish();
+        };
+        reader.onerror = () => {
+            showToast(`Couldn't read ${file.name || "a file"} — skipped.`, "warn");
+            finish();
         };
         reader.readAsText(file);
     });
@@ -941,9 +1018,34 @@ async function initSubmitPage() {
         return;
     }
 
-    shared["Date"] = new Date().toISOString().slice(0, 10);
-    renderShared();
-    addRow();
+    // Restore a saved draft if one exists (and URL doesn't specify an instance).
+    const params = new URLSearchParams(window.location.search);
+    const pidParam = params.get("problem");
+    const instParam = params.get("instance") || params.get("name");
+    const draft = (!pidParam && !instParam) ? loadDraft() : null;
+
+    if (draft && (Object.keys(draft.shared || {}).length || (draft.rows || []).length > 0)) {
+        Object.assign(shared, draft.shared || {});
+        (draft.sharedTouched || []).forEach((c) => sharedTouched.add(c));
+        rowSeq = draft.rowSeq || 0;
+        (draft.rows || []).forEach((r) => rows.push({ ...r, _instanceNames: [] }));
+        renderShared();
+        if (rows.length) {
+            rows.forEach((r, i) => (r.idx = i + 1));
+            document.getElementById("rows").innerHTML = rows.map(rowTemplate).join("");
+            rows.forEach((r) => { if (r.problemId) loadRowInstances(r); });
+            validateAll();
+        } else {
+            addRow();
+        }
+        // Show a dismissible banner informing the user the draft was restored.
+        const banner = document.getElementById("draft-banner");
+        if (banner) banner.hidden = false;
+    } else {
+        shared["Date"] = new Date().toISOString().slice(0, 10);
+        renderShared();
+        addRow();
+    }
 
     // Guard each lookup so a renamed/removed control can't throw and take the
     // whole page down with it.
@@ -953,7 +1055,7 @@ async function initSubmitPage() {
     document.getElementById("preview-btn")?.addEventListener("click", previewFiles);
     document.getElementById("csv-upload")?.addEventListener("change", (e) => onImportFiles(e.target.files));
 
-    // Instance autocomplete: delegate on the persistent #rows host so dynamically
+    // Delegate all row-level events on the persistent #rows host so dynamically
     // added rows are covered without re-binding per render.
     const rowsHost = document.getElementById("rows");
     if (rowsHost) {
@@ -961,36 +1063,94 @@ async function initSubmitPage() {
         rowsHost.addEventListener("focusout", onRowsFocusout);
         rowsHost.addEventListener("keydown", onRowsKeydown);
         rowsHost.addEventListener("mousedown", onRowsMousedown);
+
+        // Replace the former inline onclick/onchange/oninput handlers.
+        rowsHost.addEventListener("click", (e) => {
+            const btn = e.target.closest("[data-action]");
+            if (!btn) return;
+            if (btn.dataset.action === "remove-row") {
+                const id = Number(btn.dataset.rid);
+                if (Number.isInteger(id)) removeRow(id);
+            }
+        });
+
+        rowsHost.addEventListener("change", (e) => {
+            const el = e.target;
+            const rid = Number(el.dataset.rid);
+            if (!Number.isInteger(rid)) return;
+            if (el.dataset.role === "problem") {
+                onProblemChange(rid, el);
+            } else if (el.dataset.col) {
+                onRowInput(rid, el);
+            }
+        });
+
+        rowsHost.addEventListener("input", (e) => {
+            const el = e.target;
+            const rid = Number(el.dataset.rid);
+            if (!Number.isInteger(rid)) return;
+            if (el.dataset.role === "instance") {
+                onInstanceInput(rid, el);
+            } else if (el.dataset.col) {
+                onRowInput(rid, el);
+            }
+        });
     }
+
+    // Delegate shared-grid input events.
+    const sharedGrid = document.getElementById("shared-grid");
+    if (sharedGrid) {
+        sharedGrid.addEventListener("input", (e) => {
+            if (e.target.dataset.col) onSharedInput(e.target);
+        });
+        sharedGrid.addEventListener("change", (e) => {
+            if (e.target.dataset.col) onSharedInput(e.target);
+        });
+    }
+
+    // Delegate copy-file button clicks on the preview-out container.
+    document.getElementById("preview-out")?.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-action='copy-file']");
+        if (!btn) return;
+        const idx = Number(btn.dataset.fileIdx);
+        if (Number.isInteger(idx)) copyFile(idx);
+    });
     // Click outside any autocomplete closes the open menu.
     document.addEventListener("mousedown", (e) => {
         if (!e.target.closest?.(".ac")) closeAllAc();
     });
 
-    // Warn before navigating away once the form holds entered data — there is no
-    // server-side draft, so an accidental refresh would otherwise lose everything.
+    // Warn before navigating away once the form holds entered data. With localStorage
+    // drafts the data won't be lost, but the beforeunload guard is still useful for
+    // URL-prefilled forms (?problem=…&instance=…) that aren't persisted.
     window.addEventListener("beforeunload", (e) => {
+        // "Start fresh" (and other intentional reloads) opt out of the guard so the
+        // user isn't hit with a second native "Leave site?" dialog on top of the
+        // in-app confirmation they just accepted.
+        if (suppressUnloadGuard) return;
         if (sharedTouched.size === 0 && !rows.some(rowHasData)) return;
         e.preventDefault();
         e.returnValue = "";
     });
 
     // Pre-select a problem/instance if linked from another page (?problem=07&instance=foo).
-    const params = new URLSearchParams(window.location.search);
-    const pid = params.get("problem");
-    const inst = params.get("instance") || params.get("name");
-    if (pid || inst) {
+    // (params/pidParam/instParam already declared above — reuse them.)
+    if (pidParam || instParam) {
         rows.length = 0;
-        addRow({ problemId: pid || "", instance: inst || "" });
+        addRow({ problemId: pidParam || "", instance: instParam || "" });
     }
-}
 
-// Expose inline handlers.
-window.onSharedInput = onSharedInput;
-window.onRowInput = onRowInput;
-window.onProblemChange = onProblemChange;
-window.onInstanceInput = onInstanceInput;
-window.removeRow = removeRow;
-window.copyFile = copyFile;
+    // Wire the draft-banner dismiss button.
+    document.getElementById("draft-banner-dismiss")?.addEventListener("click", () => {
+        document.getElementById("draft-banner").hidden = true;
+    });
+    document.getElementById("draft-banner-clear")?.addEventListener("click", () => {
+        if (window.confirm("Clear the saved draft and start fresh?")) {
+            clearDraft();
+            suppressUnloadGuard = true; // this reload is intentional — no "Leave site?" prompt
+            window.location.reload();
+        }
+    });
+}
 
 initSubmitPage();

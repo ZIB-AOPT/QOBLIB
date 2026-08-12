@@ -76,13 +76,18 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
+    # An explicit but empty --base-url (e.g. CI passing an unresolved
+    # `${{ steps.pages.outputs.base_url }}`) must not blank out the canonical
+    # origin — fall back to the module default so URLs stay absolute.
+    base_url = (args.base_url or "").strip() or config.DEFAULT_BASE_URL
+
     summary = build_site(
         out=args.out,
         root=args.root,
         repo_url=args.repo_url,
         ref=args.ref,
         copy_static=not args.no_static,
-        base_url=args.base_url,
+        base_url=base_url,
     )
     print(
         f"\nBuilt site at {args.out} "

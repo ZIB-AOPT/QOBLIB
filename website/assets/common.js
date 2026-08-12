@@ -9,6 +9,7 @@ const SUBMISSIONS_CACHE = new Map();
 const SUBMISSION_GROUPS_CACHE = new Map();
 const CHARTS_CACHE = new Map();
 const MIP_POINTS_CACHE = new Map();
+const TIME_SERIES_CACHE = new Map();
 let ALL_SUBMISSION_GROUPS_CACHE = null;
 let TABLE_SORT_OBSERVER = null;
 
@@ -27,6 +28,14 @@ function safeUrl(value) {
     if (s.startsWith("#") || s.startsWith("/") || s.startsWith("./") || s.startsWith("../")) return true;
     const match = s.match(/^([a-z][a-z0-9+.-]*):/i);
     return !match || ["http", "https", "mailto"].includes(match[1].toLowerCase());
+}
+
+// Escape a URL for an href/src attribute, but neuter any non-allowlisted scheme
+// (javascript:, data:, …) first — so an unsafe URL degrades to "#" rather than
+// becoming a clickable code-execution vector. Use wherever a data-derived URL is
+// interpolated into a link.
+function safeHref(value) {
+    return esc(safeUrl(value) ? String(value ?? "") : "#");
 }
 
 function sanitizeHtml(html) {
@@ -94,6 +103,105 @@ function sanitizeHtml(html) {
     return template.innerHTML;
 }
 
+// --- axis ticks --------------------------------------------------------------
+// Human-friendly tick generation shared by every chart on the site, so no axis
+// ever shows arbitrary values like "1234, 182938". Two helpers:
+//   • niceLinearTicks — 1/2/5×10ⁿ steps on a linear axis, integer-forced when the
+//     data is whole numbers (no fractional ticks on an integer-only quantity);
+//   • niceLogAxis — a tight log axis snapped to nice 1-2-5×10ⁿ bounds (a data max
+//     of 16 ends the axis at 20, not the next full decade), with labeled 1-2-5
+//     ticks and faint 2×/5× minor guides when the range spans several decades.
+
+// Round a raw step up to the nearest "nice" number: 1, 2, 5, 10, 20, 50, …
+function niceStep(raw, { integer = false } = {}) {
+    if (!(raw > 0) || !Number.isFinite(raw)) return 1;
+    const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+    const frac = raw / pow;
+    let nice;
+    if (frac <= 1) nice = 1;
+    else if (frac <= 2) nice = 2;
+    else if (frac <= 5) nice = 5;
+    else nice = 10;
+    let step = nice * pow;
+    if (integer) step = Math.max(1, Math.round(step));
+    return step;
+}
+
+// Return an array of tick values spanning [min, max] using a nice step. When
+// `integer` is true the step and every tick are whole numbers. `target` is the
+// approximate tick count to aim for (default 5).
+function niceLinearTicks(min, max, { integer = false, target = 5 } = {}) {
+    let lo = Number(min);
+    let hi = Number(max);
+    if (!Number.isFinite(lo) || !Number.isFinite(hi)) return [];
+    if (lo > hi) [lo, hi] = [hi, lo];
+    if (lo === hi) {
+        // Degenerate range: emit a single sensible tick.
+        return [integer ? Math.round(lo) : lo];
+    }
+    const step = niceStep((hi - lo) / Math.max(1, target), { integer });
+    if (!(step > 0)) return [lo, hi];
+    const start = Math.ceil(lo / step - 1e-9) * step;
+    const ticks = [];
+    for (let v = start; v <= hi + step * 1e-9; v += step) {
+        // Snap away tiny FP dust so integer ticks read as clean integers.
+        ticks.push(integer ? Math.round(v) : Number(v.toFixed(10)));
+    }
+    return ticks.length ? ticks : [lo, hi];
+}
+
+// Snap a positive value to the nearest "nice" 1-2-5×10ⁿ number. dir < 0 rounds
+// DOWN (largest nice ≤ value), dir > 0 rounds UP (smallest nice ≥ value). This is
+// what keeps an axis tight: a data max of 16 snaps to 20, not up to the next full
+// decade (100).
+function niceLogBound(value, dir) {
+    if (!(value > 0) || !Number.isFinite(value)) return 1;
+    const e = Math.floor(Math.log10(value));
+    const base = 10 ** e;
+    const m = value / base; // mantissa in [1, 10)
+    const steps = [1, 2, 5, 10];
+    if (dir < 0) {
+        let chosen = 1;
+        for (const s of steps) if (s <= m + 1e-9) chosen = s;
+        return chosen * base;
+    }
+    for (const s of steps) if (s >= m - 1e-9) return s * base;
+    return 10 * base;
+}
+
+// Build a tight, nicely-ticked log axis for a positive data range [minVal,maxVal].
+// Returns { lo, hi, major, minor } where lo/hi are the axis endpoints snapped to
+// nice 1-2-5 values (so the axis ends at 20 for data reaching 16, not at 100),
+// `major` are labeled tick values and `minor` are faint unlabeled guides. When
+// the whole 1-2-5 sequence fits it is all labeled (tight ranges look complete);
+// over a wider span only the decades are labeled and 2×/5× become minor guides.
+function niceLogAxis(minVal, maxVal, { maxMajor = 8 } = {}) {
+    let lo = niceLogBound(Math.min(minVal, maxVal), -1);
+    let hi = niceLogBound(Math.max(minVal, maxVal), +1);
+    if (!(lo > 0)) lo = 1;
+    if (hi <= lo) hi = lo * 10; // guarantee a non-zero span (single-point data)
+
+    const eLo = Math.floor(Math.log10(lo) + 1e-9);
+    const eHi = Math.ceil(Math.log10(hi) - 1e-9);
+    const all = [];
+    for (let e = eLo; e <= eHi; e += 1) {
+        for (const mm of [1, 2, 5]) {
+            const v = mm * 10 ** e;
+            if (v >= lo * (1 - 1e-9) && v <= hi * (1 + 1e-9)) all.push(v);
+        }
+    }
+    const uniq = [...new Set(all)].sort((a, b) => a - b);
+    if (uniq.length <= maxMajor) {
+        return { lo, hi, major: uniq, minor: [] };
+    }
+    // Too many for full 1-2-5 labels: label decades, demote 2×/5× to faint guides
+    // (only while the span is narrow enough that they stay legible).
+    const isDecade = (v) => Math.abs(Math.log10(v) - Math.round(Math.log10(v))) < 1e-9;
+    const major = uniq.filter(isDecade);
+    const minor = (eHi - eLo) <= 3 ? uniq.filter((v) => !isDecade(v)) : [];
+    return { lo, hi, major, minor };
+}
+
 function fmtBytes(b) {
     if (b == null) return "-";
     if (b < 1024) return `${b} B`;
@@ -125,6 +233,35 @@ function fmtMaybeNum(v) {
 
 function fmtText(v) {
     return v == null || v === "" ? "-" : esc(v);
+}
+
+// Populate a problem-class filter <select> with one <option> per problem.
+//
+// Idempotent: the overview pages PRE-RENDER these options server-side (so the
+// filter works without JS), then the page script runs and would otherwise append
+// a second copy of every problem — the cause of the "each problem twice" bug.
+// We remove every existing real option (any with a non-empty value — i.e. the
+// server-rendered problems) and keep only the leading placeholder (value=""),
+// then add the current set. So calling this over a pre-rendered select replaces
+// rather than duplicates, and it's safe to call more than once.
+//
+// `label` builds each option's text (defaults to "01 - Name"); pass a custom one
+// for pages that format it differently.
+function populateProblemFilter(select, problems, label) {
+    if (!select) return;
+    const fmt =
+        label || ((p) => `${String(p.id).padStart(2, "0")} - ${p.name}`);
+    Array.from(select.options).forEach((o) => {
+        if (o.value !== "") o.remove();
+    });
+    const frag = document.createDocumentFragment();
+    (problems || []).forEach((p) => {
+        const o = document.createElement("option");
+        o.value = p.id;
+        o.textContent = fmt(p);
+        frag.appendChild(o);
+    });
+    select.appendChild(frag);
 }
 
 // --- dates -------------------------------------------------------------------
@@ -241,26 +378,28 @@ function submissionUrl(problemId, submissionId) {
 }
 
 function statusPill(s) {
-    // Colours come from CSS variables (defined in styles.css) so the badges
+    // Colors come from CSS variables (defined in styles.css) so the badges
     // track the active theme and stay muted on dark backgrounds.
+    // The symbol prefix provides a non-color cue for color-vision accessibility.
     const cfg = {
-        optimal: { bg: "var(--pill-ok-bg)", c: "var(--pill-ok-fg)", label: "Optimal" },
-        solved: { bg: "var(--pill-ok-bg)", c: "var(--pill-ok-fg)", label: "Solved" },
-        best_known: { bg: "var(--pill-best-bg)", c: "var(--pill-best-fg)", label: "Best known" },
-        submitted: { bg: "var(--pill-sub-bg)", c: "var(--pill-sub-fg)", label: "Submitted" },
-        open: { bg: "var(--pill-open-bg)", c: "var(--pill-open-fg)", label: "Open" },
+        optimal:    { bg: "var(--pill-ok-bg)",   c: "var(--pill-ok-fg)",   label: "Optimal",    sym: "✓" },
+        solved:     { bg: "var(--pill-ok-bg)",   c: "var(--pill-ok-fg)",   label: "Solved",     sym: "✓" },
+        best_known: { bg: "var(--pill-best-bg)", c: "var(--pill-best-fg)", label: "Best known", sym: "~" },
+        submitted:  { bg: "var(--pill-sub-bg)",  c: "var(--pill-sub-fg)",  label: "Submitted",  sym: "·" },
+        open:       { bg: "var(--pill-open-bg)", c: "var(--pill-open-fg)", label: "Open",       sym: "?" },
     };
-    const cc = cfg[s] || { bg: "var(--pill-open-bg)", c: "var(--pill-open-fg)" };
+    const cc = cfg[s] || { bg: "var(--pill-open-bg)", c: "var(--pill-open-fg)", sym: "·" };
     // Show a friendly label (matching the filter dropdowns) instead of the raw
     // machine token, e.g. "Best known" rather than "best_known".
     const label = cc.label || String(s ?? "").replace(/_/g, " ");
-    return `<span class="status-pill" style="background:${cc.bg};color:${cc.c}">${esc(label)}</span>`;
+    const sym = cc.sym ? `<span aria-hidden="true" class="status-pill-sym">${cc.sym}</span> ` : "";
+    return `<span class="status-pill" style="background:${cc.bg};color:${cc.c}">${sym}${esc(label)}</span>`;
 }
 
 // Three-way classification of a submission's compute paradigm. The QUBO/Ising
 // *formulation* is deliberately NOT treated as a quantum signal — classical
 // heuristics (e.g. abs2, tabu, simulated annealing) routinely solve QUBOs.
-// Colours are CSS custom properties (defined in styles.css) rather than literal
+// Colors are CSS custom properties (defined in styles.css) rather than literal
 // hex so the dots, legends and chart lines all track the active light/dark
 // theme. They resolve in inline `style` (including on SVG elements), but NOT in
 // SVG presentation attributes — so chart fills/strokes are applied via `style`.
@@ -312,7 +451,7 @@ function classifySubmission(s) {
     return "quantum_sim";
 }
 
-// Compute-paradigm badge (Quantum HW / Quantum sim / Classical) — a coloured
+// Compute-paradigm badge (Quantum HW / Quantum sim / Classical) — a colored
 // dot plus the short label, shared by the leaderboard and submissions pages so
 // the three paradigms read the same everywhere.
 function catBadge(cat) {
@@ -322,7 +461,33 @@ function catBadge(cat) {
 
 function renderMarkdown(md) {
     if (!md) return "";
-    if (!window.marked?.parse) return `<p>${esc(md)}</p>`;
+    if (!window.marked?.parse) {
+        // marked CDN unavailable: degrade to readable escaped text rather than one
+        // undifferentiated blob. Split on blank lines into paragraphs and keep
+        // single line breaks. Not full Markdown, but legible prose during a CDN
+        // outage — and crucially we strip the syntax that reads as noise without a
+        // renderer: ATX heading markers (## Overview → a bold line) and $$…$$ /
+        // \[…\] math fences (KaTeX is down too, so raw TeX is unreadable — drop it
+        // rather than show `$$ \sum ... $$`).
+        const softenBlock = (block) => {
+            const trimmed = block.trim();
+            // Whole-block display math fence: hide it entirely.
+            if (/^(\$\$[\s\S]*\$\$|\\\[[\s\S]*\\\])$/.test(trimmed)) return "";
+            const heading = trimmed.match(/^#{1,6}\s+(.*)$/);
+            if (heading) {
+                return `<p class="md-fallback-h"><strong>${esc(heading[1].trim())}</strong></p>`;
+            }
+            return `<p>${esc(trimmed).replace(/\n/g, "<br>")}</p>`;
+        };
+        return String(md)
+            // Strip inline display-math fences that aren't on their own block.
+            .replace(/\$\$[\s\S]+?\$\$/g, "")
+            .replace(/\\\[[\s\S]+?\\\]/g, "")
+            .split(/\n{2,}/)
+            .map(softenBlock)
+            .filter(Boolean)
+            .join("");
+    }
     // Shield math from the Markdown processor: marked would otherwise strip TeX
     // backslash escapes (\\, \{, \(, ...) and turn _subscripts_ into <em>,
     // corrupting the source before KaTeX runs. Stash each math span behind an
@@ -368,7 +533,7 @@ function showError(el, msg) {
 function modelLinks(models) {
     if (!models || !models.length) return "";
     return models
-        .map((m) => `<a class="dl" href="${esc(m.raw_url)}" target="_blank" rel="noopener">↓ ${esc(m.format)}</a>`)
+        .map((m) => `<a class="dl" href="${safeHref(m.raw_url)}" target="_blank" rel="noopener">↓ ${esc(m.format)}</a>`)
         .join(" ");
 }
 
@@ -385,7 +550,7 @@ function detailModelList(models) {
                         <div class="resource-title">${esc(m.name)}</div>
                         <div class="resource-sub">${esc(m.approach || "model")} · ${esc(m.format)}</div>
                     </div>
-                    <a class="dl" href="${esc(m.raw_url)}" target="_blank" rel="noopener">↓ download</a>
+                    <a class="dl" href="${safeHref(m.raw_url)}" target="_blank" rel="noopener">↓ download</a>
                 </div>
                 <div class="resource-meta">
                     <span class="badge b-tag">${esc(m.kind || "model")}</span>
@@ -395,7 +560,7 @@ function detailModelList(models) {
                 <details>
                     <summary>Model description</summary>
                     <div class="resource-desc">${renderMarkdown(m.description_md)}</div>
-                    ${m.description_url ? `<div><a class="dl" href="${esc(m.description_url)}" target="_blank" rel="noopener">View README ↗</a></div>` : ""}
+                    ${m.description_url ? `<div><a class="dl" href="${safeHref(m.description_url)}" target="_blank" rel="noopener">View README ↗</a></div>` : ""}
                 </details>` : ""}
             </div>`
         )
@@ -542,6 +707,23 @@ async function loadProblemMipPoints(id) {
     return points;
 }
 
+// Objective time-series arrays, split out of instance_submissions.json (they are
+// ~85% of its bytes but read only by the instance-page convergence chart). Keyed
+// by "<instance>::<_source_file>". Loaded on demand by instance.js so no other
+// page pays for the plot data. Returns {} when absent.
+async function loadProblemTimeSeries(id) {
+    if (TIME_SERIES_CACHE.has(id)) return TIME_SERIES_CACHE.get(id);
+    let entries = {};
+    try {
+        const d = await loadJSON(`data/problems/${id}/time_series.json`);
+        entries = d.entries || {};
+    } catch (e) {
+        entries = {};
+    }
+    TIME_SERIES_CACHE.set(id, entries);
+    return entries;
+}
+
 async function loadProblemData(id) {
     const [meta, instances, instanceSubs] = await Promise.all([
         loadProblemMeta(id),
@@ -551,17 +733,33 @@ async function loadProblemData(id) {
     return { ...meta, instances, instance_submissions: instanceSubs };
 }
 
-async function loadAllProblemSubmissions() {
+// Load and concatenate a per-problem chunk across all problems. Uses
+// allSettled so one missing/malformed chunk (a 404 or bad JSON for a single
+// problem) degrades to that problem being absent, rather than rejecting the
+// whole batch and blanking the Submissions / Leaderboard overview pages. Failed
+// chunks are logged (via console.warn) and skipped.
+async function loadAllChunks(loader, label) {
     const idx = await loadIndex();
-    const chunks = await Promise.all(idx.problems.map((p) => loadProblemSubmissions(p.id)));
-    return chunks.flat();
+    const settled = await Promise.allSettled(idx.problems.map((p) => loader(p.id)));
+    const out = [];
+    settled.forEach((r, i) => {
+        if (r.status === "fulfilled") {
+            out.push(...(r.value || []));
+        } else {
+            const pid = idx.problems[i]?.id;
+            console.warn(`Skipping problem ${pid} ${label}: ${r.reason?.message || r.reason}`);
+        }
+    });
+    return out;
+}
+
+async function loadAllProblemSubmissions() {
+    return loadAllChunks(loadProblemSubmissions, "submissions");
 }
 
 async function loadAllSubmissionGroups() {
     if (ALL_SUBMISSION_GROUPS_CACHE) return ALL_SUBMISSION_GROUPS_CACHE;
-    const idx = await loadIndex();
-    const chunks = await Promise.all(idx.problems.map((p) => loadProblemSubmissionGroups(p.id)));
-    ALL_SUBMISSION_GROUPS_CACHE = chunks.flat();
+    ALL_SUBMISSION_GROUPS_CACHE = await loadAllChunks(loadProblemSubmissionGroups, "submission groups");
     return ALL_SUBMISSION_GROUPS_CACHE;
 }
 
@@ -573,6 +771,17 @@ async function loadInstancesList() {
     if (INSTANCES_LIST_CACHE) return INSTANCES_LIST_CACHE;
     INSTANCES_LIST_CACHE = await loadJSON("data/instances.json");
     return INSTANCES_LIST_CACHE;
+}
+
+// Aggregated leaderboard payload (one request instead of meta+instances+
+// instance_submissions for all ten problems). Shape:
+//   { problems: [ { id, name, minimize, instances: [...], instance_submissions: {...} } ] }
+// Trimmed to the fields the leaderboard's champion selection reads.
+let LEADERBOARD_CACHE = null;
+async function loadLeaderboard() {
+    if (LEADERBOARD_CACHE) return LEADERBOARD_CACHE;
+    LEADERBOARD_CACHE = await loadJSON("data/leaderboard.json");
+    return LEADERBOARD_CACHE;
 }
 
 function setActiveNav(navId) {
@@ -615,6 +824,10 @@ function currentTheme() {
     return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
 }
 
+// Browser-chrome colours matching the two <meta name="theme-color"> tags in the
+// page head (light accent teal / dark near-black).
+const THEME_COLORS = { light: "#1d6f78", dark: "#14191b" };
+
 function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
     try {
@@ -628,6 +841,19 @@ function applyTheme(theme) {
         btn.setAttribute("aria-pressed", dark ? "true" : "false");
         btn.title = dark ? "Switch to light mode" : "Switch to dark mode";
     });
+    // The static <meta name="theme-color"> tags key off prefers-color-scheme only,
+    // so a manual toggle against the OS preference leaves the browser chrome the
+    // wrong colour. Drive a single unconditional (media-less) tag from the active
+    // theme so the chrome follows the toggle. A media-less theme-color overrides
+    // the media-scoped ones, so this wins whenever JS is available.
+    let meta = document.querySelector('meta[name="theme-color"][data-managed]');
+    if (!meta) {
+        meta = document.createElement("meta");
+        meta.setAttribute("name", "theme-color");
+        meta.setAttribute("data-managed", "");
+        document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", THEME_COLORS[theme] || THEME_COLORS.light);
 }
 
 function initTheme() {
@@ -646,6 +872,8 @@ function initTheme() {
 function animateCount(id, target) {
     const el = document.getElementById(id);
     if (!el) return;
+    // Clear any in-progress animation from a previous call on the same element.
+    if (el._animTimer) { clearInterval(el._animTimer); el._animTimer = null; }
     el.classList.remove("loading-val");
     // Respect reduced-motion: jump straight to the final value, no count-up.
     const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -655,10 +883,10 @@ function animateCount(id, target) {
     }
     let cur = 0;
     const step = Math.ceil(target / 30);
-    const timer = setInterval(() => {
+    el._animTimer = setInterval(() => {
         cur = Math.min(cur + step, target);
         el.textContent = cur.toLocaleString();
-        if (cur >= target) clearInterval(timer);
+        if (cur >= target) { clearInterval(el._animTimer); el._animTimer = null; }
     }, 30);
 }
 
@@ -704,6 +932,41 @@ function enableTableSorting(root = document, options = {}) {
         .filter(Boolean)
         .forEach((name) => defaultExcluded.add(name));
 
+    // Cells are displayed via toLocaleString(), so the grouping/decimal separators
+    // depend on the browser locale (e.g. en-ZA groups with spaces and uses a comma
+    // decimal → "3 997 732,5"; de-DE → "3.997.732,5"; en-US → "3,997,732.5"). To
+    // sort those back to numbers we must normalize against the *actual* locale
+    // separators — the old code only stripped ASCII commas, so a space- or
+    // period-grouped value fell through to a leading-digits match and every row
+    // collapsed to its first group (all "3 997 732" sorted as 3).
+    const localeSeparators = () => {
+        try {
+            let group = "";
+            let decimal = ".";
+            for (const p of new Intl.NumberFormat().formatToParts(12345.6)) {
+                if (p.type === "group") group = p.value;
+                else if (p.type === "decimal") decimal = p.value;
+            }
+            return { group, decimal };
+        } catch {
+            return { group: ",", decimal: "." };
+        }
+    };
+    const { group: GROUP_SEP, decimal: DECIMAL_SEP } = localeSeparators();
+
+    // Turn a locale-formatted numeric string into a plain [+-]?digits[.digits] form
+    // that Number() and the numeric regex below can read, regardless of locale.
+    const normalizeNumeric = (text) => {
+        let s = text.replace(/\s/g, ""); // drop grouping spaces (incl. NBSP/narrow-NBSP)
+        if (GROUP_SEP && GROUP_SEP.trim()) s = s.split(GROUP_SEP).join("");
+        // ASCII comma is a common grouping separator in stored data too — strip it
+        // unless the locale uses comma as the decimal point.
+        if (DECIMAL_SEP !== ",") s = s.split(",").join("");
+        // Fold the locale decimal separator to a plain dot.
+        if (DECIMAL_SEP !== ".") s = s.split(DECIMAL_SEP).join(".");
+        return s;
+    };
+
     const parseSortValue = (raw) => {
         const text = String(raw || "").replace(/\s+/g, " ").trim();
         if (!text) return { type: "text", value: "" };
@@ -713,7 +976,7 @@ function enableTableSorting(root = document, options = {}) {
             if (Number.isFinite(ts)) return { type: "number", value: ts };
         }
 
-        const compact = text.replace(/,/g, "");
+        const compact = normalizeNumeric(text);
         if (/^[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?$/.test(compact)) {
             const n = Number(compact);
             if (Number.isFinite(n)) return { type: "number", value: n };
@@ -728,21 +991,40 @@ function enableTableSorting(root = document, options = {}) {
         return { type: "text", value: text.toLowerCase() };
     };
 
-    const sortRowsByColumn = (table, colIdx, dir) => {
+    // The sort type is a property of the COLUMN, not of individual cells, so it is
+    // declared once on the <th> (data-sort-type, defaulted from the numeric
+    // right-alignment marker in resolveSortType) rather than re-inferred per cell.
+    // This keeps a numeric column numeric even when some rows read "-" / "N/A", and
+    // is locale-proof: a space- or period-grouped "3 997 732" no longer has to
+    // pass a per-cell number test to sort numerically.
+    const sortRowsByColumn = (table, colIdx, dir, colType) => {
         const body = table.tBodies?.[0];
         if (!body) return;
 
+        const numeric = colType === "number";
         const rows = Array.from(body.rows);
         const decorated = rows.map((row, idx) => {
             const cellText = row.cells?.[colIdx]?.textContent || "";
-            return { row, idx, parsed: parseSortValue(cellText) };
+            const parsed = parseSortValue(cellText);
+            return { row, idx, parsed };
         });
 
         decorated.sort((a, b) => {
             const av = a.parsed;
             const bv = b.parsed;
 
-            if (av.type === "number" && bv.type === "number") {
+            if (numeric) {
+                // Declared-numeric column: compare as numbers. Cells that aren't
+                // numeric (blank, "-", "N/A") have no meaningful magnitude, so they
+                // always sink to the bottom regardless of sort direction.
+                const an = av.type === "number";
+                const bn = bv.type === "number";
+                if (an && bn) {
+                    if (av.value !== bv.value) return dir === "asc" ? av.value - bv.value : bv.value - av.value;
+                } else if (an !== bn) {
+                    return an ? -1 : 1;
+                }
+            } else if (av.type === "number" && bv.type === "number") {
                 if (av.value !== bv.value) return dir === "asc" ? av.value - bv.value : bv.value - av.value;
             } else {
                 // Numeric-aware so "network10" sorts after "network2", not before.
@@ -753,6 +1035,18 @@ function enableTableSorting(root = document, options = {}) {
         });
 
         decorated.forEach((item) => body.appendChild(item.row));
+    };
+
+    // A column's sort type, declared on the header. Explicit data-sort-type wins;
+    // otherwise a right-aligned numeric column (the site's convention for numeric
+    // cells — see the `numeric` flag in the builders) is treated as numeric.
+    const resolveSortType = (th) => {
+        const explicit = (th.dataset.sortType || "").trim().toLowerCase();
+        if (explicit === "number" || explicit === "text") return explicit;
+        const alignedRight =
+            th.style.textAlign === "right" ||
+            /text-align:\s*right/i.test(th.getAttribute("style") || "");
+        return alignedRight ? "number" : "text";
     };
 
     const tables = root.querySelectorAll ? root.querySelectorAll("table") : [];
@@ -785,6 +1079,10 @@ function enableTableSorting(root = document, options = {}) {
             if (excluded) return;
             hasSortableHeader = true;
 
+            // Resolve (and record) the column's sort type once, up front.
+            const colType = resolveSortType(th);
+            th.dataset.sortType = colType;
+
             th.style.cursor = "pointer";
             th.title = "Click or press Enter to sort";
             // Make the header operable and discoverable for keyboard / AT users.
@@ -795,8 +1093,8 @@ function enableTableSorting(root = document, options = {}) {
             const doSort = () => {
                 const nextDir = th.dataset.sortDir === "asc" ? "desc" : "asc";
                 applySortIndicator(headers, th, nextDir);
-                sortRowsByColumn(table, colIdx, nextDir);
-                table.qoblibSort = { colIdx, dir: nextDir };
+                sortRowsByColumn(table, colIdx, nextDir, colType);
+                table.qoblibSort = { colIdx, dir: nextDir, colType };
             };
             th.addEventListener("click", doSort);
             th.addEventListener("keydown", (e) => {
@@ -817,7 +1115,7 @@ function enableTableSorting(root = document, options = {}) {
                 const s = table.qoblibSort;
                 if (!s || !headers[s.colIdx]) return;
                 applySortIndicator(headers, headers[s.colIdx], s.dir);
-                sortRowsByColumn(table, s.colIdx, s.dir);
+                sortRowsByColumn(table, s.colIdx, s.dir, s.colType ?? resolveSortType(headers[s.colIdx]));
             };
             // Reflect the table's initial sort (applied by the page's own render
             // code) in the header so it is visible without a click. A column opts
@@ -829,6 +1127,36 @@ function enableTableSorting(root = document, options = {}) {
                 applySortIndicator(headers, defaultTh, defaultTh.dataset.sortDefault);
             }
         }
+    });
+}
+
+// Toggle edge-fade classes on horizontally scrollable table wrappers (.tw) so a
+// subtle mask hints there are more columns off-screen. The fade appears only
+// while the table actually overflows, and only on the side(s) with hidden
+// content. Idempotent; safe to call repeatedly (e.g. after a tbody re-render).
+function updateScrollShadow(el) {
+    const overflow = el.scrollWidth - el.clientWidth;
+    el.classList.remove("scroll-x-start", "scroll-x-end", "scroll-x-both");
+    if (overflow <= 1) return; // fits — no fade
+    const atStart = el.scrollLeft <= 1;
+    const atEnd = el.scrollLeft >= overflow - 1;
+    if (atStart) el.classList.add("scroll-x-start");
+    else if (atEnd) el.classList.add("scroll-x-end");
+    else el.classList.add("scroll-x-both");
+}
+
+function markScrollShadows(root = document) {
+    const scope = root && root.querySelectorAll ? root : document;
+    const wraps = scope.matches?.(".tw") ? [scope] : Array.from(scope.querySelectorAll(".tw"));
+    wraps.forEach((el) => {
+        if (el.dataset.scrollShadowBound !== "1") {
+            el.dataset.scrollShadowBound = "1";
+            el.addEventListener("scroll", () => updateScrollShadow(el), { passive: true });
+            if (typeof ResizeObserver !== "undefined") {
+                new ResizeObserver(() => updateScrollShadow(el)).observe(el);
+            }
+        }
+        updateScrollShadow(el);
     });
 }
 
@@ -880,12 +1208,119 @@ function updateFooterDataLink() {
     link.textContent = label;
 }
 
+// ---------------------------------------------------------------------------
+// Global search omnibox
+// ---------------------------------------------------------------------------
+
+function setupGlobalSearch() {
+    const navInner = document.querySelector(".nav-inner");
+    if (!navInner || navInner.querySelector(".gsearch-wrap")) return;
+
+    const wrap = document.createElement("span");
+    wrap.className = "gsearch-wrap";
+    wrap.innerHTML =
+        '<input class="gsearch-input" type="search" placeholder="Search…" aria-label="Global search" autocomplete="off" ' +
+        'role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="gsearch-listbox" />' +
+        '<ul class="gsearch-dropdown" id="gsearch-listbox" role="listbox" aria-label="Search results" hidden></ul>';
+
+    // Insert before the theme toggle
+    const themeBtn = navInner.querySelector(".theme-toggle");
+    if (themeBtn) navInner.insertBefore(wrap, themeBtn);
+    else navInner.appendChild(wrap);
+
+    const input = wrap.querySelector(".gsearch-input");
+    const dropdown = wrap.querySelector(".gsearch-dropdown");
+
+    let _debounce = null;
+    let _data = null; // { problems, instances }
+
+    async function getData() {
+        if (_data) return _data;
+        try {
+            const [idx, instList] = await Promise.all([loadIndex(), loadInstancesList()]);
+            _data = {
+                problems: idx.problems || [],
+                instances: (instList.problems || []).flatMap((p) => (p.instances || []).map((i) => ({ name: i.name, problem_id: p.id, problem_name: p.name }))),
+            };
+        } catch { _data = { problems: [], instances: [] }; }
+        return _data;
+    }
+
+    // Reflect the popup's open/closed state on the combobox for assistive tech.
+    const setActive = (li) => {
+        dropdown.querySelectorAll(".gsearch-item[aria-selected]").forEach((el) => el.removeAttribute("aria-selected"));
+        if (li) {
+            li.setAttribute("aria-selected", "true");
+            input.setAttribute("aria-activedescendant", li.id);
+        } else {
+            input.removeAttribute("aria-activedescendant");
+        }
+    };
+
+    function show(results) {
+        if (!results.length) { hide(); return; }
+        dropdown.innerHTML = results.map((r, i) =>
+            `<li role="option" id="gsearch-opt-${i}" tabindex="-1" data-href="${esc(r.href)}" class="gsearch-item gsearch-${esc(r.type)}">` +
+            `<span class="gsearch-kind">${esc(r.kind)}</span>` +
+            `<span class="gsearch-label">${esc(r.label)}</span>` +
+            `</li>`
+        ).join("");
+        dropdown.hidden = false;
+        input.setAttribute("aria-expanded", "true");
+        setActive(null);
+    }
+    const hide = () => {
+        dropdown.hidden = true;
+        input.setAttribute("aria-expanded", "false");
+        setActive(null);
+    };
+
+    input.addEventListener("input", () => {
+        clearTimeout(_debounce);
+        const q = input.value.trim().toLowerCase();
+        if (!q) { hide(); return; }
+        _debounce = setTimeout(async () => {
+            const { problems, instances } = await getData();
+            const results = [];
+            problems.filter((p) => (p.name || "").toLowerCase().includes(q) || String(p.id).includes(q)).slice(0, 4).forEach((p) => {
+                results.push({ type: "problem", kind: "Problem", label: `${String(p.id).padStart(2, "0")} ${p.name}`, href: problemUrl(p.id) });
+            });
+            instances.filter((i) => i.name.toLowerCase().includes(q)).slice(0, 10).forEach((i) => {
+                results.push({ type: "instance", kind: `${String(i.problem_id).padStart(2, "0")}`, label: i.name, href: instanceUrl(i.problem_id, i.name) });
+            });
+            show(results.slice(0, 12));
+        }, 120);
+    });
+
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") { hide(); input.value = ""; return; }
+        if (e.key === "Enter") { const first = dropdown.querySelector("li"); if (first) window.location.href = first.dataset.href; return; }
+        if (e.key === "ArrowDown") { e.preventDefault(); const first = dropdown.querySelector("li"); if (first) { first.focus(); setActive(first); } }
+    });
+    dropdown.addEventListener("keydown", (e) => {
+        const cur = document.activeElement;
+        if (e.key === "Enter" && cur.dataset.href) { window.location.href = cur.dataset.href; return; }
+        if (e.key === "ArrowDown") { e.preventDefault(); const nx = cur.nextElementSibling; if (nx) { nx.focus(); setActive(nx); } }
+        if (e.key === "ArrowUp") { e.preventDefault(); const pv = cur.previousElementSibling; if (pv) { pv.focus(); setActive(pv); } else { input.focus(); setActive(null); } }
+        if (e.key === "Escape") { hide(); input.value = ""; input.focus(); }
+    });
+    dropdown.addEventListener("click", (e) => {
+        const li = e.target.closest("li[data-href]");
+        if (li) window.location.href = li.dataset.href;
+    });
+    document.addEventListener("click", (e) => {
+        if (!wrap.contains(e.target)) hide();
+    }, true);
+}
+
 function initCommon() {
     const current = document.body.dataset.nav || "home";
     setActiveNav(current);
     setupMobileNav();
+    setupGlobalSearch();
     initTheme();
     enableTableSorting(document);
+    markScrollShadows(document);
     renderFooter();
     updateFooterDataLink();
 
@@ -899,6 +1334,11 @@ function initCommon() {
                     } else if (node.querySelectorAll) {
                         enableTableSorting(node);
                     }
+                    // Refresh edge-fade hints for any table wrappers just added or
+                    // re-rendered (a re-rendered tbody changes the scroll width).
+                    if (node.matches?.(".tw") || node.closest?.(".tw") || node.querySelector?.(".tw")) {
+                        markScrollShadows(node.closest?.(".tw") || node);
+                    }
                 });
             });
         });
@@ -911,7 +1351,15 @@ function initCommon() {
 // (current filters + sort) as a spreadsheet-friendly CSV.
 
 function csvField(value) {
-    const s = value == null ? "" : String(value);
+    let s = value == null ? "" : String(value);
+    // Neutralise spreadsheet formula injection: a field beginning with = + - @
+    // (or a leading tab / CR that some parsers strip to reveal one) is treated as
+    // a formula by Excel / Google Sheets and can execute. Submission fields are
+    // author-supplied, so prefix such values with a single quote — the standard
+    // guard that keeps them literal text. Plain numbers (incl. negatives like an
+    // objective "-1234.5") are exempt so numeric columns stay numeric.
+    const isNumber = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/.test(s.trim());
+    if (/^[=+\-@\t\r]/.test(s) && !isNumber) s = `'${s}`;
     return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
@@ -919,6 +1367,27 @@ function toCsv(headers, rows) {
     const lines = [headers.map(csvField).join(",")];
     for (const row of rows) lines.push(row.map(csvField).join(","));
     return lines.join("\r\n");
+}
+
+// Reorder export `rows` (parallel to `keys`) to match the order the table
+// currently DISPLAYS, so "download what you see" honors the column sort the
+// user clicked — not just the active filters. Each visible <tr> carries a
+// data-export-key; a row whose key isn't in the DOM keeps its original relative
+// position at the end. No-op (returns rows unchanged) when the table has no
+// keyed rows, so callers can use it unconditionally.
+function orderRowsByTable(table, rows, keys) {
+    const body = table && table.tBodies && table.tBodies[0];
+    if (!body) return rows;
+    const pos = new Map();
+    Array.from(body.rows).forEach((tr, i) => {
+        const k = tr.dataset ? tr.dataset.exportKey : undefined;
+        if (k != null && k !== "" && !pos.has(k)) pos.set(k, i);
+    });
+    if (!pos.size) return rows;
+    return rows
+        .map((row, i) => ({ row, ord: pos.has(keys[i]) ? pos.get(keys[i]) : Infinity, i }))
+        .sort((a, b) => a.ord - b.ord || a.i - b.i)
+        .map((x) => x.row);
 }
 
 function downloadCsv(filename, headers, rows) {
@@ -965,19 +1434,50 @@ function ensureFigureLightbox() {
         if (ev.target === figLightbox || ev.target.closest(".fig-lightbox-close")) closeFigureLightbox();
     });
     document.addEventListener("keydown", (ev) => {
-        if (ev.key === "Escape" && !figLightbox.hidden) closeFigureLightbox();
+        if (figLightbox.hidden) return;
+        if (ev.key === "Escape") { closeFigureLightbox(); return; }
+        // Trap Tab within the modal so keyboard focus can't wander behind it.
+        if (ev.key === "Tab") trapLightboxTab(ev);
     });
     document.body.appendChild(figLightbox);
     return figLightbox;
 }
 
+// Keep Tab / Shift+Tab cycling within the open lightbox. Queries focusables at
+// event time because the figure content is injected per-open (links, chart
+// points, the close button). Falls back to holding focus on the close button.
+function trapLightboxTab(ev) {
+    if (!figLightbox) return;
+    const focusables = Array.from(
+        figLightbox.querySelectorAll(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input, select, textarea',
+        ),
+    ).filter((el) => el.offsetParent !== null || el === document.activeElement);
+    if (!focusables.length) { ev.preventDefault(); return; }
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+    if (ev.shiftKey && (active === first || !figLightbox.contains(active))) {
+        ev.preventDefault();
+        last.focus();
+    } else if (!ev.shiftKey && active === last) {
+        ev.preventDefault();
+        first.focus();
+    }
+}
+
 function openFigureLightbox(html, trigger) {
     if (!html) return;
     const box = ensureFigureLightbox();
-    box.querySelector(".fig-lightbox-inner").innerHTML = html;
+    const inner = box.querySelector(".fig-lightbox-inner");
+    inner.innerHTML = html;
     box.hidden = false;
     figLightboxTrigger = trigger || null;
     box.querySelector(".fig-lightbox-close").focus();
+    // Let page-level scripts (e.g. problem.js) wire interactive content that was
+    // cloned into the lightbox. The event fires on the inner element so handlers
+    // can query its subtree directly.
+    inner.dispatchEvent(new CustomEvent("lightboxopen", { bubbles: true }));
 }
 
 // Add a top-right expand button to `container`. By default the lightbox shows the
@@ -1035,9 +1535,12 @@ function enhanceFigures(root = document) {
 
 window.QOBLIB = {
     esc,
+    safeHref,
     fmtBytes,
     fmtNum,
     fmtInt,
+    niceLinearTicks,
+    niceLogAxis,
     fmtMaybeNum,
     fmtText,
     parseDate,
@@ -1063,18 +1566,23 @@ window.QOBLIB = {
     loadProblemSubmissionGroups,
     loadProblemCharts,
     loadProblemMipPoints,
+    loadProblemTimeSeries,
     loadAllSubmissionGroups,
     loadInstancesList,
+    loadLeaderboard,
     setPageMeta,
     openFigureLightbox,
     attachFigureExpand,
     enhanceFigures,
     enableTableSorting,
     setTableSortIndicator,
+    markScrollShadows,
     initCommon,
     initTheme,
     applyTheme,
     animateCount,
     toCsv,
     downloadCsv,
+    orderRowsByTable,
+    populateProblemFilter,
 };

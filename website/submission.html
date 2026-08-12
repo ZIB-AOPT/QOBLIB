@@ -7,6 +7,11 @@
     <title>QOBLIB - Submission</title>
     <meta name="robots" content="noindex" />
     <link rel="icon" type="image/svg+xml" href="assets/images/qoblib-favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/qoblib-icon-192.png" />
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png" />
+    <meta name="theme-color" content="#1d6f78" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14191b" media="(prefers-color-scheme: dark)" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
@@ -22,14 +27,16 @@
                 <a class="nl" data-nav="instances" href="instances.html">Instances</a>
                 <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
                 <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
-                <a class="nl" data-nav="submit" href="submit.html">Submit</a>
+                <a class="nl" data-nav="submit" href="submit.html">Submit results</a>
+                <a class="nl" data-nav="participate" href="participate.html">How it works</a>
+                <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
 
-    <main class="page">
+    <main class="page" id="main-content">
         <section id="submission-detail">
             <div class="loading">Loading submission</div>
         </section>

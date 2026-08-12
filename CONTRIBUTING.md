@@ -123,6 +123,47 @@ Report average runtimes across all repetitions (exclude queuing time for hardwar
 
 > **Note:** For multiple runs, report the average runtime. Distributions of runtimes and correlations with solution quality are encouraged to be described in referenced publications.
 
+### Objective Time Series (Optional)
+
+To enable convergence analysis and Time-to-Solution (TTS) verification, you may include an **objective time series** file alongside your solution files.
+
+#### File naming
+
+Place the file in each instance subdirectory, named `<instance>_objective_time_series.json` (plain JSON) or `<instance>_objective_time_series.json.gz` (gzip-compressed for large files).
+
+#### Format
+
+The file must be a JSON array of *runs* (one element per independent run of your algorithm). Each run is itself an array of *incumbent update* objects recorded **whenever the best-found objective value improves**:
+
+```json
+[
+  [
+    {"Time": 0.001,  "Incumbent": 120.0},
+    {"Time": 0.218,  "Incumbent": 5.0},
+    {"Time": 0.435,  "Incumbent": 0.0}
+  ],
+  [
+    {"Time": 0.002,  "Incumbent": 80.0},
+    {"Time": 0.651,  "Incumbent": 0.0}
+  ]
+]
+```
+
+| Key | Type | Description |
+| --- | --- | --- |
+| `Time` | number | Wall-clock time in **seconds** from the start of the run at which this incumbent was first reached |
+| `Incumbent` | number | The best objective value found up to this point in the run |
+
+Rules:
+- The `Incumbent` sequence within each run must be **non-increasing** for minimization problems (non-decreasing for maximization).
+- The first entry should record the initial incumbent (the starting solution's objective value).
+- The last entry's `Time` value should correspond to the end of the run (or the moment the algorithm terminated), so that TTS can be computed as the `Time` of the first entry whose `Incumbent` equals the final best.
+- There is no required correspondence between the number of runs in the time series and `# Runs` in the CSV, but they should ideally match.
+
+#### What the CI checker does
+
+The automated checker validates the JSON structure (correct types, required keys, non-empty runs) and **does enforce monotonicity** — a minimization run where the incumbent increases (or a maximization run where it decreases) is reported as a hard failure that blocks the merge. Providing a time series is entirely optional; the CI checker reports its absence as informational only.
+
 ## Benchmark Reporting Template
 
 We provide a CSV template for standardized submissions: [submission_template.csv](misc/submission_template.csv)
@@ -195,6 +236,46 @@ The template includes the following fields:
 - Separate classical and quantum processing times
 - Exclude compilation and queue times
 - Report hardware specifications completely
+
+## Contributing a New Problem Instance
+
+The instance sets for each problem class are curated by the committee, but we welcome proposals to extend them — for example, when you have identified a challenging real-world graph, a larger network topology, or an instance that exercises a structural property not well covered by the existing set.
+
+### When to propose a new instance
+
+A new instance is appropriate when it:
+- **fills a gap** in the difficulty or size range of an existing problem class (e.g. a larger size tier, a denser family, a structurally distinct graph), or
+- **originates from a real application** and the committee can verify it is genuinely hard, or
+- was discussed with a committee member in advance and tentatively approved.
+
+Do **not** submit instances that are trivially solved by standard classical solvers, duplicates of existing instances, or instances without a clear source or generation procedure.
+
+### What to include in the PR
+
+Open a Pull Request that adds, for the relevant problem class `NN-problem/`:
+
+1. **The instance file** placed in `NN-problem/instances/` and named according to the existing naming convention for that problem (see the `instances/README.md` of the target problem class).
+2. **A reference solution** (even a heuristic or partial one) placed in `NN-problem/solutions/`. Providing at least one known feasible solution helps the committee assess difficulty.
+3. **Generation provenance** — either a brief note in the PR description or a code snippet / seed value sufficient to reproduce the instance. If the instance comes from an external source, include a citation or URL.
+4. **An update to `instances/README.md`** of the target problem (or a new entry in its Instance Sources list) documenting the file format, size, and origin.
+
+### Checklist for instance PRs
+
+Before opening the PR, verify:
+
+- [ ] The instance file is valid and parses correctly with the problem's checker (`check/` directory).
+- [ ] The naming convention matches existing instances in that problem class.
+- [ ] The `instances/README.md` (or sources list) is updated.
+- [ ] A reference solution or known bound is provided, even if heuristic.
+- [ ] The generation procedure or external source is documented.
+
+### Review and acceptance
+
+Instance PRs are reviewed by at least **two committee members** who will assess difficulty, structural coverage, and provenance. Accepted instances are merged into `main` and automatically picked up by the site builder at the next deployment. Rejected instances receive a written explanation and, where possible, guidance on how to revise the proposal.
+
+### Extending to a new problem class
+
+If you believe an entirely new problem class should be added to QOBLIB, please **open a GitHub Issue first** to discuss scope, difficulty requirements, and the checker implementation needed before investing in a full PR. New problem classes require a problem description, model files, a solution checker, and at least a small set of reference instances, so early alignment with the committee saves significant effort.
 
 ## Questions?
 

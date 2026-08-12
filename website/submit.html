@@ -6,6 +6,11 @@
     <script>(function(){try{var t=localStorage.getItem("qoblib-theme");if(t!=="dark"&&t!=="light"){t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
     <title>QOBLIB - Submit</title>
     <link rel="icon" type="image/svg+xml" href="assets/images/qoblib-favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/qoblib-icon-192.png" />
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png" />
+    <meta name="theme-color" content="#1d6f78" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14191b" media="(prefers-color-scheme: dark)" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
@@ -22,16 +27,18 @@
                 <a class="nl" data-nav="instances" href="instances.html">Instances</a>
                 <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
                 <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
-                <a class="nl" data-nav="submit" href="submit.html">Submit</a>
+                <a class="nl" data-nav="submit" href="submit.html">Submit results</a>
+                <a class="nl" data-nav="participate" href="participate.html">How it works</a>
+                <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
 
-    <main class="page">
+    <main class="page" id="main-content">
         <div class="ph">
-            <h2>Submit Results</h2>
+            <h1>Submit Results</h1>
             <p>
                 Build a valid QOBLIB submission for <strong>any number of instances across any number of problems</strong> in
                 one go. Everything is checked live in your browser, then exported as ready-to-commit files. A GitHub Action
@@ -48,6 +55,15 @@
             <li><span class="step-n">3</span> Fix any flagged errors</li>
             <li><span class="step-n">4</span> Export &amp; open a PR</li>
         </ol>
+
+        <!-- Draft restore banner -->
+        <div id="draft-banner" class="draft-banner" hidden>
+            <span>↩ Draft restored from your last session.</span>
+            <div class="draft-banner-actions">
+                <button class="btn btn-ghost btn-sm" id="draft-banner-clear" type="button">Start fresh</button>
+                <button class="btn btn-ghost btn-sm" id="draft-banner-dismiss" type="button">✕ Dismiss</button>
+            </div>
+        </div>
 
         <!-- Shared / package-wide fields -->
         <section class="sub-panel">
