@@ -40,6 +40,7 @@ from .charts import (
     _best_value,
     _cnum,
     _esc,
+    _is_attributable,
     _is_feasibility_problem,
     _is_feasible,
     _submission_method,
@@ -688,7 +689,7 @@ def _lb_champion(raw_subs, minimize, feas):
     ``(sub, value, no_value)`` triple or None. Mirrors lbChampion in leaderboard.js."""
     cands = []
     for s in raw_subs:
-        if not _is_feasible(s):
+        if not _is_attributable(s):
             continue
         raw = _cnum(s.get("value"))
         no_value = raw is None
@@ -706,9 +707,12 @@ def _lb_champion(raw_subs, minimize, feas):
 
 
 def _feasible_count(raw_subs, feas) -> int:
+    # Counts submissions that *qualify* for the leaderboard (feasible and
+    # attribution-eligible), matching the champion pool in _lb_champion and the
+    # "Subs" column in leaderboard.js.
     n = 0
     for s in raw_subs:
-        if not _is_feasible(s):
+        if not _is_attributable(s):
             continue
         raw = _cnum(s.get("value"))
         v = 0.0 if (raw is None and feas) else raw

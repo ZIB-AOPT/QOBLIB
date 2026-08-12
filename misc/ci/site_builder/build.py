@@ -385,7 +385,7 @@ def build_data(out_dir: Path, built_at: str | None = None) -> dict:
     # requests / several MB). Trimmed to exactly the fields lbChampion /
     # lbMakeRecord read; keyed per problem so the page keeps its existing shape.
     _LB_SUB_FIELDS = ("value", "n_feasible", "runtime_total", "date", "category",
-                      "submitter", "author", "_source_dir")
+                      "submitter", "author", "_source_dir", "bkv_eligible")
     leaderboard_problems = []
     for grp in instances_groups:
         pid = grp["id"]

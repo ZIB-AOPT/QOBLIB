@@ -56,7 +56,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from site_builder import config
-from site_builder.solutions import load_reference_map
+from site_builder.solutions import (
+    birkhoff_solution_is_exact,
+    load_reference_map,
+)
 from site_builder.submissions import read_csv_submissions_folder
 
 EPOCH = "0000-00-00"          # sorts before every real submission date
@@ -162,6 +165,21 @@ def _solution_suffix(path: Path, instance: str) -> str:
     return path.suffix
 
 
+def _solution_qualifies(problem_id: str, problem_dir: Path, inst: str, sol_path: Path) -> bool:
+    """Best-known eligibility gate for a submission's shipped solution file.
+
+    Most problems are trusted as before (the PR-time checker already vetted them).
+    Birkhoff (03) additionally requires an *exact* reconstruction here, because its
+    objective (number of permutation matrices) is only meaningful for exact
+    decompositions — an approximate one is not comparable and must not be awarded a
+    best-known value. The same gate drives leaderboard/attribution eligibility in
+    the site builder (see site_builder.solutions.birkhoff_solution_is_exact).
+    """
+    if problem_id == "03":
+        return birkhoff_solution_is_exact(problem_dir, inst, sol_path)
+    return True
+
+
 def compute_records(problem_dir: Path, minimize: bool, feasibility: bool = False) -> dict[str, dict]:
     """Compute the best-known record for every instance of one problem by replaying all
     submissions in release-date order.
@@ -174,13 +192,14 @@ def compute_records(problem_dir: Path, minimize: bool, feasibility: bool = False
     reference is kept and reported as "feasible".
     """
     ref_map = _load_reference_map(problem_dir)
+    problem_id = problem_dir.name.split("-", 1)[0]
     # Passing the real instance names lets a row whose "Problem" column is
     # non-standard (e.g. "LABS (N = 10)") fall back to the instance encoded in its
     # <instance>_summary.csv filename, instead of creating a bogus instance.
     known = set(ref_map.keys())
     subs = {} if feasibility else read_csv_submissions_folder(
         problem_dir / "submissions", known_instances=known or None,
-        problem_id=problem_dir.name.split("-", 1)[0])
+        problem_id=problem_id)
 
     instances = set(ref_map) | set(subs)
     records: dict[str, dict] = {}
@@ -206,6 +225,12 @@ def compute_records(problem_dir: Path, minimize: bool, feasibility: bool = False
             src_dir = sub.get("_source_dir", "")
             sol_path = _find_submission_solution(problem_dir, src_dir, inst)
             if sol_path is None:
+                continue
+            # Best-known eligibility gate: for problems whose objective only makes
+            # sense for an exact solution (03-birkhoff), the shipped file must
+            # actually reconstruct the target — an approximate run reporting a small
+            # objective must not be credited. Trusted (pass-through) elsewhere.
+            if not _solution_qualifies(problem_id, problem_dir, inst, sol_path):
                 continue
             sub_cands.append({
                 "value": val,

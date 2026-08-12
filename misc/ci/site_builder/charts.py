@@ -98,6 +98,18 @@ def _is_feasible(sub) -> bool:
     return not (nf is not None and nf == 0)
 
 
+def _is_attributable(sub) -> bool:
+    """Feasible *and* eligible to define/reach a best value.
+
+    ``bkv_eligible == False`` marks a run whose reported objective is not
+    comparable to exact results (currently Birkhoff decompositions that do not
+    reconstruct exactly). Such a run must not tighten the reference best or be
+    marked as "reached best-known" — same treatment charts already give infeasible
+    runs. It still appears in the per-instance submission table (built separately
+    in problem.py); it is only withheld from best-value/attribution here."""
+    return _is_feasible(sub) and sub.get("bkv_eligible", True)
+
+
 def _is_exact(sub) -> bool:
     """A submission is *exact* (proven optimal) when its Optimality Bound equals
     its Best Objective Value — i.e. the submitter asserts the solution is optimal.
@@ -360,7 +372,7 @@ def _build_perf_mode(problem, mode):
 
     for inst in instances:
         inst_name = inst.get("name", "")
-        subs = [s for s in (entries.get(inst_name) or []) if _is_feasible(s)]
+        subs = [s for s in (entries.get(inst_name) or []) if _is_attributable(s)]
         if not subs:
             continue
         target = _cnum(_best_value(inst))
@@ -882,7 +894,7 @@ def build_problem_charts(problem):
     ref_n = 0
     if not feas:
         for inst in instances:
-            subs = [s for s in (entries.get(inst.get("name")) or []) if _is_feasible(s)]
+            subs = [s for s in (entries.get(inst.get("name")) or []) if _is_attributable(s)]
             if subs and _ref_best(inst, subs, minimize) is not None:
                 ref_n += 1
 

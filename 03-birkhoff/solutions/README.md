@@ -34,15 +34,15 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B10_100_8 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B10_100_9 | 57 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B10_10_1 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
-| B10_10_10 | 22 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B10_10_2 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B10_10_10 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B10_10_2 | 39 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B10_10_3 | 14 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B10_10_4 | 13 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B10_10_5 | 23 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B10_10_6 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B10_10_7 | 15 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B10_10_8 | 16 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
-| B10_10_9 | 16 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B10_10_9 | 16 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B11_11_1 | 44 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B11_11_10 | 21 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B11_11_2 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
@@ -205,7 +205,7 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B32_32_9 | 146 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B3_3_1 | 2 | optimal | reference | — |
 | B3_3_10 | 3 | optimal | reference | — |
-| B3_3_2 | 2 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B3_3_2 | 3 | optimal | reference | — |
 | B3_3_3 | 3 | optimal | reference | — |
 | B3_3_4 | 3 | optimal | reference | — |
 | B3_3_5 | 3 | optimal | reference | — |
@@ -216,7 +216,7 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B3_9_1 | 5 | optimal | reference | — |
 | B3_9_10 | 4 | optimal | reference | — |
 | B3_9_2 | 5 | optimal | reference | — |
-| B3_9_3 | 4 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B3_9_3 | 5 | optimal | reference | — |
 | B3_9_4 | 5 | optimal | reference | — |
 | B3_9_5 | 4 | optimal | reference | — |
 | B3_9_6 | 5 | optimal | reference | — |
@@ -243,16 +243,16 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B48_48_7 | 209 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B48_48_8 | 205 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B48_48_9 | 212 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
-| B4_16_1 | 8 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B4_16_1 | 9 | optimal | reference | — |
 | B4_16_10 | 9 | optimal | reference | — |
 | B4_16_2 | 10 | optimal | reference | — |
 | B4_16_3 | 8 | optimal | reference | — |
 | B4_16_4 | 10 | optimal | reference | — |
 | B4_16_5 | 10 | optimal | reference | — |
-| B4_16_6 | 9 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B4_16_7 | 9 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B4_16_8 | 8 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B4_16_9 | 8 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B4_16_6 | 10 | optimal | reference | — |
+| B4_16_7 | 10 | optimal | reference | — |
+| B4_16_8 | 10 | optimal | reference | — |
+| B4_16_9 | 10 | optimal | reference | — |
 | B4_4_1 | 4 | optimal | reference | — |
 | B4_4_10 | 4 | optimal | reference | — |
 | B4_4_2 | 4 | optimal | reference | — |
@@ -265,8 +265,8 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B4_4_9 | 4 | optimal | reference | — |
 | B5_25_1 | 14 | optimal | reference | — |
 | B5_25_10 | 14 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
-| B5_25_2 | 13 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B5_25_3 | 13 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B5_25_2 | 14 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
+| B5_25_3 | 14 | optimal | reference | — |
 | B5_25_4 | 13 | optimal | reference | — |
 | B5_25_5 | 14 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
 | B5_25_6 | 14 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
@@ -294,15 +294,15 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B64_64_8 | 267 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B64_64_9 | 274 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B6_36_1 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
-| B6_36_10 | 17 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B6_36_10 | 20 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
 | B6_36_2 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
-| B6_36_3 | 18 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B6_36_4 | 18 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B6_36_3 | 21 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
+| B6_36_4 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
 | B6_36_5 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
-| B6_36_6 | 20 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B6_36_7 | 17 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B6_36_6 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
+| B6_36_7 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
 | B6_36_8 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
-| B6_36_9 | 20 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B6_36_9 | 22 | best known | [20260111_Gurobi_Schicker](../submissions/20260111_Gurobi_Schicker) | 2026-01-10 |
 | B6_6_1 | 6 | optimal | reference | — |
 | B6_6_10 | 6 | optimal | reference | — |
 | B6_6_2 | 6 | optimal | reference | — |
@@ -313,16 +313,16 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B6_6_7 | 6 | optimal | reference | — |
 | B6_6_8 | 6 | optimal | reference | — |
 | B6_6_9 | 6 | optimal | reference | — |
-| B7_49_1 | 23 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B7_49_10 | 21 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B7_49_2 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B7_49_3 | 22 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B7_49_4 | 22 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B7_49_5 | 24 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B7_49_6 | 19 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B7_49_7 | 21 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B7_49_8 | 23 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B7_49_9 | 20 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B7_49_1 | 30 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_10 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_2 | 32 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_3 | 32 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_4 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_5 | 32 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_6 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_7 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_8 | 31 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B7_49_9 | 33 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B7_7_1 | 7 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B7_7_10 | 9 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B7_7_2 | 13 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
@@ -333,16 +333,16 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B7_7_7 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B7_7_8 | 7 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
 | B7_7_9 | 7 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B8_64_1 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B8_64_10 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B8_64_2 | 28 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B8_64_3 | 26 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B8_64_4 | 26 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B8_64_5 | 26 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B8_64_6 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B8_64_7 | 24 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B8_64_8 | 25 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B8_64_9 | 24 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B8_64_1 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_10 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_2 | 36 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_3 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_4 | 36 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_5 | 37 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_6 | 35 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_7 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_8 | 38 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B8_64_9 | 37 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B8_8_1 | 11 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B8_8_10 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B8_8_2 | 10 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
@@ -350,7 +350,7 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B8_8_4 | 10 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
 | B8_8_5 | 9 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B8_8_6 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
-| B8_8_7 | 7 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B8_8_7 | 8 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B8_8_8 | 12 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B8_8_9 | 12 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B9_81_1 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
@@ -363,16 +363,16 @@ GUROBI fails to solve dense instances of size 6 optimally within one hour.
 | B9_81_7 | 41 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B9_81_8 | 42 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B9_81_9 | 43 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
-| B9_9_1 | 19 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B9_9_1 | 27 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B9_9_10 | 10 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B9_9_2 | 18 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B9_9_3 | 9 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
-| B9_9_4 | 14 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B9_9_4 | 16 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B9_9_5 | 22 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
-| B9_9_6 | 23 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
-| B9_9_7 | 22 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B9_9_6 | 25 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
+| B9_9_7 | 22 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 | B9_9_8 | 15 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
-| B9_9_9 | 9 | best known | [20260804_E-FCFW_Pennington-Mohseni](../submissions/20260804_E-FCFW_Pennington-Mohseni) | 2026-08-04 |
+| B9_9_9 | 9 | best known | [20260805_BirkhoffPlus_Valls](../submissions/20260805_BirkhoffPlus_Valls) | 2026-08-05 |
 
 <!-- BKV:END -->
 

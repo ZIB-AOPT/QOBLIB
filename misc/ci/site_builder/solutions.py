@@ -323,6 +323,134 @@ def read_solutions_folder(solutions_dir: Path, problem_id: str | None = None) ->
     return result
 
 
+# ---------------------------------------------------------------------------
+# Birkhoff (03) exactness gate.
+#
+# The 03 objective is the *minimum number of permutation matrices whose convex
+# combination equals the target doubly-stochastic matrix exactly*. An approximate
+# decomposition trivially wins on that count — you can always use fewer matrices
+# if you tolerate reconstruction error — so an approximate result is not comparable
+# to an exact one and must not be credited a best-known value, awarded attribution
+# on the leaderboard, or counted as "reached the optimum".
+#
+# A submission's self-reported ``# Feasible Runs``/objective cannot be trusted for
+# this: an approximate run legitimately reports a feasible, low objective. So we
+# reconstruct the target from the shipped solution file and require *entrywise*
+# agreement to within floating-point slack (``|target − reconstructed| ≤
+# BIRKHOFF_ENTRY_REL_TOL · scale``). This admits legitimate floating-point
+# decompositions (entries landing at e.g. 1940.0000000000002, residual ~1e-34)
+# while rejecting genuine approximations (residual ~1e-6). It is deliberately
+# stricter than the per-problem Rust checker's *approximate* mode
+# (``--tolerance > 0``, aggregate normalised Frobenius²), which exists to accept
+# approximations and is therefore the wrong criterion for attribution.
+BIRKHOFF_CONVEXITY_REL_TOL = 1e-6
+BIRKHOFF_ENTRY_REL_TOL = 1e-9
+
+# Cache parsed instance bundles: every 03 submission of a given (n, density) reads
+# the same qbench_*.json, so parse each at most once per build.
+_birkhoff_instance_cache: dict[Path, dict] = {}
+
+
+def birkhoff_instance_file(problem_dir: Path, inst: str) -> Path | None:
+    """Resolve the qbench instance file backing a Birkhoff instance name.
+
+    Mirrors check_submission._build_auto_checker_cmd: ``B{n}_{k}_{idx}`` maps to
+    ``qbench_{n:02d}_dense.json`` when ``k == n²`` and ``…_sparse.json`` otherwise.
+    """
+    m = re.match(r"B(\d+)_(\d+)_\d+", inst, re.IGNORECASE)
+    if not m:
+        return None
+    n, k = int(m.group(1)), int(m.group(2))
+    density = "dense" if k == n * n else "sparse"
+    f = problem_dir / "instances" / f"qbench_{n:02d}_{density}.json"
+    return f if f.exists() else None
+
+
+def find_birkhoff_submission_solution(problem_dir: Path, source_dir: str, instance: str) -> Path | None:
+    """Locate the solution file a submission provides for ``instance``.
+
+    Prefers a single ``<instance>_solution.<ext>``; otherwise the lowest-numbered
+    ``solutions/<instance>_solution_<N>.<ext>``. Shared with update_bkv so the BKV
+    generator and the site builder agree on which file to verify.
+    """
+    base = problem_dir / "submissions" / source_dir
+    if not base.is_dir():
+        return None
+    singles = [
+        p for p in sorted(base.rglob(f"{instance}_solution.*"))
+        if p.is_file() and "/solutions/" not in p.as_posix()
+    ]
+    if singles:
+        return singles[0]
+    numbered = sorted(p for p in base.rglob(f"{instance}_solution_*") if p.is_file())
+    return numbered[0] if numbered else None
+
+
+def birkhoff_solution_is_exact(problem_dir: Path, inst: str, sol_path: Path) -> bool:
+    """True iff the shipped Birkhoff solution reconstructs the target exactly.
+
+    "Exact" means entrywise agreement up to floating-point slack (see the section
+    note above). Returns False on any structural problem (missing/mismatched
+    instance, non-permutation, non-convex weights, dimension mismatch) — an
+    unverifiable solution is not eligible to define a best-known value.
+    """
+    inst_file = birkhoff_instance_file(problem_dir, inst)
+    if inst_file is None:
+        return False
+    inst_data = _birkhoff_instance_cache.get(inst_file)
+    if inst_data is None:
+        try:
+            inst_data = json.loads(inst_file.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return False
+        _birkhoff_instance_cache[inst_file] = inst_data
+    try:
+        sol_data = json.loads(sol_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+
+    entry = next(
+        (v for v in inst_data.values() if isinstance(v, dict) and v.get("id") == inst),
+        None,
+    )
+    if entry is None:
+        return False
+    sol = next(
+        (v for v in sol_data.values() if isinstance(v, dict) and v.get("id") == inst),
+        None,
+    )
+    if sol is None and len(sol_data) == 1:
+        only = next(iter(sol_data.values()))
+        sol = only if isinstance(only, dict) else None
+    if sol is None:
+        return False
+
+    try:
+        n = int(entry["n"])
+        scale = float(entry["scale"])
+        target = list(entry["scaled_doubly_stochastic_matrix"])
+        weights = [float(w) for w in sol["weights"]]
+        perms = list(sol["permutations"])
+    except (KeyError, TypeError, ValueError):
+        return False
+
+    if len(target) != n * n or len(perms) != len(weights) * n:
+        return False
+    if abs(sum(weights) - scale) > BIRKHOFF_CONVEXITY_REL_TOL * scale:
+        return False
+
+    reconstructed = [0.0] * (n * n)
+    for i, w in enumerate(weights):
+        perm = perms[i * n:(i + 1) * n]
+        if sorted(perm) != list(range(1, n + 1)):  # not a permutation of 1..n
+            return False
+        for row in range(n):
+            reconstructed[row * n + (perm[row] - 1)] += w
+
+    tol = BIRKHOFF_ENTRY_REL_TOL * scale
+    return all(abs(target[i] - reconstructed[i]) <= tol for i in range(n * n))
+
+
 def load_birkhoff_solution_map(problem_dir: Path) -> dict[str, dict]:
     result: dict[str, dict] = {}
     solutions_dir = problem_dir / 'solutions'

@@ -26,6 +26,10 @@ import sys
 from pathlib import Path
 
 from .classify import classify_submission
+from .solutions import (
+    birkhoff_solution_is_exact,
+    find_birkhoff_submission_solution,
+)
 from .text import normalize_portfolio_lambda, parse_date_str
 
 
@@ -239,6 +243,14 @@ def read_csv_submissions_folder(
     if not submissions_dir.is_dir():
         return result
 
+    # For Birkhoff (03), attribution is only valid for an *exact* decomposition
+    # (see solutions.birkhoff_solution_is_exact). We tag each submission with
+    # ``bkv_eligible`` here so every downstream consumer — best-value resolution,
+    # the leaderboard champion, "reached the optimum" — can skip approximate runs
+    # while still listing them in the per-instance tables. Absent (⇒ eligible) for
+    # every other problem, which the PR-time checker already vetted.
+    problem_dir = submissions_dir.parent
+
     # Collect CSV files: direct children + all *_summary.csv anywhere in tree
     csv_files: set[Path] = set()
     for f in submissions_dir.iterdir():
@@ -323,6 +335,19 @@ def read_csv_submissions_folder(
                             if ts is not None:
                                 sub["time_series"] = ts
                             break
+
+                    # Birkhoff (03) attribution eligibility: only an exact
+                    # reconstruction may define a best value / win the leaderboard.
+                    # We still return the (ineligible) submission so it appears in
+                    # the per-instance tables — consumers filter on this flag.
+                    if problem_id == "03":
+                        sol_path = find_birkhoff_submission_solution(
+                            problem_dir, source_dir, instance
+                        )
+                        sub["bkv_eligible"] = bool(
+                            sol_path is not None
+                            and birkhoff_solution_is_exact(problem_dir, instance, sol_path)
+                        )
 
                     result.setdefault(instance, []).append(sub)
         except Exception as exc:

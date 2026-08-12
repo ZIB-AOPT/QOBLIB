@@ -43,6 +43,16 @@ function lbFeasible(s) {
     return !(Number.isFinite(nf) && nf === 0);
 }
 
+// A submission may define/win a best value only if it is *attribution-eligible*:
+// feasible AND not flagged bkv_eligible === false. The flag marks a run whose
+// reported objective is not comparable to exact results (currently Birkhoff
+// decompositions that do not reconstruct exactly). Absent ⇒ eligible (every other
+// problem). Ineligible runs still appear in the per-instance submission tables
+// (rendered from instance_submissions); they are only barred from being champions.
+function lbAttributable(s) {
+    return lbFeasible(s) && s.bkv_eligible !== false;
+}
+
 // A feasibility problem (e.g. Market Split): the goal is a feasible point.
 function lbIsFeasibilityProblem(p) {
     let sawZero = false;
@@ -66,7 +76,7 @@ const QUANTUM_CATS = new Set(["quantum_hw", "quantum_sim"]);
 function lbChampion(rawSubs, minimize, feas, allowedCats = null) {
     const subs = rawSubs
         .filter((s) => {
-            if (!lbFeasible(s)) return false;
+            if (!lbAttributable(s)) return false;
             if (allowedCats) {
                 const cat = s.category || qClassify(s);
                 if (!allowedCats.has(cat)) return false;
@@ -196,7 +206,7 @@ async function initLeaderboardPage() {
                 const overallChamp = lbChampion(rawSubs, minimize, feas, null);
                 if (overallChamp) {
                     const allFeas = rawSubs
-                        .filter(lbFeasible)
+                        .filter(lbAttributable)
                         .map((s) => { const raw = lbNum(s.value); const v = !Number.isFinite(raw) && feas ? 0 : raw; return { v }; })
                         .filter((o) => Number.isFinite(o.v));
                     records.push(lbMakeRecord(p.id, inst, overallChamp, feas, allFeas));
@@ -206,7 +216,7 @@ async function initLeaderboardPage() {
                 const qChamp = lbChampion(rawSubs, minimize, feas, QUANTUM_CATS);
                 if (qChamp) {
                     const qFeas = rawSubs
-                        .filter((s) => lbFeasible(s) && QUANTUM_CATS.has(s.category || qClassify(s)))
+                        .filter((s) => lbAttributable(s) && QUANTUM_CATS.has(s.category || qClassify(s)))
                         .map((s) => { const raw = lbNum(s.value); const v = !Number.isFinite(raw) && feas ? 0 : raw; return { v }; })
                         .filter((o) => Number.isFinite(o.v));
                     quantumRecords.push(lbMakeRecord(p.id, inst, qChamp, feas, qFeas));

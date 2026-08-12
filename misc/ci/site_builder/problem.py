@@ -193,10 +193,14 @@ def _resolve_best_values(problem_dir: Path, meta: dict, instances: list[dict],
 
         # Infeasible runs (# Feasible Runs == 0) must never define the best
         # objective — their reported value is not a valid solution (this is what
-        # made Market Split show a bogus negative QUBO energy).
+        # made Market Split show a bogus negative QUBO energy). Likewise a run
+        # flagged ``bkv_eligible == False`` (currently Birkhoff decompositions that
+        # do not reconstruct exactly) is not comparable and must not define the
+        # best value, win attribution, or count as "reached the optimum" — but it
+        # stays in ``inst["submissions"]`` so it still appears in the tables.
         inst_subs = [
             s for s in (inst.get("submissions") or csv_subs.get(inst_name, []))
-            if not is_infeasible_sub(s)
+            if not is_infeasible_sub(s) and s.get("bkv_eligible", True)
         ]
 
         best_value = bkv if isinstance(bkv, (int, float)) else None

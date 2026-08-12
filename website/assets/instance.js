@@ -870,6 +870,12 @@ async function initInstancePage() {
             const nFeasible = parseMaybeNumber(submission?.n_feasible);
             return Number.isFinite(nFeasible) && nFeasible === 0;
         };
+        // Attribution-eligible: feasible AND not flagged bkv_eligible === false
+        // (a Birkhoff decomposition that does not reconstruct exactly). Ineligible
+        // runs stay in the rendered table but must not earn the best-known ★ or the
+        // "first to reach best-known" marker — their objective is not comparable.
+        const isAttributableSubmission = (submission) =>
+            !isInfeasibleSubmission(submission) && submission?.bkv_eligible !== false;
         const rankSymbol = (rank) => {
             if (rank === 1) return "▲";
             if (rank === 2) return "◆";
@@ -922,7 +928,9 @@ async function initInstancePage() {
             });
 
             const bestKnown = parseMaybeNumber(viewInst.best_value ?? viewInst.bkv);
-            const feasibleSubmissions = subs.filter((s) => !isInfeasibleSubmission(s));
+            // Marker/★ eligibility uses attribution-eligible runs only; the rendered
+            // `subs` list above is left complete so every submission still shows.
+            const feasibleSubmissions = subs.filter((s) => isAttributableSubmission(s));
             const submittedObjectives = feasibleSubmissions.map((s) => parseMaybeNumber(s.value)).filter((v) => Number.isFinite(v));
             const bestSubmittedObjective = submittedObjectives.length
                 ? (minimize ? Math.min(...submittedObjectives) : Math.max(...submittedObjectives))
