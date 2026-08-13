@@ -18,20 +18,21 @@ Birkhoff Decomposition Solution Checker
 Verifies that the given permutation matrices and weights correctly reconstruct
 the doubly stochastic matrix.
 */
+use clap::Parser;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::env;
 use std::fs;
 
-const VERSION: &str = "1.0";
+const VERSION: &str = "1.2";
+const CONVEXITY_REL_TOL: f64 = 1e-6;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Instance {
-    scaled_doubly_stochastic_matrix: Vec<i32>,
-    weights: Vec<i32>,
+    scaled_doubly_stochastic_matrix: Vec<u32>,
+    weights: Vec<u32>,
     id: String,
-    permutations: Vec<i32>,
-    scale: i32,
+    permutations: Vec<u32>,
+    scale: u32,
     n: usize,
 }
 
@@ -45,9 +46,9 @@ struct InstanceFile {
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Solution {
-    scaled_doubly_stochastic_matrix: Vec<i32>,
-    weights: Vec<i32>,
-    permutations: Vec<i32>,
+    scaled_doubly_stochastic_matrix: Vec<u32>,
+    weights: Vec<f64>,
+    permutations: Vec<u32>,
     id: String,
 }
 
@@ -57,7 +58,7 @@ struct SolutionFile {
     solutions: HashMap<String, Solution>,
 }
 
-fn is_valid_permutation(perm: &[i32], n: usize) -> bool {
+fn is_valid_permutation(perm: &[u32], n: usize) -> bool {
     // Check that permutation has correct length
     if perm.len() != n {
         return false;
@@ -65,7 +66,7 @@ fn is_valid_permutation(perm: &[i32], n: usize) -> bool {
 
     // Check that all values are in range [1..n]
     for &val in perm {
-        if val < 1 || val > n as i32 {
+        if val < 1 || val > n as u32 {
             return false;
         }
     }
@@ -83,15 +84,25 @@ fn is_valid_permutation(perm: &[i32], n: usize) -> bool {
     true
 }
 
-fn check_birkhoff_decomposition(instance: &Instance, solution: &Solution) -> Result<bool, String> {
+fn check_birkhoff_decomposition(
+    instance: &Instance,
+    solution: &Solution,
+    tolerance: f64,
+) -> Result<bool, String> {
     let n = instance.n;
 
     // Get target matrix
-    let target_matrix: Vec<i32> = instance.scaled_doubly_stochastic_matrix.clone();
+    let target_matrix: Vec<u32> = instance.scaled_doubly_stochastic_matrix.clone();
 
-    // Check that weights sum to scale
-    let weight_sum: i32 = solution.weights.iter().sum();
-    if weight_sum != instance.scale {
+    // Check that weights sum to scale (with relative tolerance for floating-point algorithms)
+    let weight_sum: f64 = solution.weights.iter().sum();
+    let scale_f = instance.scale as f64;
+
+    if (weight_sum - scale_f).abs() > CONVEXITY_REL_TOL * scale_f {
+        println!(
+            "    Weight sum {} does not equal scale {} (relative tolerance {:.6e})",
+            weight_sum, instance.scale, CONVEXITY_REL_TOL
+        );
         return Ok(false);
     }
 
@@ -108,7 +119,7 @@ fn check_birkhoff_decomposition(instance: &Instance, solution: &Solution) -> Res
     }
 
     // Reconstruct the matrix from the Birkhoff decomposition
-    let mut reconstructed = vec![0; n * n];
+    let mut reconstructed = vec![0f64; n * n];
 
     for i in 0..num_perms {
         // Extract the i-th permutation vector
@@ -134,50 +145,114 @@ fn check_birkhoff_decomposition(instance: &Instance, solution: &Solution) -> Res
         }
     }
 
-    // Check if reconstruction matches target
-    for i in 0..(n * n) {
-        if reconstructed[i] != target_matrix[i] {
-            println!(
-                "    Reconstruction mismatch at index {}: expected {}, got {}",
-                i, target_matrix[i], reconstructed[i]
-            );
+    // Count non-zero weights
+    let num_nonzero_weights = solution.weights.iter().filter(|&&w| w != 0.0).count();
+
+    // Compute normalised squared Frobenius norm
+    //   (1 / (n² · scale²)) · Σ (target[i] - reconstructed[i])²
+    let sq_frob: f64 = target_matrix
+        .iter()
+        .zip(reconstructed.iter())
+        .map(|(&t, &r)| {
+            let d = t as f64 - r;
+            d * d
+        })
+        .sum();
+    let normalised_sq_frob = sq_frob / ((n * n) as f64 * scale_f * scale_f);
+
+    if tolerance == 0.0 {
+        if normalised_sq_frob != 0.0 {
+            // Find first mismatch for a helpful message
+            for i in 0..(n * n) {
+                if (target_matrix[i] as f64 - reconstructed[i]).abs() != 0.0 {
+                    println!(
+                        "    Reconstruction mismatch at index {}: expected {}, got {}",
+                        i, target_matrix[i], reconstructed[i]
+                    );
+                    return Ok(false);
+                }
+            }
+        }
+        println!(
+            "    Valid decomposition with {} permutation matrices",
+            num_nonzero_weights
+        );
+    } else {
+        println!(
+            "    {} permutation matrices, normalised Frobenius² = {:.6e} (tolerance {:.6e})",
+            num_nonzero_weights, normalised_sq_frob, tolerance
+        );
+        if normalised_sq_frob > tolerance {
             return Ok(false);
         }
     }
 
-    // Count non-zero weights
-    let num_nonzero_weights = solution.weights.iter().filter(|&&w| w > 0).count();
-    println!(
-        "    Valid decomposition with {} permutation matrices",
-        num_nonzero_weights
-    );
-
     Ok(true)
 }
 
+/// QOBLIB Birkhoff Decomposition Solution Checker
+#[derive(Parser)]
+#[command(version = VERSION, about, long_about = None)]
+struct Cli {
+    /// Path to the JSON instance file
+    instance_file: String,
+
+    /// Path to the JSON solution file
+    solution_file: String,
+
+    /// Maximum allowed normalised squared Frobenius error.
+    /// When omitted (or 0), an exact integer reconstruction is required.
+    /// Use a small positive value (e.g. 1e-6) to accept approximate solutions.
+    #[arg(long, default_value_t = 0.0, value_parser = parse_tolerance)]
+    tolerance: f64,
+}
+
+fn parse_tolerance(s: &str) -> Result<f64, String> {
+    let v: f64 = s.parse().map_err(|_| format!("'{s}' is not a valid float"))?;
+    if v < 0.0 {
+        return Err(format!("tolerance must be non-negative, got {v}"));
+    }
+    Ok(v)
+}
+
 fn main() {
+    // Exit-code contract (see misc/ci/CHECKER_CONTRACT.md):
+    //   0  VALID        valid file, feasible
+    //   21 INFEASIBLE   valid file, one or more instances fail verification
+    //   10 INVALID_FILE unparseable solution file (raised via this hook)
+    //   2  USAGE        bad arguments
+    std::panic::set_hook(Box::new(|info| {
+        eprintln!("INVALID_FILE: {info}");
+        std::process::exit(10);
+    }));
+
     println!(
         "QOBLIB Birkhoff Decomposition Solution Checker Version {}",
         VERSION
     );
 
-    let args: Vec<String> = env::args().collect();
+    let cli = Cli::parse();
+    let tolerance = cli.tolerance;
 
-    if args.len() < 3 {
-        eprintln!("ERROR: usage: {} instance-file solution-file", &args[0]);
+    // Load instance file (a support file: read/parse failures are USAGE, not a
+    // statement about the solution).
+    let instance_data = fs::read_to_string(&cli.instance_file).unwrap_or_else(|err| {
+        eprintln!("USAGE: reading instance file {} failed: {err}", cli.instance_file);
         std::process::exit(2);
-    }
-
-    // Load instance file
-    let instance_data = fs::read_to_string(&args[1])
-        .unwrap_or_else(|err| panic!("Reading {} failed: {err}", args[1]));
+    });
 
     let instance_file: InstanceFile = serde_json::from_str(&instance_data)
-        .unwrap_or_else(|err| panic!("Parsing instance JSON failed: {err}"));
+        .unwrap_or_else(|err| {
+            eprintln!("USAGE: parsing instance JSON failed: {err}");
+            std::process::exit(2);
+        });
 
-    // Load solution file
-    let solution_data = fs::read_to_string(&args[2])
-        .unwrap_or_else(|err| panic!("Reading {} failed: {err}", args[2]));
+    // Load solution file (unreadable file is USAGE/infra; malformed content below
+    // is funnelled to INVALID_FILE by the panic hook).
+    let solution_data = fs::read_to_string(&cli.solution_file).unwrap_or_else(|err| {
+        eprintln!("USAGE: reading solution file {} failed: {err}", cli.solution_file);
+        std::process::exit(2);
+    });
 
     let solution_file: SolutionFile = serde_json::from_str(&solution_data)
         .unwrap_or_else(|err| panic!("Parsing solution JSON failed: {err}"));
@@ -208,7 +283,7 @@ fn main() {
 
         if let Some(instance) = instance_map.get(&solution_id) {
             print!("  Instance {}: ", solution_id);
-            match check_birkhoff_decomposition(instance, solution) {
+            match check_birkhoff_decomposition(instance, solution, tolerance) {
                 Ok(true) => {
                     passed += 1;
                 }
@@ -235,10 +310,10 @@ fn main() {
         std::process::exit(0);
     } else {
         println!(
-            "INVALID: {} of {} instances failed",
+            "INFEASIBLE: {} of {} instances failed",
             failed,
             passed + failed
         );
-        std::process::exit(1);
+        std::process::exit(21);
     }
 }

@@ -23,7 +23,7 @@ DAT_FOLDER="./dat_files"  # Temporary folder for .dat files
 LP_FOLDER="./lp_files"    # Temporary folder for .lp files
 
 # Set paths to other scripts and binary files
-ZIMPL="./../../../misc/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
+ZIMPL="./../../../misc/bin/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
 JSON2DAT="./../../misc/parse_matrices.py"
 # GENPERM="${MISC_FOLDER}/genperm"
 

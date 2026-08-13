@@ -118,8 +118,10 @@ impl Graph {
             Box::new(stdin())
         } else {
             let path = Path::new(filepath);
-            let file =
-                File::open(path).unwrap_or_else(|err| panic!("Can't open {filepath}: {err}"));
+            let file = File::open(path).unwrap_or_else(|err| {
+                eprintln!("USAGE: can't open {filepath}: {err}");
+                std::process::exit(2);
+            });
 
             if path.extension() == Some(std::ffi::OsStr::new("gz")) {
                 Box::new(GzDecoder::new(file))
@@ -502,6 +504,16 @@ fn verify_solution(g: &Graph, solution_data: &[u8]) -> bool {
 }
 
 fn main() {
+    // Exit-code contract (see misc/ci/CHECKER_CONTRACT.md):
+    //   0  VALID        valid file, feasible (stable set)
+    //   21 INFEASIBLE   valid file, selected set is not stable
+    //   10 INVALID_FILE unparseable solution file (raised via this hook)
+    //   2  USAGE        bad arguments
+    std::panic::set_hook(Box::new(|info| {
+        eprintln!("INVALID_FILE: {info}");
+        std::process::exit(10);
+    }));
+
     println!("Qbench Stable Set Solution Checker Version {VERSION}");
 
     let args: Vec<String> = env::args().collect();
@@ -526,8 +538,10 @@ fn main() {
     let solution_data = if is_binary(solution_arg) {
         solution_arg.as_bytes().to_vec()
     } else {
-        fs::read(solution_arg)
-            .unwrap_or_else(|err| panic!("Reading {} failed: {err}", solution_arg))
+        fs::read(solution_arg).unwrap_or_else(|err| {
+            eprintln!("USAGE: reading solution file {solution_arg} failed: {err}");
+            std::process::exit(2);
+        })
     };
 
     let verified = verify_solution(&g, &solution_data);
@@ -536,8 +550,8 @@ fn main() {
         println!("VALID: Solution successfully verified");
         std::process::exit(0);
     } else {
-        println!("INVALID: Solution verification failed");
-        std::process::exit(1);
+        println!("INFEASIBLE: Valid solution file, but the set is not stable");
+        std::process::exit(21);
     }
 }
 

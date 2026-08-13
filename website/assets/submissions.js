@@ -13,9 +13,11 @@ const {
     SUBMISSION_CATEGORIES: qCATS,
     catBadge: qCatBadge,
     downloadCsv: qDownloadCsv,
+    orderRowsByTable: qOrderRowsByTable,
     submissionDate: qSubmissionDate,
     submissionMethod: qSubmissionMethod,
     showError: qShowError,
+    populateProblemFilter: qPopulateProblemFilter,
 } = window.QOBLIB;
 
 let allGroups = [];
@@ -39,6 +41,7 @@ function groupSearchText(group, problem) {
         problem?.name,
         problem?.slug,
         profile.submitter,
+        profile.affiliation,
         profile.date,
         qFmtDate(profile.date),
         profile.workflow,
@@ -64,26 +67,29 @@ function renderStats(groups) {
     const totalInstances = groups.reduce((sum, group) => sum + (group.instances || []).length, 0);
     const problems = new Set(groups.map((group) => group.problem_id)).size;
     const authors = new Set(groups.map((group) => group.profile?.submitter || "").filter(Boolean)).size;
-    document.getElementById("sub-stat-packages").textContent = groups.length.toLocaleString();
-    document.getElementById("sub-stat-instances").textContent = totalInstances.toLocaleString();
-    document.getElementById("sub-stat-problems").textContent = problems.toLocaleString();
-    document.getElementById("sub-stat-authors").textContent = authors.toLocaleString();
+    const setStat = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value.toLocaleString();
+    };
+    setStat("sub-stat-packages", groups.length);
+    setStat("sub-stat-instances", totalInstances);
+    setStat("sub-stat-problems", problems);
+    setStat("sub-stat-authors", authors);
 }
 
 function populateProblemFilter(indexData) {
-    const select = document.getElementById("sub-prob");
-    (indexData.problems || []).forEach((problem) => {
-        const option = document.createElement("option");
-        option.value = problem.id;
-        option.textContent = formatProblemLabel(problem);
-        select.appendChild(option);
-    });
+    // Idempotent against the server-pre-rendered options — see the shared helper.
+    qPopulateProblemFilter(
+        document.getElementById("sub-prob"),
+        indexData.problems || [],
+        formatProblemLabel,
+    );
 }
 
 function getFilteredGroups() {
-    const search = document.getElementById("sub-search").value.trim().toLowerCase();
-    const problemId = document.getElementById("sub-prob").value || "";
-    const category = document.getElementById("sub-cat").value || "";
+    const search = (document.getElementById("sub-search")?.value || "").trim().toLowerCase();
+    const problemId = document.getElementById("sub-prob")?.value || "";
+    const category = document.getElementById("sub-cat")?.value || "";
 
     const filtered = allGroups.filter((group) => {
         if (problemId && group.problem_id !== problemId) return false;
@@ -108,12 +114,18 @@ function getFilteredGroups() {
 
 function renderSubmissions() {
     const filtered = getFilteredGroups();
-    document.getElementById("sub-count").textContent = `${filtered.length} submission${filtered.length !== 1 ? "s" : ""}`;
+    const countEl = document.getElementById("sub-count");
+    if (countEl) countEl.textContent = `${filtered.length} submission${filtered.length !== 1 ? "s" : ""}`;
+    // The headline stat tiles are a stable dataset overview — always the global
+    // totals, not the filtered subset (which silently shrank "Problems" to 1 etc.
+    // as soon as any filter was applied). The count pill above already reflects
+    // the active filter, so the tiles staying global is the least-surprising.
+    renderStats(allGroups);
 
     const body = document.getElementById("sub-tbody");
 
     if (!filtered.length) {
-        body.innerHTML = '<tr><td colspan="6" class="text-center padded">No submissions match the current filters.</td></tr>';
+        body.innerHTML = '<tr><td colspan="7" class="text-center padded">No submissions match the current filters.</td></tr>';
         return;
     }
 
@@ -121,16 +133,18 @@ function renderSubmissions() {
         .map((group) => {
             const problem = problemIndex.get(group.problem_id);
             const submitter = group.profile?.submitter || "-";
+            const affiliation = group.profile?.affiliation || "-";
             const date = qFmtDate(qSubmissionDate(group));
             const instanceCount = (group.instances || []).length;
             // The package name already carries the date + author; surface just the
             // method here and link it to the package's detail page.
             return `
-                <tr>
+                <tr data-export-key="${qEsc(String(group.problem_id) + "::" + group.id)}">
                     <td><a class="rlink" href="${qSubmissionUrl(group.problem_id, group.id)}" title="${qEsc(group.id)}">${qEsc(qSubmissionMethod(group))}</a></td>
                     <td><a class="badge b-type" href="${qProblemUrl(group.problem_id)}">${qEsc(formatProblemLabel(problem))}</a></td>
                     <td>${qCatBadge(groupCategory(group))}</td>
                     <td>${qEsc(submitter)}</td>
+                    <td>${qEsc(affiliation)}</td>
                     <td class="mono">${qEsc(date)}</td>
                     <td class="num">${instanceCount.toLocaleString()}</td>
                 </tr>`;
@@ -163,9 +177,12 @@ async function initSubmissionsPage() {
 }
 
 function downloadSubmissionsCsv() {
-    const groups = getFilteredGroups();
+    let groups = getFilteredGroups();
+    // Honor the user's clicked-column sort so the CSV matches the visible table.
+    const table = document.querySelector("#submissions-table table");
+    if (table) groups = qOrderRowsByTable(table, groups, groups.map((g) => `${g.problem_id}::${g.id}`));
     const headers = [
-        "Package", "Method", "Problem ID", "Problem", "Paradigm", "Submitter", "Date",
+        "Package", "Method", "Problem ID", "Problem", "Paradigm", "Submitter", "Affiliation", "Date",
         "Instances", "Files", "Workflow", "Algorithm", "Hardware", "Source files",
     ];
     const data = groups.map((group) => {
@@ -179,6 +196,7 @@ function downloadSubmissionsCsv() {
             problem?.name || "",
             (qCATS[groupCategory(group)] || qCATS.classical).label,
             profile.submitter || "",
+            profile.affiliation || "",
             date ? qFmtDate(date) : "",
             (group.instances || []).length,
             (group.source_files || []).length,
@@ -193,4 +211,10 @@ function downloadSubmissionsCsv() {
 
 window.renderSubmissions = renderSubmissions;
 window.downloadSubmissionsCsv = downloadSubmissionsCsv;
+
+document.getElementById("sub-search")?.addEventListener("input", renderSubmissions);
+document.getElementById("sub-prob")?.addEventListener("change", renderSubmissions);
+document.getElementById("sub-cat")?.addEventListener("change", renderSubmissions);
+document.getElementById("sub-download")?.addEventListener("click", downloadSubmissionsCsv);
+
 initSubmissionsPage();

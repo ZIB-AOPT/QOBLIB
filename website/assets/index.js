@@ -3,6 +3,7 @@
 const {
     esc: qEsc,
     loadIndex: qLoadIndex,
+    loadAllSubmissionGroups: qLoadAllSubmissionGroups,
     problemCard: qProblemCard,
     animateCount: qAnimateCount,
     showError: qShowError,
@@ -23,7 +24,7 @@ function landscapeFigureHtml(card) {
 }
 
 // Inject the pre-rendered complexity-landscape scatter SVGs (built once by
-// misc/site_builder/landscape.py → data/landscape.json) into the two plot cards.
+// misc/ci/site_builder/landscape.py → data/landscape.json) into the two plot cards.
 async function renderLandscape() {
     const targets = [
         ["landscape-mip", "mip"],
@@ -55,9 +56,128 @@ async function renderLandscape() {
     }
 }
 
+// Collect unique affiliations + per-org instance counts from submission_groups.json.
+// Builds two counter-scrolling tracks (row A → left, row B ← right) where each
+// chip shows the org name and how many instances they have contributed results for.
+// A count-up number above shows the total number of contributing organizations.
+async function renderAffiliations() {
+    const trackA = document.getElementById("affil-track-a");
+    const trackB = document.getElementById("affil-track-b");
+    if (!trackA || !trackB) return;
+
+    const section = trackA.closest("section");
+
+    try {
+        const allGroups = await qLoadAllSubmissionGroups();
+
+        // Accumulate instance counts per affiliation.
+        // CSV affiliation fields are comma-separated when multi-author; we split
+        // on commas but then re-join any fragment that looks like a broken
+        // parenthesised name (e.g. "Foo (Bar" + "Baz)" → "Foo (Bar, Baz)").
+        const counts = new Map(); // affiliation → instance count
+        allGroups.forEach((group) => {
+            const raw = (group.profile?.affiliation || "").trim();
+            if (!raw || raw === "N/A") return;
+            const nInst = (group.instances || []).length;
+
+            // The affiliation field is comma-joined across multiple authors, so we
+            // split on commas — but a single org name can itself contain a comma
+            // ("Qunova Computing, Inc."). Split, then heal two cases that a naive
+            // split breaks apart:
+            //   1. broken parentheses — a fragment with an unclosed "(" is merged
+            //      with following fragments until the paren closes;
+            //   2. a trailing corporate suffix (Inc., Ltd, LLC, GmbH, …) that got
+            //      severed from its org name is re-joined to the previous entry.
+            const CORP_SUFFIX = /^(?:inc|incorporated|ltd|limited|l\.?l\.?c|l\.?l\.?p|co|corp|corporation|company|gmbh|ag|kg|s\.?a|s\.?à\.?r\.?l|sarl|b\.?v|n\.?v|plc|pty|pte|srl|s\.?r\.?l|s\.?p\.?a|oy|ab|as)\.?$/i;
+            const parts = raw.split(",").map((s) => s.trim()).filter(Boolean);
+            const healed = [];
+            let carry = "";
+            for (const p of parts) {
+                const combined = carry ? `${carry}, ${p}` : p;
+                const opens = (combined.match(/\(/g) || []).length;
+                const closes = (combined.match(/\)/g) || []).length;
+                if (opens > closes) {
+                    carry = combined; // unmatched open paren — keep accumulating
+                } else if (CORP_SUFFIX.test(combined) && healed.length) {
+                    // A standalone corporate suffix belongs to the preceding org.
+                    healed[healed.length - 1] += `, ${combined}`;
+                    carry = "";
+                } else {
+                    healed.push(combined);
+                    carry = "";
+                }
+            }
+            if (carry) healed.push(carry); // flush any remaining fragment
+
+            // A single package's affiliation string is comma-joined across all its
+            // co-authors, so the same org can appear several times (e.g. "JIJ, JIJ,
+            // JIJ"). Count each distinct org once per package, or its instance count
+            // would be multiplied by the number of authors from that org.
+            new Set(healed.filter((a) => a && a !== "N/A")).forEach((a) => {
+                counts.set(a, (counts.get(a) || 0) + nInst);
+            });
+        });
+
+        if (!counts.size) {
+            if (section) section.remove();
+            return;
+        }
+
+        // Sort alphabetically for a consistent, non-hierarchical display.
+        const orgs = Array.from(counts.entries()).sort((a, b) =>
+            a[0].localeCompare(b[0], undefined, { sensitivity: "base" }),
+        );
+
+        // Animate the count number.
+        const countEl = document.getElementById("affil-count");
+        if (countEl) qAnimateCount("affil-count", orgs.length);
+
+        // Build a stat card: name + instance count below.
+        const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+        const card = (name, n, dup = false) =>
+            `<span class="affil-chip${dup ? " affil-chip-dup" : ""}">` +
+            `<span class="affil-chip-name">${esc(name)}</span>` +
+            `<span class="affil-chip-stat">${n} instance${n === 1 ? "" : "s"}</span>` +
+            `</span>`;
+
+        // Split orgs across two rows for visual variety.
+        // Odd-indexed go on row B so neither row is an exact subset of the other.
+        const rowA = orgs.filter((_, i) => i % 2 === 0);
+        const rowB = orgs.filter((_, i) => i % 2 === 1);
+
+        // Each track needs two copies of its set for the seamless loop.
+        const fill = (track, row, reverse) => {
+            const html = (dup) => row.map(([n, c]) => card(n, c, dup)).join("");
+            track.innerHTML = html(false) + html(true);
+            // Speed proportional to content width (~50 px/s, clamped 24–95 s).
+            const estWidth = row.length * 190;
+            const duration = Math.min(95, Math.max(24, estWidth / 50));
+            track.style.setProperty("--affil-duration", `${duration}s`);
+            track.style.setProperty("--affil-shift", "-50%");
+            if (reverse) track.classList.add("affil-track-reverse");
+            track.classList.add("running");
+        };
+
+        fill(trackA, rowA, false);
+        fill(trackB, rowB, true);
+
+        // Screen-reader-only static list mirroring the aria-hidden ticker, so the
+        // org names are actually available to assistive tech (finding #7).
+        const list = document.getElementById("affil-list");
+        if (list) {
+            list.innerHTML = orgs
+                .map(([n, c]) => `<li>${esc(n)} — ${c} instance${c === 1 ? "" : "s"}</li>`)
+                .join("");
+        }
+    } catch {
+        if (section) section.remove();
+    }
+}
+
 async function initHomePage() {
     qInitCommon();
     renderLandscape();
+    renderAffiliations();
     try {
         const idx = await qLoadIndex();
         qAnimateCount("s-inst", idx.total_instances || 0);

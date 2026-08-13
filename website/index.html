@@ -6,6 +6,11 @@
     <script>(function(){try{var t=localStorage.getItem("qoblib-theme");if(t!=="dark"&&t!=="light"){t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
     <title>QOBLIB - Home</title>
     <link rel="icon" type="image/svg+xml" href="assets/images/qoblib-favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/qoblib-icon-192.png" />
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png" />
+    <meta name="theme-color" content="#1d6f78" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14191b" media="(prefers-color-scheme: dark)" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
@@ -21,14 +26,16 @@
                 <a class="nl" data-nav="instances" href="instances.html">Instances</a>
                 <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
                 <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
-                <a class="nl" data-nav="submit" href="submit.html">Submit</a>
+                <a class="nl" data-nav="submit" href="submit.html">Submit results</a>
+                <a class="nl" data-nav="participate" href="participate.html">How it works</a>
+                <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
 
-    <main class="page">
+    <main class="page" id="main-content">
         <section class="hero">
             <div class="hero-eyebrow">Benchmark Library — The Intractable Decathlon</div>
             <h1>Quantum Optimization<br /><em>Benchmarking Library</em></h1>
@@ -56,12 +63,38 @@
             </div>
             <div class="stat">
                 <div class="stat-num loading-val" id="s-solved">0</div>
-                <div class="stat-lbl">Optimally Solved</div>
+                <div class="stat-lbl">Optimally Solved (any)</div>
             </div>
             <div class="stat">
                 <div class="stat-num loading-val" id="s-subs">0</div>
                 <div class="stat-lbl">Submissions</div>
             </div>
+        </section>
+
+        <hr class="section-divider" />
+
+        <!-- Affiliations ticker — populated from submission_groups.json by index.js -->
+        <section aria-label="Contributing organizations">
+            <div class="affil-header">
+                <span class="sh-title">Contributing Organizations</span>
+                <span class="affil-count-display">
+                    <span class="affil-count-num" id="affil-count">—</span>
+                    <span class="affil-count-lbl">organizations</span>
+                </span>
+            </div>
+            <div class="affil-rows" aria-hidden="true">
+                <div class="affil-track-wrap">
+                    <div class="affil-track" id="affil-track-a"></div>
+                </div>
+                <div class="affil-track-wrap">
+                    <div class="affil-track affil-track-reverse" id="affil-track-b"></div>
+                </div>
+            </div>
+            <!-- Static, screen-reader-only list of the same organizations: the
+                 animated ticker above is aria-hidden, so this is how assistive
+                 tech users learn which orgs contributed. Populated by index.js
+                 and pre-rendered server-side. -->
+            <ul class="sr-only" id="affil-list"></ul>
         </section>
 
         <hr class="section-divider" />

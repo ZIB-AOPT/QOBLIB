@@ -20,7 +20,7 @@ import unittest
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "misc"))
+sys.path.insert(0, str(REPO_ROOT / "misc" / "ci"))
 
 from site_builder import html_pages as H  # noqa: E402
 
@@ -54,8 +54,8 @@ class TestEnrichStaticPage(unittest.TestCase):
         self.assertIn('<meta name="description"', out)
         self.assertIn('<meta property="og:title"', out)
         self.assertIn('<meta name="twitter:card" content="summary_large_image" />', out)
-        self.assertIn('<main class="page" id="main">', out)
-        self.assertIn('<a class="skip-link" href="#main">', out)
+        self.assertIn('<main class="page" id="main-content">', out)
+        self.assertIn('<a class="skip-link" href="#main-content">', out)
 
     def test_subpage_canonical_is_file_url(self):
         src = '<head><title>x</title></head><body><main class="page"></main></body>'
@@ -82,6 +82,12 @@ class TestRenderProblemPage(unittest.TestCase):
         # Meta description uses the richer "why" sentence.
         self.assertIn("mutually non-adjacent vertices", self.page)
 
+    def test_noindex_stripped_from_generated_page(self):
+        # The problem.html shell carries a noindex tag; the generated crawlable
+        # deep page must NOT (it is the indexable version, listed in the sitemap).
+        self.assertIn('content="noindex"', TEMPLATE)
+        self.assertNotIn('content="noindex"', self.page)
+
     def test_hydration_hook_and_ssr(self):
         self.assertIn('data-problem-id="07"', self.page)
         self.assertIn('<h1 class="d-title">Maximum Independent Set</h1>', self.page)
@@ -90,9 +96,36 @@ class TestRenderProblemPage(unittest.TestCase):
         # The loading placeholder is replaced by the server-rendered summary.
         self.assertNotIn("Loading problem data", self.page)
 
+    def test_full_detail_render_when_provided(self):
+        # With a full detail payload the deep page gets the instances table +
+        # submissions + charts, not just the summary.
+        detail = {
+            **PROBLEM,
+            "slug": "independentset",
+            "description": "The largest independent set.",
+            "columns": [{"key": "nodes", "label": "Nodes", "numeric": True}],
+            "instances": [{
+                "name": "mis_001", "status": "optimal", "best_value": 12,
+                "best_is_optimal": True, "raw_url": "https://ex/raw", "metrics": {"nodes": 45},
+            }],
+            "submission_groups": [{
+                "id": "20260101_QAOA_Team", "source_dir": "20260101_QAOA_Team",
+                "category": "quantum_hw",
+                "profile": {"submitter": "Q Team", "date": "2026-01-01"},
+                "instances": [{"instance": "mis_001"}],
+            }],
+            "charts": {"modes": {}, "has_cactus": False, "has_tts": False,
+                       "has_profile": False, "has_scaling": False},
+        }
+        page = H.render_problem_page(TEMPLATE, PROBLEM, BASE, detail=detail)
+        self.assertIn('id="prob-inst-tbody"', page)
+        self.assertIn("mis_001", page)
+        self.assertIn("Q Team", page)
+        self.assertNotIn("Loading problem data", page)
+
     def test_skip_link_resolves_to_self_under_base(self):
         # Relative to <base> (site root) this is the page's own #main anchor.
-        self.assertIn('<a class="skip-link" href="problem/07/#main">', self.page)
+        self.assertIn('<a class="skip-link" href="problem/07/#main-content">', self.page)
 
     def test_cdn_scripts_inherited_from_pinned_template(self):
         self.assertIn("marked@12.0.2/marked.min.js", self.page)
@@ -137,7 +170,7 @@ class TestEnrichSite(unittest.TestCase):
 
             for name in ("sitemap.xml", "robots.txt", "404.html"):
                 self.assertTrue((out / name).is_file(), name)
-            self.assertIn("id=\"main\"", (out / "index.html").read_text(encoding="utf-8"))
+            self.assertIn("id=\"main-content\"", (out / "index.html").read_text(encoding="utf-8"))
 
     def test_missing_template_skips_problem_pages(self):
         with tempfile.TemporaryDirectory() as d:

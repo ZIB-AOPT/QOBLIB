@@ -1,0 +1,70 @@
+name: Feature request
+description: Suggest an improvement for problem classes, instances, submissions, tools, or docs.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing an improvement.
+
+        For submission-specific expectations, see `CONTRIBUTING.md`.
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      description: Which area should be improved?
+      options:
+        - Problem class content
+        - Instances
+        - Submissions
+        - Validation/checker tooling
+        - Documentation
+        - Website
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: problem_class
+    attributes:
+      label: Related problem class (if any)
+      placeholder: 01-marketsplit or N/A
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation / problem
+      description: What problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe other options and why they are less suitable.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Expected impact
+      description: How this helps submissions, reproducibility, or maintainability.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmation (do not remove)
+      options:
+        - label: I checked existing issues for duplicates.
+          required: true
+        - label: I included concrete motivation and scope.
+          required: true

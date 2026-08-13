@@ -277,40 +277,50 @@ fn verify_solution(instance: &Instance, solution: &Solution) -> (bool, i32) {
 }
 
 fn main() {
+    // Exit-code contract (see misc/ci/CHECKER_CONTRACT.md):
+    //   0  VALID        valid file, feasible
+    //   21 INFEASIBLE   valid file, routes violate capacity/coverage constraints
+    //   10 INVALID_FILE unparseable / unreadable solution file (hook + read guard)
+    //   2  USAGE        bad arguments or unreadable instance file
+    std::panic::set_hook(Box::new(|info| {
+        eprintln!("INVALID_FILE: {info}");
+        std::process::exit(10);
+    }));
+
     println!("QOBLIB CVRP Solution Checker Version {}", VERSION);
     println!();
-    
+
     let args: Vec<String> = env::args().collect();
-    
+
     if args.len() < 3 {
         eprintln!("Usage: {} <instance-file> <solution-file>", args[0]);
         std::process::exit(2);
     }
-    
+
     let instance_data = fs::read_to_string(&args[1])
         .unwrap_or_else(|err| {
             eprintln!("ERROR: Reading instance file {} failed: {}", args[1], err);
             std::process::exit(2);
         });
-    
+
     let solution_data = fs::read_to_string(&args[2])
         .unwrap_or_else(|err| {
-            eprintln!("ERROR: Reading solution file {} failed: {}", args[2], err);
-            std::process::exit(2);
+            eprintln!("INVALID_FILE: Reading solution file {} failed: {}", args[2], err);
+            std::process::exit(10);
         });
-    
+
     let instance = parse_instance(&instance_data);
     let solution = parse_solution(&solution_data);
-    
+
     let (valid, _cost) = verify_solution(&instance, &solution);
-    
+
     println!();
     if valid {
         println!("VALID: Solution successfully verified");
         std::process::exit(0);
     } else {
-        println!("INVALID: Solution failed verification");
-        std::process::exit(1);
+        println!("INFEASIBLE: Valid solution file, but it violates the constraints");
+        std::process::exit(21);
     }
 }
 

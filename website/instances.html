@@ -6,6 +6,11 @@
     <script>(function(){try{var t=localStorage.getItem("qoblib-theme");if(t!=="dark"&&t!=="light"){t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
     <title>QOBLIB - Instances</title>
     <link rel="icon" type="image/svg+xml" href="assets/images/qoblib-favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/qoblib-icon-192.png" />
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png" />
+    <meta name="theme-color" content="#1d6f78" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14191b" media="(prefers-color-scheme: dark)" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
@@ -21,17 +26,19 @@
                 <a class="nl" data-nav="instances" href="instances.html">Instances</a>
                 <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
                 <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
-                <a class="nl" data-nav="submit" href="submit.html">Submit</a>
+                <a class="nl" data-nav="submit" href="submit.html">Submit results</a>
+                <a class="nl" data-nav="participate" href="participate.html">How it works</a>
+                <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
 
-    <main class="page">
+    <main class="page" id="main-content">
         <div class="ph">
-            <h2>Instance Browser</h2>
-            <p>Click any instance name for details, or use the download link to access the raw file on GitHub.</p>
+            <h1>Instance Browser</h1>
+            <p>Click any instance name for details, or use the download link to access the raw file on GitHub. The interactive scatter plot below lets you explore instances by size and density — click any point to open that instance.</p>
         </div>
 
         <hr class="section-divider" />
@@ -39,11 +46,12 @@
         <section class="tw chart-card" id="mip-chart-card">
             <div class="chart-head">
                 <div>
-                    <h3>MIP Instance Map</h3>
+                    <h2>MIP Instance Map</h2>
                     <p>Each point is one instance from LP-based metrics. x-axis: number of variables, y-axis: density. Click a point to open the instance.</p>
                 </div>
                 <div class="chart-legend" id="mip-chart-legend"></div>
             </div>
+            <p class="mip-legend-hint">Click a chip to isolate that model group · click again to restore all</p>
             <div id="mip-chart" class="mip-chart-wrap">
                 <div class="loading">Loading MIP metrics</div>
             </div>
@@ -52,18 +60,18 @@
         <hr class="section-divider" />
 
         <div class="filters">
-            <input type="text" class="fi-grow" id="i-search" placeholder="Search by instance..." oninput="renderInstances()" />
-            <select id="i-prob" onchange="renderInstances()">
+            <input type="text" class="fi-grow" id="i-search" placeholder="Search by instance..." aria-label="Search instances" />
+            <select id="i-prob" aria-label="Filter by problem class">
                 <option value="">All problem classes</option>
             </select>
-            <select id="i-status" onchange="renderInstances()">
+            <select id="i-status" aria-label="Filter by status">
                 <option value="">All statuses</option>
                 <option value="optimal">Optimal</option>
                 <option value="best_known">Best known</option>
                 <option value="open">Open</option>
             </select>
             <span class="fi-count" id="i-count"></span>
-            <button class="btn btn-ghost btn-sm" type="button" id="i-download" onclick="downloadInstancesCsv()">⬇ Download CSV</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="i-download">⬇ Download CSV</button>
         </div>
 
         <div class="tw" id="instances-table">
@@ -84,6 +92,7 @@
                 </tbody>
             </table>
         </div>
+        <div class="table-more" id="i-more"></div>
     </main>
 
     <footer class="site-footer">

@@ -21,7 +21,7 @@ LP_FOLDER="./lp_files"    # Temporary folder for .lp files
 
 # Set the model and the ZIMPL executable
 MODEL="./labs_ip.zpl"
-ZIMPL="./../../../misc/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
+ZIMPL="./../../../misc/bin/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
 
 # Set which instances should be generated
 START=2

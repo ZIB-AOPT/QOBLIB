@@ -2,6 +2,7 @@
 
 const {
     esc: qEsc,
+    safeHref: qSafeHref,
     fmtBytes: qFmtBytes,
     fmtNum: qFmtNum,
     fmtInt: qFmtInt,
@@ -25,20 +26,23 @@ const {
     classifySubmission: qClassify,
     SUBMISSION_CATEGORIES: qCATS,
     downloadCsv: qDownloadCsv,
+    orderRowsByTable: qOrderRowsByTable,
     setPageMeta: qSetPageMeta,
     attachFigureExpand: qAttachFigureExpand,
     enhanceFigures: qEnhanceFigures,
 } = window.QOBLIB;
 
 // ---------------------------------------------------------------------------
-// Performance section for the problem's instance family — three charts that
+// Performance section for the problem's instance family — four charts that
 // share one "by paradigm / by submission" grouping toggle (so a given method
-// keeps the same colour across all three):
-//   • Cactus — runtime to reach the best-known objective.
-//   • Performance profile — share of instances within a given optimality gap.
+// keeps the same color across all four):
+//   • Cactus  — runtime to reach the best-known objective. Solid line + filled
+//               circle = proven exact; dashed line + open diamond = heuristic.
+//   • TTS     — same cactus layout using time-to-solution instead of total runtime.
+//   • Profile — share of instances within a given optimality gap.
 //   • Scaling — fastest feasible runtime versus instance size.
 //
-// The chart SVGs are PRE-RENDERED at build time (misc/site_builder/charts.py,
+// The chart SVGs are PRE-RENDERED at build time (misc/ci/site_builder/charts.py,
 // emitted to data/problems/<id>/charts.json) so the browser no longer recomputes
 // them on every page load — it just injects the prebaked markup for the active
 // grouping mode and viewport. Keep charts.py in sync if the chart maths change.
@@ -49,9 +53,10 @@ let PERF_MODE = "paradigm";
 let currentProblem = null;
 
 const PERF_CHARTS = [
-    { key: "cactus", id: "cactus-body", has: "has_cactus" },
+    { key: "cactus",  id: "cactus-body",  has: "has_cactus"  },
+    { key: "tts",     id: "tts-body",     has: "has_tts"     },
     { key: "profile", id: "profile-body", has: "has_profile" },
-    { key: "scaling", id: "scaling-body", has: "has_scaling" },
+    { key: "scaling", id: "scaling-body", has: "has_scaling"  },
 ];
 
 // Wide layout on desktop; a taller, narrower aspect on phones so a single
@@ -65,7 +70,7 @@ function perfBreakpoint() {
 // pre-rendered payload. Records module state used by wirePerformance/renderPerf.
 // Returns "" when there is nothing to plot.
 function performanceSection(charts) {
-    PERF = charts && charts.modes && (charts.has_cactus || charts.has_profile || charts.has_scaling) ? charts : null;
+    PERF = charts && charts.modes && (charts.has_cactus || charts.has_tts || charts.has_profile || charts.has_scaling) ? charts : null;
     PERF_MODE = "paradigm";
     if (!PERF) return "";
 
@@ -74,15 +79,16 @@ function performanceSection(charts) {
         `<section class="tw chart-card"><div class="chart-head"><div><h3>${qEsc(title)}</h3><p>${qEsc(desc)}</p></div></div><div id="${id}"></div></section>`;
 
     return `<div class="perf-toolbar">
-            <div class="seg-toggle" role="tablist" aria-label="Grouping">
-                <button type="button" class="seg-btn on" data-mode="paradigm">By paradigm</button>
-                <button type="button" class="seg-btn" data-mode="submission">By submission</button>
+            <div class="seg-toggle" role="group" aria-label="Grouping">
+                <button type="button" class="seg-btn on" data-mode="paradigm" aria-pressed="true">By paradigm</button>
+                <button type="button" class="seg-btn" data-mode="submission" aria-pressed="false">By submission</button>
             </div>
         </div>
         <div class="perf-charts">
-            ${PERF.has_cactus ? card("cactus-body", "Runtime to reach the best-known objective", "Each curve sorts a group's solved instances by total runtime — a point (x, y) means it reached the best-known objective on x instances, each within y seconds. Lower and further right is better.") : ""}
-            ${PERF.has_profile ? card("profile-body", "Solution quality (performance profile)", "Share of instances each group brings within a given optimality gap of the best-known objective. Higher is better; the value at “best” is the share solved exactly.") : ""}
-            ${PERF.has_scaling ? card("scaling-body", "Runtime scaling with instance size", `Fastest feasible runtime per instance versus ${sizeLabel}, both on log scales — shows how each group scales.`) : ""}
+            ${PERF.has_cactus  ? card("cactus-body",  "Runtime to reach best-known objective", "Sorted instances vs total runtime. A point (x, y) means x instances were solved within y seconds. Solid line + filled circle = proven exact; dashed line + open diamond = heuristic. Lower-right is better.") : ""}
+            ${PERF.has_tts     ? card("tts-body",     "Time-to-solution (TTS) to reach best-known objective", "Same as the runtime cactus but uses the reported Time-to-Solution rather than total runtime. Solid = exact, dashed = heuristic.") : ""}
+            ${PERF.has_profile ? card("profile-body", "Solution quality (performance profile)", "Share of instances each group brings within a given optimality gap of the best-known objective. Higher is better; the value at \u201cbest\u201d is the share solved exactly.") : ""}
+            ${PERF.has_scaling ? card("scaling-body", "Runtime scaling with instance size", `Fastest feasible runtime (log scale) per instance versus ${sizeLabel} — shows how each group scales.`) : ""}
         </div>`;
 }
 
@@ -98,14 +104,134 @@ function renderPerf() {
         const variants = mode[key];
         body.innerHTML = (variants && variants[bp]) || "";
     });
+    wireChartToggles(document);
 }
+
+// ---------------------------------------------------------------------------
+// Series toggling — spotlight model:
+//   • Click a legend entry → that series stays bright, all others dim.
+//   • Click the same entry again (or the last visible one) → restore all.
+//   • If all entries somehow end up dimmed → auto-restore all.
+//
+// Toggle rules:
+//   All visible  → click X  → solo X (hide all others)
+//   Some hidden  → click hidden Y  → show Y (independent toggle)
+//   Some hidden  → click visible Y → hide Y (independent toggle)
+//   All hidden   → restore all
+// wireChartToggles(root) can be called on the live document or on the
+// lightbox DOM fragment so the expanded view is interactive too.
+// ---------------------------------------------------------------------------
+
+// cardId → Set of hidden series keys (empty Set = all visible).
+const PERF_HIDDEN = {};
+
+function _applyCardVisibility(card, hidden) {
+    card.querySelectorAll(".conv-leg[data-series]").forEach((leg) => {
+        const key = leg.dataset.series;
+        const off = hidden.has(key);
+        leg.classList.toggle("conv-leg-off", off);
+        card.querySelectorAll(`[data-series="${CSS.escape(key)}"]`).forEach((el) => {
+            el.style.opacity = off ? "0.1" : "";
+        });
+    });
+}
+
+function _toggleSeries(hidden, key, allKeys) {
+    if (hidden.size === 0) {
+        // All visible → solo: hide everything except the clicked one.
+        allKeys.forEach((k) => { if (k !== key) hidden.add(k); });
+    } else if (hidden.size === allKeys.length) {
+        // All hidden → restore all.
+        hidden.clear();
+    } else {
+        // Partial state → independently toggle the clicked series.
+        if (hidden.has(key)) hidden.delete(key); else hidden.add(key);
+        // If that just hid the last visible one, restore all instead.
+        if (hidden.size === allKeys.length) hidden.clear();
+    }
+}
+
+function wireChartToggles(root) {
+    (root || document).querySelectorAll(".perf-charts .conv-legend").forEach((legend) => {
+        const card = legend.closest(".chart-card");
+        if (!card) return;
+
+        // Give the card a stable id so PERF_HIDDEN can track its state.
+        if (!card.id) card.id = "chart-card-" + Math.random().toString(36).slice(2, 8);
+        if (!PERF_HIDDEN[card.id]) PERF_HIDDEN[card.id] = new Set();
+
+        legend.querySelectorAll(".conv-leg[data-series]").forEach((leg) => {
+            if (leg.dataset.bound === "1") return;
+            leg.dataset.bound = "1";
+
+            leg.addEventListener("click", () => {
+                const hidden = PERF_HIDDEN[card.id];
+                const allKeys = [...card.querySelectorAll(".conv-leg[data-series]")]
+                    .map((l) => l.dataset.series);
+                _toggleSeries(hidden, leg.dataset.series, allKeys);
+                _applyCardVisibility(card, hidden);
+            });
+        });
+
+        // Re-apply stored state when renderPerf re-injects SVG content
+        // (e.g. after a grouping-mode toggle) — the card element and its id
+        // survive, so visibility state should carry over.
+        _applyCardVisibility(card, PERF_HIDDEN[card.id]);
+    });
+}
+
+// Wire chart toggles inside the figure lightbox when it opens.
+//
+// attachFigureExpand clones container.innerHTML (not the container itself), so
+// the lightbox inner holds the chart-card's *children* directly — there is no
+// .chart-card or .perf-charts wrapper. We treat the lightbox inner element
+// itself as the "card" scope for the toggle.
+document.addEventListener("lightboxopen", (ev) => {
+    const inner = ev.target;
+    if (!inner) return;
+    if (!inner.querySelector(".conv-leg[data-series]")) return;
+
+    // Strip stale data-bound flags copied from the live DOM.
+    inner.querySelectorAll(".conv-leg[data-bound]").forEach((el) => {
+        delete el.dataset.bound;
+    });
+
+    // Seed lbHidden from the cloned DOM's visual state: whatever the live card
+    // was showing when the user hit Expand should be the starting state here.
+    const lbHidden = new Set(
+        [...inner.querySelectorAll(".conv-leg-off[data-series]")]
+            .map((l) => l.dataset.series)
+    );
+
+    inner.querySelectorAll(".conv-leg[data-series]").forEach((leg) => {
+        if (leg.dataset.bound === "1") return;
+        leg.dataset.bound = "1";
+
+        leg.addEventListener("click", () => {
+            const allKeys = [...inner.querySelectorAll(".conv-leg[data-series]")]
+                .map((l) => l.dataset.series);
+            _toggleSeries(lbHidden, leg.dataset.series, allKeys);
+            inner.querySelectorAll(".conv-leg[data-series]").forEach((l) => {
+                const off = lbHidden.has(l.dataset.series);
+                l.classList.toggle("conv-leg-off", off);
+                inner.querySelectorAll(`[data-series="${CSS.escape(l.dataset.series)}"]`).forEach((el) => {
+                    el.style.opacity = off ? "0.1" : "";
+                });
+            });
+        });
+    });
+});
 
 function wirePerformance() {
     const tb = document.querySelector(".perf-toolbar");
     if (!tb || !PERF) return;
     tb.querySelectorAll(".seg-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
-            tb.querySelectorAll(".seg-btn").forEach((b) => b.classList.toggle("on", b === btn));
+            tb.querySelectorAll(".seg-btn").forEach((b) => {
+                const active = b === btn;
+                b.classList.toggle("on", active);
+                b.setAttribute("aria-pressed", active ? "true" : "false");
+            });
             PERF_MODE = btn.dataset.mode;
             renderPerf();
         });
@@ -131,7 +257,7 @@ window.addEventListener("resize", () => {
 function collapsibleSection(title, bodyHtml, count = null) {
     const label = count != null ? `${qEsc(title)} <span class="ps-count">(${count})</span>` : qEsc(title);
     return `<details class="prob-section" open>
-        <summary class="prob-section-head">${label}</summary>
+        <summary class="prob-section-head"><h2 class="prob-section-title">${label}</h2></summary>
         <div class="prob-section-body">${bodyHtml}</div>
     </details>`;
 }
@@ -214,7 +340,7 @@ function layoutDescriptionImage(descRoot, problem) {
 
     // Prefer our own theme-aware inline SVG (assets/problem_figures.js), keyed by
     // the problem slug. It replaces any figure embedded in the README so every
-    // problem shows a figure in the site colour scheme, light or dark.
+    // problem shows a figure in the site color scheme, light or dark.
     const figureSvg = (window.QOBLIB_PROBLEM_FIGURES || {})[problem?.slug];
 
     const content = document.createElement("div");
@@ -313,7 +439,7 @@ async function initProblemPage() {
             <div class="dh">
                 <div>
                     <div class="d-num">${String(p.id).padStart(2, "0")} / ${qEsc(p.slug)}</div>
-                    <div class="d-title">${qEsc(p.name)}</div>
+                    <h1 class="d-title">${qEsc(p.name)}</h1>
                     <div class="d-sub">${qEsc(p.short)}</div>
                     <div class="pcard-foot">
                         <span class="badge b-type">${qEsc(p.type)}</span>
@@ -325,7 +451,7 @@ async function initProblemPage() {
                     <div class="mr"><span class="mk">Instances</span><span class="mv">${qFmtInt(p.instance_count)}</span></div>
                     <div class="mr"><span class="mk">Optimally solved</span><span class="mv">${qFmtInt(solved)} / ${qFmtInt(p.instance_count)}</span></div>
                     ${p.vars_min != null ? `<div class="mr"><span class="mk">Variable range</span><span class="mv">${qFmtInt(p.vars_min)}–${qFmtInt(p.vars_max)}</span></div>` : ""}
-                    <div class="mr"><span class="mk">Objective</span><span class="mv">${p.minimize ? "minimize" : "maximize"}</span></div>
+                    <div class="mr"><span class="mk">Objective</span><span class="mv">${p.minimize !== false ? "minimize" : "maximize"}</span></div>
                 </div>
             </div>
             ${p.description_md || p.description ? `<hr class="section-divider" />` : ""}
@@ -338,9 +464,9 @@ async function initProblemPage() {
 
             ${collapsibleSection("Instances", `
                 <div class="filters">
-                    <input type="text" class="fi-grow" id="prob-inst-search" placeholder="Search by instance name..." oninput="filterProblemInstances()" />
+                    <input type="text" class="fi-grow" id="prob-inst-search" placeholder="Search by instance name..." />
                     <span class="fi-count" id="prob-inst-count">${(p.instances || []).length.toLocaleString()} of ${(p.instances || []).length.toLocaleString()}</span>
-                    <button class="btn btn-ghost btn-sm" type="button" onclick="downloadProblemInstancesCsv()">⬇ Download CSV</button>
+                    <button class="btn btn-ghost btn-sm" type="button" id="prob-inst-csv-btn">⬇ Download CSV</button>
                 </div>
                 <div class="tw">
                     <table>
@@ -359,13 +485,17 @@ async function initProblemPage() {
                 </div>`, p.instance_count)}
 
             <div class="hero-actions" style="margin-top:1.5rem">
-                ${p.github_url ? `<a class="btn btn-ghost" href="${qEsc(p.github_url)}" target="_blank" rel="noopener">View on GitHub ↗</a>` : ""}
+                ${p.github_url ? `<a class="btn btn-ghost" href="${qSafeHref(p.github_url)}" target="_blank" rel="noopener">View on GitHub ↗</a>` : ""}
                 <a class="btn btn-navy" href="leaderboard.html">View Leaderboard</a>
                 <a class="btn btn-ghost" href="instances.html">Browse All Instances</a>
             </div>
         `;
 
         wirePerformance();
+
+        // Wire instance search and CSV download via addEventListener — no inline handlers.
+        document.getElementById("prob-inst-search")?.addEventListener("input", filterProblemInstances);
+        document.getElementById("prob-inst-csv-btn")?.addEventListener("click", downloadProblemInstancesCsv);
 
         const desc = container.querySelector(".d-desc");
         if (desc) {
@@ -415,13 +545,13 @@ function problemInstanceRowsHtml(p, list) {
     return list
         .map(
             (i) => `
-            <tr>
+            <tr data-export-key="${qEsc(String(i.name))}">
                 <td class="mono"><a class="rlink mono" href="${qInstanceUrl(p.id, i.name)}">${qEsc(i.name)}</a></td>
                 ${problemMetricCells(i, cols)}
-                <td class="num">${(() => { const v = qFmtNum(i.best_value ?? i.bkv); return i.best_is_optimal && v !== "-" ? `<strong>${v}</strong>` : v; })()}</td>
-                <td>${i.best_source_url ? `<a class="dl" href="${qEsc(i.best_source_url)}" target="_blank" rel="noopener">${qEsc(i.best_source_label || i.best_source_type || "source")}</a>` : "-"}</td>
+                <td class="num">${(() => { const v = qFmtNum(i.best_value ?? i.bkv); if (v === "-" && i.lambda_count) return `<span class="muted">${qFmtInt(i.lambda_count)} λ</span>`; return i.best_is_optimal && v !== "-" ? `<strong>${v}</strong>` : v; })()}</td>
+                <td>${i.best_source_url ? `<a class="dl" href="${qSafeHref(i.best_source_url)}" target="_blank" rel="noopener">${qEsc(i.best_source_label || i.best_source_type || "source")}</a>` : "-"}</td>
                 <td>${qStatusPill(i.status)}</td>
-                <td>${i.raw_url ? `<a class="dl" href="${qEsc(i.raw_url)}" target="_blank" rel="noopener">↓ raw</a>` : "-"}</td>
+                <td>${i.raw_url ? `<a class="dl" href="${qSafeHref(i.raw_url)}" target="_blank" rel="noopener">↓ raw</a>` : "-"}</td>
             </tr>`,
         )
         .join("");
@@ -444,14 +574,19 @@ function filterProblemInstances() {
     }
 }
 
-window.filterProblemInstances = filterProblemInstances;
 
 function downloadProblemInstancesCsv() {
     const p = currentProblem;
     if (!p) return;
     const cols = Array.isArray(p.columns) ? p.columns : [];
     const headers = ["Instance", ...cols.map((c) => c.label), "Best objective", "Optimal", "Status", "Source", "Source URL", "Raw URL"];
-    const data = (p.instances || []).map((i) => [
+    // Export exactly what the table shows: the current search filter, in the
+    // user's chosen column-sort order.
+    const query = document.getElementById("prob-inst-search")?.value || "";
+    let list = filteredProblemInstances(p, query);
+    const table = document.getElementById("prob-inst-tbody")?.closest("table");
+    if (table) list = qOrderRowsByTable(table, list, list.map((i) => String(i.name)));
+    const data = list.map((i) => [
         i.name,
         ...cols.map((c) => (i.metrics && i.metrics[c.key] != null ? i.metrics[c.key] : "")),
         i.best_value ?? i.bkv ?? "",
@@ -463,7 +598,5 @@ function downloadProblemInstancesCsv() {
     ]);
     qDownloadCsv(`qoblib_${p.slug || p.id}_instances.csv`, headers, data);
 }
-
-window.downloadProblemInstancesCsv = downloadProblemInstancesCsv;
 
 initProblemPage();

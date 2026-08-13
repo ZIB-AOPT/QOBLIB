@@ -39,17 +39,27 @@ struct Cli {
 fn main() {
     let result = run_checker();
 
+    // Exit-code contract (see misc/ci/CHECKER_CONTRACT.md):
+    //   0  VALID        valid file, feasible
+    //   21 INFEASIBLE   valid file, solution violates the problem constraints
+    //   10 INVALID_FILE the solution file could not be read/parsed
+    //   2  USAGE        bad arguments or unreadable instance (arcs/terms) files
     match result {
         Ok(true) => {
             println!("VALID: Solution successfully verified");
             std::process::exit(0);
         }
         Ok(false) => {
-            println!("INVALID: Solution verification failed");
-            std::process::exit(1);
+            println!("INFEASIBLE: Valid solution file, but it violates the constraints");
+            std::process::exit(21);
         }
         Err(e) => {
             eprintln!("ERROR: {}", e);
+            // read_solutions() prefixes solution-file parse errors distinctly, so a
+            // malformed solution file is reported as INVALID_FILE rather than USAGE.
+            if e.starts_with("Error reading solution file") {
+                std::process::exit(10);
+            }
             std::process::exit(2);
         }
     }

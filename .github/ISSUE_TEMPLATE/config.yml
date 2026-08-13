@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: QOBLIB discussions
+    url: https://github.com/ZIB-AOPT/QOBLIB/discussions
+    about: Use discussions for open-ended ideas or topics that do not fit bug/feature/submission-support templates.
+  - name: Contribution guide
+    url: https://github.com/ZIB-AOPT/QOBLIB/blob/main/CONTRIBUTING.md
+    about: Review required submission metadata, structure, and validation workflow before opening an issue.

@@ -207,14 +207,28 @@ fn verify_solution(instance_data : &str, solution_data : &[u8]) -> bool {
     verified
 }
 fn main() {
+    // Exit-code contract (see misc/ci/CHECKER_CONTRACT.md):
+    //   0  VALID        valid file, feasible
+    //   21 INFEASIBLE   valid file, constraint violated
+    //   10 INVALID_FILE unparseable / wrong-shape solution file (raised via this hook)
+    //   2  USAGE        bad arguments or unreadable instance file
+    std::panic::set_hook(Box::new(|info| {
+        eprintln!("INVALID_FILE: {info}");
+        std::process::exit(10);
+    }));
+
     println!("Qbench Market Split Solution Checker Version {VERSION}");
 
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 3 {
-        panic!("usage: {} instance-file solution-file|01-string", &args[0]);
+        eprintln!("USAGE: usage: {} instance-file solution-file|01-string", &args[0]);
+        std::process::exit(2);
     }
-    let instance_data = fs::read_to_string(&args[1]).unwrap_or_else(|err| panic!("Reading {} failed: {err}", args[1]));
+    let instance_data = fs::read_to_string(&args[1]).unwrap_or_else(|err| {
+        eprintln!("USAGE: reading instance file {} failed: {err}", args[1]);
+        std::process::exit(2);
+    });
 
     let solution_arg = &args[2];
 
@@ -224,16 +238,20 @@ fn main() {
     let solution_data = if is_binary(solution_arg) {
         solution_arg.as_bytes().to_vec()
     } else {
-        fs::read(solution_arg).unwrap_or_else(|err| panic!("Reading {} failed: {err}", solution_arg))
+        fs::read(solution_arg).unwrap_or_else(|err| {
+            eprintln!("USAGE: reading solution file {solution_arg} failed: {err}");
+            std::process::exit(2);
+        })
     };
 
-    // Verify solution, exit with code 0 if valid, 1 if invalid
+    // Verify solution. Reaching this point means the file already parsed into a
+    // valid-length 0/1 vector, so a failure here is infeasibility, not a bad file.
     if verify_solution(&instance_data, &solution_data) {
         println!("VALID: Solution successfully verified");
         std::process::exit(0);
     } else {
-        println!("INVALID: Solution failed verification");
-        std::process::exit(1);
+        println!("INFEASIBLE: Valid solution file, but it violates the constraints");
+        std::process::exit(21);
     }
 }
 

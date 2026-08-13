@@ -121,8 +121,10 @@ impl Graph {
             Box::new(stdin())
         } else {
             let path = Path::new(filepath);
-            let file =
-                File::open(path).unwrap_or_else(|err| panic!("Can't open {filepath}: {err}"));
+            let file = File::open(path).unwrap_or_else(|err| {
+                eprintln!("USAGE: can't open {filepath}: {err}");
+                std::process::exit(2);
+            });
 
             if path.extension() == Some(std::ffi::OsStr::new("gz")) {
                 Box::new(GzDecoder::new(file))
@@ -320,6 +322,16 @@ fn verify_solution(node_count: usize, max_degree: usize, diameter: usize, g: &Gr
 }
 
 fn main() {
+    // Exit-code contract (see misc/ci/CHECKER_CONTRACT.md):
+    //   0  VALID        valid file, feasible (degree/diameter constraints met)
+    //   21 INFEASIBLE   valid file, constraints violated
+    //   10 INVALID_FILE unparseable solution file (raised via this hook)
+    //   2  USAGE        bad arguments
+    std::panic::set_hook(Box::new(|info| {
+        eprintln!("INVALID_FILE: {info}");
+        std::process::exit(10);
+    }));
+
     println!("Qbench Order-Degree Solution Checker Version {VERSION}");
 
     let args: Vec<String> = env::args().collect();
@@ -331,15 +343,18 @@ fn main() {
         );
         std::process::exit(2);
     }
-    let node_count = args[1]
-        .parse()
-        .unwrap_or_else(|err| panic!("Expected node count: {err}"));
-    let max_degree = args[2]
-        .parse()
-        .unwrap_or_else(|err| panic!("Expected max degree: {err}"));
-    let diameter = args[3]
-        .parse()
-        .unwrap_or_else(|err| panic!("Expected max degree: {err}"));
+    let node_count = args[1].parse().unwrap_or_else(|err| {
+        eprintln!("USAGE: expected node count: {err}");
+        std::process::exit(2);
+    });
+    let max_degree = args[2].parse().unwrap_or_else(|err| {
+        eprintln!("USAGE: expected max degree: {err}");
+        std::process::exit(2);
+    });
+    let diameter = args[3].parse().unwrap_or_else(|err| {
+        eprintln!("USAGE: expected diameter: {err}");
+        std::process::exit(2);
+    });
     let basename = Path::new(&args[4])
         .file_stem()
         .and_then(|name| name.to_str())
@@ -352,8 +367,8 @@ fn main() {
         println!("VALID: Solution successfully verified");
         std::process::exit(0);
     } else {
-        println!("INVALID: Solution verification failed");
-        std::process::exit(1);
+        println!("INFEASIBLE: Valid solution file, but it violates the constraints");
+        std::process::exit(21);
     }
 }
 

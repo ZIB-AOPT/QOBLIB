@@ -28,7 +28,7 @@ LP_FOLDER="./lp_files"    # Temporary folder for .lp files
 
 # Define the model and ZIMPL executable
 MODEL="./stp_node_disjoint.zpl"
-ZIMPL="./../../../misc/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
+ZIMPL="./../../../misc/bin/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
 
 # Optional argument for instance size filtering (supports comma-separated values or regex)
 SIZE_FILTER=$1

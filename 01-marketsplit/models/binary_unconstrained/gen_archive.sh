@@ -24,7 +24,7 @@ QS_FOLDER="./qs_files"          # Temporary folder for .qs files
 
 # Set paths to other scripts and binary files
 MODEL="./marketsplit_bup.zpl"
-ZIMPL="./../../../misc/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
+ZIMPL="./../../../misc/bin/zimpl-3.7.1.linux.x86_64.gnu.static.opt"
 DAT2TXT="./../../misc/convert_dat2txt.awk"
 
 # Create necessary folders if they don't exist

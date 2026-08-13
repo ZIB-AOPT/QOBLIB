@@ -1,7 +1,9 @@
 name: Build GitHub Pages
 
+# The public site is (re)built and deployed only when changes land on main
+# (i.e. a PR is merged) or on a manual dispatch — never on pull requests. PRs are
+# validated by the "Validate Submission" workflow instead.
 on:
-  pull_request:
   push:
     branches:
       - main
@@ -11,8 +13,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -20,43 +22,42 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Set up uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.12"
+          enable-cache: true
 
       - name: Run unit tests
-        run: python -m unittest discover -s tests
+        run: uv run --project misc python -m unittest discover -s tests
+
+      # Configure Pages *before* the build so its resolved origin (which follows
+      # the deploying fork — e.g. https://<owner>.github.io/QOBLIB) can be baked
+      # into the canonical/og:url tags, sitemap.xml, robots.txt and the 404 page.
+      # Without this the builder falls back to config.DEFAULT_BASE_URL (the ZIB
+      # deployment), so a fork's canonicals and 404 assets pointed cross-origin.
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
 
       - name: Build site
         env:
-          SITE_REPO_URL: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.html_url || format('{0}/{1}', github.server_url, github.repository) }}
-          SITE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-        run: python misc/build_site.py --out _site --repo-url "$SITE_REPO_URL" --ref "$SITE_REF"
-
-      - name: Upload PR preview artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: qoblib-site
-          path: _site
-          if-no-files-found: error
-          retention-days: 14
-
-      - name: Configure Pages
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
-        uses: actions/configure-pages@v6
+          SITE_REPO_URL: ${{ format('{0}/{1}', github.server_url, github.repository) }}
+          SITE_REF: ${{ github.sha }}
+          # base_url from configure-pages has no trailing slash; the builder rstrips
+          # anyway. Falls back to the module default if the step didn't resolve one.
+          SITE_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: uv run --project misc qoblib-build-site --out _site --repo-url "$SITE_REPO_URL" --ref "$SITE_REF" --base-url "$SITE_BASE_URL"
 
       - name: Upload Pages artifact
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: _site
 
   deploy:
     name: Deploy Pages
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -69,4 +70,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5

@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for the home-page complexity-landscape plots (``misc/site_builder/landscape.py``).
+"""Tests for the home-page complexity-landscape plots (``misc/ci/site_builder/landscape.py``).
 
 Covers the divergence-prone helpers (metric-stem canonicalisation, log-axis
 ticks/bounds) and an end-to-end ``build_landscape`` over a temp fixture: the
@@ -20,6 +20,7 @@ optimal/best-known/open split, the quantum split, and the inset tooltip trim.
 
 from __future__ import annotations
 
+import math
 import sys
 import tempfile
 import unittest
@@ -27,7 +28,7 @@ import xml.dom.minidom as minidom
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "misc"))
+sys.path.insert(0, str(REPO_ROOT / "misc" / "ci"))
 
 from site_builder import landscape  # noqa: E402
 
@@ -45,27 +46,30 @@ class TestHelpers(unittest.TestCase):
         for name, expected in cases:
             self.assertEqual(landscape._metric_stem(name), expected, name)
 
-    def test_fmt_tick(self):
-        cases = [(0, "1"), (3, "1,000"), (4, "10,000"), (-1, "0.1"),
-                 (-2, "0.01"), (5, "1e5"), (-3, "1e-3"), (7, "1e7")]
-        for power, expected in cases:
-            self.assertEqual(landscape._fmt_tick(power), expected, f"_fmt_tick({power})")
+    def test_fmt_tick_value(self):
+        cases = [(1, "1"), (1000, "1,000"), (10000, "10,000"), (0.1, "0.1"),
+                 (0.01, "0.01"), (20, "20"), (500, "500"),
+                 (100000, "1e5"), (0.001, "1e-3"), (1e7, "1e7")]
+        for v, expected in cases:
+            self.assertEqual(landscape._fmt_tick_value(v), expected, f"_fmt_tick_value({v})")
 
-    def test_log_ticks(self):
-        # Small range: every decade.
-        self.assertEqual(landscape._log_ticks(1, 4, 8), [1, 2, 3, 4])
-        # Wide range gets down-sampled but always keeps the last decade.
-        ticks = landscape._log_ticks(0, 20, 4)
-        self.assertEqual(ticks, [0, 6, 12, 18, 20])
-        self.assertEqual(ticks[-1], 20)
+    def test_nice_log_bound(self):
+        # A data max of 16 snaps UP to 20 (not the next decade 100); 16 snaps DOWN to 10.
+        self.assertEqual(landscape._nice_log_bound(16, +1), 20)
+        self.assertEqual(landscape._nice_log_bound(16, -1), 10)
+        # Exact nice values stay put.
+        self.assertEqual(landscape._nice_log_bound(100, +1), 100)
+        self.assertEqual(landscape._nice_log_bound(100, -1), 100)
 
-    def test_scale_uses_integer_decade_bounds(self):
+    def test_scale_snaps_to_nice_tight_bounds(self):
+        # x data 10..16 → axis 10..20 (NOT 10..100); labelled ticks 10, 20.
         points = [
             {"num_vars": 10, "density": 0.9},
-            {"num_vars": 2000, "density": 0.002},
+            {"num_vars": 16, "density": 0.3},
         ]
-        # x: floor(log10 10)=1 .. ceil(log10 2000)=4 ; y: floor(log10 .002)=-3 .. ceil(log10 .9)=0
-        self.assertEqual(landscape._scale(points), (1, 4, -3, 0))
+        sc = landscape._scale(points)
+        self.assertAlmostEqual(sc["x_hi"], math.log10(20))
+        self.assertEqual(sc["x_major"], [10, 20])
 
     def test_num_and_esc(self):
         self.assertEqual(landscape._num("1,000"), 1000.0)

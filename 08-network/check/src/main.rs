@@ -66,17 +66,23 @@ fn main() {
 
     let result = run_checker(n, &demand_matrix, &sol_path);
 
+    // Exit-code contract (see misc/ci/CHECKER_CONTRACT.md):
+    //   0  VALID        valid file, feasible
+    //   21 INFEASIBLE   valid file, degree/flow constraints violated
+    //   10 INVALID_FILE the solution file could not be parsed (run_checker's only
+    //                   error source is parse_solution)
+    //   2  USAGE        bad arguments or unreadable demand file
     match result {
         Ok(true) => {
             std::process::exit(0);
         }
         Ok(false) => {
-            println!("INVALID: Solution verification failed");
-            std::process::exit(1);
+            println!("INFEASIBLE: Valid solution file, but it violates the constraints");
+            std::process::exit(21);
         }
         Err(e) => {
-            eprintln!("ERROR: {}", e);
-            std::process::exit(2);
+            eprintln!("INVALID_FILE: {}", e);
+            std::process::exit(10);
         }
     }
 }

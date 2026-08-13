@@ -1,0 +1,42 @@
+# Submission for mammalia-kangaroo-interactions
+
+This directory contains the submission for the problem **mammalia-kangaroo-interactions**.
+
+| Field | Value 1 |
+| --- | --- |
+| Problem | mammalia-kangaroo-interactions |
+| Submitter | ParityQC Team |
+| Affiliation | Parity Quantum Computing GmbH |
+| Date | 2026-07-30 |
+| ====== |  |
+| Reference | https://parityqc.com/products/parity-twine-optimizer |
+| Best Objective Value | 4 |
+| Optimality Bound | N/A |
+| ====== |  |
+| Modeling Approach | QUBO with penalty (n / d) * log(d) where n is the number of nodes and d the average degree of the graph. |
+| # Decision Variables | 18 |
+| # Binary Variables | 18 |
+| # Integer Variables | N/A |
+| # Continuous Variables | N/A |
+| # Non-Zero Coefficients | 109 |
+| Coefficients Type | float |
+| Coefficients Range | -1.0 - 4.118778665134749 |
+| ====== |  |
+| Workflow | Solved using Parity Twine Optimizer (version: 0.1.8). 1) The parameters β and γ of the depth-one QAOA are optimized classically. 2) Samples are drawn from the QPU. 3) Samples from the QPU are classically post-processed. |
+| Algorithm Type | Stochastic |
+| Paradigm | Quantum Hardware |
+| # Runs | 5 |
+| # Feasible Runs | 5 |
+| # Successful Runs | 5 |
+| Success Threshold | 0 |
+| ====== |  |
+| Hardware Specifications | Classical: MacBook Pro (Apple M3) 8 GB RAM 8 cores, Quantum: ibm_fez with 100000 shots. |
+| ====== |  |
+| Total Runtime | 118.822 |
+| Time to Solution | 118.822 |
+| CPU Runtime | 89.822 |
+| GPU Runtime | N/A |
+| QPU Runtime | 29.0 |
+| Other HW Runtime | N/A |
+| ====== |  |
+| Remarks | The Best Objective Value is the size of the maximal independent set found.Statistics for the Objective value across the runs: max: 4, median: 4.0, mean: 4.0, min: 4, std: 0.0. Times are in seconds. |

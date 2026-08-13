@@ -1,0 +1,63 @@
+name: Submission support
+description: Ask for help preparing a valid submission or new instance contribution.
+title: "[Submission Support]: "
+labels:
+  - question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template if you need help with submission structure, metadata, or validation.
+
+        Primary guide: `CONTRIBUTING.md`
+  - type: dropdown
+    id: support_type
+    attributes:
+      label: Support topic
+      options:
+        - Submission folder structure
+        - CSV metadata fields
+        - Running misc/ci/check_submission.py
+        - Solution file format
+        - New instance contribution
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: problem_class
+    attributes:
+      label: Problem class
+      placeholder: 01-marketsplit
+    validations:
+      required: true
+  - type: input
+    id: submission_root
+    attributes:
+      label: Submission root path (if available)
+      placeholder: 01-marketsplit/submissions/<your_submission>
+    validations:
+      required: false
+  - type: textarea
+    id: question
+    attributes:
+      label: What do you need help with?
+      description: Include current structure, commands run, and blockers.
+    validations:
+      required: true
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What have you already tried?
+      description: Include checker command output when possible.
+      render: shell
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmation (do not remove)
+      options:
+        - label: I reviewed `CONTRIBUTING.md`.
+          required: true
+        - label: I included enough context (paths, commands, errors) for maintainers to help.
+          required: true

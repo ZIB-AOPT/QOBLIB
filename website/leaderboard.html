@@ -6,6 +6,11 @@
     <script>(function(){try{var t=localStorage.getItem("qoblib-theme");if(t!=="dark"&&t!=="light"){t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
     <title>QOBLIB - Leaderboard</title>
     <link rel="icon" type="image/svg+xml" href="assets/images/qoblib-favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/qoblib-icon-192.png" />
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png" />
+    <meta name="theme-color" content="#1d6f78" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14191b" media="(prefers-color-scheme: dark)" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
@@ -21,17 +26,19 @@
                 <a class="nl" data-nav="instances" href="instances.html">Instances</a>
                 <a class="nl" data-nav="submissions" href="submissions.html">Submissions</a>
                 <a class="nl" data-nav="leaderboard" href="leaderboard.html">Leaderboard</a>
-                <a class="nl" data-nav="submit" href="submit.html">Submit</a>
+                <a class="nl" data-nav="submit" href="submit.html">Submit results</a>
+                <a class="nl" data-nav="participate" href="participate.html">How it works</a>
+                <a class="nl" data-nav="committee" href="committee.html">Committee</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">☾</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
             <a class="nav-gh" href="https://github.com/ZIB-AOPT/QOBLIB" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
     </nav>
 
-    <main class="page">
+    <main class="page" id="main-content">
         <div class="ph">
-            <h2>Leaderboard</h2>
-            <p>The current record for each instance: the best feasible submission and who holds it.</p>
+            <h1>Leaderboard</h1>
+            <p>The current record for each instance: the best feasible submission and who holds it. Records are grouped by problem — expand a section to see its table.</p>
         </div>
 
         <hr class="section-divider" />
@@ -53,16 +60,30 @@
 
         <hr class="section-divider" />
 
+        <div class="lb-view-toggle" role="group" aria-label="Leaderboard view">
+            <button class="lb-vt-btn lb-vt-active" type="button" id="lb-vt-overall" aria-pressed="true">Overall</button>
+            <button class="lb-vt-btn" type="button" id="lb-vt-quantum" aria-pressed="false">Quantum</button>
+        </div>
+
         <div class="filters">
-            <select id="lb-prob" onchange="renderLeaderboard()">
+            <select id="lb-prob" aria-label="Filter by problem class">
                 <option value="">All problem classes</option>
             </select>
-            <select id="lb-inst" onchange="renderLeaderboard()">
+            <select id="lb-inst" aria-label="Filter by instance">
                 <option value="">All instances</option>
             </select>
+            <select id="lb-paradigm" aria-label="Filter by paradigm">
+                <option value="">All paradigms</option>
+                <option value="classical">Classical</option>
+                <option value="quantum_hw">Quantum hardware</option>
+                <option value="quantum_sim">Quantum simulator</option>
+            </select>
             <span class="fi-count" id="lb-count"></span>
-            <button class="btn btn-ghost btn-sm" type="button" id="lb-download" onclick="downloadLeaderboardCsv()">⬇ Download CSV</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="lb-download">⬇ Download CSV</button>
         </div>
+
+        <p id="lb-filter-notice" class="lb-filter-notice" hidden aria-live="polite"></p>
+        <div id="lb-paradigm-bests"></div>
 
         <div id="lb-content">
             <div class="loading">Loading leaderboard</div>

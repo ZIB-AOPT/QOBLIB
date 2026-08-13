@@ -2,6 +2,8 @@
 
 A comprehensive benchmark suite for quantum optimization methods, featuring ten challenging problem classes with practical applications.
 
+Visit the official [website](https://zib-aopt.github.io/QOBLIB/) to view the current results!
+
 [![arXiv](https://img.shields.io/badge/arXiv-2504.03832-b31b1b.svg)](https://arxiv.org/pdf/2504.03832)
 [![Nature Computational Science](https://img.shields.io/badge/Nature%20Computational%20Science-10.1038%2Fs43588--026--00991--1-1f1f1f.svg)](https://www.nature.com/articles/s43588-026-00991-1)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
@@ -144,7 +146,7 @@ This repository was created as part of the **Quantum Optimization Working Group*
 
 ### Core Contributors
 
-**Thorsten Koch** (koch@zib.de), David E. Bernal Neira, Ying Chen, Giorgio Cortiana, Daniel J. Egger, Raoul Heese, Narendra N. Hegade, Alejandro Gomez Cadavid, Rhea Huang, Toshinari Itoko, Thomas Kleinert, Pedro Maciel Xavier, Naeimeh Mohseni, Jhon A. Montanez-Barrera, Koji Nakano, Giacomo Nannicini, Corey O'Meara, Justin Pauckert, Manuel Proissl, Anurag Ramesh, **Maximilian Schicker** (schicker@zib.de), Noriaki Shimada, Mitsuharu Takeori, Victor Valls, David Van Bulck, **Stefan Woerner** (WOR@zurich.ibm.com), and **Christa Zoufal** (OUF@zurich.ibm.com).
+**Thorsten Koch** (koch@zib.de), **David E. Bernal Neira** (dbernaln@purdue.edu), Ying Chen, Giorgio Cortiana, Daniel J. Egger, Raoul Heese, Narendra N. Hegade, Alejandro Gomez Cadavid, Rhea Huang, Toshinari Itoko, Thomas Kleinert, Pedro Maciel Xavier, Naeimeh Mohseni, Jhon A. Montanez-Barrera, Koji Nakano, Giacomo Nannicini, Corey O'Meara, Justin Pauckert, Manuel Proissl, Anurag Ramesh, **Maximilian Schicker** (schicker@zib.de), Noriaki Shimada, Mitsuharu Takeori, Victor Valls, David Van Bulck, **Stefan Woerner** (WOR@zurich.ibm.com), and **Christa Zoufal** (OUF@zurich.ibm.com).
 
 ## License
 

@@ -294,6 +294,16 @@ fn verify_solution(k: usize, solution_data: &[u8]) -> bool {
     verified
 }
 fn main() {
+    // Exit-code contract (see misc/ci/CHECKER_CONTRACT.md):
+    //   0  VALID        valid file, feasible AND optimal
+    //   20 SUBOPTIMAL   valid file, feasible but not optimal
+    //   10 INVALID_FILE unparseable / wrong-length solution file (raised via this hook)
+    //   2  USAGE        bad arguments
+    std::panic::set_hook(Box::new(|info| {
+        eprintln!("INVALID_FILE: {info}");
+        std::process::exit(10);
+    }));
+
     println!("Qbench LABS Solution Checker Version {VERSION}");
 
     let args: Vec<String> = env::args().collect();
@@ -325,12 +335,16 @@ fn main() {
             .into_bytes()
     };
 
+    // Reaching this point means the file parsed into a valid-length sequence, so a
+    // failure here is non-optimality (the energy exceeds the known optimum), not a
+    // bad file. Optimality is not required of every submission, so this is reported
+    // as SUBOPTIMAL and the policy layer decides whether it matters.
     if verify_solution(k, &solution_data) {
         println!("VALID: Solution successfully verified");
         std::process::exit(0);
     } else {
-        println!("INVALID: Solution failed verification");
-        std::process::exit(1);
+        println!("SUBOPTIMAL: Valid solution file, but it is not optimal");
+        std::process::exit(20);
     }
 }
 

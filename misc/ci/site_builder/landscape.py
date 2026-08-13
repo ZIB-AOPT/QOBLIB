@@ -1,0 +1,532 @@
+# This file is part of QOBLIB - Quantum Optimization Benchmarking Library
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""Pre-render the home-page complexity-landscape scatter plots (MIP + QUBO).
+
+The home page used to ship two static PNGs — a variables-vs-density scatter of
+every instance, plus an inset marking which were solved to optimality. This
+module reproduces them as theme-aware SVG at build time, mirroring what
+``charts.py`` does for the per-problem performance charts.
+
+Each figure has:
+  • a main scatter, one point per instance, coloured by problem class (the colours
+    mirror ``PROBLEM_COLORS`` in ``assets/instances.js`` — keep the two in sync), and
+  • two small insets re-plotting the same points, colouring each by how far
+    CLASSICAL vs QUANTUM methods got (optimal · best-known · open), in the
+    same tier ramps as the problem-card progress bars (``var(--bar-*)``).
+
+The main plot and both insets share one pair of log axes so point positions line
+up. ``num_vars`` / ``density`` come from the repository's generated
+``models/*/lp_files/metrics.csv`` (MIP) and ``qs_files/metrics.csv`` (QUBO); the
+optimal / quantum-optimal flags come from the build's per-instance status (see
+``problem.py``). Axes, grid and ticks reuse the ``mip-*`` CSS classes so they stay
+theme-aware, exactly like the instances-page scatter.
+"""
+
+from __future__ import annotations
+
+import math
+import re
+
+from .metrics import load_lp_metrics, load_qs_metrics
+from .text import canonical_name_from_filename, normalize_portfolio_lambda
+
+# Mirror PROBLEM_COLORS in assets/instances.js — (fill, stroke). Keep in sync so
+# the home-page scatter matches the instances-page scatter.
+PROBLEM_COLORS = {
+    "01": ("#2E6F95", "#1C4A65"),
+    "02": ("#B85C38", "#7D3D25"),
+    "03": ("#5D8A66", "#3E5F45"),
+    "04": ("#7A6EA8", "#514A75"),
+    "05": ("#C58A24", "#875E17"),
+    "06": ("#3F8D7E", "#2A6156"),
+    "07": ("#A14F7A", "#6D3552"),
+    "08": ("#4E7FB9", "#34577E"),
+    "09": ("#B66A46", "#7E4931"),
+    "10": ("#6F9E44", "#4D6D30"),
+}
+DEFAULT_COLOR = ("#1f6f6c", "#0e4f4d")
+
+# Inset tier colours: theme variables, matching the problem-card progress bars so
+# the home page reads consistently. Each paradigm uses its own tier ramp:
+# optimal · best-known (matched the best value) · open (everything else — no
+# feasible solution, or only a worse feasible one).
+CLASSICAL_OPTIMAL_FILL = "var(--bar-solved-classical)"
+CLASSICAL_BESTKNOWN_FILL = "var(--bar-best-known-classical)"
+QUANTUM_OPTIMAL_FILL = "var(--bar-solved-quantum)"
+QUANTUM_BESTKNOWN_FILL = "var(--bar-best-known-quantum)"
+GREY_FILL = "var(--border-mid)"                     # open / not solved (legend swatch)
+UNSOLVED_STYLE = f"fill:{GREY_FILL};fill-opacity:0.5"
+
+# Plain-language definitions of the tiers, surfaced as native hover tooltips on
+# the inset colour keys (and mirrored in the bar legends on index/problems.html).
+TIER_TOOLTIPS = {
+    "optimal": "Optimal: the proven optimal objective value has been reached. This "
+               "includes a heuristic that attains the optimal value without proving "
+               "optimality itself — e.g., when the optimum was already proven by a "
+               "different method.",
+    "best-known": "A solution matching the best-known objective value is known, "
+                  "but it is not proven to be optimal.",
+    "open": "No solution reaching the best-known value yet — either no feasible "
+            "solution is known, or only worse ones.",
+}
+
+MAIN_DIMS = (720, 380)
+INSET_DIMS = (340, 220)
+
+# Monotonic counter for unique <title> ids on labelled scatters (the MIP and QUBO
+# main plots share a class + dimensions, so a derived id would collide).
+_SVG_TITLE_SEQ = [0]
+
+
+# --------------------------------------------------------------------------- #
+# Small helpers
+# --------------------------------------------------------------------------- #
+def _num(value):
+    if value is None or value == "":
+        return None
+    try:
+        n = float(str(value).replace(",", "").strip())
+    except (TypeError, ValueError):
+        return None
+    return n if math.isfinite(n) else None
+
+
+def _esc(value) -> str:
+    s = "" if value is None else str(value)
+    return (
+        s.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#39;")
+    )
+
+
+def _f1(x) -> str:
+    return f"{x:.1f}"
+
+
+def _tier_title(label) -> str:
+    """`` title="…"`` attribute (with a leading space) explaining a tier, or ""."""
+    tip = TIER_TOOLTIPS.get(str(label))
+    return f' title="{_esc(tip)}"' if tip else ""
+
+
+def _fmt_tick_value(v: float) -> str:
+    """Axis tick label for a value — plain number in the readable range, else 1e±N.
+    Mirrors ``formatLogTick`` in assets/instances.js."""
+    p = round(math.log10(v)) if v > 0 else 0
+    if -2 <= p <= 4:
+        if v >= 1:
+            return f"{int(round(v)):,}"
+        return f"{v:g}"
+    return f"1e{p}"
+
+
+def _nice_log_bound(value: float, direction: int) -> float:
+    """Snap a positive value to the nearest 1-2-5×10ⁿ number (see charts.py /
+    assets/common.js). direction<0 rounds down, direction>0 rounds up."""
+    if not (value > 0) or not math.isfinite(value):
+        return 1.0
+    e = math.floor(math.log10(value))
+    base = 10.0 ** e
+    m = value / base
+    steps = [1, 2, 5, 10]
+    if direction < 0:
+        chosen = 1
+        for s in steps:
+            if s <= m + 1e-9:
+                chosen = s
+        return chosen * base
+    for s in steps:
+        if s >= m - 1e-9:
+            return s * base
+    return 10 * base
+
+
+def _nice_log_axis(min_val: float, max_val: float, *, max_major: int):
+    """Tight log axis snapped to nice 1-2-5 bounds (a max of 16 → 20, not 100).
+    Returns ``(lo, hi, major, minor)`` as real values."""
+    lo = _nice_log_bound(min(min_val, max_val), -1)
+    hi = _nice_log_bound(max(min_val, max_val), +1)
+    if not (lo > 0):
+        lo = 1.0
+    if hi <= lo:
+        hi = lo * 10
+    e_lo = math.floor(math.log10(lo) + 1e-9)
+    e_hi = math.ceil(math.log10(hi) - 1e-9)
+    uniq = sorted({
+        mm * 10.0 ** e
+        for e in range(e_lo, e_hi + 1)
+        for mm in (1, 2, 5)
+        if lo * (1 - 1e-9) <= mm * 10.0 ** e <= hi * (1 + 1e-9)
+    })
+    if len(uniq) <= max_major:
+        return lo, hi, uniq, []
+
+    def is_decade(v):
+        return abs(math.log10(v) - round(math.log10(v))) < 1e-9
+
+    major = [v for v in uniq if is_decade(v)]
+    minor = [v for v in uniq if not is_decade(v)] if (e_hi - e_lo) <= 3 else []
+    return lo, hi, major, minor
+
+
+# --------------------------------------------------------------------------- #
+# Point collection (join metrics.csv rows to per-instance optimal/quantum flags)
+# --------------------------------------------------------------------------- #
+def _metric_stem(model_name: str) -> str:
+    """Canonical metrics.csv key for a model filename, matching ``load_lp_metrics``
+    (strip compression + model extension, drop bqp_/uqo_, normalise the λ suffix)."""
+    stem = canonical_name_from_filename(model_name or "")
+    stem = re.sub(r"\.(lp|mps|qs)$", "", stem, flags=re.IGNORECASE)
+    stem = stem.removeprefix("bqp_").removeprefix("uqo_")
+    return normalize_portfolio_lambda(stem)
+
+
+def _collect_points(entries, which: str) -> list[dict]:
+    """One point per instance that has a positive (num_vars, density) metric.
+
+    ``which`` selects the model family: "mip" → lp_files (column ``num_vars``),
+    "qubo" → qs_files (column ``num_variables``). The join is on each instance's
+    model-file stem (the authoritative key the metrics CSV is indexed by), with a
+    fallback to the instance name for problems whose names already match.
+    """
+    kind = "lp" if which == "mip" else "qs"
+    var_col = "num_vars" if which == "mip" else "num_variables"
+    points: list[dict] = []
+
+    for entry in entries:
+        rows = (
+            load_lp_metrics(entry["problem_dir"])
+            if which == "mip"
+            else load_qs_metrics(entry["problem_dir"])
+        )
+        if not rows:
+            continue
+
+        for inst in entry["instances"]:
+            # Candidate keys: each model file of the right kind, then the
+            # instance name itself (covers problems where they coincide).
+            keys = [
+                _metric_stem(m.get("name"))
+                for m in (inst.get("models") or [])
+                if m.get("kind") == kind
+            ]
+            nm = inst.get("name") or ""
+            keys += [nm, normalize_portfolio_lambda(nm)]
+
+            row = next((rows[k] for k in keys if k and k in rows), None)
+            if row is None:
+                continue
+
+            nv = _num(row.get(var_col) or row.get("num_vars") or row.get("num_variables"))
+            dens = _num(row.get("density"))
+            if nv is None or dens is None or nv <= 0 or dens <= 0:
+                continue
+            # Per-paradigm tier (optimal·best_known·found·open). Fall back to the
+            # legacy boolean flags for older inputs that predate the tier fields.
+            ctier = inst.get("classical_tier")
+            if ctier is None:
+                ctier = "optimal" if inst.get("is_optimal") else (
+                    "best_known" if inst.get("best_known") else "open"
+                )
+            qtier = inst.get("quantum_tier")
+            if qtier is None:
+                qtier = "optimal" if inst.get("quantum_optimal") else "open"
+            points.append({
+                "problem_id": entry["problem_id"],
+                "problem_name": entry["problem_name"],
+                "name": inst.get("name"),
+                "num_vars": nv,
+                "density": dens,
+                "classical_tier": ctier,
+                "quantum_tier": qtier,
+            })
+
+    return points
+
+
+# --------------------------------------------------------------------------- #
+# SVG scatter rendering
+# --------------------------------------------------------------------------- #
+def _scale(points):
+    """Shared log-axis geometry for the main plot + insets: tight bounds snapped to
+    nice 1-2-5 values (a data max of 16 ends the axis at 20, not the decade 100),
+    plus the labelled tick + faint minor-guide values. Returns a dict with log10
+    endpoints (for positioning) and real tick values (for grid / labels)."""
+    xs = [p["num_vars"] for p in points]
+    ys = [p["density"] for p in points]
+    x_lo_v, x_hi_v, x_major, x_minor = _nice_log_axis(min(xs), max(xs), max_major=8)
+    y_lo_v, y_hi_v, y_major, y_minor = _nice_log_axis(min(ys), max(ys), max_major=6)
+    return {
+        "x_lo": math.log10(x_lo_v), "x_hi": math.log10(x_hi_v),
+        "y_lo": math.log10(y_lo_v), "y_hi": math.log10(y_hi_v),
+        "x_major": x_major, "x_minor": x_minor,
+        "y_major": y_major, "y_minor": y_minor,
+    }
+
+
+def _scatter_svg(points, scale, dims, *, style_of, radius, svg_class, with_labels,
+                 x_title=None, y_title=None, with_titles=True, aria_label=None) -> str:
+    x_lo, x_hi, y_lo, y_hi = scale["x_lo"], scale["x_hi"], scale["y_lo"], scale["y_hi"]
+    w, h = dims
+    if with_labels:
+        m_l, m_r, m_t, m_b = 58, 16, 14, 44
+    else:
+        m_l = m_r = m_t = m_b = 10
+    plot_w = w - m_l - m_r
+    plot_h = h - m_t - m_b
+    # Pad the plotted domain ~5% beyond the axis bounds so points (and ticks) sit
+    # inset from the frame rather than flush against the edges.
+    PAD = 0.05
+    x_span = (x_hi - x_lo) or 1
+    y_span = (y_hi - y_lo) or 1
+    x_lo_p, x_hi_p = x_lo - x_span * PAD, x_hi + x_span * PAD
+    y_lo_p, y_hi_p = y_lo - y_span * PAD, y_hi + y_span * PAD
+    x_rng = max(1e-9, x_hi_p - x_lo_p)
+    y_rng = max(1e-9, y_hi_p - y_lo_p)
+
+    def x_px(v):
+        return m_l + ((math.log10(v) - x_lo_p) / x_rng) * plot_w
+
+    def y_px(v):
+        return m_t + (1 - (math.log10(v) - y_lo_p) / y_rng) * plot_h
+
+    xticks = scale["x_major"]
+    yticks = scale["y_major"]
+    # Faint 2×/5× minor guides only on the labelled main plot (not the tiny insets).
+    x_minor = scale["x_minor"] if with_labels else []
+    y_minor = scale["y_minor"] if with_labels else []
+    grid = "".join(
+        f'<line class="mip-grid-minor" x1="{_f1(x_px(v))}" y1="{m_t}" '
+        f'x2="{_f1(x_px(v))}" y2="{_f1(h - m_b)}" />'
+        for v in x_minor
+    ) + "".join(
+        f'<line class="mip-grid-minor" x1="{m_l}" y1="{_f1(y_px(v))}" '
+        f'x2="{_f1(w - m_r)}" y2="{_f1(y_px(v))}" />'
+        for v in y_minor
+    ) + "".join(
+        f'<line class="mip-grid-line" x1="{_f1(x_px(v))}" y1="{m_t}" '
+        f'x2="{_f1(x_px(v))}" y2="{_f1(h - m_b)}" />'
+        for v in xticks
+    ) + "".join(
+        f'<line class="mip-grid-line" x1="{m_l}" y1="{_f1(y_px(v))}" '
+        f'x2="{_f1(w - m_r)}" y2="{_f1(y_px(v))}" />'
+        for v in yticks
+    )
+    axes = (
+        f'<line class="mip-axis-line" x1="{m_l}" y1="{_f1(h - m_b)}" '
+        f'x2="{_f1(w - m_r)}" y2="{_f1(h - m_b)}" />'
+        f'<line class="mip-axis-line" x1="{m_l}" y1="{m_t}" x2="{m_l}" y2="{_f1(h - m_b)}" />'
+    )
+
+    labels = ""
+    if with_labels:
+        labels += "".join(
+            f'<text class="mip-axis-tick" text-anchor="middle" x="{_f1(x_px(v))}" '
+            f'y="{_f1(h - m_b + 14)}">{_esc(_fmt_tick_value(v))}</text>'
+            for v in xticks
+        )
+        labels += "".join(
+            f'<text class="mip-axis-tick" text-anchor="end" x="{m_l - 6}" '
+            f'y="{_f1(y_px(v) + 3)}">{_esc(_fmt_tick_value(v))}</text>'
+            for v in yticks
+        )
+        if x_title:
+            labels += (
+                f'<text class="mip-axis-label" text-anchor="middle" '
+                f'x="{_f1(m_l + plot_w / 2)}" y="{h - 6}">{_esc(x_title)}</text>'
+            )
+        if y_title:
+            labels += (
+                f'<text class="mip-axis-label" text-anchor="middle" '
+                f'transform="translate(13 {_f1(m_t + plot_h / 2)}) rotate(-90)">{_esc(y_title)}</text>'
+            )
+
+    def _circle(p):
+        c = (f'<circle class="landscape-dot" cx="{_f1(x_px(p["num_vars"]))}" '
+             f'cy="{_f1(y_px(p["density"]))}" r="{radius}" style="{style_of(p)}"')
+        # Tooltips only on the main scatter; the insets re-plot the same points,
+        # so dropping their <title>s trims ~a third of the payload / DOM weight.
+        if with_titles:
+            return c + f'><title>{_esc(p["name"])} · {_esc(p["problem_name"])}</title></circle>'
+        return c + " />"
+
+    dots = "".join(_circle(p) for p in points)
+
+    if aria_label:
+        # Give the scatter an accessible name via a <title> (referenced by
+        # aria-labelledby so it wins over any child <title> tooltips), so screen
+        # readers announce a one-sentence data summary instead of "image". The id
+        # must be unique per page — the MIP and QUBO figures share a class and
+        # dimensions — so use a monotonic counter rather than deriving from those.
+        _SVG_TITLE_SEQ[0] += 1
+        title_id = f"landscape-svg-title-{_SVG_TITLE_SEQ[0]}"
+        title_el = f'<title id="{title_id}">{_esc(aria_label)}</title>'
+        return (
+            f'<svg class="{svg_class}" viewBox="0 0 {w} {h}" role="img" '
+            f'aria-labelledby="{title_id}" '
+            f'preserveAspectRatio="xMidYMid meet">{title_el}{grid}{axes}{labels}{dots}</svg>'
+        )
+    # Unlabelled scatter (the small insets): they duplicate the main plot's data
+    # and carry their own visible <figcaption> title + key, so hide them from the
+    # accessibility tree rather than announce a second unnamed image.
+    return (
+        f'<svg class="{svg_class}" viewBox="0 0 {w} {h}" role="img" aria-hidden="true" '
+        f'preserveAspectRatio="xMidYMid meet">{grid}{axes}{labels}{dots}</svg>'
+    )
+
+
+def _main_style(p) -> str:
+    fill, stroke = PROBLEM_COLORS.get(p["problem_id"], DEFAULT_COLOR)
+    return f"fill:{fill};stroke:{stroke};stroke-width:0.5;fill-opacity:0.9"
+
+
+def _inset_svg(points, scale, layers) -> str:
+    """Inset scatter. ``layers`` is an ordered list of (predicate, style): points
+    matching no layer are drawn grey first, then each layer paints on top."""
+    def rank(p):
+        for i, (pred, _style) in enumerate(layers):
+            if pred(p):
+                return i + 1
+        return 0
+
+    def style_of(p):
+        for pred, style in layers:
+            if pred(p):
+                return style
+        return UNSOLVED_STYLE
+
+    ordered = sorted(points, key=rank)  # grey base first, highlighted layers on top
+    return _scatter_svg(
+        ordered, scale, INSET_DIMS,
+        style_of=style_of, radius=2.2,
+        svg_class="landscape-svg landscape-inset-svg", with_labels=False,
+        with_titles=False,
+    )
+
+
+def _legend(points) -> str:
+    seen: dict[str, str] = {}
+    for p in points:
+        seen.setdefault(p["problem_id"], p["problem_name"])
+    items = "".join(
+        f'<span class="ls-leg-item"><span class="ls-leg-dot" '
+        f'style="background:{PROBLEM_COLORS.get(pid, DEFAULT_COLOR)[0]}"></span>'
+        f'<strong>{_esc(pid)}</strong> {_esc(name)}</span>'
+        for pid, name in sorted(seen.items())
+    )
+    return f'<div class="ls-legend">{items}</div>'
+
+
+def _inset_block(svg, title, swatches) -> str:
+    """One inset: scatter, then the title + colour key (list of (colour, label))
+    BELOW it. Keeping the key below the SVG means a taller (wrapped) key never
+    pushes its scatter down, so the two insets stay top-aligned."""
+    keys = "".join(
+        f'<span class="ls-inset-key"{_tier_title(label)}><span class="ls-leg-dot" '
+        f'style="background:{colour}"></span>{_esc(label)}</span>'
+        for colour, label in swatches
+    )
+    return (
+        f'<figure class="landscape-inset">'
+        f'{svg}'
+        f'<figcaption><span class="ls-inset-title">{_esc(title)}</span>{keys}</figcaption>'
+        f'</figure>'
+    )
+
+
+def _figure(points, caption, kind="") -> str:
+    if not points:
+        return ""
+    scale = _scale(points)
+    # One-sentence accessible summary: total instances plotted and how many any
+    # method has solved to optimality (classical or quantum), so a screen-reader
+    # user gets the plot's headline without the marks.
+    n_total = len(points)
+    n_solved = sum(
+        1 for p in points
+        if p.get("classical_tier") == "optimal" or p.get("quantum_tier") == "optimal"
+    )
+    family = f"{kind.upper()} " if kind else ""
+    aria_label = (
+        f"Scatter plot of {family}benchmark instances by number of variables "
+        f"(log scale, horizontal) and constraint density (log scale, vertical), "
+        f"coloured by problem class. {n_solved} of {n_total} instances plotted "
+        f"are solved to optimality."
+    )
+    main = _scatter_svg(
+        points, scale, MAIN_DIMS,
+        style_of=_main_style, radius=3.2,
+        svg_class="landscape-svg landscape-main", with_labels=True,
+        x_title="Number of variables (log)", y_title="Density (log)",
+        aria_label=aria_label,
+    )
+    # Both insets mirror the problem-card bars: optimal · best-known · open. "Open"
+    # is the grey base drawn for points matching no layer — this now also absorbs
+    # instances where a paradigm only found a worse feasible solution.
+    classical = _inset_svg(points, scale, [
+        (lambda p: p["classical_tier"] == "optimal", f"fill:{CLASSICAL_OPTIMAL_FILL}"),
+        (lambda p: p["classical_tier"] == "best_known", f"fill:{CLASSICAL_BESTKNOWN_FILL}"),
+    ])
+    quantum = _inset_svg(points, scale, [
+        (lambda p: p["quantum_tier"] == "optimal", f"fill:{QUANTUM_OPTIMAL_FILL}"),
+        (lambda p: p["quantum_tier"] == "best_known", f"fill:{QUANTUM_BESTKNOWN_FILL}"),
+    ])
+    # Direct children of the card (no wrapping <figure>) so the cards can use a
+    # CSS subgrid to align main / legend / insets / caption across both columns.
+    return (
+        main
+        + _legend(points)
+        + '<div class="landscape-insets">'
+        + _inset_block(classical, "Classical", [
+            (CLASSICAL_OPTIMAL_FILL, "optimal"), (CLASSICAL_BESTKNOWN_FILL, "best-known"),
+            (GREY_FILL, "open"),
+        ])
+        + _inset_block(quantum, "Quantum", [
+            (QUANTUM_OPTIMAL_FILL, "optimal"), (QUANTUM_BESTKNOWN_FILL, "best-known"),
+            (GREY_FILL, "open"),
+        ])
+        + '</div>'
+        + f'<div class="plot-cap">{_esc(caption)}</div>'
+    )
+
+
+_CAPTIONS = {
+    "mip": "Mixed Integer Programming formulations — variables vs. density, with "
+           "classical / quantum insets (optimal · best-known · open)",
+    "qubo": "QUBO formulations — variables vs. density, with "
+            "classical / quantum insets (optimal · best-known · open)",
+}
+
+
+def build_landscape(entries) -> dict:
+    """Return prebaked figure HTML for the two home-page scatter plots.
+
+    ``entries`` is a list of ``{problem_id, problem_name, problem_dir, instances}``
+    where each instance carries ``name`` plus the per-paradigm ``classical_tier`` /
+    ``quantum_tier`` (optimal·best_known·found·open; legacy ``is_optimal`` /
+    ``best_known`` / ``quantum_optimal`` booleans are accepted as a fallback).
+    Shape (consumed by ``renderLandscape`` in index.js)::
+
+        {"mip": "<svg…><div…>…", "qubo": "…"}
+
+    Each value is the run of card children (main SVG, legend, insets, caption);
+    a model family with no joinable instances yields "" (the client shows an
+    empty state).
+    """
+    return {
+        "mip": _figure(_collect_points(entries, "mip"), _CAPTIONS["mip"], kind="mip"),
+        "qubo": _figure(_collect_points(entries, "qubo"), _CAPTIONS["qubo"], kind="qubo"),
+    }
