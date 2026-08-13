@@ -50,65 +50,65 @@ If we did not find the optimal or currently best solution ourselves, we provide 
 | labs038 | 87 | optimal | reference | — |
 | labs039 | 99 | optimal | reference | — |
 | labs040 | 108 | optimal | reference | — |
-| labs041 | 112 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs042 | 101 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs043 | 117 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs044 | 122 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs045 | 126 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs046 | 131 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs047 | 143 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs048 | 160 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs049 | 136 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs050 | 169 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs051 | 173 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs052 | 174 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs053 | 178 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs054 | 199 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs055 | 207 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs056 | 220 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs057 | 216 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs058 | 229 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs059 | 221 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs060 | 258 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs061 | 226 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs062 | 259 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs063 | 271 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs064 | 264 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs065 | 288 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs066 | 313 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs067 | 285 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs068 | 326 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs069 | 310 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs070 | 335 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs071 | 355 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs072 | 364 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs073 | 384 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs074 | 389 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs075 | 409 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs076 | 386 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs077 | 442 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs078 | 411 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs079 | 455 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs080 | 472 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs081 | 456 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs082 | 513 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs083 | 493 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs084 | 510 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs085 | 538 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs086 | 559 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs087 | 571 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs088 | 612 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs089 | 600 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs090 | 613 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs091 | 601 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs092 | 630 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs093 | 674 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs094 | 651 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs095 | 699 | best known | [20260704_PDBO_Liu](../submissions/20260704_PDBO_Liu) | 2026-07-04 |
-| labs096 | 668 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs097 | 684 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs098 | 705 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs099 | 773 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
-| labs100 | 754 | best known | [20260704_PDBOspin_Liu](../submissions/20260704_PDBOspin_Liu) | 2026-07-04 |
+| labs041 | 108 | optimal | reference | — |
+| labs042 | 101 | optimal | reference | — |
+| labs043 | 109 | optimal | reference | — |
+| labs044 | 122 | optimal | reference | — |
+| labs045 | 118 | optimal | reference | — |
+| labs046 | 131 | optimal | reference | — |
+| labs047 | 135 | optimal | reference | — |
+| labs048 | 140 | optimal | reference | — |
+| labs049 | 136 | optimal | reference | — |
+| labs050 | 153 | optimal | reference | — |
+| labs051 | 153 | optimal | reference | — |
+| labs052 | 166 | optimal | reference | — |
+| labs053 | 170 | optimal | reference | — |
+| labs054 | 175 | optimal | reference | — |
+| labs055 | 171 | optimal | reference | — |
+| labs056 | 192 | optimal | reference | — |
+| labs057 | 188 | optimal | reference | — |
+| labs058 | 197 | optimal | reference | — |
+| labs059 | 205 | optimal | reference | — |
+| labs060 | 218 | optimal | reference | — |
+| labs061 | 226 | optimal | reference | — |
+| labs062 | 235 | optimal | reference | — |
+| labs063 | 207 | optimal | reference | — |
+| labs064 | 208 | optimal | reference | — |
+| labs065 | 240 | optimal | reference | — |
+| labs066 | 257 | optimal | reference | — |
+| labs067 | 241 | best known | reference | — |
+| labs068 | 250 | best known | reference | — |
+| labs069 | 274 | best known | reference | — |
+| labs070 | 295 | best known | reference | — |
+| labs071 | 275 | best known | reference | — |
+| labs072 | 300 | best known | reference | — |
+| labs073 | 308 | best known | reference | — |
+| labs074 | 341 | best known | reference | — |
+| labs075 | 329 | best known | reference | — |
+| labs076 | 334 | best known | reference | — |
+| labs077 | 358 | best known | reference | — |
+| labs078 | 347 | best known | reference | — |
+| labs079 | 339 | best known | reference | — |
+| labs080 | 352 | best known | reference | — |
+| labs081 | 372 | best known | reference | — |
+| labs082 | 377 | best known | reference | — |
+| labs083 | 377 | best known | reference | — |
+| labs084 | 430 | best known | reference | — |
+| labs085 | 414 | best known | reference | — |
+| labs086 | 439 | best known | reference | — |
+| labs087 | 431 | best known | reference | — |
+| labs088 | 448 | best known | reference | — |
+| labs089 | 432 | best known | reference | — |
+| labs090 | 453 | best known | reference | — |
+| labs091 | 477 | best known | reference | — |
+| labs092 | 498 | best known | reference | — |
+| labs093 | 486 | best known | reference | — |
+| labs094 | 499 | best known | reference | — |
+| labs095 | 479 | best known | reference | — |
+| labs096 | 520 | best known | reference | — |
+| labs097 | 536 | best known | reference | — |
+| labs098 | 545 | best known | reference | — |
+| labs099 | 577 | best known | reference | — |
+| labs100 | 578 | best known | reference | — |
 
 <!-- BKV:END -->

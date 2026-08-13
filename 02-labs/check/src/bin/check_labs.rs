@@ -259,7 +259,7 @@ fn print_llc(solution: &[i32]) {
     println!("");
 }
 
-fn verify_solution(k: usize, solution_data: &[u8]) -> bool {
+fn verify_solution(k: usize, solution_data: &[u8], expected_energy: Option<i32>) -> bool {
     let optimal_solution = [
         0, 0, 0, 1, 2, 2, 7, 3, 8, 12, 13, 5, 10, 6, 19, 15, 24, 32, 25, 29, 26, 26, 39, 47, 36,
         36, 45, 37, 50, 62, 59, 67, 64, 64, 65, 73, 82, 86, 87, 99, 108, 108, 101, 109, 122, 118,
@@ -270,13 +270,17 @@ fn verify_solution(k: usize, solution_data: &[u8]) -> bool {
     let solution = extract_solution(solution_data, k);
     let es = sequenz_energy(k, &solution);
 
-    //for s in &solution {
-    //    print!("{s} ");
-    //}
-    //println!("");
-
     print!("LABS k={k} E(S)={es} seq=");
     print_llc(&solution);
+
+    // Cross-check against the expected energy if one was provided (from the file
+    // header or the command-line argument).  A mismatch means the file is corrupt.
+    if let Some(exp) = expected_energy {
+        if es != exp {
+            panic!("Energy mismatch: file claims E(S)={exp} but computed E(S)={es}");
+        }
+        println!("Energy cross-check OK: E(S)={es}");
+    }
 
     if k >= 3 && k < optimal_solution.len() {
         if es == optimal_solution[k] {
@@ -310,7 +314,7 @@ fn main() {
 
     if args.len() < 3 {
         panic!(
-            "usage: {} instance-size solution-file|01-string|LL-string",
+            "usage: {} instance-size solution-file|01-string|LL-string [expected-energy]",
             &args[0]
         );
     }
@@ -319,6 +323,12 @@ fn main() {
         .unwrap_or_else(|err| panic!("Expected problem size: {err}"));
 
     let solution_arg = &args[2];
+
+    // Optional expected energy from the command line (args[3]).
+    let expected_energy: Option<i32> = args.get(3).map(|s| {
+        s.parse()
+            .unwrap_or_else(|err| panic!("Expected integer expected-energy: {err}"))
+    });
 
     // Check if a string consists only of '1's and '0's
     let is_llcode = |s: &str| s.chars().all(|c| c.is_ascii_digit() && c != '0');
@@ -339,7 +349,7 @@ fn main() {
     // failure here is non-optimality (the energy exceeds the known optimum), not a
     // bad file. Optimality is not required of every submission, so this is reported
     // as SUBOPTIMAL and the policy layer decides whether it matters.
-    if verify_solution(k, &solution_data) {
+    if verify_solution(k, &solution_data, expected_energy) {
         println!("VALID: Solution successfully verified");
         std::process::exit(0);
     } else {
