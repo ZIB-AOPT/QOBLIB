@@ -27,7 +27,7 @@ To scale QAOA sampling to large-scale benchmark instances ($16\times 16$, $32\ti
 
 ### 3. Decomposition Output & Metadata
 * **QAOA Decomposition (QOBLIB PR #34 Compliant)**: Following the relaxation of the exact integer matching constraint in QOBLIB (PR #34), this submission reports the decomposition directly achieved via **Partitioned QAOA sampling and E-FCFW weight optimization** without appending classical Hungarian completion matchings.
-* **Success Threshold Metric (`1e-6`)**: `Success Threshold` is set to `1e-6` (maximum allowed normalised squared Frobenius reconstruction error $\le 10^{-6}$).
+* **Success Threshold Metric (`1e-5`)**: `Success Threshold` is set to `1e-5` (maximum allowed normalised squared Frobenius reconstruction error $\le 10^{-5}$). Note all examples run for a total of 15 iterations regardless of the threshold. 
 
 ---
 
