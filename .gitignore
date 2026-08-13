@@ -8,10 +8,13 @@ _site/
 # Ignore Rust target directory
 target/
 
+.DS_Store
+
 # Environment / secret files — never commit these
 .env
 .env.*
 *.local
+
 /.idea/misc.xml
 /.idea/inspectionProfiles/profiles_settings.xml
 /.idea/inspectionProfiles/Project_Default.xml

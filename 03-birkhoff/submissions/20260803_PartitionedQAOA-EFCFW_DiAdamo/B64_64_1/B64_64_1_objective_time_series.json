@@ -1,0 +1,100 @@
+[
+  [
+    {
+      "Time": 0.0,
+      "Incumbent": 0,
+      "Normalized_Frobenius_Error": 0.0007339684345019531,
+      "Stage": "Initial"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 5,
+      "Normalized_Frobenius_Error": 0.00038226065328808594,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 10,
+      "Normalized_Frobenius_Error": 0.00022659223829492184,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 15,
+      "Normalized_Frobenius_Error": 0.000142107936234375,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 20,
+      "Normalized_Frobenius_Error": 8.888743395458985e-05,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 25,
+      "Normalized_Frobenius_Error": 5.3804873802734374e-05,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 30,
+      "Normalized_Frobenius_Error": 3.327163998095703e-05,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 35,
+      "Normalized_Frobenius_Error": 2.09804249609375e-05,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 40,
+      "Normalized_Frobenius_Error": 1.3776095293457031e-05,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 45,
+      "Normalized_Frobenius_Error": 9.357237999511717e-06,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 50,
+      "Normalized_Frobenius_Error": 6.326272892578125e-06,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 55,
+      "Normalized_Frobenius_Error": 4.241466100097656e-06,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 60,
+      "Normalized_Frobenius_Error": 2.9410360610351567e-06,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 65,
+      "Normalized_Frobenius_Error": 1.980459146972656e-06,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 70,
+      "Normalized_Frobenius_Error": 1.3769278271484376e-06,
+      "Stage": "QAOA Sampling / E-FCFW"
+    },
+    {
+      "Time": 0.0,
+      "Incumbent": 75,
+      "Normalized_Frobenius_Error": 1.039706e-06,
+      "Stage": "QAOA Sampling / E-FCFW"
+    }
+  ]
+]
