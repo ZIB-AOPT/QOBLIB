@@ -21,12 +21,17 @@ PASSED=0
 FAILED=0
 ERRORS=0
 
-for i in ../solutions/*.opt.sol
+for i in ../solutions/*.sol
 do
     NUM=`echo $i | grep -o '[0-9]\+'`
     echo "Checking labs_$NUM..."
 
-    OUTPUT=$(target/release/check_labs $NUM $i 2>&1)
+    ENERGY=`grep -m1 '^# Energy:' "$i" | sed 's/# Energy: *//'`
+    if [ -n "$ENERGY" ]; then
+        OUTPUT=$(target/release/check_labs $NUM $i $ENERGY 2>&1)
+    else
+        OUTPUT=$(target/release/check_labs $NUM $i 2>&1)
+    fi
     EXIT_CODE=$?
     
     echo "$OUTPUT" | sed 's/^/  /'

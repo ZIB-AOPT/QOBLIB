@@ -1,19 +1,14 @@
-# Energy: 442
-# Source: PDBO
-# Selected from seed 3
-0
-0
-1
+# Energy: 358
+# Consecutive entries: 512174112122112221322423411211111331111
+# Source: https://github.com/borkob/git_labs/blob/master/results-2016/2004-Knauer-original.html
 1
 1
 1
 1
 1
 0
-0
 1
 1
-0
 0
 1
 1
@@ -24,19 +19,12 @@
 1
 0
 0
-1
 0
 0
 1
-1
-0
-0
-0
 0
 1
 1
-1
-0
 0
 1
 1
@@ -48,16 +36,27 @@
 1
 0
 0
-0
-1
-0
-1
-1
 1
 1
 0
 1
+1
+1
 0
+0
+1
+1
+0
+0
+0
+0
+1
+1
+0
+0
+0
+1
+1
 1
 1
 0
@@ -66,13 +65,14 @@
 0
 1
 0
-0
 1
 0
 1
 0
-1
 0
+0
+1
+1
 1
 0
 1
