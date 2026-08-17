@@ -103,7 +103,7 @@ def write_instance(
         "Remarks": "Exact reconstruction verified; no optimality claim is made.",
     }
     with (destination / f"{instance_id}_summary.csv").open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=SUMMARY_COLUMNS)
+        writer = csv.DictWriter(handle, fieldnames=SUMMARY_COLUMNS, lineterminator="\n")
         writer.writeheader()
         writer.writerow(row)
     return instance_id, term_count, elapsed
