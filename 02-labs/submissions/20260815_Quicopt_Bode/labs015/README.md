@@ -39,4 +39,4 @@ This directory contains the submission for the problem **labs015**.
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Runtimes are averaged over the runs; runs share a common pre-processing stage whose cost is divided among them, and were executed concurrently, so the wall-clock includes contention. # Successful Runs counts the runs that reached the reported objective (epsilon = 0). |
+| Remarks | Runtimes are averaged over the runs. Each run is standalone and single-threaded, so CPU Runtime equals Total Runtime. # Successful Runs counts the runs that reached the reported objective (epsilon = 0). |

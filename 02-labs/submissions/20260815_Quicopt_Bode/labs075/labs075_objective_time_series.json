@@ -1,631 +1,631 @@
 [
  [
   {
-   "Time": 109.6,
+   "Time": 548.0,
    "Incumbent": 425
   },
   {
-   "Time": 230.6,
+   "Time": 669.0,
    "Incumbent": 389
   },
   {
-   "Time": 349.7,
+   "Time": 788.1,
    "Incumbent": 377
   }
  ],
  [
   {
-   "Time": 109.6,
+   "Time": 548.0,
    "Incumbent": 425
   },
   {
-   "Time": 232.9,
+   "Time": 671.3,
    "Incumbent": 341
   },
   {
-   "Time": 352.7,
+   "Time": 791.1,
    "Incumbent": 341
   }
  ],
  [
   {
-   "Time": 109.6,
+   "Time": 548.0,
    "Incumbent": 425
   },
   {
-   "Time": 233.1,
+   "Time": 671.5,
    "Incumbent": 389
   },
   {
-   "Time": 358.8,
+   "Time": 797.2,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 109.6,
+   "Time": 548.0,
    "Incumbent": 425
   },
   {
-   "Time": 229.2,
+   "Time": 667.6,
    "Incumbent": 389
   },
   {
-   "Time": 352.4,
+   "Time": 790.8,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 109.6,
+   "Time": 548.0,
    "Incumbent": 425
   },
   {
-   "Time": 232.6,
+   "Time": 671.0,
    "Incumbent": 389
   },
   {
-   "Time": 352.7,
+   "Time": 791.1,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 248.35,
+   "Time": 726.1,
    "Incumbent": 389
   },
   {
-   "Time": 484.15,
+   "Time": 961.9,
    "Incumbent": 377
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 247.85,
+   "Time": 725.6,
    "Incumbent": 341
   },
   {
-   "Time": 483.45,
+   "Time": 961.2,
    "Incumbent": 341
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 248.05,
+   "Time": 725.8,
    "Incumbent": 389
   },
   {
-   "Time": 486.15,
+   "Time": 963.9,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 252.25,
+   "Time": 730.0,
    "Incumbent": 393
   },
   {
-   "Time": 486.75,
+   "Time": 964.5,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 251.05,
+   "Time": 728.8,
    "Incumbent": 373
   },
   {
-   "Time": 488.65,
+   "Time": 966.4,
    "Incumbent": 369
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 253.35,
+   "Time": 731.1,
    "Incumbent": 389
   },
   {
-   "Time": 488.25,
+   "Time": 966.0,
    "Incumbent": 345
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 247.95,
+   "Time": 725.7,
    "Incumbent": 393
   },
   {
-   "Time": 483.05,
+   "Time": 960.8,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 252.75,
+   "Time": 730.5,
    "Incumbent": 389
   },
   {
-   "Time": 488.65,
+   "Time": 966.4,
    "Incumbent": 377
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 253.05,
+   "Time": 730.8,
    "Incumbent": 377
   },
   {
-   "Time": 487.15,
+   "Time": 964.9,
    "Incumbent": 377
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 251.55,
+   "Time": 729.3,
    "Incumbent": 385
   },
   {
-   "Time": 486.35,
+   "Time": 964.1,
    "Incumbent": 377
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 253.75,
+   "Time": 731.5,
    "Incumbent": 389
   },
   {
-   "Time": 493.35,
+   "Time": 971.1,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 248.75,
+   "Time": 726.5,
    "Incumbent": 393
   },
   {
-   "Time": 484.25,
+   "Time": 962.0,
    "Incumbent": 377
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 252.15,
+   "Time": 729.9,
    "Incumbent": 389
   },
   {
-   "Time": 491.35,
+   "Time": 969.1,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 256.15,
+   "Time": 733.9,
    "Incumbent": 389
   },
   {
-   "Time": 494.65,
+   "Time": 972.4,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 246.25,
+   "Time": 724.0,
    "Incumbent": 389
   },
   {
-   "Time": 482.15,
+   "Time": 959.9,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 248.55,
+   "Time": 726.3,
    "Incumbent": 389
   },
   {
-   "Time": 489.75,
+   "Time": 967.5,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 250.55,
+   "Time": 728.3,
    "Incumbent": 401
   },
   {
-   "Time": 483.65,
+   "Time": 961.4,
    "Incumbent": 381
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 253.55,
+   "Time": 731.3,
    "Incumbent": 389
   },
   {
-   "Time": 489.45,
+   "Time": 967.2,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 249.05,
+   "Time": 726.8,
    "Incumbent": 393
   },
   {
-   "Time": 486.25,
+   "Time": 964.0,
    "Incumbent": 393
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 249.75,
+   "Time": 727.5,
    "Incumbent": 393
   },
   {
-   "Time": 475.75,
+   "Time": 953.5,
    "Incumbent": 373
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 243.95,
+   "Time": 721.7,
    "Incumbent": 389
   },
   {
-   "Time": 478.85,
+   "Time": 956.6,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 246.35,
+   "Time": 724.1,
    "Incumbent": 385
   },
   {
-   "Time": 473.55,
+   "Time": 951.3,
    "Incumbent": 385
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 251.05,
+   "Time": 728.8,
    "Incumbent": 393
   },
   {
-   "Time": 490.25,
+   "Time": 968.0,
    "Incumbent": 373
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 247.65,
+   "Time": 725.4,
    "Incumbent": 389
   },
   {
-   "Time": 485.15,
+   "Time": 962.9,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 251.35,
+   "Time": 729.1,
    "Incumbent": 389
   },
   {
-   "Time": 488.35,
+   "Time": 966.1,
    "Incumbent": 377
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 247.45,
+   "Time": 725.2,
    "Incumbent": 381
   },
   {
-   "Time": 481.65,
+   "Time": 959.4,
    "Incumbent": 357
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 248.65,
+   "Time": 726.4,
    "Incumbent": 385
   },
   {
-   "Time": 482.85,
+   "Time": 960.6,
    "Incumbent": 341
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 250.35,
+   "Time": 728.1,
    "Incumbent": 373
   },
   {
-   "Time": 489.15,
+   "Time": 966.9,
    "Incumbent": 373
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 246.85,
+   "Time": 724.6,
    "Incumbent": 393
   },
   {
-   "Time": 482.05,
+   "Time": 959.8,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 247.75,
+   "Time": 725.5,
    "Incumbent": 389
   },
   {
-   "Time": 470.75,
+   "Time": 948.5,
    "Incumbent": 385
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 251.75,
+   "Time": 729.5,
    "Incumbent": 377
   },
   {
-   "Time": 486.15,
+   "Time": 963.9,
    "Incumbent": 377
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 252.85,
+   "Time": 730.6,
    "Incumbent": 393
   },
   {
-   "Time": 487.15,
+   "Time": 964.9,
    "Incumbent": 381
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 251.95,
+   "Time": 729.7,
    "Incumbent": 389
   },
   {
-   "Time": 491.65,
+   "Time": 969.4,
    "Incumbent": 361
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 250.25,
+   "Time": 728.0,
    "Incumbent": 389
   },
   {
-   "Time": 484.35,
+   "Time": 962.1,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 251.15,
+   "Time": 728.9,
    "Incumbent": 389
   },
   {
-   "Time": 493.05,
+   "Time": 970.8,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 246.75,
+   "Time": 724.5,
    "Incumbent": 389
   },
   {
-   "Time": 496.35,
+   "Time": 974.1,
    "Incumbent": 377
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 247.55,
+   "Time": 725.3,
    "Incumbent": 389
   },
   {
-   "Time": 484.65,
+   "Time": 962.4,
    "Incumbent": 389
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 238.55,
+   "Time": 716.3,
    "Incumbent": 381
   },
   {
-   "Time": 477.85,
+   "Time": 955.6,
    "Incumbent": 365
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 253.85,
+   "Time": 731.6,
    "Incumbent": 373
   },
   {
-   "Time": 488.75,
+   "Time": 966.5,
    "Incumbent": 373
   }
  ],
  [
   {
-   "Time": 12.25,
+   "Time": 490.0,
    "Incumbent": 425
   },
   {
-   "Time": 246.45,
+   "Time": 724.2,
    "Incumbent": 401
   },
   {
-   "Time": 480.95,
+   "Time": 958.7,
    "Incumbent": 389
   }
  ]

@@ -32,11 +32,11 @@ This directory contains the submission for the problem **labs094**.
 | ====== |  |
 | Hardware Specifications | AMD EPYC-Rome, 255 vCPUs, 503 GB RAM; Ubuntu 24.04.4 LTS, Linux 6.8.0, x86-64 |
 | ====== |  |
-| Total Runtime | 558.000000 |
-| Time to Solution | 259.460000 |
-| CPU Runtime | 11658.800000 |
+| Total Runtime | 1080.400000 |
+| Time to Solution | 781.860000 |
+| CPU Runtime | 37778.800000 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Runtimes are averaged over the runs; runs share a common pre-processing stage whose cost is divided among them, and were executed concurrently, so the wall-clock includes contention. # Successful Runs counts the runs that reached the reported objective (epsilon = 0). |
+| Remarks | Runtimes are averaged over the runs, and are the cost of one answer from cold. Of the average run, 427.4 s wall / 5128.8 s CPU is that run's own work; the remaining 653.0 s wall / 32650.0 s CPU is a stage the runs of this instance have in common, charged to each run in full so that Total Runtime does not fall as runs are added. That stage was in fact executed once for each group of runs that shared it, and the runs were executed concurrently, so the work consumed 58294 s CPU in total rather than # Runs times CPU Runtime. # Successful Runs counts the runs that reached the reported objective (epsilon = 0). |
