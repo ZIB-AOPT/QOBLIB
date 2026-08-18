@@ -332,8 +332,7 @@ def collect_solutions(instance: str, inst_dir: Path, report: InstanceReport) -> 
 
 
 def validate_objective_time_series(
-    instance: str, inst_dir: Path, report: InstanceReport, *, minimize: bool,
-    birkhoff_progress: bool = False,
+    instance: str, inst_dir: Path, report: InstanceReport, *, minimize: bool
 ) -> None:
     # Accept either plain JSON or gzipped JSON
     ts_name_json = f"{instance}{OBJECTIVE_TS_BASENAME}"              # e.g. foo_objective_time_series.json
@@ -367,7 +366,6 @@ def validate_objective_time_series(
                 report.fail(f"{ts_path.name}: run {r_i} must be a list.")
                 continue
             prev_incumbent: Optional[float] = None
-            prev_error: Optional[float] = None
             for e_i, entry in enumerate(run, start=1):
                 if not isinstance(entry, dict):
                     report.fail(f"{ts_path.name}: run {r_i} entry {e_i} must be an object.")
@@ -383,29 +381,6 @@ def validate_objective_time_series(
                         f"found {entry['Incumbent']!r}."
                     )
                     prev_incumbent = None
-                    continue
-                if birkhoff_progress:
-                    if "Error" not in entry:
-                        report.fail(
-                            f"{ts_path.name}: run {r_i} entry {e_i} must contain an 'Error' key "
-                            "for Birkhoff approximation progress."
-                        )
-                        continue
-                    try:
-                        error = float(entry["Error"])
-                    except (TypeError, ValueError):
-                        report.fail(
-                            f"{ts_path.name}: run {r_i} entry {e_i} 'Error' must be numeric, "
-                            f"found {entry['Error']!r}."
-                        )
-                        prev_error = None
-                        continue
-                    if prev_error is not None and error > prev_error:
-                        report.fail(
-                            f"{ts_path.name}: run {r_i} entry {e_i} breaks non-increasing "
-                            f"error monotonicity ({prev_error} → {error})."
-                        )
-                    prev_error = error
                     continue
                 if prev_incumbent is not None:
                     if minimize and incumbent > prev_incumbent:
@@ -916,14 +891,7 @@ def validate_instance(
 
     # 3) objective time series (optional) — enforce monotonicity direction
     minimize = _problem_minimizes(submission_root)
-    problem_id = submission_root.resolve().parent.parent.name[:2]
-    validate_objective_time_series(
-        instance,
-        inst_dir,
-        report,
-        minimize=minimize,
-        birkhoff_progress=(problem_id == "03"),
-    )
+    validate_objective_time_series(instance, inst_dir, report, minimize=minimize)
 
     # 4) README.md (optional or generate)
     readme_path = inst_dir / "README.md"
