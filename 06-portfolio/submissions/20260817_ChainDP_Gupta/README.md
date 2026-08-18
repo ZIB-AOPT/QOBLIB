@@ -9,13 +9,24 @@ That makes the model a chain. Enumerating the feasible per-period portfolios
 under the budget and capital slack registers and running a forward dynamic
 program over them gives the exact optimum, with the last period detaching.
 
-For the a003, a004 and a005 families a period has between 84 and 991 feasible
-portfolios, so every instance closes in well under a second. All values here
-are proven optima, not heuristic bounds.
+Contents, 160 instances:
+
+* a003, a004 and a005, 96 instances, all previously listed open with no feasible
+  solution on record. A period has between 84 and 991 feasible portfolios here,
+  so each closes in well under a second.
+* a010_t10 and a010_t15, 64 instances. These match the published values exactly,
+  so nothing improves, but they are now proven optimal rather than best known.
+  A period has 10,606 feasible portfolios, so these take a few minutes each.
+
+All values are proven optima, not heuristic bounds, so the optimality bound
+equals the objective throughout.
 
 The objective was implemented in exact rational arithmetic with Zimpl's
 rounding, and validated against the shipped a010 reference solutions before any
 of these were produced: it reproduces their published objective values exactly,
-including the three that are marked proven optimal.
+including the ones marked proven optimal.
 
-Code: https://github.com/mnn31/qoblib-net
+The method is exact and not anytime, so each objective time series is a single
+incumbent recorded when the dynamic program returns.
+
+Code: https://github.com/mnn31/qoblib-solvers/tree/main/portfolio
