@@ -26,7 +26,7 @@ rounding, and validated against the shipped a010 reference solutions before any
 of these were produced: it reproduces their published objective values exactly,
 including the ones marked proven optimal.
 
-The method is exact and not anytime, so each objective time series is a single
-incumbent recorded when the dynamic program returns.
+The method is exact and not anytime, so there is no objective time series: the
+dynamic program produces no incumbent before it returns the optimum.
 
 Code: https://github.com/mnn31/qoblib-solvers/tree/main/portfolio
