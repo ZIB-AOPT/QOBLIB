@@ -9,7 +9,7 @@ This directory contains the submission for the problem **B64_4096_5**.
 | Affiliation | Independent Researcher |
 | Date | 2026-08-17 |
 | ====== |  |
-| Reference | https://github.com/mnn31/QOBLIB/tree/a5a9c80dd18d5e0ab73dac5af8e42b8373c551f4/experiments/birkhoff |
+| Reference | https://github.com/mnn31/qoblib-birkhoff |
 | Best Objective Value | 259 |
 | Optimality Bound | N/A |
 | ====== |  |
@@ -32,9 +32,9 @@ This directory contains the submission for the problem **B64_4096_5**.
 | ====== |  |
 | Hardware Specifications | Apple MacBook Pro with Apple M3 Pro, 11 CPU cores, 18 GB unified memory |
 | ====== |  |
-| Total Runtime | 0.214613 |
-| Time to Solution | 0.214613 |
-| CPU Runtime | 0.214613 |
+| Total Runtime | 0.245196 |
+| Time to Solution | 0.245196 |
+| CPU Runtime | 0.245196 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |

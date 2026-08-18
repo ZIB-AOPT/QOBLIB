@@ -9,7 +9,7 @@ This directory contains the submission for the problem **B100_10000_1**.
 | Affiliation | Independent Researcher |
 | Date | 2026-08-17 |
 | ====== |  |
-| Reference | https://github.com/mnn31/QOBLIB/tree/a5a9c80dd18d5e0ab73dac5af8e42b8373c551f4/experiments/birkhoff |
+| Reference | https://github.com/mnn31/qoblib-birkhoff |
 | Best Objective Value | 420 |
 | Optimality Bound | N/A |
 | ====== |  |
@@ -32,9 +32,9 @@ This directory contains the submission for the problem **B100_10000_1**.
 | ====== |  |
 | Hardware Specifications | Apple MacBook Pro with Apple M3 Pro, 11 CPU cores, 18 GB unified memory |
 | ====== |  |
-| Total Runtime | 0.968311 |
-| Time to Solution | 0.968311 |
-| CPU Runtime | 0.968311 |
+| Total Runtime | 1.179598 |
+| Time to Solution | 1.179598 |
+| CPU Runtime | 1.179598 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
