@@ -21,10 +21,47 @@ Contents, 160 instances:
 All values are proven optima, not heuristic bounds, so the optimality bound
 equals the objective throughout.
 
-The objective was implemented in exact rational arithmetic with Zimpl's
-rounding, and validated against the shipped a010 reference solutions before any
-of these were produced: it reproduces their published objective values exactly,
-including the ones marked proven optimal.
+## Rounding
+
+The objective is not evaluated in floating point anywhere. Prices and
+covariances are parsed straight from the instance files into exact rationals,
+and every quantity below is formed and rounded exactly, so the result is
+bit-identical to the coefficients Zimpl writes into the shipped LP and QUBO
+files.
+
+Zimpl's `round` is half away from zero, which is not what IEEE or Python's
+`round` does. On an exact rational x it is
+
+    round(x) = trunc(x + 1/2)   if x >= 0
+    round(x) = trunc(x - 1/2)   if x <  0
+
+so 0.5 goes to 1 and -0.5 goes to -1, whereas banker's rounding would send both
+to 0. Getting this wrong shifts individual coefficients by one unit and the
+totals by more.
+
+Unit prices are rebased exactly before anything is rounded: one unit of asset i
+is `unit` of cash at t = 0, so `p[i,t] = raw_p[i,t] * unit / raw_p[i,0]` is kept
+as a rational, never as a decimal.
+
+Rounding is then applied once per model coefficient, exactly where the reference
+model applies it, and never to a running total:
+
+| coefficient | expression rounded |
+| :--- | :--- |
+| risk, per ordered group pair and period | `lambda * tau_i * tau_j * cov[i,j,t] * p[i,t] * p[j,t]` |
+| return, per group and period | `tau * (p[i,t+1] - p[i,t])` |
+| transaction and liquidation, per group and period | `delta * p[i,t]` |
+| short selling, per short group and period | `rho * p[i,t]` |
+| cash interest, per slack bit | `nu * unit * 2^k` |
+
+Every rounded coefficient is an integer, so from that point on the whole
+objective, and the dynamic program over it, is integer arithmetic with no
+further rounding and no accumulation error.
+
+This was validated against the shipped a010 reference solutions before any of
+these results were produced: it reproduces their published objective values
+exactly, including the ones marked proven optimal, which is what gives
+confidence that the rounding matches the reference model term by term.
 
 The method is exact and not anytime, so there is no objective time series: the
 dynamic program produces no incumbent before it returns the optimum.

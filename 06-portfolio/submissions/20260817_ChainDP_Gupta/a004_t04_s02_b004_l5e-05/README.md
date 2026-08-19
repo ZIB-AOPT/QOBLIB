@@ -30,7 +30,7 @@ This directory contains the submission for the problem **a004_t04_s02_b004_l5e-0
 | # Successful Runs | 1 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | Apple M-series laptop, 11 cores, 18 GB RAM, macOS; single core per run |
+| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64; one core per run |
 | ====== |  |
 | Total Runtime | 0.015 |
 | Time to Solution | 0.015 |
