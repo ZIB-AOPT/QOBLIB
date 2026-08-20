@@ -14,9 +14,10 @@ degree and every proposal is feasible by construction.
 
 Eight replicas on a geometric temperature ladder from 6% to 0.2% of the
 incumbent energy, degree-preserving 2- and 3-exchanges as the move, replica
-exchange every 40 proposals. Half the replicas start from the published
-reference topology and half from random topologies. Five independent runs per
-instance, single core each, 20 minutes per run, seeds 0 to 4.
+exchange every 40 proposals. Every replica starts from an independently sampled
+random 2-in/2-out topology: the published solutions are never read by the
+search, so nothing here starts from an incumbent record. Five independent runs
+per instance, single core each, 40 minutes per run, seeds 0 to 4.
 
 The integral routing is recovered once at the end by re-solving the same model
 with integrality on the flow variables.
