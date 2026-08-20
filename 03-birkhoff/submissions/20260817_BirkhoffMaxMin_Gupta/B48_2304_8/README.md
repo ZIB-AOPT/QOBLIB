@@ -10,13 +10,13 @@ This directory contains the submission for the problem **B48_2304_8**.
 | Date | 2026-08-17 |
 | ====== |  |
 | Reference | https://github.com/mnn31/qoblib-birkhoff |
-| Best Objective Value | 210 |
+| Best Objective Value | 211 |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | Exact integer Birkhoff decomposition using bottleneck perfect matchings. |
-| # Decision Variables | 10290 |
-| # Binary Variables | 10080 |
-| # Integer Variables | 210 |
+| # Decision Variables | 10339 |
+| # Binary Variables | 10128 |
+| # Integer Variables | 211 |
 | # Continuous Variables | 0 |
 | # Non-Zero Coefficients | 96 |
 | Coefficients Type | Binary and integer |
@@ -32,9 +32,9 @@ This directory contains the submission for the problem **B48_2304_8**.
 | ====== |  |
 | Hardware Specifications | Apple MacBook Pro with Apple M3 Pro, 11 CPU cores, 18 GB unified memory |
 | ====== |  |
-| Total Runtime | 0.140307 |
-| Time to Solution | 0.140307 |
-| CPU Runtime | 0.140307 |
+| Total Runtime | 2.911405 |
+| Time to Solution | 2.911405 |
+| CPU Runtime | 2.911405 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |

@@ -32,9 +32,9 @@ This directory contains the submission for the problem **B5_5_2**.
 | ====== |  |
 | Hardware Specifications | Apple MacBook Pro with Apple M3 Pro, 11 CPU cores, 18 GB unified memory |
 | ====== |  |
-| Total Runtime | 0.000193 |
-| Time to Solution | 0.000193 |
-| CPU Runtime | 0.000193 |
+| Total Runtime | 0.000488 |
+| Time to Solution | 0.000488 |
+| CPU Runtime | 0.000488 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
