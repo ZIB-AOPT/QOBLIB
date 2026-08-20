@@ -1,5 +1,5 @@
 # Energy: 564
-# Source: dSB (SimulatedBifurcation.jl)
+# Source: dSB
 0
 0
 1
