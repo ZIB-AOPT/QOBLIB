@@ -30,11 +30,11 @@ This directory contains the submission for the problem **a010_t15_s00_b004_l1e-0
 | # Successful Runs | 1 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64; one core per run |
+| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64. Runtimes are from a single-process rerun with no other load, so they are not inflated by contention. |
 | ====== |  |
-| Total Runtime | 253.979 |
-| Time to Solution | 253.979 |
-| CPU Runtime | 253.979 |
+| Total Runtime | 120.865 |
+| Time to Solution | 120.865 |
+| CPU Runtime | 120.865 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |

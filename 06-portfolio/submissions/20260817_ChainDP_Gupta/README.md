@@ -66,4 +66,26 @@ confidence that the rounding matches the reference model term by term.
 The method is exact and not anytime, so there is no objective time series: the
 dynamic program produces no incumbent before it returns the optimum.
 
+## Runtimes
+
+The reported runtimes come from a rerun with a single process and nothing else
+on the machine. An earlier version of this submission reported wall clock from
+a run with eight concurrent workers on an 11-core machine, which inflated them:
+the same 64 a010 instances take 238.5 minutes that way against 105.1 minutes
+single-process, a factor of 2.27. All 160 objectives are identical between the
+two runs, so only the timings changed.
+
+Two separate effects are at work, measured on this machine with the same
+instance and lambda:
+
+| condition | median solve |
+| :--- | ---: |
+| performance cores, idle machine | 75.2 s |
+| efficiency cores, idle machine | 118.2 s |
+
+so core type alone accounts for 1.57x. The remainder of the 2.27x is memory and
+cache pressure from running eight solves at once. With 5 performance and 6
+efficiency cores, eight concurrent workers cannot all sit on performance cores,
+which is why the original numbers mixed the two.
+
 Code: https://github.com/mnn31/qoblib-solvers/tree/main/portfolio
