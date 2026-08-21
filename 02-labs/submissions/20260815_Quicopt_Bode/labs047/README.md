@@ -25,18 +25,18 @@ This directory contains the submission for the problem **labs047**.
 | Workflow | Build the PUBO from the sequence length, solve with Quicopt v0.2. |
 | Algorithm Type | Stochastic |
 | Paradigm | Classical |
-| # Runs | 10 |
-| # Feasible Runs | 10 |
-| # Successful Runs | 1 |
+| # Runs | 25 |
+| # Feasible Runs | 25 |
+| # Successful Runs | 5 |
 | Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | AMD EPYC-Rome, 255 vCPUs, 503 GB RAM; Ubuntu 24.04.4 LTS, Linux 6.8.0, x86-64 |
 | ====== |  |
-| Total Runtime | 100.000514 |
-| Time to Solution | 100.000514 |
-| CPU Runtime | 100.000514 |
+| Total Runtime | 97.821499 |
+| Time to Solution | 97.821499 |
+| CPU Runtime | 97.821499 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Runtimes are averaged over the runs. Each run is standalone and single-threaded, so CPU Runtime equals Total Runtime. # Successful Runs counts the runs that reached the reported objective (epsilon = 0). |
+| Remarks | Each run is standalone and single-threaded, so CPU Runtime equals Total Runtime. Both are averaged over the runs. Successful runs are those that reached the reported objective exactly. |

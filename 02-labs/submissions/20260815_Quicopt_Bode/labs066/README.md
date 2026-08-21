@@ -25,18 +25,18 @@ This directory contains the submission for the problem **labs066**.
 | Workflow | Build the PUBO from the sequence length, solve with Quicopt v0.2. |
 | Algorithm Type | Stochastic |
 | Paradigm | Classical |
-| # Runs | 25 |
-| # Feasible Runs | 25 |
+| # Runs | 20 |
+| # Feasible Runs | 20 |
 | # Successful Runs | 2 |
 | Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | AMD EPYC-Rome, 255 vCPUs, 503 GB RAM; Ubuntu 24.04.4 LTS, Linux 6.8.0, x86-64 |
 | ====== |  |
-| Total Runtime | 755.420000 |
-| Time to Solution | 621.452000 |
-| CPU Runtime | 27746.488000 |
+| Total Runtime | 651.085000 |
+| Time to Solution | 493.300000 |
+| CPU Runtime | 20322.510000 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Runtimes are averaged over the runs, and are the cost of one answer from cold. Of the average run, 311.2 s wall / 2080.5 s CPU is that run's own work; the remaining 444.2 s wall / 25666.0 s CPU is a stage the runs of this instance have in common, charged to each run in full so that Total Runtime does not fall as runs are added. That stage was in fact executed once for each group of runs that shared it, and the runs were executed concurrently, so the work consumed 102582 s CPU in total rather than # Runs times CPU Runtime. # Successful Runs counts the runs that reached the reported objective (epsilon = 0). |
+| Remarks | A run has two parts. Work done for that run alone takes 347 s wall and 2083 s CPU on average. A preparation step, shared by all 20 runs of this instance, takes 304 s wall and 18240 s CPU. The runtimes above charge that shared step to every run, so they say what one sequence costs from a cold start, and they do not shrink as more runs are added. All 20 runs together actually used 59890 s CPU. That is less than 20 times CPU Runtime, because the shared step ran once rather than 20 times and the runs ran side by side. Successful runs are those that reached the reported objective exactly. |

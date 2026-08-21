@@ -32,11 +32,11 @@ This directory contains the submission for the problem **labs082**.
 | ====== |  |
 | Hardware Specifications | AMD EPYC-Rome, 255 vCPUs, 503 GB RAM; Ubuntu 24.04.4 LTS, Linux 6.8.0, x86-64 |
 | ====== |  |
-| Total Runtime | 898.500000 |
-| Time to Solution | 867.220000 |
-| CPU Runtime | 33164.000000 |
+| Total Runtime | 722.560000 |
+| Time to Solution | 691.480000 |
+| CPU Runtime | 24288.720000 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Runtimes are averaged over the runs, and are the cost of one answer from cold. Of the average run, 309.5 s wall / 3714.0 s CPU is that run's own work; the remaining 589.0 s wall / 29450.0 s CPU is a stage the runs of this instance have in common, charged to each run in full so that Total Runtime does not fall as runs are added. That stage was in fact executed once for each group of runs that shared it, and the runs were executed concurrently, so the work consumed 48020 s CPU in total rather than # Runs times CPU Runtime. # Successful Runs counts the runs that reached the reported objective (epsilon = 0). |
+| Remarks | A run has two parts. Work done for that run alone takes 312 s wall and 3739 s CPU on average. A preparation step, shared by all 5 runs of this instance, takes 411 s wall and 20550 s CPU. The runtimes above charge that shared step to every run, so they say what one sequence costs from a cold start, and they do not shrink as more runs are added. All 5 runs together actually used 39244 s CPU. That is less than 5 times CPU Runtime, because the shared step ran once rather than 5 times and the runs ran side by side. Successful runs are those that reached the reported objective exactly. |

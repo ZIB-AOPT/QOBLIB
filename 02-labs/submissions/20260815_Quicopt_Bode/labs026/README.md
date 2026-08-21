@@ -39,4 +39,4 @@ This directory contains the submission for the problem **labs026**.
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Runtimes are averaged over the runs. Each run is standalone and single-threaded, so CPU Runtime equals Total Runtime. # Successful Runs counts the runs that reached the reported objective (epsilon = 0). |
+| Remarks | Each run is standalone and single-threaded, so CPU Runtime equals Total Runtime. Both are averaged over the runs. Successful runs are those that reached the reported objective exactly. |

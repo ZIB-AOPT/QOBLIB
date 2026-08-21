@@ -27,16 +27,16 @@ This directory contains the submission for the problem **labs031**.
 | Paradigm | Classical |
 | # Runs | 100 |
 | # Feasible Runs | 100 |
-| # Successful Runs | 1 |
+| # Successful Runs | 12 |
 | Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | AMD EPYC-Rome, 255 vCPUs, 503 GB RAM; Ubuntu 24.04.4 LTS, Linux 6.8.0, x86-64 |
 | ====== |  |
-| Total Runtime | 0.100149 |
-| Time to Solution | 0.100149 |
-| CPU Runtime | 0.100149 |
+| Total Runtime | 0.320645 |
+| Time to Solution | 0.320645 |
+| CPU Runtime | 0.320645 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Runtimes are averaged over the runs. Each run is standalone and single-threaded, so CPU Runtime equals Total Runtime. # Successful Runs counts the runs that reached the reported objective (epsilon = 0). |
+| Remarks | Each run is standalone and single-threaded, so CPU Runtime equals Total Runtime. Both are averaged over the runs. Successful runs are those that reached the reported objective exactly. |
