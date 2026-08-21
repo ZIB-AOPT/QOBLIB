@@ -21,3 +21,6 @@ target/
 /.idea/QOBLIB.iml
 /.idea/vcs.xml
 /.idea/workspace.xml
+
+# Python build artifacts
+/misc/build/
