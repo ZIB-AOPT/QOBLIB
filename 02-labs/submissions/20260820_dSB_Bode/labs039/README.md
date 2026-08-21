@@ -9,7 +9,7 @@ This directory contains the submission for the problem **labs039**.
 | Affiliation | Forschungszentrum Jülich |
 | Date | 2026-08-20 |
 | ====== |  |
-| Reference | Algorithm: H. Goto et al., Science Advances 7, eabe7953 (2021), https://doi.org/10.1126/sciadv.abe7953; implementation and benchmark data: https://github.com/Quicopt/Benchmarks |
+| Reference | Algorithm: H. Goto et al., Science Advances 7, eabe7953 (2021), https://doi.org/10.1126/sciadv.abe7953; implementation details, parameters, tuning and run protocol: README.md in this submission directory. The implementation itself is not public. |
 | Best Objective Value | 99 |
 | Optimality Bound | N/A |
 | ====== |  |
@@ -30,7 +30,7 @@ This directory contains the submission for the problem **labs039**.
 | # Successful Runs | 3 |
 | Success Threshold | 0.0 |
 | ====== |  |
-| Hardware Specifications | AMD EPYC-Rome, 128 physical cores, 503 GB RAM, Ubuntu 24.04, Julia 1.12.6. N<=59: 128 Julia threads pinned to 128 cores. N>=60: 100 Julia threads pinned to 100 cores (taskset 0-99). Threads and cores 1:1 in both regimes; CPU-only, no GPU or QPU. |
+| Hardware Specifications | AMD EPYC-Rome, 128 physical cores, 503 GB RAM, Ubuntu 24.04, Julia 1.12.6. This instance used all 128 cores: 128 Julia threads pinned 1:1 to 128 cores, never oversubscribed. CPU-only, no GPU or QPU. |
 | ====== |  |
 | Total Runtime | 60.1006 |
 | Time to Solution | 29.0645 |

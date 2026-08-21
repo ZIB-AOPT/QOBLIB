@@ -22,6 +22,8 @@ The implementation benchmarked here is an independent one written
 by the submitter. Any weakness in these numbers is attributable to this implementation and its
 parameterisation, not necessarily to the algorithm as published.
 
+The implementation itself is not public, so this README is the reference: it states the model, the equations of motion, the integrator, every parameter and the exact run protocol, which is what a reader needs to reproduce these numbers from the published algorithm rather than from this particular code.
+
 ## Model — why no quadratization
 
 LABS minimises `E(s) = Σ_{k=1}^{N-1} C_k(s)²` with `C_k(s) = Σ_{i=1}^{N-k} s_i s_{i+k}`,
@@ -189,7 +191,10 @@ N=2 is valid but unrated, which reconciles 44 with the 45 matches above).
 Reported values are **best-of-`# Runs`** independent restarts. LABS is unconstrained, so every
 ±1 sequence is feasible and `# Feasible Runs = # Runs`. `Optimality Bound` is `N/A` throughout:
 this method proves nothing. `CPU Runtime` is the measured wall time multiplied by the number of
-cores actually available to the process — not a projection to a core count that was not used.
+cores the process actually ran on — not a projection to a core count that was not used. That
+count is not the same for every instance, so each row's `Hardware Specifications` names the one
+that applies to it and `CPU Runtime / Total Runtime` is exactly that number: 128 for N ≤ 59,
+100 for N ≥ 60. Threads are pinned 1:1 to cores in both regimes, never oversubscribed.
 
 **The run protocol is not uniform in N, and the per-instance figures reflect what was actually
 run:**
