@@ -51,14 +51,16 @@ def main():
             results.append((E, bits, dt, seed))
             print(f"{inst} run {i+1}/{len(seeds)} (seed {seed}): E={E}  ({dt:.2f}s)")
         total = time.perf_counter() - t_start
+        avg_time = total / len(seeds)              # CONTRIBUTING.md: report average runtime
         best_E = min(r[0] for r in results)
         meta = {
             "cfg": CFG, "best_E": best_E, "ncoef": len(hubo_terms(n)),
             "runs": len(seeds), "success": sum(1 for r in results if r[0] == best_E),
-            "total": total, "tts": min(r[2] for r in results if r[0] == best_E),
+            "total": avg_time, "tts": min(r[2] for r in results if r[0] == best_E),
             "p": args.p,
             "remarks": (f"QAOA p={args.p}, {args.shots} shots/eval, "
-                        f"COBYLA maxiter={args.maxiter}, seeds={seeds}."),
+                        f"COBYLA maxiter={args.maxiter}, seeds={seeds}. "
+                        f"Runtimes are averages over the {len(seeds)} runs."),
         }
         inst_dir = os.path.join(args.outdir, inst)
         paths = package_instance(inst_dir, n, results, meta)
