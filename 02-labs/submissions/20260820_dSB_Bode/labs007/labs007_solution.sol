@@ -1,0 +1,9 @@
+# Energy: 3
+# Source: dSB
+1
+0
+1
+1
+0
+0
+0
