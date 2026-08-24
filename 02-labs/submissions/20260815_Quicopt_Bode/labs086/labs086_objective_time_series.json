@@ -1,0 +1,60 @@
+[
+ [
+  {
+   "Time": 408.0,
+   "Incumbent": 551
+  },
+  {
+   "Time": 719.4,
+   "Incumbent": 535
+  }
+ ],
+ [
+  {
+   "Time": 408.0,
+   "Incumbent": 551
+  },
+  {
+   "Time": 719.6,
+   "Incumbent": 535
+  }
+ ],
+ [
+  {
+   "Time": 408.0,
+   "Incumbent": 551
+  },
+  {
+   "Time": 563.6,
+   "Incumbent": 527
+  },
+  {
+   "Time": 718.4,
+   "Incumbent": 527
+  }
+ ],
+ [
+  {
+   "Time": 408.0,
+   "Incumbent": 551
+  },
+  {
+   "Time": 716.2,
+   "Incumbent": 471
+  }
+ ],
+ [
+  {
+   "Time": 408.0,
+   "Incumbent": 551
+  },
+  {
+   "Time": 562.2,
+   "Incumbent": 511
+  },
+  {
+   "Time": 716.1,
+   "Incumbent": 511
+  }
+ ]
+]
