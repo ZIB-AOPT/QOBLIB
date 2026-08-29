@@ -7,7 +7,7 @@ This directory contains the submission for the problem **mammalia-kangaroo-inter
 | Problem | mammalia-kangaroo-interactions |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 18:44:07 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 4.0 |

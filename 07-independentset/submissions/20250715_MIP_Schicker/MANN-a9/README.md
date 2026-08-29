@@ -7,7 +7,7 @@ This directory contains the submission for the problem **MANN-a9**.
 | Problem | MANN-a9 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 16:02:39 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 3.0 |

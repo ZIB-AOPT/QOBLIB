@@ -7,7 +7,7 @@ This directory contains the submission for the problem **sorrell4**.
 | Problem | sorrell4 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 19:32:59 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 23.0 |

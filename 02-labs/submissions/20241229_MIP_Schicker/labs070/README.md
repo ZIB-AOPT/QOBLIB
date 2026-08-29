@@ -7,7 +7,7 @@ This directory contains the submission for the problem **labs070**.
 | Problem | labs070 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2024-12-29 00:36:06 |
+| Date | 2024-12-29 |
 | ====== |  |
 | Reference | See Models Directory (integer) using Gurobi 11.0.0 |
 | Best Objective Value | 543.0 |

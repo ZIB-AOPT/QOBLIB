@@ -7,7 +7,7 @@ This directory contains the submission for the problem **topology_35_5**.
 | Problem | topology_35_5 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 06. Dec. 2024 |
+| Date | 2024-12-06 |
 | ====== |  |
 | Reference | See Models Directory (Seidel-Quadratic) using Gurobi 11.0.0 |
 | Best Objective Value | 4.0 |

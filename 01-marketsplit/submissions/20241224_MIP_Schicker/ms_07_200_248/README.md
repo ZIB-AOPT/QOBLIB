@@ -7,7 +7,7 @@ This directory contains the submission for the problem **ms_07_200_248**.
 | Problem | ms_07_200_248 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2024-12-23 11:17:47 |
+| Date | 2024-12-23 |
 | ====== |  |
 | Reference | See Models Directory using Gurobi 11.0.0 |
 | Best Objective Value | 0.0 |

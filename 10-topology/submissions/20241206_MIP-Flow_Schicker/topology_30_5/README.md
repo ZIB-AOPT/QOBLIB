@@ -7,7 +7,7 @@ This directory contains the submission for the problem **topology_30_5**.
 | Problem | topology_30_5 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 06. Dec. 2024 |
+| Date | 2024-12-06 |
 | ====== |  |
 | Reference | See Models Directory (Flow) using Gurobi 11.0.0 |
 | Best Objective Value | 5.0 |

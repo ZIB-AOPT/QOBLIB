@@ -1,13 +1,13 @@
-# Submission for a010_t10_s01_b004_l0.0005
+# Submission for po_a010_t10_s01_b004_l5e-4
 
-This directory contains the submission for the problem **a010_t10_s01_b004_l0.0005**.
+This directory contains the submission for the problem **po_a010_t10_s01_b004_l5e-4**.
 
 | Field | Value 1 |
 | --- | --- |
-| Problem | a010_t10_s01_b004_l0.0005 |
+| Problem | po_a010_t10_s01_b004_l5e-4 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-08-19 10:06:31 |
+| Date | 2025-08-19 |
 | ====== |  |
 | Reference | See Models Directory using Gurobi 12.0.1 |
 | Best Objective Value | -39933.0 |

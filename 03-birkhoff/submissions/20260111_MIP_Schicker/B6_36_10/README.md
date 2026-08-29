@@ -7,7 +7,7 @@ This directory contains the submission for the problem **B6_36_10**.
 | Problem | B6_36_10 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2026-01-10 20:39:55 |
+| Date | 2026-01-10 |
 | ====== |  |
 | Reference | See Models Directory using Gurobi 12.0.1 |
 | Best Objective Value | 20.0 |

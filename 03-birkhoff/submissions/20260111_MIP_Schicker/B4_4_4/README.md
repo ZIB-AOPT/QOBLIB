@@ -7,7 +7,7 @@ This directory contains the submission for the problem **B4_4_4**.
 | Problem | B4_4_4 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2026-01-10 20:52:16 |
+| Date | 2026-01-10 |
 | ====== |  |
 | Reference | See Models Directory using Gurobi 12.0.1 |
 | Best Objective Value | 3.0 |

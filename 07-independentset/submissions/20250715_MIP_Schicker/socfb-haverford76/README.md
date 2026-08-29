@@ -7,7 +7,7 @@ This directory contains the submission for the problem **socfb-haverford76**.
 | Problem | socfb-haverford76 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 19:18:58 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 282.0 |

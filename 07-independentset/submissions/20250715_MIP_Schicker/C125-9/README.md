@@ -7,7 +7,7 @@ This directory contains the submission for the problem **C125-9**.
 | Problem | C125-9 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 15:45:47 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 34.0 |

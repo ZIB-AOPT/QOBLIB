@@ -7,7 +7,7 @@ This directory contains the submission for the problem **aves-sparrow-social**.
 | Problem | aves-sparrow-social |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 16:43:03 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 13.0 |

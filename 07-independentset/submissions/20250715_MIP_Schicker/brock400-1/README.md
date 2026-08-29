@@ -7,7 +7,7 @@ This directory contains the submission for the problem **brock400-1**.
 | Problem | brock400-1 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 16:43:35 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 27.0 |

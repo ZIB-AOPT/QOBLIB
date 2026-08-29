@@ -7,7 +7,7 @@ This directory contains the submission for the problem **es60fst02**.
 | Problem | es60fst02 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 17:28:10 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 88.0 |

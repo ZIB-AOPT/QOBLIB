@@ -7,7 +7,7 @@ This directory contains the submission for the problem **p_hat1500-3**.
 | Problem | p_hat1500-3 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 19:14:03 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 94.0 |

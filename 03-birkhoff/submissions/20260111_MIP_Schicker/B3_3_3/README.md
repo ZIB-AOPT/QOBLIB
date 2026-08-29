@@ -7,7 +7,7 @@ This directory contains the submission for the problem **B3_3_3**.
 | Problem | B3_3_3 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2026-01-10 20:51:44 |
+| Date | 2026-01-10 |
 | ====== |  |
 | Reference | See Models Directory using Gurobi 12.0.1 |
 | Best Objective Value | 3.0 |

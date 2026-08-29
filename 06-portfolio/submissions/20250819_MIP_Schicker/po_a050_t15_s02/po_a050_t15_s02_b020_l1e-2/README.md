@@ -1,16 +1,16 @@
-# Submission for a050_t15_s02_b020_l0.01
+# Submission for po_a050_t15_s02_b020_l1e-2
 
-This directory contains the submission for the problem **a050_t15_s02_b020_l0.01**.
+This directory contains the submission for the problem **po_a050_t15_s02_b020_l1e-2**.
 
 | Field | Value 1 |
 | --- | --- |
-| Problem | a050_t15_s02_b020_l0.01 |
+| Problem | po_a050_t15_s02_b020_l1e-2 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-08-20 00:43:31 |
+| Date | 2025-08-20 |
 | ====== |  |
 | Reference | See Models Directory using Gurobi 12.0.1 |
-| Best Objective Value | -40622.00000935 |
+| Best Objective Value | -40622 |
 | Optimality Bound | -1070568.571374 |
 | ====== |  |
 | Modeling Approach | Binary Linear Program |

@@ -7,7 +7,7 @@ This directory contains the submission for the problem **keller6**.
 | Problem | keller6 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 18:10:41 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 41.0 |

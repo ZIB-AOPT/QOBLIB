@@ -7,7 +7,7 @@ This directory contains the submission for the problem **sloane_1dc_64**.
 | Problem | sloane_1dc_64 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 19:18:49 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 10.0 |

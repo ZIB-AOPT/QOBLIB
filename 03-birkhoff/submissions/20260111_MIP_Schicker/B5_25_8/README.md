@@ -7,7 +7,7 @@ This directory contains the submission for the problem **B5_25_8**.
 | Problem | B5_25_8 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2026-01-10 10:01:09 |
+| Date | 2026-01-10 |
 | ====== |  |
 | Reference | See Models Directory using Gurobi 12.0.1 |
 | Best Objective Value | 14.0 |

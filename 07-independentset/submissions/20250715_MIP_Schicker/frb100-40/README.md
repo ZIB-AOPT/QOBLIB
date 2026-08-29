@@ -7,7 +7,7 @@ This directory contains the submission for the problem **frb100-40**.
 | Problem | frb100-40 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2025-07-15 17:28:22 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (BLP) using Gurobi 12.0.1 |
 | Best Objective Value | 77.0 |

@@ -7,7 +7,7 @@ This directory contains the submission for the problem **labs093**.
 | Problem | labs093 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 2024-12-29 06:08:52 |
+| Date | 2024-12-29 |
 | ====== |  |
 | Reference | See Models Directory (integer) using Gurobi 11.0.0 |
 | Best Objective Value | 1082.0 |
