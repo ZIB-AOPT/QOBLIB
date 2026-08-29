@@ -152,17 +152,18 @@ The file must be a JSON array of *runs* (one element per independent run of your
 | Key | Type | Description |
 | --- | --- | --- |
 | `Time` | number | Wall-clock time in **seconds** from the start of the run at which this incumbent was first reached |
-| `Incumbent` | number | The best objective value found up to this point in the run |
+| `Incumbent` | number or `null` | The best objective value found up to this point in the run. Use `null` when no feasible solution has been found yet — this lets a solver log (e.g. Gurobi's root-relaxation rows) be exported verbatim |
 
 Rules:
-- The `Incumbent` sequence within each run must be **non-increasing** for minimization problems (non-decreasing for maximization).
+- The `Incumbent` sequence within each run must be **non-increasing** for minimization problems (non-decreasing for maximization). Entries with a `null` incumbent are skipped by this check.
+- A `null` `Incumbent` is only allowed **before** the run's first numeric incumbent. Once a run has an incumbent it cannot lose it, so a `null` afterwards is reported as an error.
 - The first entry should record the initial incumbent (the starting solution's objective value).
 - The last entry's `Time` value should correspond to the end of the run (or the moment the algorithm terminated), so that TTS can be computed as the `Time` of the first entry whose `Incumbent` equals the final best.
 - There is no required correspondence between the number of runs in the time series and `# Runs` in the CSV, but they should ideally match.
 
 #### What the CI checker does
 
-The automated checker validates the JSON structure (correct types, required keys, non-empty runs) and **does enforce monotonicity** — a minimization run where the incumbent increases (or a maximization run where it decreases) is reported as a hard failure that blocks the merge. Providing a time series is entirely optional; the CI checker reports its absence as informational only.
+The automated checker validates the JSON structure (correct types, required keys, non-empty runs) and **does enforce monotonicity** — a minimization run where the incumbent increases (or a maximization run where it decreases) is reported as a hard failure that blocks the merge. Entries whose `Incumbent` is `null` (no feasible solution yet) are accepted and skipped, provided they precede the run's first numeric incumbent. Providing a time series is entirely optional; the CI checker reports its absence as informational only.
 
 ## Benchmark Reporting Template
 

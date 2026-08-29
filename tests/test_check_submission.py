@@ -139,6 +139,78 @@ class TestObjectiveTimeSeriesMonotonicity(unittest.TestCase):
             validate_objective_time_series("inst", tmp, r, minimize=True)
             self.assertTrue(r.ok)
 
+
+class TestObjectiveTimeSeriesNullIncumbent(unittest.TestCase):
+    """A null 'Incumbent' means "no feasible solution yet" and is accepted
+    before the run's first incumbent (e.g. Gurobi root-relaxation log rows)."""
+
+    def test_leading_nulls_accepted(self):
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            _write_ts(tmp, "inst", [[
+                {"Time": 0.0, "Incumbent": None},
+                {"Time": 0.0, "Incumbent": None},
+                {"Time": 0.1, "Incumbent": 16.0},
+                {"Time": 1.0, "Incumbent": 14.0},
+            ]])
+            r = _report()
+            validate_objective_time_series("inst", tmp, r, minimize=True)
+            self.assertTrue(r.ok, " ".join(r.messages))
+
+    def test_all_null_run_accepted(self):
+        # A run that never found a feasible solution is valid, just empty of
+        # incumbents.
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            _write_ts(tmp, "inst", [[
+                {"Time": 0.0, "Incumbent": None},
+                {"Time": 5.0, "Incumbent": None},
+            ]])
+            r = _report()
+            validate_objective_time_series("inst", tmp, r, minimize=True)
+            self.assertTrue(r.ok, " ".join(r.messages))
+
+    def test_null_after_incumbent_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            _write_ts(tmp, "inst", [[
+                {"Time": 0.1, "Incumbent": 16.0},
+                {"Time": 0.5, "Incumbent": None},   # lost the incumbent — impossible
+            ]])
+            r = _report()
+            validate_objective_time_series("inst", tmp, r, minimize=True)
+            self.assertFalse(r.ok)
+            errors = " ".join(r.messages)
+            self.assertIn("run 1 entry 2", errors)
+            self.assertIn("null", errors)
+
+    def test_nulls_do_not_mask_monotonicity_violation(self):
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            _write_ts(tmp, "inst", [[
+                {"Time": 0.0, "Incumbent": None},
+                {"Time": 0.1, "Incumbent": 5.0},
+                {"Time": 0.5, "Incumbent": 8.0},   # goes UP — violation
+            ]])
+            r = _report()
+            validate_objective_time_series("inst", tmp, r, minimize=True)
+            self.assertFalse(r.ok)
+            self.assertIn("monoton", " ".join(r.messages))
+
+    def test_non_numeric_string_still_rejected(self):
+        # A null is "no incumbent yet"; any other non-numeric value is still an error.
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            _write_ts(tmp, "inst", [[{"Time": 0.1, "Incumbent": "n/a"}]])
+            r = _report()
+            validate_objective_time_series("inst", tmp, r, minimize=True)
+            self.assertFalse(r.ok)
+            self.assertIn("must be numeric", " ".join(r.messages))
+
+
+class TestObjectiveTimeSeriesStructure(unittest.TestCase):
+    """Structural checks that are independent of the monotonicity policy."""
+
     def test_no_file_is_informational_only(self):
         with tempfile.TemporaryDirectory() as d:
             r = _report()
