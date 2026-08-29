@@ -26,7 +26,7 @@ This directory contains the submission for the problem **network11**.
 | Algorithm Type | Deterministic |
 | Paradigm | Classical |
 | # Runs | 1 |
-| # Feasible Runs | 1 |
+| # Feasible Runs | 0 |
 | # Successful Runs | 0 |
 | Success Threshold | 0.0001 |
 | ====== |  |
