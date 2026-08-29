@@ -1,0 +1,42 @@
+# Submission for po_a050_t10_s00_b020_l5e-5
+
+This directory contains the submission for the problem **po_a050_t10_s00_b020_l5e-5**.
+
+| Field | Value 1 |
+| --- | --- |
+| Problem | po_a050_t10_s00_b020_l5e-5 |
+| Submitter | Maximilian Schicker |
+| Affiliation | Zuse Institute Berlin |
+| Date | 2025-08-19 |
+| ====== |  |
+| Reference | See Models Directory using Gurobi 12.0.1 |
+| Best Objective Value | -408937.0 |
+| Optimality Bound | -415328.1629245 |
+| ====== |  |
+| Modeling Approach | Binary Linear Program |
+| # Decision Variables | 3010 |
+| # Binary Variables | 3000 |
+| # Integer Variables | 10 |
+| # Continuous Variables | 0 |
+| # Non-Zero Coefficients | 6110 |
+| Coefficients Type | Integer |
+| Coefficients Range | 1.0 - 60.0, N/A - N/A, N/A - N/A |
+| ====== |  |
+| Workflow | Generate LP files using ZIMPL, solve using Gurobi |
+| Algorithm Type | Deterministic |
+| Paradigm | Classical |
+| # Runs | 1 |
+| # Feasible Runs | 1 |
+| # Successful Runs | 0 |
+| Success Threshold | 0.0001 |
+| ====== |  |
+| Hardware Specifications | Intel(R) Xeon(R) Gold 6338 CPU @ 2.00GHz, instruction set [SSE2\|AVX\|AVX2\|AVX512] |
+| ====== |  |
+| Total Runtime | 3600.11 |
+| Time to Solution | N/A |
+| CPU Runtime | 1967.8 |
+| GPU Runtime | N/A |
+| QPU Runtime | N/A |
+| Other HW Runtime | N/A |
+| ====== |  |
+| Remarks | CPU Runtime is Gurobi Work Measure, Success Threshold is the MIP Gap tolerance, variable counts are after presolve, Coefficient Range is (Min - Max) for (Linear, Quadratic, Quadratic Linear) coefficients |

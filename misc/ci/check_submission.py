@@ -37,6 +37,7 @@ Checks for each instance directory:
   - CSV must have at least one data row. By default, we verify `Problem` == <instance>.
   - Basic type checks for some numeric/count columns.
   - Objective time series JSON structure: list of runs; each run is a list of objects with keys Time and Incumbent.
+    'Incumbent' may be null for entries recorded before the run's first feasible solution.
   - Automatically runs the per-problem solution checker (if available) for each solution.
     Pass --no-check to disable this.
   - (Optional) run a solution checker for each solution via a user-provided command template.
@@ -373,12 +374,28 @@ def validate_objective_time_series(
                 if "Time" not in entry or "Incumbent" not in entry:
                     report.fail(f"{ts_path.name}: run {r_i} entry {e_i} must contain 'Time' and 'Incumbent' keys.")
                     continue
+                # A JSON null 'Incumbent' means "no feasible solution known yet at
+                # this point in the run". Solver logs converted verbatim (e.g. a
+                # Gurobi log, where the root-relaxation rows precede the first
+                # incumbent) legitimately start with such entries, so they are
+                # accepted and skipped by the monotonicity check. They are only
+                # allowed *before* the first numeric incumbent: once a run has an
+                # incumbent it can never lose it again, so a null afterwards
+                # indicates a broken export rather than solver state.
+                if entry["Incumbent"] is None:
+                    if prev_incumbent is not None:
+                        report.fail(
+                            f"{ts_path.name}: run {r_i} entry {e_i} has a null 'Incumbent' after "
+                            f"an incumbent of {prev_incumbent} was already recorded. A null "
+                            f"'Incumbent' is only allowed before the first incumbent of a run."
+                        )
+                    continue
                 try:
                     incumbent = float(entry["Incumbent"])
                 except (TypeError, ValueError):
                     report.fail(
-                        f"{ts_path.name}: run {r_i} entry {e_i} 'Incumbent' must be numeric, "
-                        f"found {entry['Incumbent']!r}."
+                        f"{ts_path.name}: run {r_i} entry {e_i} 'Incumbent' must be numeric "
+                        f"or null (no incumbent yet), found {entry['Incumbent']!r}."
                     )
                     prev_incumbent = None
                     continue

@@ -42,11 +42,17 @@ def _git_changed_paths(base: str, head: str) -> list[str]:
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
-def _find_submission_roots(paths: list[str]) -> set[str]:
+def _find_submission_roots(paths: list[str], repo_root: Path | None = None) -> set[str]:
+    """Submission roots touched by ``paths`` that still exist in the working tree.
+
+    A PR may delete or rename a submission root; those paths appear in the diff but
+    no longer exist at HEAD, so there is nothing to compare against the reference.
+    """
+    base = repo_root or Path(".")
     roots: set[str] = set()
     for path in paths:
         m = ROOT_RE.match(path)
-        if m:
+        if m and (base / m.group(1)).is_dir():
             roots.add(m.group(1))
     return roots
 
@@ -109,7 +115,7 @@ def main(argv: list[str] | None = None) -> int:
     config.configure(root=repo_root)
 
     changed_paths = _git_changed_paths(args.base, args.head)
-    submission_roots = sorted(_find_submission_roots(changed_paths))
+    submission_roots = sorted(_find_submission_roots(changed_paths, repo_root))
 
     if not submission_roots:
         print("No changed submission roots found.")

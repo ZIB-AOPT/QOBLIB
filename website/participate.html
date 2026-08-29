@@ -359,8 +359,8 @@
                         </tr>
                         <tr>
                             <td class="mono">Incumbent</td>
-                            <td>number</td>
-                            <td>The best objective value found up to this point in the run</td>
+                            <td>number or <code>null</code></td>
+                            <td>The best objective value found up to this point in the run. Use <code>null</code> when no feasible solution has been found yet, so a solver log (e.g. Gurobi's root-relaxation rows) can be exported verbatim</td>
                         </tr>
                     </tbody>
                 </table>
@@ -371,6 +371,7 @@
                     <div class="info-card-head">Rules</div>
                     <ul class="req-list req-list-inline">
                         <li>The <code>Incumbent</code> sequence within each run must be non-increasing for minimization (non-decreasing for maximization).</li>
+                        <li>A <code>null</code> <code>Incumbent</code> is allowed only <em>before</em> the run's first numeric incumbent; such entries are skipped by the monotonicity check.</li>
                         <li>The first entry should record the initial incumbent (the starting solution's objective value).</li>
                         <li>The last entry's <code>Time</code> should correspond to the end of the run so that TTS can be computed from it.</li>
                         <li>There is no required correspondence between the number of runs in the time series and <code># Runs</code> in the CSV, but they should ideally match.</li>
@@ -378,7 +379,7 @@
                 </div>
                 <div class="info-card info-card-blue">
                     <div class="info-card-head">CI checker behavior</div>
-                    <p>The automated checker validates JSON structure (correct types, required keys, non-empty runs) <strong>and</strong> enforces monotonicity: the <code>Incumbent</code> sequence within each run must be non-increasing for minimization problems and non-decreasing for maximization problems. A violation is reported as an error with the exact run and entry index. Providing a time series is entirely optional; its absence is reported as informational only.</p>
+                    <p>The automated checker validates JSON structure (correct types, required keys, non-empty runs) <strong>and</strong> enforces monotonicity: the <code>Incumbent</code> sequence within each run must be non-increasing for minimization problems and non-decreasing for maximization problems. A violation is reported as an error with the exact run and entry index. Entries with a <code>null</code> <code>Incumbent</code> (no feasible solution yet) are accepted and skipped, as long as they precede the run's first numeric incumbent. Providing a time series is entirely optional; its absence is reported as informational only.</p>
                 </div>
             </div>
         </section>
