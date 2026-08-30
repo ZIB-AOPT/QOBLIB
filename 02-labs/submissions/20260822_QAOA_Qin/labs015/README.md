@@ -6,7 +6,7 @@ This directory contains the submission for the problem **labs015**.
 | --- | --- |
 | Problem | labs015 |
 | Submitter | Qin.Z |
-| Affiliation | N/A |
+| Affiliation | Independent |
 | Date | 2026-08-22 |
 | ====== |  |
 | Reference | https://github.com/QoriZii/quantum-optim |
