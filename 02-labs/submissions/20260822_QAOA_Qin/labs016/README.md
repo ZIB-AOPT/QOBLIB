@@ -9,7 +9,7 @@ This directory contains the submission for the problem **labs016**.
 | Affiliation | N/A |
 | Date | 2026-08-22 |
 | ====== |  |
-| Reference | https://github.com/QoriZii/quantum-optim.git |
+| Reference | https://github.com/QoriZii/quantum-optim |
 | Best Objective Value | 24 |
 | Optimality Bound | N/A |
 | ====== |  |
