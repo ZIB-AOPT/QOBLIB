@@ -1,0 +1,18 @@
+# Independent set solution for instance: chesapeake
+# |V|=39  |E|=170  IS size=16
+2
+3
+5
+9
+10
+12
+19
+23
+24
+25
+26
+27
+28
+30
+32
+33
