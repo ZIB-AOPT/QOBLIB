@@ -1,0 +1,42 @@
+# Submission for sloane_1dc_64
+
+This directory contains the submission for the problem **sloane_1dc_64**.
+
+| Field | Value 1 | Value 2 |
+| --- | --- | --- |
+| Problem | sloane_1dc_64 | sloane_1dc_64 |
+| Submitter | Kalyan Dasgupta, Sumanta Mukherjee, Dhriti Verma, Surya Shravan Kumar Sajja, Abhishek Singh, Dzung Phan, Jayant Kalagnanam | Kalyan Dasgupta, Sumanta Mukherjee, Dhriti Verma, Surya Shravan Kumar Sajja, Abhishek Singh, Dzung Phan, Jayant Kalagnanam |
+| Affiliation | IBM Research - Bangalore - India, IBM Research - Bangalore - India, IBM Research - Yorktown Heights - NY - USA, IBM Research - Bangalore - India, IBM Research - Bangalore - India, IBM Research - Yorktown Heights - NY - USA, IBM Research - Yorktown Heights - NY - USA | IBM Research - Bangalore - India, IBM Research - Bangalore - India, IBM Research - Yorktown Heights - NY - USA, IBM Research - Bangalore - India, IBM Research - Bangalore - India, IBM Research - Yorktown Heights - NY - USA, IBM Research - Yorktown Heights - NY - USA |
+| Date | 2026-08-31 | 2026-08-31 |
+| ====== |  |  |
+| Reference | https://arxiv.org/abs/2606.28866 | https://arxiv.org/abs/2606.28866 |
+| Best Objective Value | 10 | 10 |
+| Optimality Bound | N/A | N/A |
+| ====== |  |  |
+| Modeling Approach | Ising Hamiltonian from QUBO relaxation (max sum_i x_i - P*sum_(i,j) in E x_i x_j); spectral (Fiedler) qubit reordering + distance-based sparsification of long-range couplings before circuit construction | Ising Hamiltonian from QUBO relaxation (max sum_i x_i - P*sum_(i,j) in E x_i x_j); spectral (Fiedler) qubit reordering + distance-based sparsification of long-range couplings before circuit construction |
+| # Decision Variables | 64 | 64 |
+| # Binary Variables | 64 | 64 |
+| # Integer Variables | 0 | 0 |
+| # Continuous Variables | 0 | 0 |
+| # Non-Zero Coefficients | 607 | 607 |
+| Coefficients Type | Continuous | Continuous |
+| Coefficients Range | J_ij = P/4 (constant over edges); h_i = 0.5 - P*deg_i/4 (varies with node degree); P (penalty) = 2.0-4.0 depending on run, see Workflow/Reference | J_ij = P/4 (constant over edges); h_i = 0.5 - P*deg_i/4 (varies with node degree); P (penalty) = 2.0-4.0 depending on run, see Workflow/Reference |
+| ====== |  |  |
+| Workflow | Build Ising Hamiltonian from graph; spectral reordering; sparsify couplings (max_adj); train EfficientSU2 VQE ansatz (n_reps=2, 384 params) with SPSA and CVaR (alpha=0.2) using AerSimulator (MPS method) for parameter optimization; transfer optimized parameters to ibm_marrakesh hardware for final circuit sampling; post-process samples with greedy bitstring repair and local-search based bitstring correction to extract maximal independent sets. | Build Ising Hamiltonian from graph; spectral reordering; sparsify couplings (max_adj); train EfficientSU2 VQE ansatz (n_reps=2) with SPSA and CVaR using AerSimulator (MPS method), 512 shots/iteration during optimization (a lower-shot configuration than the hardware row above); post-process samples with greedy bitstring repair and local-search based bitstring correction to extract maximal independent sets. |
+| Algorithm Type | Stochastic | Stochastic |
+| Paradigm | Quantum Hardware | Quantum Simulator |
+| # Runs | 10 | 10 |
+| # Feasible Runs | 10 | 10 |
+| # Successful Runs | 10 | 10 |
+| Success Threshold | 0 | 0 |
+| ====== |  |  |
+| Hardware Specifications | Classical: MacBook Pro (MacBookPro18,1), Apple M1 Pro, 10 cores (8 performance + 2 efficiency), 32 GB RAM, macOS -- used for VQE parameter training via AerSimulator (MPS method). Quantum: IBM Quantum ibm_marrakesh (Heron) via Qiskit Runtime, 20000 shots/trial x 10 trials. | MacBook Pro (MacBookPro18,1), Apple M1 Pro, 10 cores (8 performance + 2 efficiency), 32 GB RAM, macOS -- AerSimulator (MPS method), 512 shots/iteration. |
+| ====== |  |  |
+| Total Runtime | 2423.28 | 165.54 |
+| Time to Solution | N/A | N/A |
+| CPU Runtime | 2200.81 | 165.54 |
+| GPU Runtime | N/A | N/A |
+| QPU Runtime | 8 | N/A |
+| Other HW Runtime | N/A | N/A |
+| ====== |  |  |
+| Remarks | NOTE ON '# Successful Runs': all 10 sampling trials' raw bitstrings are pooled and deduplicated together before the final best independent set is extracted, so no single trial alone reaches the reported best size -- it is a joint result of all trials. Individual per-trial raw-sample size is not predictive of final MIS quality, since smaller seeds can extend further under maximality-driving (local search); additionally, per our reference paper, the bitstring-correction heuristic uses an EMA that improves across successive trials, so later trials are more likely to yield the MIS than earlier ones -- trials are not i.i.d. and cannot be scored independently. '# Successful Runs' = 10 reflects that all trials contributed feasible samples to this pooled, cumulative outcome, not that each trial individually matched the best size. PARAMETER TRANSFER RUN: VQE parameters were trained entirely classically via simulator (AerSimulator MPS, 4000 shots/iteration during optimization); no training occurred on hardware. The trained parameters were then transferred as-is to run the fixed circuit on real IBM Quantum hardware (ibm_marrakesh) for sampling only. Total Runtime = 2200.81s classical VQE parameter optimization (AerSimulator MPS) + 222.47s post-optimization hardware sampling/bitstring correction on ibm_marrakesh. QPU Runtime (8s) is the average actual quantum execution time per sampling round (10 rounds x 8s/round), excluding queue time; the remainder of the hardware phase is classical post-processing (bitstring repair/local search). A separate run using only 512 shots/iteration during training also independently recovered the MIS (5 distinct sets of size 10) in much less training time (165.54s) -- see the accompanying Quantum Simulator row for this instance for the verified details of that run. We report not only that the optimal independent set (size 10, matching QOBLIB's best-known value) was recovered, but how many distinct maximum-size sets were found: out of 1641 total unique independent sets extracted from 10 hardware sampling trials (20000 shots each) after bitstring correction, 3 distinct sets of the maximum size (10) were recovered. Across multiple independent runs (this hardware run plus the accompanying Quantum Simulator row and additional exploratory runs), 9 distinct maximum-size (10) independent sets have been recovered in total for this instance -- i.e. any single run recovers only a subset (3-5 sets), but repeated independent runs recover the full set of 9 distinct optima we have observed for this instance (not a proven exhaustive count of every maximum independent set the graph admits, but the complete union of what our sampling-and-correction procedure has found across all runs to date). To our knowledge this multiplicity-of-optima reporting has not been done elsewhere for this instance. | Verified alternate run (independent of the Quantum Hardware row above for this instance) using a much lower shot count (512 shots/iteration vs 4000 in the hardware row's training phase), completed in 165.54s -- over an order of magnitude faster -- while still recovering the optimal independent set (size 10, matching QOBLIB's best-known value). 5 distinct maximum-size (10) sets were recovered: [0,3,12,15,21,34,46,51,56,63], [0,11,12,17,29,42,48,51,60,63], [0,3,12,15,21,34,46,51,52,63], [0,3,12,15,18,45,48,51,60,63], [0,7,12,17,29,42,48,51,60,63]. This demonstrates that shot count can be substantially reduced without loss of solution quality for this instance size. Combined with the Quantum Hardware row above and additional exploratory runs, 9 distinct maximum-size (10) independent sets have been recovered in total for this instance across multiple independent runs -- any single run recovers only a subset (3-5 sets). |
