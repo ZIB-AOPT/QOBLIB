@@ -20,7 +20,7 @@ This directory contains the submission for the problem **brock200-3**.
 | # Continuous Variables | 0 |
 | # Non-Zero Coefficients | 12248 |
 | Coefficients Type | Continuous |
-| Coefficients Range | J_ij = P/4 (constant over edges); h_i = 0.5 - P*deg_i/4 (varies with node degree); P (penalty) = 2.0-4.0 depending on run, see Workflow/Reference |
+| Coefficients Range | J_ij = P/4 (constant over edges); h_i = 0.5 - P*deg_i/4 (varies with node degree); P (penalty) = 4.0 for this run |
 | ====== |  |
 | Workflow | Build Ising Hamiltonian from graph; spectral reordering; sparsify couplings (max_adj); train EfficientSU2 VQE ansatz (n_reps=2, 1200 parameters) with COBYLA and CVaR (alpha=0.2, initial params = zeros) using AerSimulator (MPS method); post-process samples (100000 shots/trial x 10 trials) with greedy bitstring repair and local-search based bitstring correction to extract maximal independent sets. |
 | Algorithm Type | Stochastic |
@@ -30,7 +30,7 @@ This directory contains the submission for the problem **brock200-3**.
 | # Successful Runs | 10 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | MacBook Pro (MacBookPro18,1), Apple M1 Pro, 10 cores (8 performance + 2 efficiency), 32 GB RAM, macOS -- AerSimulator (MPS method). |
+| Hardware Specifications | MacBook Pro (MacBookPro18,1), Apple M1 Pro, 10 cores (8 performance + 2 efficiency), 32 GB RAM, macOS, using AerSimulator (MPS method). |
 | ====== |  |
 | Total Runtime | 1000.61 |
 | Time to Solution | N/A |
@@ -39,4 +39,4 @@ This directory contains the submission for the problem **brock200-3**.
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | NOTE ON '# Successful Runs': all 10 sampling trials' raw bitstrings are pooled and deduplicated together before the final best independent set is extracted, so no single trial alone reaches the reported best size -- it is a joint result of all trials. Individual per-trial raw-sample size is not predictive of final MIS quality, since smaller seeds can extend further under maximality-driving (local search); additionally, per our reference paper, the bitstring-correction heuristic uses an EMA that improves across successive trials, so later trials are more likely to yield the MIS than earlier ones -- trials are not i.i.d. and cannot be scored independently. '# Successful Runs' = 10 reflects that all trials contributed feasible samples to this pooled, cumulative outcome, not that each trial individually matched the best size. Total Runtime = 901.90s classical VQE parameter optimization (AerSimulator MPS) + 98.71s post-optimization sampling/bitstring correction. Best set of size 9 matches QOBLIB's best-known (optimal) value; only 1 distinct maximum-size set was found in this run (other reruns with SPSA/SPSA_ADAM optimizers, not submitted here, found only size-8 sets, some with multiplicities up to 57). |
+| Remarks | NOTE ON '# Successful Runs': all 10 sampling trials' raw bitstrings are pooled and deduplicated together before the final best independent set is extracted, so no single trial alone reaches the reported best size and it is a joint result of all trials. Individual per-trial raw-sample size is not predictive of final MIS quality, since smaller seeds can extend further under maximality-driving (local search); additionally, per our reference paper, the bitstring-correction heuristic uses an EMA that improves across successive trials, so later trials are more likely to yield the MIS than earlier ones. The trials are not i.i.d. and cannot be scored independently. '# Successful Runs' = 10 reflects that all trials contributed feasible samples to this pooled, cumulative outcome, not that each trial individually matched the best size. Total Runtime = 901.90s classical VQE parameter optimization (AerSimulator MPS) + 98.71s post-optimization sampling/bitstring correction. Best set of size 9 matches QOBLIB's best-known (optimal) value; only 1 distinct maximum-size set was found in this run. |
