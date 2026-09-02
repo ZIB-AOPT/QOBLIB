@@ -26,7 +26,7 @@ This directory contains the submission for the problem **ms_03_200_161**.
 | Algorithm Type | Deterministic |
 | Paradigm | Classical |
 | # Runs | 1 |
-| # Feasible Runs | 1 |
+| # Feasible Runs | 0 |
 | # Successful Runs | 1 |
 | Success Threshold | N/A |
 | ====== |  |
@@ -40,3 +40,7 @@ This directory contains the submission for the problem **ms_03_200_161**.
 | Other HW Runtime | N/A |
 | ====== |  |
 | Remarks | GPU Runtime is Time to solution (TTS) |
+
+## Remarks
+
+This submission represents a Phase 2 simulator baseline. The provided solution is the lowest-energy bitstring found, but it is **infeasible** (violates constraints). Zero feasible runs were observed at this depth. Hardware execution (Phase 3) will follow in a separate submission.
