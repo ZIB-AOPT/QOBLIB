@@ -32,7 +32,7 @@ This directory contains the submission for the problem **mammalia-kangaroo-inter
 | ====== |  |
 | Hardware Specifications | AerSimulator |
 | ====== |  |
-| Total Runtime | AerSimulator s |
+| Total Runtime | 15.42 s |
 | Time to Solution | N/A |
 | CPU Runtime | N/A |
 | GPU Runtime | N/A |
