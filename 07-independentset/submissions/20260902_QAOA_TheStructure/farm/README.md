@@ -9,7 +9,7 @@ This directory contains the submission for the problem **farm**.
 | Affiliation | The Structure |
 | Date | 2026-09-01 |
 | ====== |  |
-| Reference | N/A |
+| Reference | Farhi, E., Goldstone, J., & Gutmann, S. (2014). A Quantum Approximate Optimization Algorithm. arXiv:1411.4028. |
 | Best Objective Value | 10 |
 | Optimality Bound | N/A |
 | ====== |  |
@@ -32,7 +32,7 @@ This directory contains the submission for the problem **farm**.
 | ====== |  |
 | Hardware Specifications | AerSimulator |
 | ====== |  |
-| Total Runtime | N/A |
+| Total Runtime | AerSimulator s |
 | Time to Solution | N/A |
 | CPU Runtime | N/A |
 | GPU Runtime | N/A |
@@ -44,3 +44,7 @@ This directory contains the submission for the problem **farm**.
 | ====== | |
 | QUBO Linear Penalty Coeff | 1 |
 | QUBO Edge Constraint Coeff | -2 |
+
+## Remarks
+
+Objective formulated as maximization of the negated QUBO (canonical MIS formulation with linear penalty +1 per node, edge constraint -2 per violated edge, maximized).
