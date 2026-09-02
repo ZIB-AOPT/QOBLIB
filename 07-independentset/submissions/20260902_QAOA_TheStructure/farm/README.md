@@ -32,7 +32,7 @@ This directory contains the submission for the problem **farm**.
 | ====== |  |
 | Hardware Specifications | AerSimulator |
 | ====== |  |
-| Total Runtime | 15.42 s |
+| Total Runtime | 12.45 s |
 | Time to Solution | N/A |
 | CPU Runtime | N/A |
 | GPU Runtime | N/A |
