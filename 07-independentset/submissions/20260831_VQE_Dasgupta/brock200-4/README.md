@@ -25,18 +25,18 @@ This directory contains the submission for the problem **brock200-4**.
 | Workflow | Build Ising Hamiltonian from graph; spectral reordering; sparsify couplings (max_adj); train EfficientSU2 VQE ansatz (n_reps=2, 1200 parameters) with COBYLA and CVaR (alpha=0.2, initial params = zeros) using AerSimulator (MPS method); post-process samples (100000 shots/trial x 10 trials) with greedy bitstring repair and local-search based bitstring correction to extract maximal independent sets. |
 | Algorithm Type | Stochastic |
 | Paradigm | Quantum Simulator |
-| # Runs | 1 |
-| # Feasible Runs | 1 |
-| # Successful Runs | 1 |
+| # Runs | 6 |
+| # Feasible Runs | 6 |
+| # Successful Runs | 6 |
 | Success Threshold | N/A |
 | ====== |  |
-| Hardware Specifications | MacBook Pro (MacBookPro18,1), Apple M1 Pro, 10 cores (8 performance + 2 efficiency), 32 GB RAM, macOS, using AerSimulator (MPS method). |
+| Hardware Specifications | MacBook Pro, Apple M1 Pro, 10 cores (8 performance + 2 efficiency), 32 GB RAM, macOS, using AerSimulator (MPS method). |
 | ====== |  |
-| Total Runtime | 1148.88 |
+| Total Runtime | 1009.0 |
 | Time to Solution | N/A |
 | CPU Runtime | N/A |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | TIMING NOTE: we did not measure CPU-process time (e.g. via time.process_time()) or log CPU utilization separately; only wall-clock time (via time.time()) was recorded, so 'CPU Runtime' is left as N/A and the full wall-clock duration is reported under 'Total Runtime' instead. NOTE ON '# Runs': this experiment is a single run (# Runs = 1): one classically-trained VQE circuit (one fixed set of optimized parameters) whose measurement shots were collected across 10 sub-batches (a practical choice for hardware/queue management) and pooled together before classical bitstring correction. The 10 sub-batches are not independent executions of the algorithm, so we do not report them as separate runs. Individual per-batch raw-sample size is not predictive of final MIS quality, since smaller seeds can extend further under maximality-driving (local search); additionally, per our reference paper, the bitstring-correction heuristic uses an EMA that improves cumulatively as more batches are pooled, so later batches benefit from more accumulated signal than earlier ones. '# Feasible Runs' = '# Successful Runs' = 1 reflects that this single pooled campaign produced the reported result, not that 10 independent attempts each succeeded. Total Runtime = 997.44s classical VQE parameter optimization (AerSimulator MPS) + 151.44s post-optimization sampling/bitstring correction. Best set of size 8 matches QOBLIB's best-known (optimal) value; only 1 distinct maximum-size set was found among the unique independent sets extracted from 100000 shots/trial x 10 trials of post-optimization sampling. |
+| Remarks | TIMING NOTE: we did not measure CPU-process time (e.g. via time.process_time()) or log CPU utilization separately; only wall-clock time (via time.time()) was recorded, so 'CPU Runtime' is left as N/A and the full wall-clock duration is reported under 'Total Runtime' instead. NOTE ON '# Runs': we report 6 runs (# Runs = 6). Total Runtime (1009.00s) is the average of these 6 runs' individual wall-clock times (VQE training + sampling/correction for each), per CONTRIBUTING.md guidance to report averages across repetitions. All 6 runs recovered the optimal independent set, size 8, matching QOBLIB's best-known value ('# Feasible Runs' = '# Successful Runs' = 6). 2 distinct maximum-size (8) independent sets have been found across all runs to date, both provided as separate files in the solutions/ directory. |

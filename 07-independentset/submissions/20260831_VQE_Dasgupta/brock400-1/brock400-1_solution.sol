@@ -1,3 +1,0 @@
-# Solution for brock400-1 (row 0, paradigm=Quantum Simulator)
-# Objective value = 25
-40 49 54 62 71 101 109 119 131 189 211 231 233 240 247 249 258 273 319 320 337 339 364 365 382
