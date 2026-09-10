@@ -73,3 +73,36 @@ R_1000_005_1: generated during bachelor thesis
 [socfb-trinity100](https://networkrepository.com/socfb-Trinity100.php)  
 [sorrell4](https://miplib.zib.de/instance_details_sorrell4.html)  
 [sorrell7](https://miplib.zib.de/instance_details_sorrell7.html)
+
+## Adversarial generated instances (2026)
+
+The following instances add two small dense, quantum-scale graphs and two sparse
+frozen-XORSAT families with exact optima.
+
+| Instance | Vertices | Edges | Density | Exact alpha | Generation family |
+| :-- | --: | --: | --: | --: | :-- |
+| `aheg_n99_s31` | 99 | 2,780 | 0.5731 | 7 | solver-guided evolutionary search |
+| `hybrid_csp_spinglass_n180_s42` | 180 | 5,277 | 0.3276 | 15 | hybrid CSP and spin glass |
+| `frozen_xorsat_c3k3_compact_n700` | 700 | 5,226 | 0.0214 | 175 | compact frozen (3,3)-XORSAT |
+| `frozen_xorsat_c3k3_compact_n800` | 800 | 5,996 | 0.0188 | 200 | compact frozen (3,3)-XORSAT |
+| `frozen_xorsat_c3k3_compact_n1000` | 1,000 | 7,472 | 0.0150 | 250 | compact frozen (3,3)-XORSAT |
+| `frozen_xorsat_c3k3_compact_n1200` | 1,200 | 8,988 | 0.0125 | 300 | compact frozen (3,3)-XORSAT |
+| `frozen_xorsat_c3k3_regular_n1500` | 1,500 | 4,750 | 0.0042 | 500 | regular frozen (3,3)-XORSAT |
+| `frozen_xorsat_v2_qc_l75_s1` | 900 | 6,750 | 0.0167 | 225 | v2 quasi-cyclic frozen-XORSAT |
+| `frozen_xorsat_v2_qc_l100_s4` | 1,200 | 9,000 | 0.0125 | 300 | v2 quasi-cyclic frozen-XORSAT |
+| `frozen_xorsat_v2_qc_l125_s1` | 1,500 | 11,250 | 0.0100 | 375 | v2 quasi-cyclic frozen-XORSAT |
+
+The n=99 and n=180 instances are deliberately small and dense.  They are
+classically solved, and are included for structural and size coverage rather
+than as claims of classical intractability.  The XORSAT reductions provide
+larger sparse graphs whose optima have short combinatorial certificates: a
+partition of all vertices into clique blocks gives an upper bound equal to the
+size of the planted independent set.
+
+The v2 XORSAT cases use quasi-cyclic lifts of a K3,3 Tanner protograph to add a
+structured, girth-12 counterpart to the original compact random construction.
+
+Generation code, parameters, exact regeneration commands for the XORSAT
+family, solution verification, and bounded solver evidence are documented in
+[the generator directory](../misc/adversarial_generators/README.md).  Reference
+solutions are in [`../solutions/`](../solutions/).

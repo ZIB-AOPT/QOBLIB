@@ -26,6 +26,7 @@ We give the solutions to this problem in two different formats:
 | MANN-a9 | 3 | optimal | reference | — |
 | R_1000_005_1 | 117 | best known | [20260806_ParallelILS_Hegade](../submissions/20260806_ParallelILS_Hegade) | 2026-08-06 |
 | R_500_005_1 | 91 | best known | [20260806_ParallelILS_Hegade](../submissions/20260806_ParallelILS_Hegade) | 2026-08-06 |
+| aheg_n99_s31 | 7 | optimal | reference | — |
 | aves-sparrow-social | 13 | optimal | reference | — |
 | brock200-1 | 6 | optimal | reference | — |
 | brock200-2 | 12 | optimal | reference | — |
@@ -46,10 +47,19 @@ We give the solutions to this problem in two different formats:
 | frb50-23-3 | 50 | optimal | reference | — |
 | frb53-24-1 | 53 | best known | [20260806_ParallelILS_Hegade](../submissions/20260806_ParallelILS_Hegade) | 2026-08-06 |
 | frb59-26-2 | 58 | best known | [20260806_ParallelILS_Hegade](../submissions/20260806_ParallelILS_Hegade) | 2026-08-06 |
+| frozen_xorsat_c3k3_compact_n1000 | 250 | optimal | reference | — |
+| frozen_xorsat_c3k3_compact_n1200 | 300 | optimal | reference | — |
+| frozen_xorsat_c3k3_compact_n700 | 175 | optimal | reference | — |
+| frozen_xorsat_c3k3_compact_n800 | 200 | optimal | reference | — |
+| frozen_xorsat_c3k3_regular_n1500 | 500 | optimal | reference | — |
+| frozen_xorsat_v2_qc_l100_s4 | 300 | optimal | reference | — |
+| frozen_xorsat_v2_qc_l125_s1 | 375 | optimal | reference | — |
+| frozen_xorsat_v2_qc_l75_s1 | 225 | optimal | reference | — |
 | gen200_p0-9_44 | 44 | optimal | reference | — |
 | hamming10-4 | 40 | best known | [20250715_Abs2_Schicker](../submissions/20250715_Abs2_Schicker) | 2025-07-15 |
 | hamming6-2 | 2 | optimal | reference | — |
 | hamming6-4 | 12 | optimal | reference | — |
+| hybrid_csp_spinglass_n180_s42 | 15 | optimal | reference | — |
 | ibm32 | 13 | optimal | reference | — |
 | insecta-ant-colony1-day38 | 6 | optimal | reference | — |
 | insecta-ant-colony3-day09 | 9 | optimal | reference | — |
