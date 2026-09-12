@@ -1,14 +1,42 @@
-# ms_03_200_068
+# Submission for ms_03_200_068
 
-- Five independent stochastic runs; seeds: 11001, 22003, 33007, 44017, 55021
-- Feasible runs: 5/5; successful runs at objective 0: 5/5
-- Official Market Split checker: PASS for every run
-- Mean total runtime: 0.565885 s
-- Mean search runtime: 0.151506 s
-- Mean Universal Joint / estimator runtime: 0.414379 s
-- Mean adaptive search shots per PUB: 512.0
-- Universal Joint shots: 4,096
+This directory contains the submission for the problem **ms_03_200_068**.
 
-The submitted solution is the byte-identical released output from run 1.
-The run-evidence JSON contains operational metadata only; it contains neither
-the proprietary estimator implementation nor a reference solution.
+| Field | Value 1 |
+| --- | --- |
+| Problem | ms_03_200_068 |
+| Submitter | Kenji Kanamori |
+| Affiliation | Independent Researcher |
+| Date | 2026-09-11 |
+| ====== |  |
+| Reference | README.md in this submission package |
+| Best Objective Value | 0 |
+| Optimality Bound | 0 |
+| ====== |  |
+| Modeling Approach | 20-bit instance-derived parity encoding; 10+10 quantum shard interface reconstruction |
+| # Decision Variables | 20 |
+| # Binary Variables | 20 |
+| # Integer Variables | 0 |
+| # Continuous Variables | 0 |
+| # Non-Zero Coefficients | N/A |
+| Coefficients Type | Integer |
+| Coefficients Range | N/A |
+| ====== |  |
+| Workflow | Encoding -> Aer shard sampling -> interface reconstruction -> Universal Joint -> Kenji R5 estimator -> decoder -> validator |
+| Algorithm Type | Stochastic |
+| Paradigm | Quantum Simulator |
+| # Runs | 5 |
+| # Feasible Runs | 5 |
+| # Successful Runs | 5 |
+| Success Threshold | 0 |
+| ====== |  |
+| Hardware Specifications | Intel Core Ultra 5 225U CPU; 15.46 GiB RAM; Windows 11; CPU simulation |
+| ====== |  |
+| Total Runtime | 0.565885 |
+| Time to Solution | 0.565885 |
+| CPU Runtime | 0.565885 |
+| GPU Runtime | N/A |
+| QPU Runtime | 0 |
+| Other HW Runtime | 0 |
+| ====== |  |
+| Remarks | 5/5 official PASS; adaptive mean 512.0 search shots/PUB; UJ 4096 shots; no classical repair; mean search 0.151506s; mean estimator 0.414379s |
