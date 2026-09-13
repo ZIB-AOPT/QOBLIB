@@ -1,0 +1,20 @@
+{
+  "schema": "QOBLIB_KENJI_R30_SUBMISSION_RUN_EVIDENCE_R1",
+  "instance": "B3_9_7",
+  "lineage": "R29S_B3_9_7_PHASE_PATH_CANARY_20260913T203616Z_R1",
+  "fixed_kenji_authority_sha256": "958AC865431968359C3318815C198A228350982FF8D489E6BC252B57E0E3E156",
+  "source_instance_sha256": "A0B8FDD7226FE167A4D9366D77E14A0F305E906AAD436BF53836DF087DCAA4DA",
+  "solution_sha256": "9BF5B595264B322AEF3E26A185435A1D4888AF5B1EDF932DB6E88E575900FC1F",
+  "official_validator_first_attempt_pass": true,
+  "attempt_ordinal": 1,
+  "declared_independent_runs": 1,
+  "role_acquisitions_count": 6,
+  "role_acquisitions_are_independent_runs": false,
+  "acquisition_runtime_seconds": 0.4349888,
+  "fixed_kenji_runtime_seconds": 0.5320189,
+  "total_runtime_seconds": 0.9670077,
+  "objective": 4,
+  "run_qpu": false,
+  "ibm_used": false,
+  "truth_sealed": true
+}
