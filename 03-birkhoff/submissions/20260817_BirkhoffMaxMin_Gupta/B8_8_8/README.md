@@ -13,14 +13,14 @@ This directory contains the submission for the problem **B8_8_8**.
 | Best Objective Value | 8 |
 | Optimality Bound | N/A |
 | ====== |  |
-| Modeling Approach | Exact integer Birkhoff decomposition using bottleneck perfect matchings. |
+| Modeling Approach | No optimisation model is built. Constructive exact decomposition: repeatedly select a positive perfect matching and subtract it. Variable counts describe the size of the emitted decomposition. |
 | # Decision Variables | 72 |
-| # Binary Variables | 64 |
-| # Integer Variables | 8 |
+| # Binary Variables | 0 |
+| # Integer Variables | 72 |
 | # Continuous Variables | 0 |
-| # Non-Zero Coefficients | 16 |
-| Coefficients Type | Binary and integer |
-| Coefficients Range | 1 to 10000 |
+| # Non-Zero Coefficients | N/A |
+| Coefficients Type | N/A |
+| Coefficients Range | N/A |
 | ====== |  |
 | Workflow | At each iteration, maximize the smallest residual selected by a perfect matching. Within that threshold, maximize eliminated entries and then minimize the matching residual sum. Subtract the selected minimum exactly. |
 | Algorithm Type | Deterministic |
@@ -30,13 +30,13 @@ This directory contains the submission for the problem **B8_8_8**.
 | # Successful Runs | 1 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | Apple MacBook Pro with Apple M3 Pro, 11 CPU cores, 18 GB unified memory |
+| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64. One process at a time with nothing else running. |
 | ====== |  |
-| Total Runtime | 0.001228 |
-| Time to Solution | 0.001228 |
-| CPU Runtime | 0.001228 |
+| Total Runtime | 0.000857 |
+| Time to Solution | 0.000857 |
+| CPU Runtime | 0.000857 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
 | ====== |  |
-| Remarks | Exact reconstruction verified; no optimality claim is made. |
+| Remarks | Exact reconstruction verified; no optimality claim is made. Decision variables are the K weights and the K permutations of length n in the emitted decomposition, all integers, so K(n+1) in total. No model is built, so the coefficient fields are N/A. Runs were executed strictly one at a time on an otherwise idle machine. |
