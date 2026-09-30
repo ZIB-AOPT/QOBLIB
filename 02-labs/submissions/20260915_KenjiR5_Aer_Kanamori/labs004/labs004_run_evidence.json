@@ -1,23 +1,36 @@
 {
-  "aer_elapsed_seconds": 0.3976068,
-  "aer_measured_sha256": "0311573AE26132DAD3601075AB09A0F873C23BAC8011CE644EFA05379772D5BB",
-  "case_id": "02-labs004",
-  "decoded_sha256": "7180616F81A98E086DD4B47D00E12BB82EE01E7D015987279ABD2AADA6A61B7B",
-  "fixed_kenji_elapsed_seconds": 0.3497545,
-  "ibm_used": false,
+  "algorithm_type": "Stochastic",
+  "average_total_runtime_seconds": 1.0198593212,
+  "best_objective_value": 2,
+  "declared_independent_runs": 5,
+  "execution_policy": {
+    "ibm_used": false,
+    "provider_calls": 0,
+    "qpu_calls": 0,
+    "run_qpu": false
+  },
+  "feasible_runs": 5,
+  "fixed_kenji_authority_sha256": "958AC865431968359C3318815C198A228350982FF8D489E6BC252B57E0E3E156",
+  "fresh_runs_added": 4,
+  "historical_runs_reused": 1,
   "instance": "labs004",
-  "kenji_done_sha256": "7FA30E7743513B5A032B376C3E99B355E63AE131754770A7B11E974DF8422A02",
-  "kenji_result_sha256": "FCE398CB7A0569C3ED853A8A0C4B6D477BA23825151B4B5B839E79D42052C89E",
-  "kenji_status": "RELEASED",
-  "lineage": "R25T_LABS004_PHASE_PATH_CANARY_20260913T035551Z_R1",
-  "measurement_contract_audit_sha256": "33223570675B5950AEA7B32E841574162CAC003C434739561DBEBD576E646F12",
-  "objective_time_series_sha256": "625D116EC8EB178AD96160891DDD343633A3F436001BBDEBC9B436D534660B1A",
-  "official_validator_status": "NOT_EXECUTED",
-  "run_qpu": false,
-  "schema": "QOBLIB_R25T_RUN_EVIDENCE_R1",
-  "solution_sha256": "24D9B35C727E6C78676C2AD378A8C3C47CFB539F3583D3CD9E1EAFEE51D5679D",
-  "summary_sha256": "60D1E88A5E721A74A186A892E26E768EC94591DD7AAEB1623203BFD218C0797D",
-  "target_shots": 4096,
-  "total_elapsed_seconds": 0.7473613,
-  "truth_sealed": true
+  "objectives": [
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "paradigm": "Quantum Simulator",
+  "public_evidence_scope": "Problem identifiers, submitted solutions, objective values, run counts, validation outcomes, aggregate runtimes, and the fixed authority hash are public. Fine-grained acquisition structure, randomization, component timing, internal state, and measurement records are retained privately.",
+  "schema": "QOBLIB_PR75_LABS_FIVE_RUN_PUBLIC_EVIDENCE_R1",
+  "successful_runs": 5,
+  "validation_outcomes": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ]
 }
+
