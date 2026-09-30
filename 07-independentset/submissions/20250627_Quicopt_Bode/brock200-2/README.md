@@ -7,7 +7,7 @@ This directory contains the submission for the problem **brock200-2**.
 | Problem | brock200-2 |
 | Submitter | Tim Bode |
 | Affiliation | Forschungszentrum Jülich |
-| Date | Jun 27, 25 |
+| Date | 2025-06-27 |
 | ====== |  |
 | Reference | https://github.com/FZJ-PGI-12/QuicoptBenchmarks/blob/main/notebooks/max_independent_set/brock200_2.ipynb |
 | Best Objective Value | 10 |

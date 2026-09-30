@@ -7,7 +7,7 @@ This directory contains the submission for the problem **brock200-2**.
 | Problem | brock200-2 |
 | Submitter | Q-Bridge Team |
 | Affiliation | Q-Bridge (South Korea) |
-| Date | 9. Jul. 2026 |
+| Date | 2026-07-09 |
 | ====== |  |
 | Reference | Proprietary engine (contact: liveplex@gmail.com); method summary in Remarks |
 | Best Objective Value | 12 |

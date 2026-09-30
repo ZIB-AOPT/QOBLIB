@@ -5,7 +5,7 @@ This directory contains the submission for the problem **sloane_1dc_128**
 | Problem | `sloane_1dc_128` |
 | Submitter | David Bucher |
 | Affiliation | Aqarios GmbH |
-| Date | 2026-07-11 00:32:55 |
+| Date | 2026-07-11 |
 | ====== |  |
 | Reference | Paper: https://arxiv.org/pdf/2604.02083. In the process of becoming a Qiskit Function |
 | Best Objective Value | 16 |

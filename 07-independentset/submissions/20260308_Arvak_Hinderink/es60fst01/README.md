@@ -7,7 +7,7 @@ This directory contains the submission for the problem **es60fst01**.
 | Problem | es60fst01 |
 | Submitter | Daniel Hinderink |
 | Affiliation | hiq-lab |
-| Date | 8. Mar. 2026 |
+| Date | 2026-03-08 |
 | ====== |  |
 | Reference | https://arvak.io |
 | Best Objective Value | -27 |

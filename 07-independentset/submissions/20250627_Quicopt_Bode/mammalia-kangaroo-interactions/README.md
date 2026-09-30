@@ -7,7 +7,7 @@ This directory contains the submission for the problem **mammalia-kangaroo-inter
 | Problem | mammalia-kangaroo-interactions |
 | Submitter | Tim Bode |
 | Affiliation | Forschungszentrum Jülich |
-| Date | Jun 2, 25 |
+| Date | 2025-06-02 |
 | ====== |  |
 | Reference | https://github.com/FZJ-PGI-12/QuicoptBenchmarks/blob/main/notebooks/max_independent_set/mammalia-kangaroo-interactions.ipynb |
 | Best Objective Value | 4 |

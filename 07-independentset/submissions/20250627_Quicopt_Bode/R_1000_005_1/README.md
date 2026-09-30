@@ -7,7 +7,7 @@ This directory contains the submission for the problem **R_1000_005_1**.
 | Problem | R_1000_005_1 |
 | Submitter | Tim Bode |
 | Affiliation | Forschungszentrum Jülich |
-| Date | Jun 27, 25 |
+| Date | 2025-06-27 |
 | ====== |  |
 | Reference | https://github.com/FZJ-PGI-12/QuicoptBenchmarks/blob/main/notebooks/max_independent_set/R_1000_005_1.ipynb |
 | Best Objective Value | 111 |
