@@ -297,7 +297,8 @@ impl fmt::Display for Graph {
   Each node is given by its index between 1..number-of-nodes.
   The indices are separated by whitespace, usually one index per line.
   Lines starting with "#" are comments and are ignored.
-  Everything else is an error, as is a solution without any node.
+  Everything else is an error, as is a solution without any node
+  or a node that is listed more than once.
 */
 fn extract_solution(data: &[u8], dim: usize) -> Vec<bool> {
     let text = String::from_utf8_lossy(data);
@@ -322,6 +323,12 @@ fn extract_solution(data: &[u8], dim: usize) -> Vec<bool> {
             if index < 1 || index > dim {
                 panic!(
                     "Solution line {}. Expected node index between 1..{dim}: found {index}",
+                    lineno + 1
+                );
+            }
+            if solution[index - 1] {
+                panic!(
+                    "Solution line {}. Node index {index} is listed more than once",
                     lineno + 1
                 );
             }
@@ -523,4 +530,16 @@ fn reject_other_separators() {
 #[should_panic(expected = "found no node index")]
 fn reject_solution_without_nodes() {
     extract_solution(b"# comment\n\n", 3);
+}
+
+#[test]
+#[should_panic(expected = "Node index 2 is listed more than once")]
+fn reject_duplicate_index() {
+    extract_solution(b"2\n3\n2\n", 3);
+}
+
+#[test]
+#[should_panic(expected = "Node index 1 is listed more than once")]
+fn reject_all_ones_vector_solution() {
+    extract_solution(b"1\n1\n1\n", 3);
 }
