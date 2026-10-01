@@ -10,7 +10,7 @@ This directory contains the submission for the problem **es60fst01**.
 | Date | 2026-03-08 |
 | ====== |  |
 | Reference | https://arvak.io |
-| Best Objective Value | -27 |
+| Best Objective Value | N/A |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | QUBO |
@@ -39,4 +39,4 @@ This directory contains the submission for the problem **es60fst01**.
 | QPU Runtime | 669 |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | Runtime in seconds. 123 of 156 qubits used. Compiled with Arvak v1.9.3. |
+| Remarks | Runtime in seconds. 123 of 156 qubits used. Compiled with Arvak v1.9.3. The single run returned a 49-node candidate with 11 edge conflicts (infeasible per checker v2.0; see issue #82). |
