@@ -1,0 +1,15 @@
+# Independent set solution for instance: aves-sparrow-social
+# |V|=52  |E|=454  IS size=13
+6
+17
+19
+27
+31
+34
+37
+38
+39
+41
+43
+45
+51
