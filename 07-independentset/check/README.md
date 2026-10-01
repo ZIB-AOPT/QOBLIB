@@ -12,7 +12,7 @@ $I$ is considered to be stable, if there does not exist an edge in $G$ between n
 Given a graph and a proposed solution, this checker:
 
 1. Parses the input graph (in DIMACS-like format).
-2. Parses the solution (in several accepted formats).
+2. Parses the solution (a list of node indices).
 3. Verifies that the selected nodes form a valid **stable set**.
 4. Reports the number of nodes, edges, components, and size of the stable set.
 5. Confirms validity or reports a violation.
@@ -56,45 +56,21 @@ e 5 6
 
 ### Solution Format
 
-Multiple formats are supported. The format is auto-detected:
+The solution is an **index list**: the 1-based indices of the nodes in the stable set, separated by whitespace (usually one index per line). Lines starting with `#` are comments.
 
-#### 1. Binary string
-
-A string of 0s and 1s, each representing whether the node is in the stable set.
-
-- Inline:
 ```
-010010
-```
-
-- Spaced or comma-separated:
-```
-0 1 0 0 1 0
-```
-
-#### 2. Index list
-
-A list of 1-based node indices included in the set:
-```
-2
+# Objective value = 3
+1
+3
 5
 ```
 
-Or:
-```
-2 5
-```
+This is the only accepted format. The solution file is rejected as invalid if it contains
 
-#### 3. Named variable format (e.g., from MIP solvers)
-
-```
-x#1 0
-x#2 1
-x#3 0
-...
-```
-
-Only lines starting with `x#` are used.
+- anything other than node indices and `#` comment lines (e.g., a 0/1 vector or the `x#1 0` lines of a MIP solver solution),
+- an index outside `1..<node_count>` (node indices are 1-based, so `0` is not a valid index),
+- an index that is listed more than once, or
+- no index at all.
 
 ## Usage
 
@@ -109,48 +85,53 @@ cargo build --release
 ### Command
 
 ```bash
-./target/release/check_stableset <graph-file> <solution-file-or-01-string>
+./target/release/check_stableset <graph-file> <solution-file>
 ```
 
 ### Arguments
 
 * `graph-file`: Path to graph file or `-` for stdin
-* `solution`: Path to solution file or a binary string directly
+* `solution-file`: Path to solution file
 
-### Examples
-
-Using a file:
+### Example
 
 ```bash
 ./target/release/check_stableset graph.txt solution.txt
 ```
 
-Using an inline binary string:
-
-```bash
-./target/release/check_stableset graph.txt 010101
-```
-
 ## Output
 
-If the solution is correct:
+If the solution is a stable set:
 
 ```
-QOBLIB Stable Set Solution Checker Version 1.0
+Qbench Stable Set Solution Checker Version 2.0
 Graph has 6 nodes, 5 edges, 1 components, stable set size = 3 is ok
+VALID: Solution successfully verified
 ```
 
-If invalid:
+If the selected nodes are not a stable set:
 
 ```
+Qbench Stable Set Solution Checker Version 2.0
 Graph has 6 nodes, 5 edges, 1 components, stable set size = 3 is wrong!
+INFEASIBLE: Valid solution file, but the set is not stable
+```
+
+If the solution file is invalid:
+
+```
+Qbench Stable Set Solution Checker Version 2.0
+INVALID_FILE: ... Solution line 1. Expected node index found x#1
 ```
 
 ## Exit Codes
 
-- **0**: Solution is valid
-- **1**: Solution is invalid
-- **2**: Error (e.g., file not found, parsing error)
+The exit codes follow the [checker contract](../../misc/ci/CHECKER_CONTRACT.md):
+
+- **0**: Solution file is valid and the selected nodes are a stable set
+- **21**: Solution file is valid, but the selected nodes are not a stable set
+- **10**: Solution file is invalid (see [Solution Format](#solution-format))
+- **2**: Usage error (e.g., missing arguments, file not found)
 
 ## License
 

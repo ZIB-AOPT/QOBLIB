@@ -7,7 +7,7 @@ This directory contains the submission for the problem **sloane_1zc_128**.
 | Problem | sloane_1zc_128 |
 | Submitter | Maximilian Schicker |
 | Affiliation | Zuse Institute Berlin |
-| Date | 15. Jul. 2025 |
+| Date | 2025-07-15 |
 | ====== |  |
 | Reference | See Models Directory (UQO) using abs2 |
 | Best Objective Value | 18 |

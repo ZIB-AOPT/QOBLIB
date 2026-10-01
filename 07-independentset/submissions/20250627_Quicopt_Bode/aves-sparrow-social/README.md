@@ -7,7 +7,7 @@ This directory contains the submission for the problem **aves-sparrow-social**.
 | Problem | aves-sparrow-social |
 | Submitter | Tim Bode |
 | Affiliation | Forschungszentrum Jülich |
-| Date | Jun 2, 25 |
+| Date | 2025-06-02 |
 | ====== |  |
 | Reference | https://github.com/FZJ-PGI-12/QuicoptBenchmarks/blob/main/notebooks/max_independent_set/aves-sparrow-social.ipynb |
 | Best Objective Value | 13 |

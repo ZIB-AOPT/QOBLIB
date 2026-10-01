@@ -23,7 +23,7 @@ This directory contains the submission for the problem **sloane_1zc_128**.
 | Coefficients Range | -1 / 2 |
 | ====== |  |
 | Workflow | QUBO mapping -> Q-CTRL Fire Opal SDK (solve_qaoa) |
-| Algorithm Type | stochastic |
+| Algorithm Type | Stochastic |
 | Paradigm | Quantum Hardware |
 | # Runs | 1 |
 | # Feasible Runs | 1 |
