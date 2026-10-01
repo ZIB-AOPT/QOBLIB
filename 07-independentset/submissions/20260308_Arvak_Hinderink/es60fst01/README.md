@@ -26,8 +26,8 @@ This directory contains the submission for the problem **es60fst01**.
 | Algorithm Type | Stochastic |
 | Paradigm | Quantum Hardware |
 | # Runs | 1 |
-| # Feasible Runs | 1 |
-| # Successful Runs | 1 |
+| # Feasible Runs | 0 |
+| # Successful Runs | 0 |
 | Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | Apple M3 Pro and IBM Quantum ibm_torino (Heron r2 156q) |
