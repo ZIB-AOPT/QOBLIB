@@ -7,7 +7,7 @@ This directory contains the submission for the problem **brock400-1**.
 | Problem | brock400-1 |
 | Submitter | Tim Bode |
 | Affiliation | Forschungszentrum Jülich |
-| Date | Jun 27, 25 |
+| Date | 2025-06-27 |
 | ====== |  |
 | Reference | https://github.com/FZJ-PGI-12/QuicoptBenchmarks/blob/main/notebooks/max_independent_set/brock400_1.ipynb |
 | Best Objective Value | 23 |

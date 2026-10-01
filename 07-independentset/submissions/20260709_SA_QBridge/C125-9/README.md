@@ -7,7 +7,7 @@ This directory contains the submission for the problem **C125-9**.
 | Problem | C125-9 |
 | Submitter | Q-Bridge Team |
 | Affiliation | Q-Bridge (South Korea) |
-| Date | 9. Jul. 2026 |
+| Date | 2026-07-09 |
 | ====== |  |
 | Reference | Proprietary engine (contact: liveplex@gmail.com); method summary in Remarks |
 | Best Objective Value | 34 |

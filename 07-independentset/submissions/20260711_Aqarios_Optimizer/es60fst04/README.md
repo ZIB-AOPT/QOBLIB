@@ -5,7 +5,7 @@ This directory contains the submission for the problem **es60fst04**
 | Problem | `es60fst04` |
 | Submitter | David Bucher |
 | Affiliation | Aqarios GmbH |
-| Date | 2026-07-11 00:36:43 |
+| Date | 2026-07-11 |
 | ====== |  |
 | Reference | Paper: https://arxiv.org/pdf/2604.02083. In the process of becoming a Qiskit Function |
 | Best Objective Value | 78 |
@@ -22,7 +22,7 @@ This directory contains the submission for the problem **es60fst04**
 | ====== |  |
 | Workflow | Iterative-Warm-Start QAOA with XY-Mixers: (1) Preprocessing fix simplicial and pendant. Identify cliques, reformulate as one-hot constraints, enforce via XY-Mixers. (2) Apply uniform warm starting, estimate QAOA angles (reps=1). (3) Build QAOA circuit and sample from QPU. (4) Greedy postprocessing on samples. (5) Estimate new warm-start probabilities, apply and continue with (3). Hyperparameters: iterations=10, parallel_runs=5, shots_per_run=500, beta=2, epsilon=0.1. (preprocess in this instance: fixed=77, cliques=[], vars=85, biases=396) |
 | Algorithm Type | Stochastic |
-| Paradigm | Quantum Hardware / Hybrid |
+| Paradigm | Quantum Hardware |
 | # Runs | 5 |
 | # Feasible Runs | 5 |
 | # Successful Runs | 3 |
