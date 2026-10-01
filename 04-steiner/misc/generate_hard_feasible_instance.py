@@ -372,15 +372,46 @@ def generate_feasible_instance(size, num_layers, max_terminals,
     blocked_arcs = set()
     # Partial y solution for feasibility
     partial_solution = []
-    print('*** INITIAL NUMBER OF TERMINALS {:d}***'.format(current_terminals))
+    print('*** Generating initial tree ***'.format(current_terminals))
+    # Initial tree that gets blocked out
+    seed_terminal_id = generate_terminals(size, num_layers, 10*max_attempt, current_terminals, force_diff_side, [])
+    seed_root_id = seed_terminal_id[random.randint(0, len(seed_terminal_id))]
+    # Write terminals file and roots file.
+    write_terminals_file("terms.dat", [seed_terminal_id])
+    write_roots_file("roots.dat", [seed_root_id])
+    # Write file of blocked edges
+    write_blocked_arcs_file("blocked.dat", blocked_arcs)
+    # Write params file
+    write_param_file(
+        "param.dat",
+        node_from_coord(size, size, num_layers, size, num_layers),
+        1)
+
+    # Solve instance to get Steiner tree, if it exists.
+    current_dir = os.getcwd()
+    subprocess.call(['rm', '-f', 'stp.sol', 'stp.lp'], cwd=current_dir)
+    subprocess.run([zimpl_path, '-t', 'lp', '-o', 'stp', 'stp_gen_blocked.zpl'], cwd=current_dir, capture_output=True)
+    subprocess.run([cplex_path, '-c', 'set timelimit 600', 'read stp.lp', 'mipopt', 'write stp.sol'], cwd=current_dir, capture_output=True)
+
+    solution_found, seed_arcs_orig, neighbor_arcs = read_solution_file('stp.sol', size, num_layers)
+
+    if (not solution_found):
+        print('Could not generate initial Steiner tree')
+        sys.exit(1)
+
+    # Eliminate neighbors of terminals from the enforced arcs
+    seed_term_neighbor_arcs = set((term, j) for term in seed_terminal_id for j in node_neighbors(term, size, num_layers))
+    seed_term_neighbor_arcs |= set((j, term) for term in seed_terminal_id for j in node_neighbors(term, size, num_layers))
+    seed_arcs = seed_arcs_orig - seed_term_neighbor_arcs
+    print('*** INITIAL NUMBER OF TERMINALS: {:d} ***'.format(current_terminals))
     # Stop if we are generating nets with too few terminals    
     while (current_terminals >= max_terminals//2 and current_terminals >= 2
-           and len(nets) <= max_generated_nets):
+           and len(nets) <= max_generated_nets - 1):
         # Consecutive number of failed attempts
         attempt = 0
         while (attempt < max_attempt):
             print('Attempt:', attempt)
-            terminal_id = generate_terminals(size, num_layers, max_attempt, current_terminals, force_diff_side, nets)
+            terminal_id = generate_terminals(size, num_layers, max_attempt, current_terminals, force_diff_side, nets + [seed_terminal_id])
             if (len(terminal_id) < current_terminals):
                 # Go to end of while
                 break
@@ -390,6 +421,8 @@ def generate_feasible_instance(size, num_layers, max_terminals,
             write_roots_file("roots.dat", [root_id])
             # Write file of blocked edges
             write_blocked_arcs_file("blocked.dat", blocked_arcs)
+            # Write file of enforced edges
+            write_blocked_arcs_file("enforced.dat", seed_arcs)
             # Write params file
             write_param_file(
                 "param.dat",
@@ -399,7 +432,10 @@ def generate_feasible_instance(size, num_layers, max_terminals,
             # Solve instance to get Steiner tree, if it exists.
             current_dir = os.getcwd()
             subprocess.call(['rm', '-f', 'stp.sol', 'stp.lp'], cwd=current_dir)
-            subprocess.run([zimpl_path, '-t', 'lp', '-o', 'stp', 'stp_gen_blocked.zpl'], cwd=current_dir, capture_output=True)
+            if (len(seed_arcs) > 0 and len(blocked_arcs & seed_arcs) <= len(seed_arcs)):
+                subprocess.run([zimpl_path, '-t', 'lp', '-o', 'stp', 'stp_gen_enforced.zpl'], cwd=current_dir, capture_output=True)
+            else:
+                subprocess.run([zimpl_path, '-t', 'lp', '-o', 'stp', 'stp_gen_blocked.zpl'], cwd=current_dir, capture_output=True)
             subprocess.run([cplex_path, '-c', 'set timelimit 600', 'read stp.lp', 'mipopt', 'write stp.sol'], cwd=current_dir, capture_output=True)
 
             solution_found, solution_arcs, neighbor_arcs = read_solution_file('stp.sol', size, num_layers)
@@ -425,8 +461,73 @@ def generate_feasible_instance(size, num_layers, max_terminals,
         current_terminals -= 1
         print('*** DECREASING NUMBER OF TERMINALS TO {:d}***'.format(current_terminals))
 
+    #from here
+    print('Generating final tree with seed terminals:')
+    write_terminals_file("terms.dat", [seed_terminal_id])
+    write_roots_file("roots.dat", [seed_root_id])
+    write_blocked_arcs_file("blocked.dat", blocked_arcs)
+    write_param_file(
+        "param.dat",
+        node_from_coord(size, size, num_layers, size, num_layers),
+        1)
+
+    # Solve instance to get Steiner tree, if it exists.
+    current_dir = os.getcwd()
+    subprocess.call(['rm', '-f', 'stp.sol', 'stp.lp'], cwd=current_dir)
+    subprocess.run([zimpl_path, '-t', 'lp', '-o', 'stp', 'stp_gen_blocked.zpl'], cwd=current_dir, capture_output=True)
+    subprocess.run([cplex_path, '-c', 'set timelimit 600', 'read stp.lp', 'mipopt', 'write stp.sol'], cwd=current_dir, capture_output=True)
+
+    solution_found, solution_arcs, neighbor_arcs = read_solution_file('stp.sol', size, num_layers)
+
+    solution_found = True
+    if (not solution_found):
+        print('Instance was made infeasible by packing too many trees; process failed')
+        sys.exit(1)
+                
+    # We have a new net, store it
+    nets.insert(0, seed_terminal_id)
+    roots.insert(0, seed_root_id)
+    print('Generated', len(nets), 'nets')
+
+    # Add to partial solution
+    for (tail, head) in (solution_arcs | neighbor_arcs):
+        partial_solution.append([tail, head, len(nets)])
+
+    instance_too_easy = True
+    # Check that nets are not easily packed in order
+    blocked_arcs = set()
+    for j in range(len(nets)):
+        # Write terminals file and roots file.
+        write_terminals_file("terms.dat", [nets[j]])
+        write_roots_file("roots.dat", [roots[j]])
+        # Write file of blocked edges
+        write_blocked_arcs_file("blocked.dat", blocked_arcs)
+        # Write params file
+        write_param_file(
+            "param.dat",
+            node_from_coord(size, size, num_layers, size, num_layers),
+            1)
+
+        # Solve instance to get Steiner tree, if it exists.
+        current_dir = os.getcwd()
+        subprocess.call(['rm', '-f', 'stp.sol', 'stp.lp'], cwd=current_dir)
+        subprocess.run([zimpl_path, '-t', 'lp', '-o', 'stp', 'stp_gen_blocked.zpl'], cwd=current_dir, capture_output=True)
+        subprocess.run([cplex_path, '-c', 'set timelimit 600', 'read stp.lp', 'mipopt', 'write stp.sol'], cwd=current_dir, capture_output=True)
+
+        solution_found, solution_arcs, neighbor_arcs = read_solution_file('stp.sol', size, num_layers)
+
+        print('Tree {:d} packed'.format(j))
+
+        if (not solution_found):
+            instance_too_easy = False
+            break
+        
+        blocked_arcs.update(solution_arcs, neighbor_arcs)
+        blocked_arcs -= holes
+        
+
     # Write final .dat files with all the nets found
-    if (len(nets) > 0):
+    if (len(nets) > 0 and not instance_too_easy):
         write_param_file(
             "param.dat",
             node_from_coord(size, size, num_layers, size, num_layers),
@@ -434,9 +535,15 @@ def generate_feasible_instance(size, num_layers, max_terminals,
         write_terminals_file("terms.dat", nets)
         write_roots_file("roots.dat", roots)
         write_partial_solution_file("partial_sol.txt", partial_solution)
+        sys.exit(0)
+    elif (instance_too_easy):
+        print('The generated instance was easily solved; discarded.')
+        print('Try a different random seed.')
+        sys.exit(1)
     else:
         print('The script could not successfully generate a random instance.')
         print('Try increasing the timeouts, allowing for more retries, or changing the random seed.')
+        sys.exit(1)
 
 
 
