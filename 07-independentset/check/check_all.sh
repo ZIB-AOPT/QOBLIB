@@ -36,7 +36,7 @@ do
     
     if [ $EXIT_CODE -eq 0 ]; then
         PASSED=$((PASSED+1))
-    elif [ $EXIT_CODE -eq 1 ]; then
+    elif [ $EXIT_CODE -eq 21 ]; then
         FAILED=$((FAILED+1))
     else
         echo "  ERROR: Checker exited with code $EXIT_CODE"

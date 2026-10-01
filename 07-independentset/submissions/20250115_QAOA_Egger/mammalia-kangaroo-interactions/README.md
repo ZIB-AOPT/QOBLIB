@@ -7,7 +7,7 @@ This directory contains the submission for the problem **mammalia-kangaroo-inter
 | Problem | mammalia-kangaroo-interactions |
 | Submitter | Daniel Egger |
 | Affiliation | IBM Quantum |
-| Date | 15. Jan. 2025 |
+| Date | 2025-01-15 |
 | ====== |  |
 | Reference | See https://github.com/eggerdj/independent_set_benchmarking |
 | Best Objective Value | 4 |

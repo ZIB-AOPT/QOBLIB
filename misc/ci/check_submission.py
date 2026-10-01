@@ -361,12 +361,19 @@ def validate_objective_time_series(
             report.fail(f"{ts_path.name}: must be a list of runs.")
             return
 
-        direction = "non-increasing" if minimize else "non-decreasing"
+        # A run must be monotone, but either direction is accepted: submissions
+        # record the incumbent in their own sign convention (e.g. a maximization
+        # problem solved as the minimization of the negated objective). The
+        # direction of each run is reported so it can be checked for plausibility.
+        directions = {"non-increasing": 0, "non-decreasing": 0, "constant": 0}
         for r_i, run in enumerate(data, start=1):
             if not isinstance(run, list):
                 report.fail(f"{ts_path.name}: run {r_i} must be a list.")
                 continue
             prev_incumbent: Optional[float] = None
+            run_direction: Optional[str] = None  # set by the first change of the incumbent
+            has_incumbent = False
+            monotone = True
             for e_i, entry in enumerate(run, start=1):
                 if not isinstance(entry, dict):
                     report.fail(f"{ts_path.name}: run {r_i} entry {e_i} must be an object.")
@@ -399,20 +406,26 @@ def validate_objective_time_series(
                     )
                     prev_incumbent = None
                     continue
-                if prev_incumbent is not None:
-                    if minimize and incumbent > prev_incumbent:
+                has_incumbent = True
+                if prev_incumbent is not None and incumbent != prev_incumbent:
+                    step = "non-increasing" if incumbent < prev_incumbent else "non-decreasing"
+                    if run_direction is None:
+                        run_direction = step
+                    elif step != run_direction:
+                        monotone = False
                         report.fail(
-                            f"{ts_path.name}: run {r_i} entry {e_i} breaks {direction} monotonicity "
-                            f"({prev_incumbent} → {incumbent}). Incumbent must only improve "
-                            f"(decrease) for a minimization problem."
-                        )
-                    elif not minimize and incumbent < prev_incumbent:
-                        report.fail(
-                            f"{ts_path.name}: run {r_i} entry {e_i} breaks {direction} monotonicity "
-                            f"({prev_incumbent} → {incumbent}). Incumbent must only improve "
-                            f"(increase) for a maximization problem."
+                            f"{ts_path.name}: run {r_i} entry {e_i} breaks {run_direction} monotonicity "
+                            f"({prev_incumbent} → {incumbent}). The incumbent of a run must only "
+                            f"move in one direction."
                         )
                 prev_incumbent = incumbent
+            if has_incumbent and monotone:
+                directions[run_direction or "constant"] += 1
+
+        summary = ", ".join(f"{name} in {n} run(s)" for name, n in directions.items() if n)
+        if summary:
+            sense = "minimization" if minimize else "maximization"
+            report.info(f"{ts_path.name}: incumbent is {summary} ({sense} problem).")
 
     except (json.JSONDecodeError, OSError) as e:
         report.fail(f"{ts_path.name}: invalid JSON: {e}")
@@ -906,7 +919,7 @@ def validate_instance(
     solutions = collect_solutions(instance, inst_dir, report)
     report.solutions = solutions
 
-    # 3) objective time series (optional) — enforce monotonicity direction
+    # 3) objective time series (optional) — enforce monotonicity, report its direction
     minimize = _problem_minimizes(submission_root)
     validate_objective_time_series(instance, inst_dir, report, minimize=minimize)
 

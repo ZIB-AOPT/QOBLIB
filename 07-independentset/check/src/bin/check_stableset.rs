@@ -20,7 +20,7 @@ Copyright (C) 2025 by Thorsten Koch
 
 This program reads a stable set problem from qbench and a solutions and checks whether it is a feasible solution.
 */
-const VERSION: &str = "1.0";
+const VERSION: &str = "2.0";
 
 use flate2::read::GzDecoder;
 use std::collections::VecDeque;
@@ -287,193 +287,59 @@ impl fmt::Display for Graph {
     }
 }
 
-/* possilble solution formats:
+/* Solution format:
   # comment
-  x#1  1
-  x#2  0
+  5
+  8
+  9 11
   ...
-  Important: Only lines starting with "x" are looked at.
-  The next number coming after the "x" is the index of the variable between 1..number-of-variables
-  Then everything is ignored until some whitespace is encountered.
-  The next digit after the whitespace must then be either 0 or 1.
-  Everything afterwards is ignored.
-  Missing indices are set to zero.
-  Be aware that 0.9999999 is taken as 0
-
-  or
-  01110001110000111000110 or 0 1 0 0 0 1 0 1 0 1 0 1 0 or 0,1,0,0,0,1,0,1,0,1,0,1,0
-  or
-  1
-  0
-  1
-  ...
+  The solution is the list of the nodes in the stable set.
+  Each node is given by its index between 1..number-of-nodes.
+  The indices are separated by whitespace, usually one index per line.
+  Lines starting with "#" are comments and are ignored.
+  Everything else is an error, as is a solution without any node
+  or a node that is listed more than once.
 */
-fn extract_solution_01(data: &[u8], dim: usize) -> Vec<bool> {
-    let mut solution = Vec::<bool>::new();
-    let mut i = 0;
-    while i < data.len() {
-        let c = data[i] as char;
-        if c == '0' || c == '1' {
-            solution.push(data[i] == b'1');
-        } else if !c.is_ascii_whitespace() && !c.is_ascii_punctuation() {
-            panic!("Parsing solution. Expected 0/1 found {}", c);
-        }
-        i += 1;
-    }
-    if solution.len() != dim {
-        panic!(
-            "Expected solution length {dim} but found {}",
-            solution.len()
-        );
-    }
-    solution
-}
-
-fn extract_solution_numb(data: &[u8], dim: usize) -> Vec<bool> {
-    let mut solution = vec![false; dim];
-    let mut lineno = 1;
-    let mut index = 0;
-    let mut i = 0;
-
-    while i < data.len() {
-        let c = data[i] as char;
-
-        if c.is_ascii_whitespace() || c.is_ascii_punctuation() {
-            if index > 0 {
-                solution[index - 1] = true;
-                index = 0;
-            }
-            if c == '\n' {
-                lineno += 1;
-            }
-        }
-        if c.is_ascii_digit() {
-            index = index * 10 + ((data[i] - b'0') as usize);
-            if index > dim {
-                panic!("Solution line {lineno}. Expected variable index between 1..{dim}: found {index}");
-            }
-        }
-        i += 1;
-    }
-    solution
-}
-
-fn extract_solution_text(data: &[u8], dim: usize) -> Vec<bool> {
-    let mut solution = vec![false; dim];
-    let mut lineno = 1;
-    let mut field = 0;
-    let mut index = 0;
-    let mut i = 0;
-    // field      0       1      2      3       3      4     5
-    //        [space]? x [text]? index [text]? [space] [10] [garbage]? \n
-    //        # \n
-    while i < data.len() {
-        let c = data[i] as char;
-
-        if c == '\n' {
-            lineno += 1;
-            field = 0;
-            index = 0;
-        }
-        match field {
-            // If we start with a comment marker, we ignore the rest of the line
-            0 => {
-                if c == 'x' {
-                    field = 1;
-                } else if !c.is_ascii_whitespace() {
-                    // We ignore lines that do not start with x
-                    field = 5;
-                }
-            }
-            // We ignore everything until we found some digit
-            1 => {
-                if c.is_ascii_digit() {
-                    field = 2;
-                    index = (data[i] - b'0') as usize;
-                }
-            }
-            // We collect the index
-            2 => {
-                if c.is_ascii_digit() {
-                    index = index * 10 + ((data[i] - b'0') as usize);
-                } else {
-                    // When finished we check whether within bounds
-                    if index < 1 || index > dim {
-                        panic!("Solution line {lineno}. Expected variable index between 1..{dim}: found {index}");
-                    }
-                    index -= 1;
-                    field = if c.is_ascii_whitespace() { 4 } else { 3 };
-                }
-            }
-            // After index we ignore everything until we find some whitespace
-            3 => {
-                if c.is_ascii_whitespace() {
-                    field = 4;
-                }
-            }
-            // The next character after the whitespace should be either 0 or 1
-            4 => {
-                if c.is_ascii_whitespace() {
-                    // ignore
-                } else if c == '0' || c == '1' {
-                    solution[index] = data[i] == b'1';
-                    field = 5;
-                } else {
-                    panic!("Solution line {lineno}. Expected 0/1 found {c}");
-                }
-            }
-            // We ignore everything after we got what we wanted
-            _ => (),
-        }
-        i += 1;
-    }
-    solution
-}
-
-#[derive(PartialEq)]
-enum SolutionFormat {
-    OnlySpace,
-    ZeroOneVec,
-    IndexList,
-    XVarList,
-}
-
-fn detect_solution_format(data: &[u8]) -> SolutionFormat {
-    let mut format = SolutionFormat::OnlySpace;
-
-    for b in data {
-        let c = *b as char;
-
-        if format == SolutionFormat::OnlySpace && !c.is_ascii_whitespace() {
-            format = SolutionFormat::ZeroOneVec;
-        }
-        if format == SolutionFormat::ZeroOneVec
-            && !c.is_ascii_whitespace()
-            && !c.is_ascii_punctuation()
-            && c != '0'
-            && c != '1'
-        {
-            format = SolutionFormat::IndexList;
-        }
-        if format == SolutionFormat::IndexList
-            && !c.is_ascii_whitespace()
-            && !c.is_ascii_punctuation()
-            && !c.is_ascii_digit()
-        {
-            format = SolutionFormat::XVarList;
-            break;
-        }
-    }
-    format
-}
-
 fn extract_solution(data: &[u8], dim: usize) -> Vec<bool> {
-    match detect_solution_format(data) {
-        SolutionFormat::OnlySpace => panic!("Parsing solution: found empty file"),
-        SolutionFormat::ZeroOneVec => extract_solution_01(data, dim),
-        SolutionFormat::IndexList => extract_solution_numb(data, dim),
-        SolutionFormat::XVarList => extract_solution_text(data, dim),
+    let text = String::from_utf8_lossy(data);
+    let mut solution = vec![false; dim];
+    let mut found = false;
+
+    for (lineno, line) in text.lines().enumerate() {
+        if line.trim_start().starts_with('#') {
+            continue;
+        }
+        for field in line.split_ascii_whitespace() {
+            if !field.bytes().all(|b| b.is_ascii_digit()) {
+                panic!(
+                    "Solution line {}. Expected node index found {field}",
+                    lineno + 1
+                );
+            }
+            let index: usize = field.parse().unwrap_or_else(|err| {
+                panic!("Solution line {}. Expected node index: {err}", lineno + 1)
+            });
+
+            if index < 1 || index > dim {
+                panic!(
+                    "Solution line {}. Expected node index between 1..{dim}: found {index}",
+                    lineno + 1
+                );
+            }
+            if solution[index - 1] {
+                panic!(
+                    "Solution line {}. Node index {index} is listed more than once",
+                    lineno + 1
+                );
+            }
+            solution[index - 1] = true;
+            found = true;
+        }
     }
+    if !found {
+        panic!("Parsing solution: found no node index");
+    }
+    solution
 }
 
 fn verify_solution(g: &Graph, solution_data: &[u8]) -> bool {
@@ -519,10 +385,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 3 {
-        eprintln!(
-            "ERROR: usage: {} graph-file solution-file|01-string",
-            &args[0]
-        );
+        eprintln!("ERROR: usage: {} graph-file solution-file", &args[0]);
         std::process::exit(2);
     }
     let basename = Path::new(&args[1])
@@ -532,17 +395,10 @@ fn main() {
     let g = Graph::read_from_file(basename, &args[1]);
     let solution_arg = &args[2];
 
-    // Check if a string consists only of '1's and '0's
-    let is_binary = |s: &str| s.chars().all(|c| c == '0' || c == '1');
-
-    let solution_data = if is_binary(solution_arg) {
-        solution_arg.as_bytes().to_vec()
-    } else {
-        fs::read(solution_arg).unwrap_or_else(|err| {
-            eprintln!("USAGE: reading solution file {solution_arg} failed: {err}");
-            std::process::exit(2);
-        })
-    };
+    let solution_data = fs::read(solution_arg).unwrap_or_else(|err| {
+        eprintln!("USAGE: reading solution file {solution_arg} failed: {err}");
+        std::process::exit(2);
+    });
 
     let verified = verify_solution(&g, &solution_data);
 
@@ -608,4 +464,82 @@ fn verify_numb_solution() {
     let mut input: Box<dyn Read> = Box::new(Cursor::new(instance));
     let g = Graph::read_from_stream("test", &mut input);
     assert_eq!(verify_solution(&g, solution), true);
+}
+
+#[test]
+fn extract_solution_with_comments() {
+    assert_eq!(
+        extract_solution(b"# comment\n1\n2\n", 3),
+        vec![true, true, false]
+    );
+    assert_eq!(
+        extract_solution(b"  # Objective value = 2\n\n 1 \r\n3\n# end\n", 3),
+        vec![true, false, true]
+    );
+}
+
+#[test]
+fn extract_solution_without_final_newline() {
+    assert_eq!(extract_solution(b"1\n2", 3), vec![true, true, false]);
+}
+
+#[test]
+fn verify_adjacent_nodes_are_not_stable() {
+    use std::io::Cursor;
+    use std::io::Read;
+
+    let mut input: Box<dyn Read> = Box::new(Cursor::new("p edge 3 2\ne 1 2\ne 2 3\n"));
+    let g = Graph::read_from_stream("test", &mut input);
+    assert_eq!(verify_solution(&g, b"1\n2\n"), false);
+    assert_eq!(verify_solution(&g, b"# comment\n1\n2\n"), false);
+    assert_eq!(verify_solution(&g, b"1\n2"), false);
+    assert_eq!(verify_solution(&g, b"# comment\n1\n3"), true);
+}
+
+#[test]
+#[should_panic(expected = "Expected node index found x#1")]
+fn reject_named_variable_solution() {
+    extract_solution(b"x#1 1\nx#2 0\nx#3 1\n", 3);
+}
+
+#[test]
+#[should_panic(expected = "Expected node index between 1..3: found 0")]
+fn reject_zero_one_vector_solution() {
+    extract_solution(b"1\n0\n1\n", 3);
+}
+
+#[test]
+#[should_panic(expected = "Expected node index between 1..3: found 101")]
+fn reject_zero_one_string_solution() {
+    extract_solution(b"101", 3);
+}
+
+#[test]
+#[should_panic(expected = "Expected node index between 1..3: found 4")]
+fn reject_index_out_of_range() {
+    extract_solution(b"1\n4\n", 3);
+}
+
+#[test]
+#[should_panic(expected = "Expected node index found 1,3")]
+fn reject_other_separators() {
+    extract_solution(b"1,3\n", 3);
+}
+
+#[test]
+#[should_panic(expected = "found no node index")]
+fn reject_solution_without_nodes() {
+    extract_solution(b"# comment\n\n", 3);
+}
+
+#[test]
+#[should_panic(expected = "Node index 2 is listed more than once")]
+fn reject_duplicate_index() {
+    extract_solution(b"2\n3\n2\n", 3);
+}
+
+#[test]
+#[should_panic(expected = "Node index 1 is listed more than once")]
+fn reject_all_ones_vector_solution() {
+    extract_solution(b"1\n1\n1\n", 3);
 }

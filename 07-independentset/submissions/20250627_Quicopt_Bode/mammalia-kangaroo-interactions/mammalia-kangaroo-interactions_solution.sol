@@ -1,17 +1,5 @@
-0
-0
-0
-1
-0
-1
-1
-1
-0
-0
-0
-0
-0
-0
-0
-0
-0
+# Converted from 0/1 vector format (active variables only)
+4
+6
+7
+8
