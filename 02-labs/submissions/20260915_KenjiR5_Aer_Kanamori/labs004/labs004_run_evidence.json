@@ -1,0 +1,36 @@
+{
+  "algorithm_type": "Stochastic",
+  "average_total_runtime_seconds": 1.0198593212,
+  "best_objective_value": 2,
+  "declared_independent_runs": 5,
+  "execution_policy": {
+    "ibm_used": false,
+    "provider_calls": 0,
+    "qpu_calls": 0,
+    "run_qpu": false
+  },
+  "feasible_runs": 5,
+  "fixed_kenji_authority_sha256": "958AC865431968359C3318815C198A228350982FF8D489E6BC252B57E0E3E156",
+  "fresh_runs_added": 4,
+  "historical_runs_reused": 1,
+  "instance": "labs004",
+  "objectives": [
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "paradigm": "Quantum Simulator",
+  "public_evidence_scope": "Problem identifiers, submitted solutions, objective values, run counts, validation outcomes, aggregate runtimes, and the fixed authority hash are public. Fine-grained acquisition structure, randomization, component timing, internal state, and measurement records are retained privately.",
+  "schema": "QOBLIB_PR75_LABS_FIVE_RUN_PUBLIC_EVIDENCE_R1",
+  "successful_runs": 5,
+  "validation_outcomes": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ]
+}
+
