@@ -1,0 +1,32 @@
+{
+  "1": {
+    "id": "B3_3_1",
+    "k": 2,
+    "n": 3,
+    "optimal": true,
+    "permutations": [
+      2,
+      1,
+      3,
+      3,
+      2,
+      1
+    ],
+    "scale": 1000,
+    "scaled_doubly_stochastic_matrix": [
+      0,
+      276,
+      724,
+      276,
+      724,
+      0,
+      724,
+      0,
+      276
+    ],
+    "weights": [
+      276,
+      724
+    ]
+  }
+}
