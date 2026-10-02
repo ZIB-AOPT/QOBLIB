@@ -1,0 +1,44 @@
+# exact optimum, chain dynamic program over per-period portfolios
+instance po_a010_t15_s01
+budget 4
+lambda 0.0001
+objective -141340
+# period symbol long short
+0 AAPL 0 1
+0 NVDA 3 0
+1 AAPL 0 2
+1 NVDA 1 0
+1 AVGO 1 0
+2 AAPL 0 1
+2 AVGO 1 0
+2 WMT 0 2
+3 AAPL 0 1
+3 AMZN 3 0
+4 NVDA 1 0
+4 META 1 0
+4 TSLA 0 1
+4 AVGO 1 0
+5 AAPL 0 2
+5 NVDA 1 0
+5 META 1 0
+6 GOOG 2 0
+6 AMZN 0 1
+6 META 1 0
+7 AAPL 0 3
+7 AMZN 0 1
+8 AAPL 0 3
+8 NVDA 1 0
+9 NVDA 1 0
+9 META 1 0
+9 TSLA 0 2
+10 AMZN 1 0
+10 META 0 2
+10 TSLA 0 1
+11 AAPL 0 2
+11 AMZN 1 0
+11 TSLA 0 1
+12 NVDA 1 0
+12 GOOG 1 0
+12 AVGO 2 0
+13 META 0 3
+13 AVGO 0 1
