@@ -1,23 +1,36 @@
-# labs099 — CREAIM Runtime QOBLIB submission
+# Submission for labs099
 
-- Paradigm: Classical
-- Algorithm: stochastic reference-blind skew-symmetric self-avoiding search
-- Runs: 5
-- Feasible: 5/5
-- Best energy: 577
-- Runs attaining best: 5/5
-- QOBLIB frozen ledger status: best known
-- QOBLIB frozen reference energy: 577
-- Proven optimum claim: No
-- Independent decisions: 50 binary variables, deterministically expanded to 99 spins
-- Fixed budget: 8000 segments per run, walk factor 8
-- Mean wall time: 59.506000 s
-- Median wall time: 59.510000 s
-- Population stddev wall time: 0.023324 s
-- Seeds: 28123, 128126, 228129, 328132, 428135
-- OMP_NUM_THREADS: 4
-- Solver SHA-256: `f1a931f89d6abb64721d4fc4edf21500cd4cbcd0f5391c46977eb6dd2a897a19`
-- Submitted solution SHA-256: `9d586695c0c97cbdd5a85f670fc9c65c15330d306c2ce2db58df424f5fa883c6`
-- Official checker source SHA-256: `521a89ea4ae02e98461b053ec614d024899365631fe02c3b73b3b45e71c8beb9`
+This directory contains the submission for the problem **labs099**.
 
-The search does not read the QOBLIB reference energy or reference sequence. The QOBLIB ledger value is used only after execution for classification. No physical QPU execution, quantum advantage, quantum speedup, or independent proof of optimality is claimed.
+| Field | Value 1 |
+| --- | --- |
+| Problem | labs099 |
+| Submitter | CREAIM Research Team |
+| Affiliation | CREAIM Inc. |
+| Date | 2026-10-02 |
+| Reference | https://github.com/hsm6954-boop/CREAIM-Runtime-QOBLIB-Reproducibility |
+| Best Objective Value | 577 |
+| Optimality Bound | N/A |
+| Modeling Approach | Classical LABS search using a proprietary reduced binary encoding that deterministically maps to the full 99-spin sequence; exact LABS autocorrelation energy is used for evaluation. |
+| # Decision Variables | 50 |
+| # Binary Variables | 50 |
+| # Integer Variables | 0 |
+| # Continuous Variables | 0 |
+| # Non-Zero Coefficients | N/A |
+| Coefficients Type | N/A |
+| Coefficients Range | N/A |
+| Workflow | Load the public instance definition; execute the proprietary CREAIM Runtime classical stochastic solver under the fixed submitted run protocol; independently recompute full-sequence LABS energy; retain the best verified sequence. |
+| Algorithm Type | Stochastic |
+| Paradigm | Classical |
+| # Runs | 5 |
+| # Feasible Runs | 5 |
+| # Successful Runs | 5 |
+| Success Threshold | 0 |
+| Hardware Specifications | Base44 sandbox; 4 vCPU x86_64 virtualized AuthenticAMD; Linux/gVisor; GCC 12.2.0; OMP_NUM_THREADS=4; no GPU; no QPU |
+| Total Runtime | 59.506000 |
+| Time to Solution | N/A |
+| CPU Runtime | N/A |
+| GPU Runtime | 0 |
+| QPU Runtime | 0 |
+| Other HW Runtime | 0 |
+| Remarks | Reference-blind classical run. QOBLIB frozen ledger status: best known, not proven optimum. CREAIM makes no independent optimality claim. Fixed outer seeds 28123, 128126, 228129, 328132, 428135; OMP_NUM_THREADS=4. Solver build SHA-256 f1a931f89d6abb64721d4fc4edf21500cd4cbcd0f5391c46977eb6dd2a897a19. Solution SHA-256 9d586695c0c97cbdd5a85f670fc9c65c15330d306c2ce2db58df424f5fa883c6. Official QOBLIB checker source SHA-256 521a89ea4ae02e98461b053ec614d024899365631fe02c3b73b3b45e71c8beb9. |
