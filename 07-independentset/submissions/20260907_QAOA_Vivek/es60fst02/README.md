@@ -27,8 +27,8 @@ This directory contains the submission for the problem **es60fst02**.
 | Paradigm | Quantum Hardware |
 | # Runs | 20 |
 | # Feasible Runs | 20 |
-| # Successful Runs | 20 |
-| Success Threshold | 0.05 |
+| # Successful Runs | 5 |
+| Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | QPU: Heron r3 (ibm_aachen) ; CPU: VM with 32 cores and 128 GB of RAM. |
 | ====== |  |
