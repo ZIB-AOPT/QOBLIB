@@ -27,8 +27,8 @@ This directory contains the submission for the problem **chesapeake**.
 | Paradigm | Quantum Hardware |
 | # Runs | 10 |
 | # Feasible Runs | 10 |
-| # Successful Runs | 10 |
-| Success Threshold | 0.1 |
+| # Successful Runs | 2 |
+| Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | QPU: Heron r3 (ibm_pittsburgh) ; CPU: VM with 32 cores and 128 GB of RAM. |
 | ====== |  |
