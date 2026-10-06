@@ -27,8 +27,8 @@ This directory contains the submission for the problem **C125-9**.
 | Paradigm | Quantum Hardware |
 | # Runs | 40 |
 | # Feasible Runs | 40 |
-| # Successful Runs | 7 |
-| Success Threshold | 0.05 |
+| # Successful Runs | 2 |
+| Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | QPU: Heron r2 (ibm_kingston) ; CPU: VM with 32 cores and 128 GB of RAM. |
 | ====== |  |
