@@ -27,8 +27,8 @@ This directory contains the submission for the problem **sloane_1dc_64**.
 | Paradigm | Quantum Hardware |
 | # Runs | 20 |
 | # Feasible Runs | 20 |
-| # Successful Runs | 19 |
-| Success Threshold | 0.1 |
+| # Successful Runs | 1 |
+| Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | QPU: Heron r3 (ibm_aachen) ; CPU: VM with 32 cores and 128 GB of RAM. |
 | ====== |  |
