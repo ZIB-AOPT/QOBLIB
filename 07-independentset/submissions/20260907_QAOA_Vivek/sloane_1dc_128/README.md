@@ -27,8 +27,8 @@ This directory contains the submission for the problem **sloane_1dc_128**.
 | Paradigm | Quantum Hardware |
 | # Runs | 10 |
 | # Feasible Runs | 10 |
-| # Successful Runs | 5 |
-| Success Threshold | 0.1 |
+| # Successful Runs | 0 |
+| Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | QPU: Nighthawk r1 (ibm_berlin) ; CPU: VM with 32 cores and 128 GB of RAM. |
 | ====== |  |
