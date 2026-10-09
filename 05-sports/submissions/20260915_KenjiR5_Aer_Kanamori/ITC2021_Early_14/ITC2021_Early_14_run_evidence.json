@@ -1,0 +1,72 @@
+[
+  {
+    "run": 1,
+    "aer_measurement": true,
+    "kenji_status": "RELEASED",
+    "official_validator_status": "PASS",
+    "official_infeasibility": 0,
+    "official_objective": 3139,
+    "estimator_elapsed_seconds": 11.936499600007664,
+    "preparation_aer_seconds": 0.47970679998979904,
+    "preparation_wall_seconds": 0.5053098000062164,
+    "reference_access_before_estimator_release": false,
+    "classical_solver_used": false,
+    "classical_final_repair": false
+  },
+  {
+    "run": 2,
+    "aer_measurement": true,
+    "kenji_status": "RELEASED",
+    "official_validator_status": "PASS",
+    "official_infeasibility": 0,
+    "official_objective": 2569,
+    "estimator_elapsed_seconds": 10.979543299996294,
+    "preparation_aer_seconds": 0.8009594999894034,
+    "preparation_wall_seconds": 72.81349569998565,
+    "reference_access_before_estimator_release": false,
+    "classical_solver_used": false,
+    "classical_final_repair": false
+  },
+  {
+    "run": 3,
+    "aer_measurement": true,
+    "kenji_status": "RELEASED",
+    "official_validator_status": "PASS",
+    "official_infeasibility": 0,
+    "official_objective": 2571,
+    "estimator_elapsed_seconds": 11.476208599982783,
+    "preparation_aer_seconds": 0.7983442999830004,
+    "preparation_wall_seconds": 81.77946620000876,
+    "reference_access_before_estimator_release": false,
+    "classical_solver_used": false,
+    "classical_final_repair": false
+  },
+  {
+    "run": 4,
+    "aer_measurement": true,
+    "kenji_status": "RELEASED",
+    "official_validator_status": "PASS",
+    "official_infeasibility": 0,
+    "official_objective": 3218,
+    "estimator_elapsed_seconds": 11.832704000000376,
+    "preparation_aer_seconds": 0.8116277000226546,
+    "preparation_wall_seconds": 49.64078629997675,
+    "reference_access_before_estimator_release": false,
+    "classical_solver_used": false,
+    "classical_final_repair": false
+  },
+  {
+    "run": 5,
+    "aer_measurement": true,
+    "kenji_status": "RELEASED",
+    "official_validator_status": "PASS",
+    "official_infeasibility": 0,
+    "official_objective": 3028,
+    "estimator_elapsed_seconds": 12.106107300001895,
+    "preparation_aer_seconds": 0.7850028999964707,
+    "preparation_wall_seconds": 82.55323789999238,
+    "reference_access_before_estimator_release": false,
+    "classical_solver_used": false,
+    "classical_final_repair": false
+  }
+]
