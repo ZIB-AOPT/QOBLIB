@@ -24,7 +24,7 @@ This directory contains the submission for the problem **brock200-2**.
 | ====== |  |
 | Workflow | JIJSQOASolver, which is under review for Qiskit Functions Catalog |
 | Algorithm Type | Stochastic |
-| Paradigm | Quantum and classical Hardware |
+| Paradigm | Quantum Hardware |
 | # Runs | 10 |
 | # Feasible Runs | 10 |
 | # Successful Runs | 4 |

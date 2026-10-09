@@ -155,7 +155,7 @@ The file must be a JSON array of *runs* (one element per independent run of your
 | `Incumbent` | number or `null` | The best objective value found up to this point in the run. Use `null` when no feasible solution has been found yet — this lets a solver log (e.g. Gurobi's root-relaxation rows) be exported verbatim |
 
 Rules:
-- The `Incumbent` sequence within each run must be **non-increasing** for minimization problems (non-decreasing for maximization). Entries with a `null` incumbent are skipped by this check.
+- The `Incumbent` sequence within each run must be **monotone**: either non-increasing or non-decreasing. Usually it is non-increasing for minimization problems and non-decreasing for maximization problems, but the opposite direction is accepted as well, e.g. when a maximization problem is solved as the minimization of the negated objective. Entries with a `null` incumbent are skipped by this check.
 - A `null` `Incumbent` is only allowed **before** the run's first numeric incumbent. Once a run has an incumbent it cannot lose it, so a `null` afterwards is reported as an error.
 - The first entry should record the initial incumbent (the starting solution's objective value).
 - The last entry's `Time` value should correspond to the end of the run (or the moment the algorithm terminated), so that TTS can be computed as the `Time` of the first entry whose `Incumbent` equals the final best.
@@ -163,7 +163,7 @@ Rules:
 
 #### What the CI checker does
 
-The automated checker validates the JSON structure (correct types, required keys, non-empty runs) and **does enforce monotonicity** — a minimization run where the incumbent increases (or a maximization run where it decreases) is reported as a hard failure that blocks the merge. Entries whose `Incumbent` is `null` (no feasible solution yet) are accepted and skipped, provided they precede the run's first numeric incumbent. Providing a time series is entirely optional; the CI checker reports its absence as informational only.
+The automated checker validates the JSON structure (correct types, required keys, non-empty runs) and **does enforce monotonicity** — a run where the incumbent both increases and decreases is reported as a hard failure that blocks the merge. The direction of the runs (non-increasing, non-decreasing or constant) is reported as information, so that it can be compared with the optimization sense of the problem. Entries whose `Incumbent` is `null` (no feasible solution yet) are accepted and skipped, provided they precede the run's first numeric incumbent. Providing a time series is entirely optional; the CI checker reports its absence as informational only.
 
 ## Benchmark Reporting Template
 

@@ -7,10 +7,10 @@ This directory contains the submission for the problem **es60fst01**.
 | Problem | es60fst01 |
 | Submitter | Daniel Hinderink |
 | Affiliation | hiq-lab |
-| Date | 8. Mar. 2026 |
+| Date | 2026-03-08 |
 | ====== |  |
 | Reference | https://arvak.io |
-| Best Objective Value | -27 |
+| Best Objective Value | N/A |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | QUBO |
@@ -26,8 +26,8 @@ This directory contains the submission for the problem **es60fst01**.
 | Algorithm Type | Stochastic |
 | Paradigm | Quantum Hardware |
 | # Runs | 1 |
-| # Feasible Runs | 1 |
-| # Successful Runs | 1 |
+| # Feasible Runs | 0 |
+| # Successful Runs | 0 |
 | Success Threshold | 0 |
 | ====== |  |
 | Hardware Specifications | Apple M3 Pro and IBM Quantum ibm_torino (Heron r2 156q) |
@@ -39,4 +39,4 @@ This directory contains the submission for the problem **es60fst01**.
 | QPU Runtime | 669 |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | Runtime in seconds. 123 of 156 qubits used. Compiled with Arvak v1.9.3. |
+| Remarks | Runtime in seconds. 123 of 156 qubits used. Compiled with Arvak v1.9.3. The single run returned a 49-node candidate with 11 edge conflicts (infeasible per checker v2.0; see issue #82). |

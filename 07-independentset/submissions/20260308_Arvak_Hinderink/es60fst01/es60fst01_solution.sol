@@ -1,6 +1,7 @@
 # Arvak QAOA p=1 on IBM ibm_torino (Heron r2, 156q)
-# Objective value = -27
-# Independent set size = 49
+# QUBO energy of this 49-node candidate = -27.
+# Not a stable set: contains 11 edges per QOBLIB checker v2.0 (see issue #82).
+# Kept for provenance; summary metadata reports this run as infeasible.
 # 123 qubits, 2048 shots/iter, 23 COBYLA iterations
 # gamma=0.1181, beta=-0.1980
 4

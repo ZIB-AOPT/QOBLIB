@@ -21,11 +21,23 @@ $$
 
 - $x_{ij}$: Binary decision variables indicating whether the arc from $i$ to $j$ is used
 - $y_i$: Integer variables representing cumulative demand/capacity usage
-- $c_{ij}$: Cost of traveling from location $i$ to location $j$
+- $c_{ij}$: Cost of traveling from location $i$ to location $j$ (integer, see [Distance Rounding](#distance-rounding))
 - $d_i$: Demand at location $i$
 - $K$: Maximum number of vehicles
 - $Q$: Vehicle capacity
 - $n$: Number of customers
+
+## Distance Rounding
+
+The instances specify node coordinates (`EDGE_WEIGHT_TYPE : EUC_2D`) rather than an explicit cost matrix. Following the TSPLIB/CVRPLIB convention for `EUC_2D`, the model computes the cost of an arc as the Euclidean distance between its endpoints, rounded to the nearest integer:
+
+$$
+c_{ij} = \operatorname{nint}\left( \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2} \right)
+$$
+
+Here $\operatorname{nint}$ rounds to the nearest integer, with halfway cases rounded away from zero (i.e. up, since distances are non-negative).
+
+This is implemented by `dist(a, b)` in [`cvrp_ilp.zpl`](cvrp_ilp.zpl) using ZIMPL's `round` function, and the files in [`lp_files/`](lp_files/) are generated with it. All objective coefficients are therefore integers, and so is the objective value of every feasible solution.
 
 ## Notes
 
