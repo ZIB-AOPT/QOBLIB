@@ -1,0 +1,12 @@
+# Independent set solution for instance: farm
+# |V|=17  |E|=39  IS size=10
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
