@@ -6,7 +6,7 @@ This directory contains the submission for the problem **B48_48_8**.
 | --- | --- |
 | Problem | B48_48_8 |
 | Submitter | Manan Gupta |
-| Affiliation | Independent Researcher |
+| Affiliation | The Harker School |
 | Date | 2026-08-17 |
 | ====== |  |
 | Reference | https://github.com/mnn31/qoblib-birkhoff |
@@ -35,8 +35,8 @@ This directory contains the submission for the problem **B48_48_8**.
 | Total Runtime | 0.969446 |
 | Time to Solution | 0.969446 |
 | CPU Runtime | 0.969446 |
-| GPU Runtime | 0 |
-| QPU Runtime | 0 |
-| Other HW Runtime | 0 |
+| GPU Runtime | N/A |
+| QPU Runtime | N/A |
+| Other HW Runtime | N/A |
 | ====== |  |
 | Remarks | Exact reconstruction verified; no optimality claim is made. Decision variables are the K weights and the K permutations of length n in the emitted decomposition, all integers, so K(n+1) in total. No model is built, so the coefficient fields are N/A. Runs were executed strictly one at a time on an otherwise idle machine. |
