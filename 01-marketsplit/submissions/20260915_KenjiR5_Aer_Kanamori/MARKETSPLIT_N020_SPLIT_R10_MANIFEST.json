@@ -1,0 +1,199 @@
+{
+  "schema": "QOBLIB_MARKETSPLIT_N020_SPLIT_R10_SUBMISSION_MANIFEST",
+  "kenji_authority_sha256": "958AC865431968359C3318815C198A228350982FF8D489E6BC252B57E0E3E156",
+  "truth_or_reference_before_kenji": false,
+  "instances": [
+    {
+      "instance": "ms_03_050_002",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5173094800091349,
+      "mean_search_seconds": 0.15352422000723892,
+      "mean_uj_seconds": 0.3637852600018959,
+      "mean_search_shots_per_pub": 614.4,
+      "files": {
+        "ms_03_050_002_solution.sol": "CE69D33927901CCE4FC01F9CFF24B46FD894924F9A911AE90BD84D4A0DF5BC9E",
+        "ms_03_050_002_summary.csv": "4763AE47F900064C517076A1755F7AABCEC2D0FD6193D9EADAB88193CFB99796",
+        "ms_03_050_002_run_evidence.json": "926F78497B4DA1CA4956FA4DF1A72E7AC73F51EFB8E6CB702421775FA5252E5E",
+        "README.md": "6BCF2A3FE425145A1ADA8C0E28C52C073C7FFB4FDCEB23A037C1A438B6FFC8EE"
+      }
+    },
+    {
+      "instance": "ms_03_050_005",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5497329799982253,
+      "mean_search_seconds": 0.1415153999987524,
+      "mean_uj_seconds": 0.40821757999947295,
+      "mean_search_shots_per_pub": 512.0,
+      "files": {
+        "ms_03_050_005_solution.sol": "E9823805F0E61F2BE68D901E6C2B15D6CEC382F0B214B17834F48A0040F9EB97",
+        "ms_03_050_005_summary.csv": "F6D9AE66119C464E8A4879A8643A6A4DA44185DD47CAA25125B22FD15912E43A",
+        "ms_03_050_005_run_evidence.json": "E8CD381BB19AB875717157A6282D95BE56D1A3AC5228FFBAF6FB7C0A3229C43B",
+        "README.md": "2613E0772E38C91505E02CF760A1818B4F1212F1617BE0D6360ED21C13F90920"
+      }
+    },
+    {
+      "instance": "ms_03_050_007",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5740871999994852,
+      "mean_search_seconds": 0.16383237999398262,
+      "mean_uj_seconds": 0.41025482000550256,
+      "mean_search_shots_per_pub": 614.4,
+      "files": {
+        "ms_03_050_007_solution.sol": "B8E9216CA0C30A9FD2691367F750494350436B0ACB97DCB306F7E257C1A65F9D",
+        "ms_03_050_007_summary.csv": "B64C7755FDC47554452D3DCAA2EA1476A2B0642842D527C89EA973634349B899",
+        "ms_03_050_007_run_evidence.json": "E49683C67248B533642E1E7873D29D8131C84BA42C191BAEDE427C460C69F945",
+        "README.md": "26BBC94B2654F3478F98C25A038160B9C4DE671D7AEB7E227E87961F7FEE9F77"
+      }
+    },
+    {
+      "instance": "ms_03_050_009",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5429693799989763,
+      "mean_search_seconds": 0.1449581999971997,
+      "mean_uj_seconds": 0.39801118000177665,
+      "mean_search_shots_per_pub": 512.0,
+      "files": {
+        "ms_03_050_009_solution.sol": "CFA15F92B86043C6C14DCD1A6912BB13ECAF49C1C505042C2815E7F671D083E9",
+        "ms_03_050_009_summary.csv": "0C1CAB5D06605420BAE282558562C944CDAC545CD491463B081B6FAB35D1173E",
+        "ms_03_050_009_run_evidence.json": "FAA4E6ADCF57EA8DCB58F386CB758B163FDBCEACC4FBBC0BEFEC56E4C8463742",
+        "README.md": "A1EBA126B46AF7F9FFB940947DBA912CE6413797EF16AFDF291A44E744DCB729"
+      }
+    },
+    {
+      "instance": "ms_03_100_001",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5386203800153453,
+      "mean_search_seconds": 0.14032334000221452,
+      "mean_uj_seconds": 0.39829704001313077,
+      "mean_search_shots_per_pub": 512.0,
+      "files": {
+        "ms_03_100_001_solution.sol": "2731D0757885C507D3CFCDE10D7421323F52AFF0D6C7273968FD8569F0B54E6E",
+        "ms_03_100_001_summary.csv": "4C2735A27A7DBDBA20116E63E3266B5C564DB014F73355FF40229A179CBEAE4E",
+        "ms_03_100_001_run_evidence.json": "A58AE80B4FD1096705BADCAA025EFFDCD2A8661956F7EAE028BFCABEE1AB4B56",
+        "README.md": "23FE7D6F924FB2B1BCC6CFACFE3DEE5FAD54F4CBA4B235AA2C49E85CDC9732D4"
+      }
+    },
+    {
+      "instance": "ms_03_100_012",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5453360800107476,
+      "mean_search_seconds": 0.14394880000618288,
+      "mean_uj_seconds": 0.4013872800045647,
+      "mean_search_shots_per_pub": 512.0,
+      "files": {
+        "ms_03_100_012_solution.sol": "FBE9027125BF51E280DCB57412E98332558D382E17C5718022951105E4E8D030",
+        "ms_03_100_012_summary.csv": "B5C4D33C8D05243933CB96552EC2E6FC0B23956D14F179566746184B666EF80A",
+        "ms_03_100_012_run_evidence.json": "13C5D4EF886AADEC59C5AF3D8289F5E3D2AA3778C85B7236E7E67622E3DEEFB9",
+        "README.md": "0AD9DC2FA1F068134DEF5B1AC83C8F3C232CE477217CD9ACFBC3778E03F30843"
+      }
+    },
+    {
+      "instance": "ms_03_100_019",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5751404199982062,
+      "mean_search_seconds": 0.14034731999854558,
+      "mean_uj_seconds": 0.43479309999966065,
+      "mean_search_shots_per_pub": 512.0,
+      "files": {
+        "ms_03_100_019_solution.sol": "91E65B89A2251DB06E97735B04C228ECD1984531643143A865CC4E49CD8008C0",
+        "ms_03_100_019_summary.csv": "76063E69F033D8ACAE51ECFA5E00DC8BD7AA6F57A335C7BD04B58DE0E78A191A",
+        "ms_03_100_019_run_evidence.json": "1C520ED7FC48C1A123D138E23E2B3B48F4DA31A52EA71C52BB8BAE4E2462C94C",
+        "README.md": "76AA1B8A13BC64C29857CE1CD631B88F7D350E367C3F59DE30D21AD3ABAD1C58"
+      }
+    },
+    {
+      "instance": "ms_03_100_022",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5349675799894612,
+      "mean_search_seconds": 0.13466642000130377,
+      "mean_uj_seconds": 0.40030115998815746,
+      "mean_search_shots_per_pub": 512.0,
+      "files": {
+        "ms_03_100_022_solution.sol": "65F7EEA35BFE4547F066BB3D6E7E88ED57181C9F5FDE85B4080B2D6B4D1F497C",
+        "ms_03_100_022_summary.csv": "236FA16530DE889C615A0619738726ECF4744B6FBB9A7B1D40CDFED7994A36BD",
+        "ms_03_100_022_run_evidence.json": "6A3F2EB027C83DF05A5ED22EEFE11B4FA3D73B097077893447D67C6A079DA4B9",
+        "README.md": "41E614B4FA03BCB1DBA19BBE70472BAAE4A000F1E4666298E74BB422CC0E9BA8"
+      }
+    },
+    {
+      "instance": "ms_03_200_050",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5708796800056006,
+      "mean_search_seconds": 0.16528992000385187,
+      "mean_uj_seconds": 0.4055897600017488,
+      "mean_search_shots_per_pub": 614.4,
+      "files": {
+        "ms_03_200_050_solution.sol": "CF53A0C031941D8F0F0C77C305F3EEE487F44694F062BC57CAB39FE785DE52AD",
+        "ms_03_200_050_summary.csv": "B9805F589CBDC9CA8C9235DBC0B8D749EB5D770A1FCB532356487970CBD33085",
+        "ms_03_200_050_run_evidence.json": "5F9AB145F716946224268055D2F829B9F3F09685EB81C978D9D23D03B2894217",
+        "README.md": "49C53C1C6424DF29253ADB238F56A5F9268B209D70C7C170D3223CDE6F71A138"
+      }
+    },
+    {
+      "instance": "ms_03_200_068",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5658853200031444,
+      "mean_search_seconds": 0.15150608000112697,
+      "mean_uj_seconds": 0.4143792400020175,
+      "mean_search_shots_per_pub": 512.0,
+      "files": {
+        "ms_03_200_068_solution.sol": "6139310B4FBC64EBF8A7513AB83E7EC24C4549C191F005E242112A46C3D99898",
+        "ms_03_200_068_summary.csv": "69A267743EDE44A8F37B85401E2FEF9AA425F824ED3626AEAA47EC8DCB907571",
+        "ms_03_200_068_run_evidence.json": "B375B09A6BF70D52C83516E543C8873F71D622619F3538FD424AF23BC0173A05",
+        "README.md": "C54955519C9D03B5D1356AD1AFB05699938F542149B51DE97BBE5EDDBB8CC3D3"
+      }
+    },
+    {
+      "instance": "ms_03_200_161",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5953260599984788,
+      "mean_search_seconds": 0.17533151999814436,
+      "mean_uj_seconds": 0.41999454000033437,
+      "mean_search_shots_per_pub": 614.4,
+      "files": {
+        "ms_03_200_161_solution.sol": "69ABC81FB2A8D4C08905859C8764F4752D2F296B8BA9068CCB1147488917F485",
+        "ms_03_200_161_summary.csv": "53888D9592DC0FB116DBFA84A81DC3745F55ADB5EC7A48FC2B791E36C56B8526",
+        "ms_03_200_161_run_evidence.json": "D5AF07A3015C15F7FE7557EEC7DE0E555D8C1C7009C34ED23570A56E59DA88B2",
+        "README.md": "5B7C5EA765D1635FE4A5EB0914D98CCCCBCC1431886C18856A58C56DED4D1B38"
+      }
+    },
+    {
+      "instance": "ms_03_200_177",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5864263000024948,
+      "mean_search_seconds": 0.14118500000331552,
+      "mean_uj_seconds": 0.44524129999917933,
+      "mean_search_shots_per_pub": 512.0,
+      "files": {
+        "ms_03_200_177_solution.sol": "18F048BA6899F92FEEBE27706C6AFF8B268071B79C87199B68A0CA109CFEF9DE",
+        "ms_03_200_177_summary.csv": "74C181EBA9D10A836C263F7C8FE8561535297074770CF729B7AD9543F3EEED9D",
+        "ms_03_200_177_run_evidence.json": "663C61ECED8157B746AA36A201DBE227F3375CDA06FFAB73338F854020BA5453",
+        "README.md": "4FD49B3ADBD3CC107A285D46A3DB3DB34DDE4F1AC6602928CB08196BCD79D198"
+      }
+    }
+  ]
+}
