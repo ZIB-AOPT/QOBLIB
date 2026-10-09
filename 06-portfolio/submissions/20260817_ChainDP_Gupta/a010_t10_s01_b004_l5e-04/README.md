@@ -32,9 +32,9 @@ This directory contains the submission for the problem **a010_t10_s01_b004_l5e-0
 | ====== |  |
 | Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64. Runtimes are from a single-process rerun with no other load, so they are not inflated by contention. |
 | ====== |  |
-| Total Runtime | 67.049 |
-| Time to Solution | 67.049 |
-| CPU Runtime | 67.049 |
+| Total Runtime | 44.832 |
+| Time to Solution | 44.832 |
+| CPU Runtime | 44.832 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
