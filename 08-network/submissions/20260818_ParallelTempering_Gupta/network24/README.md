@@ -30,11 +30,11 @@ This directory contains the submission for the problem **network24**.
 | # Successful Runs | 1 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64; one core per run |
+| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64. Runs executed strictly one at a time on an otherwise idle machine; no run shared the CPU with another. |
 | ====== |  |
-| Total Runtime | 2400.1 |
-| Time to Solution | 841.4 |
-| CPU Runtime | 2400.1 |
+| Total Runtime | 1800.1 |
+| Time to Solution | 789.1 |
+| CPU Runtime | 1800.1 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |

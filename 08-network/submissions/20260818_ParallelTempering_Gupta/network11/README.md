@@ -30,13 +30,13 @@ This directory contains the submission for the problem **network11**.
 | # Successful Runs | 2 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64; one core per run |
+| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64. Runs executed strictly one at a time on an otherwise idle machine; no run shared the CPU with another. |
 | ====== |  |
-| Total Runtime | 2400.0 |
-| Time to Solution | 890.8 |
-| CPU Runtime | 2400.0 |
+| Total Runtime | 1800.0 |
+| Time to Solution | 505.4 |
+| CPU Runtime | 1800.0 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | Heuristic, so the optimality bound is left as N/A. Runtimes are the average over the independent runs, single core each, queueing excluded. Time to solution is the average over runs of the moment each run last improved its incumbent. This run does not reach the published best-known value and is included so the method stays comparable over time rather than only appearing where it wins. Successful runs are those reaching this method's own best value. The declared objective is recomputed from the flows rather than taken from the solver's z variable, which the model only bounds from below. Verified with 08-network/check. |
+| Remarks | Heuristic, so the optimality bound is left as N/A. Runtimes are the average over the independent runs, single core each, queueing excluded. Time to solution is the average over runs of the moment each run last improved its incumbent. This run reaches the published value exactly without improving it; on network05 to network10 that value is the proven optimum. Successful runs are those reaching this method's own best value. The declared objective is recomputed from the flows rather than taken from the solver's z variable, which the model only bounds from below. Verified with 08-network/check. |

@@ -10,7 +10,7 @@ This directory contains the submission for the problem **network22**.
 | Date | 2026-08-18 |
 | ====== |  |
 | Reference | https://github.com/mnn31/qoblib-solvers/tree/main/network |
-| Best Objective Value | 686514 |
+| Best Objective Value | 618135 |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | Reference integer multicommodity flow model of d3ver0int.zpl, decomposed into a topology search over 2-in/2-out digraphs with an exact min-congestion flow solved for each candidate |
@@ -30,13 +30,13 @@ This directory contains the submission for the problem **network22**.
 | # Successful Runs | 1 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64; one core per run |
+| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64. Runs executed strictly one at a time on an otherwise idle machine; no run shared the CPU with another. |
 | ====== |  |
-| Total Runtime | 3759.2 |
-| Time to Solution | 1169.5 |
-| CPU Runtime | 3759.2 |
+| Total Runtime | 1800.0 |
+| Time to Solution | 1015.4 |
+| CPU Runtime | 1800.0 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | Heuristic, so the optimality bound is left as N/A. Runtimes are the average over the independent runs, single core each, queueing excluded. Time to solution is the average over runs of the moment each run last improved its incumbent. This run does not reach the published best-known value and is included so the method stays comparable over time rather than only appearing where it wins. Successful runs are those reaching this method's own best value. The declared objective is recomputed from the flows rather than taken from the solver's z variable, which the model only bounds from below. Verified with 08-network/check. |
+| Remarks | Heuristic, so the optimality bound is left as N/A. Runtimes are the average over the independent runs, single core each, queueing excluded. Time to solution is the average over runs of the moment each run last improved its incumbent. Successful runs are those reaching this method's own best value. The declared objective is recomputed from the flows rather than taken from the solver's z variable, which the model only bounds from below. Verified with 08-network/check. |

@@ -10,7 +10,7 @@ This directory contains the submission for the problem **network19**.
 | Date | 2026-08-18 |
 | ====== |  |
 | Reference | https://github.com/mnn31/qoblib-solvers/tree/main/network |
-| Best Objective Value | 497473 |
+| Best Objective Value | 492924 |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | Reference integer multicommodity flow model of d3ver0int.zpl, decomposed into a topology search over 2-in/2-out digraphs with an exact min-congestion flow solved for each candidate |
@@ -30,11 +30,11 @@ This directory contains the submission for the problem **network19**.
 | # Successful Runs | 1 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64; one core per run |
+| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, macOS 26.3, arm64. Runs executed strictly one at a time on an otherwise idle machine; no run shared the CPU with another. |
 | ====== |  |
-| Total Runtime | 4228.6 |
-| Time to Solution | 1219.8 |
-| CPU Runtime | 4228.6 |
+| Total Runtime | 1800.0 |
+| Time to Solution | 1461.9 |
+| CPU Runtime | 1800.0 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
