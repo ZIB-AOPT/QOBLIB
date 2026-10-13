@@ -26,3 +26,11 @@ Each objective time series holds one entry per run, recorded whenever the best
 found objective improves, with the final entry marking the end of the run.
 
 Code: https://github.com/mnn31/qoblib-solvers/tree/main/network
+
+## AI disclosure
+
+assisted —  code and repetitive boiler syntax implementation. The solver code,
+the packaging scripts and the first drafts of the write-ups were written with help from
+Claude (Claude Code, Claude Fable 5.1, Anthropic). All goals, problem choices,
+methods and responses  were directed by the author, and every reported
+run and solution file was executed, checked and confirmed by the author.
