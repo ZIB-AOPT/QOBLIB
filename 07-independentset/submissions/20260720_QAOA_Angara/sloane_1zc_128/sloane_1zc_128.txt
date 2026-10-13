@@ -1,0 +1,19 @@
+# Independent set solution for instance: sloane_1zc_128
+# |V|=128  |E|=1120  IS size=17
+0
+6
+26
+29
+35
+44
+47
+48
+54
+71
+72
+84
+91
+106
+113
+124
+127

@@ -1,0 +1,22 @@
+# Independent set solution for instance: karate
+# |V|=34  |E|=78  IS size=20
+7
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+25
+26
+27
+28
+30
