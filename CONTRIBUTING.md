@@ -81,7 +81,13 @@ Each benchmark submission should include:
    - Complete hardware specifications
    - Software versions
    - Additional implementation details
-8. **AI Disclosure** - One of `none`, `assisted`, or `generated` as defined in the [AI Policy](AI_POLICY.md). State it in the pull request description; for `assisted` and `generated`, also name the tool and model version and which parts it produced, and repeat this in the **Remarks** field of the summary CSV.
+8. **AI Disclosure** - One of `none`, `assisted`, or `generated` as defined in the [AI Policy](AI_POLICY.md). State it in the pull request description and in a short section of the `README.md` at your submission root (`NN-problem/submissions/<name>/README.md`). For `assisted` and `generated`, also name the tool and model version and which parts it produced, for example:
+
+   ```markdown
+   ## AI disclosure
+
+   assisted — solver code drafted with Claude Opus 5.5, then reviewed and edited by the authors.
+   ```
 
 ### Model Information
 
@@ -220,7 +226,7 @@ The template includes the following fields:
 | **QPU Runtime**              | QPU runtime to run the workflow                                                                                                                                                                                                           |
 | **Other HW Runtime**         | Runtime on other hardware to run the workflow                                                                                                                                                                                             |
 |                              |                                                                                                                                                                                                                                           |
-| **Remarks**                  | Additional notes or information. For `assisted` or `generated` AI disclosure (see [AI Policy](AI_POLICY.md)), name the tool, model version, and the parts it produced here                                                              |
+| **Remarks**                  | Additional notes or information                                                                                                                                                                                                           |
 
 > **Note:** All runtimes should be reported as average if multiple algorithm runs were executed.
 

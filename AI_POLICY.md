@@ -15,6 +15,7 @@ the use is disclosed and a named person is responsible for the submission.
    - `generated`: the solver code or write-up is predominantly AI-generated.
    
    For `assisted` and `generated`, name the tool and model version and say which parts it produced.
+   The declaration goes in the pull request description and in the `README.md` at the submission root.
 
 3. **AI as the method.** 
    If an AI system is part of the optimization method itself (for example an LLM proposing heuristics or solutions), describe it in the method description like any other algorithmic component, including model and version.

@@ -19,7 +19,7 @@ Do not duplicate CSV metadata here; point reviewers to the source files in this 
 - **Reference/paper/code link(s)** (if applicable):
 
 ### AI disclosure (do not remove)
-See `AI_POLICY.md`. Tick exactly one:
+See `AI_POLICY.md`. Tick exactly one, and repeat the declaration in the submission root `README.md`:
 - [ ] `none` — no AI-generated content in this submission.
 - [ ] `assisted` — parts were AI-generated, then reviewed and edited by me. Tool/model and parts affected:
 - [ ] `generated` — the solver code or write-up is predominantly AI-generated. Tool/model and parts affected:
