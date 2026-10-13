@@ -18,3 +18,11 @@ The a200 and a400 families had no feasible solution on record. Every solution
 here was verified with 06-portfolio/check as it was produced.
 
 Code: https://github.com/mnn31/qoblib-solvers/tree/main/portfolio
+
+## AI disclosure
+
+assisted —  code and repetitive boiler syntax implementation. The solver code,
+the packaging scripts and the first drafts of the write-ups were written with help from
+Claude (Claude Code, Claude Fable 5.1, Anthropic). All goals, problem choices,
+methods and responses  were directed by the author, and every reported
+run and solution file was executed, checked and confirmed by the author.
