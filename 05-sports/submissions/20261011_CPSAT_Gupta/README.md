@@ -21,3 +21,11 @@ converts to RobinX XML, and a RobinX XML copy of each timetable is included
 next to it with the soft penalty the validator computed.
 
 Code: https://github.com/mnn31/qoblib-solvers/tree/main/sports
+
+## AI disclosure
+
+assisted —  code and repetitive boiler syntax implementation. The solver code,
+the packaging scripts and the first drafts of the write-ups were written with help from
+Claude (Claude Code, Claude Fable 5.1, Anthropic). All goals, problem choices,
+methods and responses  were directed by the author, and every reported
+run and solution file was executed, checked and confirmed by the author.
