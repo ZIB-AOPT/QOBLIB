@@ -8,6 +8,15 @@ To contribute a solution to any problem instance, please submit your results via
 
 Please follow the guidelines below when preparing your submission.
 
+## AI Policy
+
+Submissions prepared with the help of AI tools are welcome as long as the use is
+disclosed and a named person takes responsibility for the result. Every submission
+must declare its AI involvement as `none`, `assisted`, or `generated` (see
+**AI Disclosure** under [Required Information](#required-information)), and
+automated agents may not open or merge pull requests. Read the full
+[AI Policy](AI_POLICY.md) before submitting.
+
 ## Validating Your Submission
 
 Before submitting, validate your submission structure and contents using the automated checker tool provided in [misc/ci/check_submission.py](misc/ci/check_submission.py). 
@@ -72,6 +81,7 @@ Each benchmark submission should include:
    - Complete hardware specifications
    - Software versions
    - Additional implementation details
+8. **AI Disclosure** - One of `none`, `assisted`, or `generated` as defined in the [AI Policy](AI_POLICY.md). State it in the pull request description; for `assisted` and `generated`, also name the tool and model version and which parts it produced, and repeat this in the **Remarks** field of the summary CSV.
 
 ### Model Information
 
@@ -210,7 +220,7 @@ The template includes the following fields:
 | **QPU Runtime**              | QPU runtime to run the workflow                                                                                                                                                                                                           |
 | **Other HW Runtime**         | Runtime on other hardware to run the workflow                                                                                                                                                                                             |
 |                              |                                                                                                                                                                                                                                           |
-| **Remarks**                  | Additional notes or information                                                                                                                                                                                                           |
+| **Remarks**                  | Additional notes or information. For `assisted` or `generated` AI disclosure (see [AI Policy](AI_POLICY.md)), name the tool, model version, and the parts it produced here                                                              |
 
 > **Note:** All runtimes should be reported as average if multiple algorithm runs were executed.
 
