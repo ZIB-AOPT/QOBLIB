@@ -89,3 +89,11 @@ efficiency cores, eight concurrent workers cannot all sit on performance cores,
 which is why the original numbers mixed the two.
 
 Code: https://github.com/mnn31/qoblib-solvers/tree/main/portfolio
+
+## AI disclosure
+
+assisted —  code and repetitive boiler syntax implementation. The solver code,
+the packaging scripts and the first drafts of the write-ups were written with help from
+Claude (Claude Code, Claude Fable 5.1, Anthropic). All goals, problem choices,
+methods and responses  were directed by the author, and every reported
+run and solution file was executed, checked and confirmed by the author.
