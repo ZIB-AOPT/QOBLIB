@@ -2,7 +2,9 @@
 
 Submitter: Kenji Kanamori, Independent Researcher
 
-This package contains thirteen locally validated Birkhoff instances. Each instance records one actual independent run. The six role-specific Aer acquisitions are components of that run and are not counted as additional runs.
+This package contains thirteen locally validated Birkhoff instances. Each current instance table records five actual independent stochastic runs: one provenance-audited historical run plus four fresh runs. The six role-specific Aer acquisitions are components of each run and are not counted as additional runs.
+
+See [README.md](README.md) for the current combined submission overview and AI-use disclosure.
 
 Workflow: public JSON instance, Qiskit Aer role acquisition, Universal Joint aggregation, fixed Kenji R5 release, exact integer-weight reconstruction, then the official validator. Reference/truth data remained sealed until after release. No classical solver or final repair generated an answer.
 
