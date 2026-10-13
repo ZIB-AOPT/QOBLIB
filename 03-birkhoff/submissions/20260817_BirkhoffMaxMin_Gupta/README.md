@@ -72,3 +72,11 @@ the submission checker accepts either monotone direction.
 | B9_9 | 10 | 9 | 22 |
 
 Solver and reproduction notes: https://github.com/mnn31/qoblib-birkhoff
+
+## AI disclosure
+
+assisted —  code and repetitive boiler syntax implementation. The solver code,
+the packaging scripts and the first drafts of the write-ups were written with help from
+Claude (Claude Code, Claude Fable 5.1, Anthropic). All goals, problem choices,
+methods and responses  were directed by the author, and every reported
+run and solution file was executed, checked and confirmed by the author.
