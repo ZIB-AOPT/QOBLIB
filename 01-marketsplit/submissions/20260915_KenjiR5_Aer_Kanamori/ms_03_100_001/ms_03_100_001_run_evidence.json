@@ -1,0 +1,67 @@
+[
+  {
+    "run": 1,
+    "seed": 11001,
+    "candidate_found": true,
+    "search_stages": 1,
+    "cumulative_search_shots_per_pub": 512,
+    "search_elapsed_seconds": 0.14345120001235045,
+    "universal_joint_elapsed_seconds": 0.3854799999971874,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false,
+    "reference_access_before_estimator_release": false
+  },
+  {
+    "run": 2,
+    "seed": 22003,
+    "candidate_found": true,
+    "search_stages": 1,
+    "cumulative_search_shots_per_pub": 512,
+    "search_elapsed_seconds": 0.13685070001520216,
+    "universal_joint_elapsed_seconds": 0.3867833999975119,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false,
+    "reference_access_before_estimator_release": false
+  },
+  {
+    "run": 3,
+    "seed": 33007,
+    "candidate_found": true,
+    "search_stages": 1,
+    "cumulative_search_shots_per_pub": 512,
+    "search_elapsed_seconds": 0.13733810000121593,
+    "universal_joint_elapsed_seconds": 0.39706470002420247,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false,
+    "reference_access_before_estimator_release": false
+  },
+  {
+    "run": 4,
+    "seed": 44017,
+    "candidate_found": true,
+    "search_stages": 1,
+    "cumulative_search_shots_per_pub": 512,
+    "search_elapsed_seconds": 0.14928559999680147,
+    "universal_joint_elapsed_seconds": 0.39609350002137944,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false,
+    "reference_access_before_estimator_release": false
+  },
+  {
+    "run": 5,
+    "seed": 55021,
+    "candidate_found": true,
+    "search_stages": 1,
+    "cumulative_search_shots_per_pub": 512,
+    "search_elapsed_seconds": 0.13469109998550266,
+    "universal_joint_elapsed_seconds": 0.4260636000253726,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false,
+    "reference_access_before_estimator_release": false
+  }
+]

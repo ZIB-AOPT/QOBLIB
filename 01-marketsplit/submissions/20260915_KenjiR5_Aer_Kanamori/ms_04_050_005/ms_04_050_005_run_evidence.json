@@ -1,0 +1,72 @@
+[
+  {
+    "run": 1,
+    "seed": 11001,
+    "candidate_found": true,
+    "search_stages": 3,
+    "cumulative_search_shots_per_pub": 2048,
+    "search_elapsed_seconds": 1.5502304999972694,
+    "fixed_kenji_elapsed_seconds": 0.35805390001041815,
+    "objective_reached_seconds": 1.9082844000076875,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false,
+    "result_sha256": "AC6E523E84FA5572968A685785C7F0E89DCD0C340E279FBACD539778BD60777B"
+  },
+  {
+    "run": 2,
+    "seed": 22003,
+    "candidate_found": true,
+    "search_stages": 3,
+    "cumulative_search_shots_per_pub": 2048,
+    "search_elapsed_seconds": 1.2685392999555916,
+    "fixed_kenji_elapsed_seconds": 0.2995931000332348,
+    "objective_reached_seconds": 1.5681323999888264,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false,
+    "result_sha256": "93EC5968AA021A24A84BFBCFBF32377DE2A1699EF1BD68824691E3ABA45D2B5C"
+  },
+  {
+    "run": 3,
+    "seed": 33007,
+    "candidate_found": true,
+    "search_stages": 3,
+    "cumulative_search_shots_per_pub": 2048,
+    "search_elapsed_seconds": 1.5098596999887377,
+    "fixed_kenji_elapsed_seconds": 0.4370619999826886,
+    "objective_reached_seconds": 1.9469216999714263,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false,
+    "result_sha256": "15CC4E28C6AEA7A21AA2E4F54B022FD44C6DF9ADB42E4C89CCFDDD0ECF57AAB2"
+  },
+  {
+    "run": 4,
+    "seed": 44017,
+    "candidate_found": true,
+    "search_stages": 4,
+    "cumulative_search_shots_per_pub": 4096,
+    "search_elapsed_seconds": 2.8459516000002623,
+    "fixed_kenji_elapsed_seconds": 0.3092733999947086,
+    "objective_reached_seconds": 3.155224999994971,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false,
+    "result_sha256": "BEE1B1816A1FBC15C5C4FDACCADE20A3430E9D53076DA9DBD5BCB11CD9288AB5"
+  },
+  {
+    "run": 5,
+    "seed": 55021,
+    "candidate_found": true,
+    "search_stages": 2,
+    "cumulative_search_shots_per_pub": 1024,
+    "search_elapsed_seconds": 0.6474042999907397,
+    "fixed_kenji_elapsed_seconds": 0.2373084999853745,
+    "objective_reached_seconds": 0.8847127999761142,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false,
+    "result_sha256": "56F267B355FBF0829C9593DADB45C2968219EB8EB0EE2E4BCB4E59DD7215D2BD"
+  }
+]
