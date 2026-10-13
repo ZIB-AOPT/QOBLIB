@@ -86,7 +86,7 @@ Each benchmark submission should include:
    ```markdown
    ## AI disclosure
 
-   assisted — solver code drafted with Claude Opus 5.5, then reviewed and edited by the authors.
+   assisted — solver code drafted with <tool name, model version>, then reviewed and edited by the authors.
    ```
 
 ### Model Information
