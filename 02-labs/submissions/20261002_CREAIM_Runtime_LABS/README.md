@@ -13,15 +13,16 @@ The solver is a proprietary CREAIM Runtime classical component. The public refer
 
 Claim boundary: no physical-QPU execution, quantum advantage, quantum speedup, new-public-best claim, universal solver-superiority claim, or independent proof of optimality.
 
-## Submitter information
+Submitter information
 
-- Organization:CREAIM Inc.
-  (South Korean runtime computing  technology company)
-- Corporate site: https:creaim.inai
-- Technology & Research:https://runtime.creaim.ai
+- Organization: CREAIM Inc
+- Company Description: South Korea-based Runtime Computing™ company
+- Core Technology: Proprietary Runtime Computing™ technology
+- Corporate Site: https://creaim.ai
+- Technology & Research: https://runtime.creaim.ai/
 - Contact: contact@creaim.ai
 
-CREAIM welcomes research collaboration, benchmarking, technical validation, and industry partnerships related to Runtime Computing™, optimization, AI systems, and execution validation.
+CREAIM Inc develops proprietary Runtime Computing™ technology for computation, state-based data processing, storage, optimization, and execution validation.
 
 AI Use Disclosure
 
