@@ -16,9 +16,26 @@ Claim boundary: no physical-QPU execution, quantum advantage, quantum speedup, n
 
 ## Submitter information
 
-- **Organization:** CREAIM Inc. — South Korean AI technology company
-- **Corporate site:** https://creaim.inc/
-- **Technology & Research:** https://runtime.creaim.ai/
-- **Contact:** contact@creaim.ai
+-Organization:CREAIM Inc. 
+— South Korean AI technology company
+- Corporate site:https://creaim.ai
+- Technology & Research:https://runtime.creaim.ai/
+- Contact:contact@creaim.ai
 
 CREAIM welcomes research collaboration, benchmarking, technical validation, and industry partnerships related to Runtime Computing™, optimization, AI systems, and execution validation.
+
+AI Use Disclosure
+
+
+Classification: generated (conservative classification for the QOBLIB-specific implementation and submission material).
+
+
+AI tools and contribution: OpenAI ChatGPT supported technical reasoning, problem-specific software implementation and adaptation, and portions of the submission documentation. GPT-5.6 was used in development discussions; the exact model/version used in the original code-generation session cannot be established from the retained records.
+
+
+CREAIM contribution and method: The approach builds on CREAIM's pre-existing proprietary Runtime Computing™ research and optimization technology. CREAIM directed the work, performed the classical optimization computations, and verified the reported solutions with QOBLIB's official checkers. ChatGPT was not a live solution-generating component of the reported runs.
+
+
+Responsible submitter: Sun Myon Hwang, Founder & CEO, CREAIM Inc., accepts responsibility for the submission and its reported results.
+
+
