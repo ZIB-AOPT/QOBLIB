@@ -1,0 +1,3 @@
+# Solution for c-fat200-1
+# Objective value = 18
+1 6 8 14 24 26 28 30 34 47 59 69 92 110 114 131 160 164
