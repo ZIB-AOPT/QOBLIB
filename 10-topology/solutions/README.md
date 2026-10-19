@@ -23,12 +23,12 @@
 | topology_25_6 | 2 | optimal | reference | — |
 | topology_30_4 | 3 | optimal | reference | — |
 | topology_30_5 | 3 | optimal | reference | — |
-| topology_30_6 | 3 | best known | [20241206_Gurobi-Seidel-Linear_Schicker](../submissions/20241206_Gurobi-Seidel-Linear_Schicker) | 2024-12-06 |
-| topology_35_5 | 4 | best known | [20241206_Gurobi-Seidel-Linear_Schicker](../submissions/20241206_Gurobi-Seidel-Linear_Schicker) | 2024-12-06 |
-| topology_35_6 | 3 | best known | [20241206_Gurobi-Seidel-Linear_Schicker](../submissions/20241206_Gurobi-Seidel-Linear_Schicker) | 2024-12-06 |
+| topology_30_6 | 3 | best known | [20241206_MIP-Seidel-Linear_Schicker](../submissions/20241206_MIP-Seidel-Linear_Schicker) | 2024-12-06 |
+| topology_35_5 | 4 | best known | [20241206_MIP-Seidel-Linear_Schicker](../submissions/20241206_MIP-Seidel-Linear_Schicker) | 2024-12-06 |
+| topology_35_6 | 3 | best known | [20241206_MIP-Seidel-Linear_Schicker](../submissions/20241206_MIP-Seidel-Linear_Schicker) | 2024-12-06 |
 | topology_40_6 | 3 | optimal | reference | — |
 | topology_4855_15 | 4 | best known | reference | — |
-| topology_50_4 | 5 | best known | [20241206_Gurobi-Seidel-Quadratic_Schicker](../submissions/20241206_Gurobi-Seidel-Quadratic_Schicker) | 2024-12-06 |
+| topology_50_4 | 5 | best known | [20241206_MIP-Seidel-Quadratic_Schicker](../submissions/20241206_MIP-Seidel-Quadratic_Schicker) | 2024-12-06 |
 | topology_512_4 | 6 | best known | reference | — |
 | topology_512_6 | 5 | best known | reference | — |
 | topology_65536_6 | 9 | best known | reference | — |
