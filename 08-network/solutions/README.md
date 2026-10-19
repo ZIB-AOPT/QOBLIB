@@ -13,19 +13,19 @@
 | network08 | 170231 | optimal | reference | — |
 | network09 | 196750 | optimal | reference | — |
 | network10 | 210800 | optimal | reference | — |
-| network11 | 238334 | best known | reference | — |
+| network11 | 238334 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
 | network12 | 276474 | best known | reference | — |
-| network13 | 304116 | best known | reference | — |
-| network14 | 350173 | best known | reference | — |
-| network15 | 383000 | best known | reference | — |
-| network16 | 409067 | best known | reference | — |
-| network17 | 460182 | best known | reference | — |
-| network18 | 481950 | best known | reference | — |
-| network19 | 514625 | best known | reference | — |
-| network20 | 548536 | best known | reference | — |
-| network21 | 593000 | best known | reference | — |
-| network22 | 647594 | best known | reference | — |
-| network23 | 686453 | best known | reference | — |
+| network13 | 300620 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
+| network14 | 343091 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
+| network15 | 370870 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
+| network16 | 397908 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
+| network17 | 437000 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
+| network18 | 473375 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
+| network19 | 492924 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
+| network20 | 528528 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
+| network21 | 569273 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
+| network22 | 618135 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
+| network23 | 659369 | best known | [20260818_ParallelTempering_Gupta](../submissions/20260818_ParallelTempering_Gupta) | 2026-08-18 |
 | network24 | 663688 | best known | reference | — |
 
 <!-- BKV:END -->

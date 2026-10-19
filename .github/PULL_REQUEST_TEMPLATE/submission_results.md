@@ -18,8 +18,15 @@ Do not duplicate CSV metadata here; point reviewers to the source files in this 
 - **Solution file path(s)** (`*_solution.*` or `solutions/`):
 - **Reference/paper/code link(s)** (if applicable):
 
+### AI disclosure (do not remove)
+See `AI_POLICY.md`. Tick exactly one, and repeat the declaration in the submission root `README.md`:
+- [ ] `none` — no AI-generated content in this submission.
+- [ ] `assisted` — parts were AI-generated, then reviewed and edited by me. Tool/model and parts affected:
+- [ ] `generated` — the solver code or write-up is predominantly AI-generated. Tool/model and parts affected:
+
 ### Validation checklist (do not remove)
 - [ ] I followed `CONTRIBUTING.md`.
+- [ ] I take responsibility for the correctness of this submission; it was not opened by an automated agent.
 - [ ] I ran `uv run --project misc qoblib-check-submission <submission_root>` for each changed submission root.
 - [ ] Submission format checks pass locally.
 - [ ] Every solution file is **valid** (parses and matches the instance format/size).

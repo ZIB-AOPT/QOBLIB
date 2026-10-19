@@ -37,7 +37,7 @@ param DEMAND[NODES] := read filename as "<1n> 2n" match "^[0-9]+\s+[0-9]+\s*$" c
 set DEPOTS := { read filename as "<1n>" match "^-?[0-9]+\s*$" comment "#" };
 
 # Define distance function
-defnumb dist(a, b) := sqrt((X_COORD[a] - X_COORD[b])^2 + (Y_COORD[a] - Y_COORD[b])^2);
+defnumb dist(a, b) := round(sqrt((X_COORD[a] - X_COORD[b])^2 + (Y_COORD[a] - Y_COORD[b])^2));
 
 # Define set of Variables
 var x[NODES * NODES] binary;
