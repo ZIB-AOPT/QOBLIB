@@ -10,6 +10,12 @@ The proprietary Kenji R5 estimator source is intentionally excluded. Public
 reproducibility information is limited to its measurement-only interface,
 execution metadata, released result, and authority SHA-256 958AC865431968359C3318815C198A228350982FF8D489E6BC252B57E0E3E156.
 
+## Submitted results and interpretation
+
+The submitted `ITC2021_Early_14` instance records **five independent Qiskit Aer trials, five feasible solutions, and one successful run under the reported zero-tolerance threshold relative to this submission's best objective**. The best submitted objective is **2569**. This does **not** establish a proven global optimum, a new best-known-value record, or five repetitions attaining objective 2569. The existing `Optimality Bound = N/A` is intentionally retained.
+
+The hard-feasibility check and the ITC2021 soft-constraint objective are different evaluation criteria. QOBLIB's Sports documentation notes that the original ITC2021 competition minimizes soft-constraint violations. This PR is one of four R5 submissions totaling 54 distinct instances ([#73](https://github.com/ZIB-AOPT/QOBLIB/pull/73), [#74](https://github.com/ZIB-AOPT/QOBLIB/pull/74), [#75](https://github.com/ZIB-AOPT/QOBLIB/pull/75), [#76](https://github.com/ZIB-AOPT/QOBLIB/pull/76)). No run counts, objective values, solution files, or runtime data have been changed. No physical QPU run is claimed.
+
 ## AI-use disclosure
 
 - **Declaration:** `generated`.
