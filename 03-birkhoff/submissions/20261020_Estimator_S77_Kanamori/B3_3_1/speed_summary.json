@@ -1,0 +1,18 @@
+{
+  "completed_input_bundles": 5,
+  "elapsed_seconds": 1.8716621000203304,
+  "bundles_per_second": 2.6714223683568146,
+  "formula": "completed_input_bundles / elapsed_seconds",
+  "input_mode": "Recorded measurements from five new independent simulator acquisitions",
+  "interval": "Input dispatch to last durable estimator output; resident estimator processes",
+  "excluded_work": [
+    "prior acquisition and simulation",
+    "estimator startup",
+    "final teardown",
+    "diagnostic file writes",
+    "subsequent solution reconstruction and checker execution"
+  ],
+  "evidence": "Author-generated local measurement; not independent timing verification",
+  "steady_state_or_single_input_latency_claim": false,
+  "complete_workflow_runtime_seconds": null
+}
