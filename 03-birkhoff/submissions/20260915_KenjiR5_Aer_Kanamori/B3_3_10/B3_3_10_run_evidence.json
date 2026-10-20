@@ -1,0 +1,81 @@
+{
+  "declared_independent_runs": 5,
+  "execution_policy": {
+    "ibm_used": false,
+    "provider_calls": 0,
+    "qpu_calls": 0,
+    "run_qpu": false
+  },
+  "feasible_runs": 5,
+  "fixed_kenji_authority_sha256": "958AC865431968359C3318815C198A228350982FF8D489E6BC252B57E0E3E156",
+  "fresh_runs_added": 4,
+  "historical_runs_reused": 1,
+  "instance": "B3_3_10",
+  "schema": "QOBLIB_KENJI_R29_SUBMISSION_RUN_EVIDENCE_R2",
+  "solution_sha256": "1DC28D1A4D0CA181003E1587B7D7BB618561DBBF0E41DE74E568AF38ADD3CBFD",
+  "successful_runs": 5,
+  "truth_isolation": {
+    "known_or_reference_solution_used_as_kenji_input": false,
+    "production_truth_used": false,
+    "truth_isolated_until_after_output_commitment": true,
+    "validation_after_output_commitment": true
+  },
+  "runs": [
+    {
+      "feasible": true,
+      "independence_identifier": "65316D828B395B9461569666C8AD73787111B2F8693068F5AF1FBA98C6573D6F",
+      "measurement_bundle_sha256": "DE7FB9AD4CE752DD2D1CE88A46700E864AD2BF9B986AA8E2229FBDC4283E4627",
+      "objective": 3,
+      "origin": "historical_admitted",
+      "run": 1,
+      "solution_sha256": "1DC28D1A4D0CA181003E1587B7D7BB618561DBBF0E41DE74E568AF38ADD3CBFD",
+      "successful": true,
+      "validity": "PASS"
+    },
+    {
+      "feasible": true,
+      "independence_identifier": "57377A5FA91CEA128510B5434418185B7A47F8A94444B32C3117769982FA9258",
+      "measurement_bundle_sha256": "F82F6437AD5C51DDF846F1EAB756C283F8863A08C6D5EA6E3AE673D85C4C5D6A",
+      "objective": 3,
+      "origin": "fresh",
+      "run": 2,
+      "solution_sha256": "1DC28D1A4D0CA181003E1587B7D7BB618561DBBF0E41DE74E568AF38ADD3CBFD",
+      "successful": true,
+      "validity": "PASS"
+    },
+    {
+      "feasible": true,
+      "independence_identifier": "A78E55E99514C0AFEC0AEC073C6A939FA3E9A42738FB463EDF660FC53B2A709B",
+      "measurement_bundle_sha256": "7074C4F2DA0345F238937783825D747C1320AF93F126C3DCE227DDFC1B8562F1",
+      "objective": 3,
+      "origin": "fresh",
+      "run": 3,
+      "solution_sha256": "1DC28D1A4D0CA181003E1587B7D7BB618561DBBF0E41DE74E568AF38ADD3CBFD",
+      "successful": true,
+      "validity": "PASS"
+    },
+    {
+      "feasible": true,
+      "independence_identifier": "0B6C0D9EF8317F426D435DF17808E274F6A3D57AD5CC903F7CA3E6F03AEE2895",
+      "measurement_bundle_sha256": "7D670C1F707C179FABD72FED921EAF028598E4ED98C4325C23610B7FB652D19E",
+      "objective": 3,
+      "origin": "fresh",
+      "run": 4,
+      "solution_sha256": "1DC28D1A4D0CA181003E1587B7D7BB618561DBBF0E41DE74E568AF38ADD3CBFD",
+      "successful": true,
+      "validity": "PASS"
+    },
+    {
+      "feasible": true,
+      "independence_identifier": "DE52FD68C52C949990927241795A87D3EB0ACE10D4DF02F4CEE10BCE27481030",
+      "measurement_bundle_sha256": "B9844573D1AFC78260516C25D4AFDCA5BCCAA0DFDB9B7BC4DB616CA11D5E0C1A",
+      "objective": 3,
+      "origin": "fresh",
+      "run": 5,
+      "solution_sha256": "1DC28D1A4D0CA181003E1587B7D7BB618561DBBF0E41DE74E568AF38ADD3CBFD",
+      "successful": true,
+      "validity": "PASS"
+    }
+  ],
+  "public_evidence_scope": "Solutions, objectives, run counts, validation, aggregate end-to-end runtime, and opaque provenance commitments; operational details withdrawn."
+}
