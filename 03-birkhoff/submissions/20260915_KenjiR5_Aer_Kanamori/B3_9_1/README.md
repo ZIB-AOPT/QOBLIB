@@ -11,7 +11,7 @@ This directory contains the submission for the problem **B3_9_1**.
 | ====== |  |
 | Reference | README.md in this submission package |
 | Best Objective Value | 5 |
-| Optimality Bound | N/A |
+| Optimality Bound | 5 |
 | ====== |  |
 | Modeling Approach | Six-permutation support selection with exact integer-weight reconstruction |
 | # Decision Variables | 6 |
@@ -40,3 +40,7 @@ This directory contains the submission for the problem **B3_9_1**.
 | Other HW Runtime | 0 |
 | ====== |  |
 | Remarks | Public result statistics and aggregate end-to-end runtimes retained; detailed acquisition and component timing records withdrawn for proprietary-information protection. |
+
+## Instance-specific mathematical optimality
+
+The submitted solution reconstructs the public target matrix using 5 permutation matrices. Exact rational enumeration of every smaller permutation support proves that no feasible decomposition with fewer than 5 matrices exists. Therefore the instance-specific optimum and proven lower bound are both **5**. See the [public certificate](../OPTIMALITY_CERTIFICATE.md) and [reproducible verifier](../verify_optimality.py). This does not certify the proprietary estimator's internal operation or change any recorded run counts.

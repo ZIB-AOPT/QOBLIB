@@ -6,6 +6,16 @@ This package contains 21 Birkhoff instances. Every current instance table record
 
 Twenty instances report five feasible and five successful runs. `B3_9_4` reports four feasible and four successful runs out of five. This package therefore does not claim that every independent run succeeded. The submitted solution and the run-count statistics are separate parts of the evidence.
 
+## Public mathematical optimality certificates (21 Birkhoff instances)
+
+**All 21 submitted Birkhoff solution files attain the exact minimum number of permutation matrices for their respective public instances.** This is an instance-specific mathematical claim about the already-submitted solutions, not a new best-known-value record, a general optimization guarantee, or an independent certification of the proprietary estimator.
+
+The corresponding instance CSV and README records now declare `Optimality Bound = Best Objective Value`. The proof is based only on the public problem matrices and the submitted permutation vectors/weights; no proprietary estimator source, measurement settings, random seeds, or internal records are needed.
+
+For each instance, the submitted nonnegative weights reconstruct the public scaled matrix exactly (upper bound). To prove the matching lower bound, the public verifier enumerates every subset of fewer permutation matrices and tests exact rational nonnegative feasibility. None works. See [OPTIMALITY_CERTIFICATE.md](OPTIMALITY_CERTIFICATE.md) and the standard-library-only [verify_optimality.py](verify_optimality.py).
+
+**Run-count distinction:** the mathematical certificate concerns the released solution file, not the outcome of every acquisition. The reported five-run statistics are unchanged: 20 instances are 5/5 feasible/successful and `B3_9_4` is 4/5. No previously held or unsuccessful run is reclassified.
+
 The older `README_PR71.md` and `README_PR72.md` describe the two constituent subsets. Their former one-run statements have been updated to reflect the current instance tables.
 
 ## Method overview
