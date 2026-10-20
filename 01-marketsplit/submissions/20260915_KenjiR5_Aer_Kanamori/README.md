@@ -4,6 +4,12 @@ Submitter: Kenji Kanamori, Independent Researcher
 
 This package contains 23 Market Split instances. Each current instance table reports five independent Qiskit Aer runs and five feasible runs. The earlier seven-instance overview described only a subset and has been corrected to match the current package.
 
+## Submitted results and interpretation
+
+**23/23 submitted Market Split instances achieved the feasibility target.** Each instance's existing result table reports five independent Qiskit Aer trials and five feasible results, with objective value 0 and `Optimality Bound = 0`. QOBLIB defines Market Split as a pure feasibility problem: a solution meeting `Ax = b` satisfies the benchmark target. This is not a claim of a new first-known solution, a general-purpose solver, or comparative speed superiority.
+
+These are simulator-based results, not IBM QPU runs. This PR is one of four R5 submissions covering 54 distinct instances: [Market Split #73](https://github.com/ZIB-AOPT/QOBLIB/pull/73), [Sports #74](https://github.com/ZIB-AOPT/QOBLIB/pull/74), [LABS #75](https://github.com/ZIB-AOPT/QOBLIB/pull/75), and [Birkhoff #76](https://github.com/ZIB-AOPT/QOBLIB/pull/76). The other classes have different objective and optimality criteria and must not be conflated with this feasibility result. Reported run counts, solution files, and runtime measurements are unchanged.
+
 ## Method overview
 
 Kenji R5 is a fixed proprietary estimator that operates on quantum measurement bundles. The benchmark pipeline starts from a public problem instance, constructs its encoding and quantum-simulator acquisition, passes the resulting measurements through the submitted estimation pipeline, decodes the released output, and then applies the official problem validator.
