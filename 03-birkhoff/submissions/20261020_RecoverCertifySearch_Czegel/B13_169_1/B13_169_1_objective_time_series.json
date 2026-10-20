@@ -1,0 +1,39 @@
+[
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 68,
+      "Time": 0.000260083
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 65,
+      "Time": 0.000612333
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 64,
+      "Time": 0.017697375
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 63,
+      "Time": 1.1392805
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 62,
+      "Time": 83.423275583
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 61,
+      "Time": 256.335246292
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 60,
+      "Time": 271.724532125
+    }
+  ]
+]

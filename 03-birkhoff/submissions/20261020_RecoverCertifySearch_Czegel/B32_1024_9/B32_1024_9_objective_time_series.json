@@ -1,0 +1,49 @@
+[
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 160,
+      "Time": 0.002982875
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 157,
+      "Time": 0.005311375
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 156,
+      "Time": 0.018698166
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 155,
+      "Time": 0.59146125
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 154,
+      "Time": 2.005714458
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 153,
+      "Time": 2.039387833
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 152,
+      "Time": 2.551505833
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 151,
+      "Time": 13.1901305
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 150,
+      "Time": 224.738129583
+    }
+  ]
+]
