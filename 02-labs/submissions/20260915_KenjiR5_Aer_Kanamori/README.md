@@ -12,6 +12,12 @@ Fixed Kenji R5 authority SHA-256: 958AC865431968359C3318815C198A228350982FF8D489
 
 RUN_QPU=false. No IBM service or quantum hardware was used.
 
+## Submitted results and interpretation
+
+**All nine submitted LABS instances match QOBLIB's curated optimal objective values.** The corresponding instance CSVs already state matching `Best Objective Value` and `Optimality Bound` values. Unlike a best-known heuristic comparison, these nine values are listed as **optimal** in the official LABS reference table. The submitted results are therefore matches to already-established optima, **not new first discoveries or improved records**.
+
+This statement concerns the released solutions and the documented five-run experiment, not independent verification of the proprietary estimator's internal implementation. The existing solution files, objective values, run counts, runtime data and AI-use disclosure remain unchanged. These are Qiskit Aer simulator runs, not physical QPU runs. This PR belongs to the four-PR R5 set of 54 distinct instances ([#73](https://github.com/ZIB-AOPT/QOBLIB/pull/73), [#74](https://github.com/ZIB-AOPT/QOBLIB/pull/74), [#75](https://github.com/ZIB-AOPT/QOBLIB/pull/75), [#76](https://github.com/ZIB-AOPT/QOBLIB/pull/76)).
+
 ## AI-use disclosure
 
 - **Declaration:** `generated`.
