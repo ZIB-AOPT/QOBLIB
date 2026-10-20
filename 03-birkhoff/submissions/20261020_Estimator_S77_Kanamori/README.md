@@ -16,9 +16,30 @@ This submission reports a fixed-instance simulator integration experiment. Five 
 
 Read the public B3_3_1 instance; execute the inherited fixed-instance state preparation with the versioned acquisition interface; process the measurements through S77; map the released selection to permutations; compute exact weights using only the selected permutations; validate the resulting decomposition. There was no post-output search for alternative supports or final solution repair. This describes the outer workflow, not the confidential estimator algorithm.
 
-The solution uses two permutation matrices. The selection model has six binary variables; exact weight reconstruction is post-processing. No proven optimality bound is asserted. Official reference solutions/checker output were not used as pre-release estimator inputs. The inherited, instance-specific nature of state preparation is explicitly disclosed above.
+The solution uses two permutation matrices. The selection model has six binary variables; exact weight reconstruction is post-processing. The public instance and submitted solution establish an instance-specific optimality bound of 2 (certificate below). Official reference solutions/checker output were not used as pre-release estimator inputs. The inherited, instance-specific nature of state preparation is explicitly disclosed above.
 
 Setup/formatting failures occurred while commissioning the acquisition interface and were retained privately. They were not additional independent runs in this fixed five-run comparison. The five reported acquisitions were not selected by testing whether their estimator output matched a reference solution. Reprocessing a recorded acquisition is not counted as a new independent acquisition.
+
+## Instance-specific optimality certificate (B3_3_1)
+
+The public B3_3_1 instance is a doubly stochastic matrix scaled by 1000. In row notation, its scaled matrix is
+
+```text
+D_scaled = [ [  0, 276, 724],
+             [276, 724,   0],
+             [724,   0, 276] ]
+```
+
+**Lower bound (2):** A decomposition using just one permutation matrix would equal that permutation matrix, whose entries (after scaling by 1000) can only be 0 or 1000. Because the target contains entries 276 and 724, one permutation matrix is impossible. Therefore the minimum number of permutation matrices is at least 2.
+
+**Upper bound (2):** The submitted solution uses permutation vectors `(2,1,3)` and `(3,2,1)`, with respective nonnegative integer weights 276 and 724. These weights sum to 1000, and their weighted permutation matrices reconstruct `D_scaled` exactly:
+
+```text
+D_scaled = 276 * [ [0,1,0], [1,0,0], [0,0,1] ]
+         + 724 * [ [0,0,1], [0,1,0], [1,0,0] ]
+```
+
+Thus the minimum support size is exactly **2**, and the submitted objective value and proven instance-specific lower bound are both **2** (`Best Objective Value = 2`, `Optimality Bound = 2`). This certificate uses only the public instance and the submitted solution file. It does **not** certify the proprietary estimator's internals, general performance, independent run provenance, speed, or QOBLIB maintainer acceptance; it does not claim a new best-known-value record.
 
 ## Environment and identity
 
