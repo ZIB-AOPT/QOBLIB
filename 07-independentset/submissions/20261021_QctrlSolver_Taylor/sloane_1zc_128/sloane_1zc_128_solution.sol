@@ -1,21 +1,21 @@
 # Converted from Q-CTRL QAOA Output Payload (active variables only)
 # Solution for model sloane_1zc_128
 # Objective value = 18
+1
 4
-9
-15
+13
 22
-32
-37
-44
-55
+31
+39
+46
 57
+60
 72
 74
-81
-93
-99
-110
+83
+94
+97
+107
 114
-120
-123
+119
+128
