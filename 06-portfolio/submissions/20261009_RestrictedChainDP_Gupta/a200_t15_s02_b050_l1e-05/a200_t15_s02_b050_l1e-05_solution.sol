@@ -2,7 +2,7 @@
 instance po_a200_t15_s02
 budget 50
 lambda 0.00001
-objective -1997344
+objective -1997430
 # period symbol long short
 0 NVDA 0 2
 0 CRM 3 0
@@ -55,9 +55,10 @@ objective -1997344
 2 DELL 3 0
 2 MMM 3 0
 2 RCL 3 0
+2 GM 1 0
 2 AZO 3 0
 2 NXPI 3 0
-2 AEP 2 0
+2 AEP 1 0
 2 PSX 0 3
 3 LLY 0 3
 3 ORCL 0 2
@@ -75,8 +76,9 @@ objective -1997344
 3 PNC 2 0
 3 DELL 0 1
 3 MMM 3 0
-3 VST 3 0
+3 VST 2 0
 3 FCX 3 0
+3 GM 1 0
 4 NVDA 0 3
 4 ORCL 0 2
 4 COST 0 3

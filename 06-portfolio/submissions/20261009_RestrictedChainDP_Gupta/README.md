@@ -19,6 +19,16 @@ here was verified with 06-portfolio/check as it was produced.
 
 Code: https://github.com/mnn31/qoblib-solvers/tree/main/portfolio
 
+## Re-run of 2026-10-25
+
+Twenty rows were re-run on 2026-10-25 with 33 seeds each and a larger search
+budget (more restarts, kicks and neighbourhood iterations) on a 32 thread cloud
+container. Those rows carry the later date, the new hardware string and the
+seed count in their summaries; everything else is unchanged. Three of the a050
+rows now improve the published value (a050_t10_s00 at lambda 1e-2 and 5e-4,
+a050_t15_orig at 5e-4), the rest of the re-run rows are small improvements on
+this method's own earlier values.
+
 ## AI disclosure
 
 assisted —  code and repetitive boiler syntax implementation. The solver code,

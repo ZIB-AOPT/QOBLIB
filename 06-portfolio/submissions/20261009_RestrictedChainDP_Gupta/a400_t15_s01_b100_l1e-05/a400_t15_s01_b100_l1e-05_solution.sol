@@ -2,7 +2,7 @@
 instance po_a400_t15_s01
 budget 100
 lambda 0.00001
-objective -4440683
+objective -4440812
 # period symbol long short
 0 TSLA 0 3
 0 ORCL 0 3
@@ -40,7 +40,6 @@ objective -4440683
 0 JBHT 0 3
 0 SMCI 3 0
 1 NVDA 3 0
-1 ABT 0 2
 1 AMD 3 0
 1 ADBE 0 3
 1 ANET 2 0
@@ -73,7 +72,8 @@ objective -4440683
 1 FSLR 0 2
 1 IP 0 3
 1 LUV 0 3
-1 PODD 0 1
+1 ULTA 0 1
+1 PODD 0 2
 1 STLD 3 0
 1 SMCI 3 0
 1 JBL 0 3
@@ -400,17 +400,16 @@ objective -4440683
 11 TSLA 0 3
 11 ORCL 0 3
 11 COST 0 3
-11 MRK 2 0
+11 MRK 3 0
 11 ABT 3 0
 11 PLTR 1 0
 11 ANET 0 3
-11 NEE 2 0
+11 NEE 3 0
 11 APO 0 3
-11 AMT 2 0
 11 INTC 3 0
 11 CTAS 3 0
 11 DELL 0 3
-11 MMM 0 1
+11 MMM 0 2
 11 FDX 3 0
 11 TGT 0 3
 11 VST 0 3
@@ -424,7 +423,7 @@ objective -4440683
 11 LEN 0 3
 11 ACGL 0 3
 11 DD 2 0
-11 HPE 0 3
+11 HPE 0 2
 11 HPQ 3 0
 11 CSGP 0 3
 11 VLTO 3 0
@@ -438,8 +437,8 @@ objective -4440683
 12 COST 0 3
 12 MS 3 0
 12 GS 1 0
-12 NEE 2 0
-12 COP 2 0
+12 NEE 3 0
+12 COP 1 0
 12 PANW 1 0
 12 MU 0 3
 12 PLD 0 3

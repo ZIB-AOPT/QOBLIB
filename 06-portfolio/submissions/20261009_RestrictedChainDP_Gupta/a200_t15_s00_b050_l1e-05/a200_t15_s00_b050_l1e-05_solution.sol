@@ -2,7 +2,7 @@
 instance po_a200_t15_s00
 budget 50
 lambda 0.00001
-objective -2177759
+objective -2177886
 # period symbol long short
 0 GOOGL 3 0
 0 META 3 0
@@ -98,7 +98,7 @@ objective -2177759
 4 MPC 0 3
 5 LLY 0 3
 5 ORCL 0 3
-5 ACN 0 3
+5 ACN 0 2
 5 AMD 3 0
 5 ADBE 0 1
 5 TXN 3 0
@@ -115,6 +115,7 @@ objective -2177759
 5 BDX 0 3
 5 RCL 3 0
 5 VST 3 0
+5 HWM 0 1
 6 GOOG 1 0
 6 GOOGL 3 0
 6 TSLA 2 0
@@ -126,14 +127,16 @@ objective -2177759
 6 CEG 3 0
 6 APO 0 1
 6 AMT 0 1
-6 EQIX 0 2
+6 EQIX 0 1
+6 ABNB 0 1
 6 DELL 3 0
 6 MMM 3 0
 6 FDX 0 3
-6 CVS 0 3
+6 CVS 0 2
 6 RCL 3 0
 6 FCX 3 0
 6 CMI 3 0
+6 HWM 0 1
 6 PSX 1 0
 6 MPC 2 0
 7 NVDA 0 3

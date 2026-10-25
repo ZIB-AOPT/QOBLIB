@@ -2,7 +2,7 @@
 instance po_a050_t10_s00
 budget 20
 lambda 0.0005
-objective -234061
+objective -234716
 # period symbol long short
 0 GOOG 2 0
 0 AVGO 1 0
@@ -28,19 +28,18 @@ objective -234061
 1 IBM 0 1
 1 PM 0 2
 1 ADBE 1 0
+2 AAPL 0 1
 2 MSFT 3 0
 2 GOOGL 0 1
 2 META 0 1
 2 TSLA 0 1
 2 AVGO 2 0
 2 V 1 0
-2 XOM 1 0
 2 MRK 0 3
-2 CSCO 0 1
-2 NOW 2 0
+2 NOW 3 0
 2 IBM 0 1
 2 AMD 0 1
-2 ADBE 1 0
+2 PM 0 1
 2 CAT 1 0
 3 WMT 1 0
 3 UNH 1 0
@@ -55,34 +54,34 @@ objective -234061
 3 GE 3 0
 3 GS 1 0
 3 PM 0 1
-4 NVDA 2 0
-4 AMZN 2 0
+4 NVDA 1 0
+4 AMZN 3 0
 4 TSLA 0 1
 4 AVGO 0 1
-4 MA 1 0
 4 UNH 0 1
 4 ORCL 0 1
+4 BAC 0 1
 4 ABBV 1 0
 4 CRM 2 0
 4 TMO 0 2
+4 LIN 1 0
 4 PEP 0 1
 4 MCD 0 1
-4 AMD 0 3
+4 AMD 0 2
 4 PM 0 1
-5 AAPL 2 0
+5 AAPL 3 0
 5 NVDA 0 1
 5 LLY 0 1
 5 UNH 0 1
 5 ORCL 0 1
-5 PG 0 2
-5 CRM 1 0
+5 HD 0 1
+5 CRM 2 0
 5 MS 0 1
-5 BX 0 1
 5 ISRG 0 1
 5 LIN 1 0
 5 GE 3 0
-5 DIS 0 1
-5 CAT 3 0
+5 DIS 0 2
+5 CAT 2 0
 6 META 0 1
 6 TSLA 1 0
 6 V 0 3
@@ -99,15 +98,13 @@ objective -234061
 6 ADBE 1 0
 7 GOOG 3 0
 7 META 0 1
-7 UNH 0 1
 7 ORCL 1 0
 7 HD 0 3
 7 NFLX 1 0
 7 CSCO 0 3
-7 AXP 1 0
-7 BX 0 1
+7 AXP 2 0
+7 BX 0 2
 7 ISRG 0 2
-7 LIN 1 0
 7 DIS 1 0
 7 AMD 1 0
 8 NVDA 0 2

@@ -2,7 +2,7 @@
 instance po_a200_t15_s01
 budget 50
 lambda 0.00001
-objective -2011406
+objective -2011450
 # period symbol long short
 0 NVDA 3 0
 0 GOOG 0 3
@@ -80,6 +80,7 @@ objective -2011406
 3 SRE 0 3
 4 GOOGL 0 3
 4 AVGO 0 3
+4 UNH 0 1
 4 NFLX 0 1
 4 NOW 0 3
 4 TXN 3 0
@@ -87,7 +88,6 @@ objective -2011406
 4 PLTR 0 1
 4 MU 0 3
 4 UPS 3 0
-4 NKE 0 1
 4 LRCX 3 0
 4 AMT 3 0
 4 CTAS 3 0
@@ -99,13 +99,14 @@ objective -2011406
 4 VST 3 0
 4 PSX 3 0
 5 TSLA 0 3
+5 UNH 0 1
 5 NOW 0 3
 5 ISRG 0 3
 5 GE 0 3
 5 DIS 2 0
 5 ADBE 0 3
 5 LOW 3 0
-5 BSX 0 2
+5 BSX 0 1
 5 CEG 3 0
 5 MO 2 0
 5 DELL 0 3
