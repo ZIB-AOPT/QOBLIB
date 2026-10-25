@@ -22,6 +22,20 @@ next to it with the soft penalty the validator computed.
 
 Code: https://github.com/mnn31/qoblib-solvers/tree/main/sports
 
+## Existing timetables for these instances
+
+05-sports/solutions/ITC2021 and 05-sports/solutions/Large already hold RobinX
+XML timetables for these instances, from the ITC2021 competition and from the
+instance generator, and the competition README lists a best soft objective from
+the literature for each ITC2021 instance. The best known table does not show
+them, because the objective reader does not parse XML. The per instance remarks
+therefore say "no entry in the best known table", not "no feasible solution".
+The timetables here were computed from scratch, were never seeded from those
+files, and what they add is a reproducible method with the time CP-SAT needs to
+reach feasibility. If the committee prefers to credit the existing files, that
+is fine by me.
+
+
 ## AI disclosure
 
 assisted —  code and repetitive boiler syntax implementation. The solver code,
