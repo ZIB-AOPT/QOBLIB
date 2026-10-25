@@ -1,0 +1,5 @@
+networkx==3.2.1
+numpy==2.0.2
+
+# Optional, for reproducing the solver-guided AHEG and hybrid searches:
+# cplex==22.1.2.0
