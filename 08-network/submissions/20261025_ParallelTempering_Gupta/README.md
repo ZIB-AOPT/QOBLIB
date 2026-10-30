@@ -1,8 +1,9 @@
 # Parallel tempering over network topologies, longer runs
 
 A follow up to the 2026-08-18 submission with the same method and more search
-time, on the five instances where that submission did not hold the best known
-value or held it with the largest remaining gap to its own lower bound.
+time, on five instances: network12 and network24, where the table holds the
+reference value, and network20, network22 and network23, where another open
+submission reports better values than the 2026-08-18 runs.
 
 The problem separates. Choosing the digraph is combinatorial and has no useful
 lower bound; choosing the routing on a fixed digraph is a min-congestion
@@ -14,7 +15,7 @@ proposal is feasible by construction.
 
 Runs: six independent runs of eight replicas for 7200 s on each of the five
 instances (seeds 0 to 5), and four further runs of twelve replicas for 10800 s
-on network20, network22 and network23 (seeds 10 to 13). Every replica starts
+on network20, network22 and network23 (seeds 0 to 3). Every replica starts
 from an independently sampled random topology; the published solutions are
 never read by the search. The integral routing is recovered once at the end by
 re-solving the same model with integrality on the flow variables.
