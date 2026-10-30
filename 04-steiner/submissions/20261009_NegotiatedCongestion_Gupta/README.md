@@ -21,12 +21,22 @@ Code: https://github.com/mnn31/qoblib-solvers/tree/main/steiner
 exact polish: each net in turn is replaced by a minimum Steiner tree of the grid
 with the other nets' nodes removed, computed exactly with the Dreyfus Wagner
 recursion driven by Dijkstra (nets have at most six terminals), until no net
-improves. Second, a large neighbourhood search that rips up two to four adjacent
-nets and re-inserts them exactly in every order, with small random node costs
-on the earlier nets and occasional kicks. The re-run rows carry the later date,
+improves. Second, a large neighbourhood search that rips up a few adjacent nets
+and re-inserts them exactly in every order, with small random node costs on the
+earlier nets. The first stage takes two to three nets with no kicks, later stages
+take two to four nets and add occasional kicks. The re-run rows carry the later date,
 the cloud hardware string, the two stage run protocol in their remarks and the
 new workflow text; the 19 rows the re-run did not improve are unchanged. Eleven
 of the re-run rows now reach the published best known value exactly.
+
+## Follow up of 2026-10-30
+
+Fifteen rows got one or two more passes on a laptop, continuing the best packing
+with 900 s of neighbourhood search per run. Four rows improved (stp_s080_l3_t5,
+stp_s090_l2_t3_h2, stp_s090_l3_t4 and stp_s090_l3_t6) and carry the later date, the
+extra runs and both hardware strings. The other rows did not improve and keep their
+value, solution and date. The workflow text was also corrected to separate what the
+first stage did from the later ones.
 
 ## AI disclosure
 
