@@ -1,0 +1,91 @@
+{
+  "schema": "QOBLIB_MARKETSPLIT_N020_SPLIT_R10_SUBMISSION_MANIFEST",
+  "kenji_authority_sha256": "958AC865431968359C3318815C198A228350982FF8D489E6BC252B57E0E3E156",
+  "truth_or_reference_before_kenji": false,
+  "instances": [
+    {
+      "instance": "ms_03_050_002",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5173094800091349
+    },
+    {
+      "instance": "ms_03_050_005",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5497329799982253
+    },
+    {
+      "instance": "ms_03_050_007",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5740871999994852
+    },
+    {
+      "instance": "ms_03_050_009",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5429693799989763
+    },
+    {
+      "instance": "ms_03_100_001",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5386203800153453
+    },
+    {
+      "instance": "ms_03_100_012",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5453360800107476
+    },
+    {
+      "instance": "ms_03_100_019",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5751404199982062
+    },
+    {
+      "instance": "ms_03_100_022",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5349675799894612
+    },
+    {
+      "instance": "ms_03_200_050",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5708796800056006
+    },
+    {
+      "instance": "ms_03_200_068",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5658853200031444
+    },
+    {
+      "instance": "ms_03_200_161",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5953260599984788
+    },
+    {
+      "instance": "ms_03_200_177",
+      "runs": 5,
+      "validator_pass": 5,
+      "kenji_release": 5,
+      "mean_total_seconds": 0.5864263000024948
+    }
+  ]
+}
