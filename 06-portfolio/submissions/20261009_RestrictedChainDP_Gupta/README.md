@@ -1,0 +1,38 @@
+# Restricted state chain dynamic program for the large portfolio families
+
+The exact chain dynamic program in the ChainDP submission enumerates every
+feasible per period portfolio, which is impossible for a050 and above. This
+submission keeps the chain structure but restricts each period to a pool of good
+portfolios found by exact integer local search, exact subset enumeration and
+relaxation roundings, runs the exact chain dynamic program over the pools, and
+polishes by coordinate descent. The method is a heuristic and claims no
+optimality.
+
+Validation before any of this was produced: it matches the proven optimum on all
+160 instances of the a003 to a010 families, and on a050 it is within a few
+hundredths of a percent of the published values at low lambda and clearly worse
+at the two highest lambdas, where the published values come from a MIP solver.
+Those a050 runs are included here so the gap is on record.
+
+The a200 and a400 families had no feasible solution on record. Every solution
+here was verified with 06-portfolio/check as it was produced.
+
+Code: https://github.com/mnn31/qoblib-solvers/tree/main/portfolio
+
+## Re-run of 2026-10-25
+
+Twenty rows were re-run on 2026-10-25 with 33 seeds each and a larger search
+budget (more restarts, kicks and neighbourhood iterations) on a 32 thread cloud
+container. Those rows carry the later date, the new hardware string and the
+seed count in their summaries; everything else is unchanged. Three of the a050
+rows now improve the published value (a050_t10_s00 at lambda 1e-2 and 5e-4,
+a050_t15_orig at 5e-4), the rest of the re-run rows are small improvements on
+this method's own earlier values.
+
+## AI disclosure
+
+assisted —  code and repetitive boiler syntax implementation. The solver code,
+the packaging scripts and the first drafts of the write-ups were written with help from
+Claude (Claude Code, Claude Fable 5.1, Anthropic). All goals, problem choices,
+methods and responses  were directed by the author, and every reported
+run and solution file was executed, checked and confirmed by the author.
