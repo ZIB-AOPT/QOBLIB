@@ -4,6 +4,59 @@
       "Error": 0.0,
       "Incumbent": 4,
       "Time": 2.584e-6
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 4,
+      "Time": 0.0003
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 4,
+      "Time": 4.167e-6
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 4,
+      "Time": 0.0003
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 4,
+      "Time": 2.541e-6
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 4,
+      "Time": 0.0003
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 4,
+      "Time": 2.292e-6
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 4,
+      "Time": 0.0003
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 4,
+      "Time": 5.583e-6
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 4,
+      "Time": 0.0003
     }
   ]
 ]

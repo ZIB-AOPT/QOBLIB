@@ -22,15 +22,15 @@ This directory contains the submission for the problem **B48_2304_10**.
 | Workflow | Parallel run (6 threads): solution chain and bound chain in one run, stopping when they meet; final solution found by: large neighborhood search |
 | Algorithm Type | Stochastic |
 | Paradigm | Classical |
-| # Runs | 1 |
-| # Feasible Runs | 1 |
-| # Successful Runs | 1 |
+| # Runs | 5 |
+| # Feasible Runs | 5 |
+| # Successful Runs | 2 |
 | Success Threshold | 0 |
 | Hardware Specifications | Apple MacBook Pro, M4 Pro (8 performance + 4 efficiency cores), 24 GB RAM |
-| Total Runtime | 60.013 |
-| Time to Solution | 48.133 |
-| CPU Runtime | 360.077 |
+| Total Runtime | 276.012 |
+| Time to Solution | 60.838 |
+| CPU Runtime | 1599.091 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
-| Remarks | Exact decomposition (no tolerance), with weights of the precision of the data (integers at the given scale). Proofs of optimality by the degree or two-line bound hold for real weights too; proofs by SAT certificates (small dense instances) hold for weights of this precision. Runs: 60 s per instance; instances without a proof of optimality were run again with 600 s; the shorter decomposition is reported with the runtime of its run. Every optimality bound comes from the reported runs themselves. CPU runtime is an upper estimate (wall time x 6 threads). The planted decomposition in the instance file is never read. |
+| Remarks | Exact decomposition (no tolerance), with weights of the precision of the data (integers at the given scale). Proofs of optimality by the degree or two-line bound hold for real weights too; proofs by SAT certificates (small dense instances) hold for weights of this precision. 5 independent runs with the seeds 0, 1, 2, 3, 4. A run: 60 s per instance; without a proof of optimality, a second round of 600 s; the result of the run is the shorter decomposition of the two rounds, with the runtime and time to solution of its round. Best Objective Value: the shortest decomposition over the runs. Optimality Bound: the largest lower bound over the runs. Total Runtime and Time to Solution: means over the 5 runs; the time to solution of a run is the time at which it found its own final decomposition. CPU Runtime: the measured CPU time of all threads, mean over the runs with the seeds 1 to 4 (the CPU time of the run with seed 0 was not measured). The objective time series has one entry per run. Length over the runs (seeds 0 to 4): 200, 201, 201, 201, 200; mean 200.6, median 201, std 0.55. Total runtime [s]: 60.0128, 60.0077, 600.0141, 60.0238, 600.0041; median 60.024, std 295.767. Time to solution [s]: 48.1332, 39.3454, 78.4872, 12.6457, 125.5785; median 48.133, std 43.153. The planted decomposition in the instance file is never read. |

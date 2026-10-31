@@ -19,6 +19,119 @@
       "Error": 0.0,
       "Incumbent": 14,
       "Time": 34.337514416
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 14,
+      "Time": 60.1561
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 17,
+      "Time": 0.000034458
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 16,
+      "Time": 0.001297958
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 15,
+      "Time": 0.0261125
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 14,
+      "Time": 265.298797583
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 14,
+      "Time": 600.0522
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 17,
+      "Time": 0.000036625
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 16,
+      "Time": 0.00125925
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 15,
+      "Time": 0.026123209
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 14,
+      "Time": 225.762086334
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 14,
+      "Time": 600.3423
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 17,
+      "Time": 0.000035667
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 16,
+      "Time": 0.001301958
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 15,
+      "Time": 0.026652458
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 14,
+      "Time": 191.610412417
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 14,
+      "Time": 600.1199
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 17,
+      "Time": 0.000031083
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 16,
+      "Time": 0.001256333
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 15,
+      "Time": 0.037000125
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 14,
+      "Time": 148.917125833
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 14,
+      "Time": 600.6207
     }
   ]
 ]
