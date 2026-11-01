@@ -3,7 +3,7 @@
     "id": "B4_16_3",
     "k": 8,
     "n": 4,
-    "optimal": true,
+    "optimal": false,
     "permutations": [
       4,
       1,

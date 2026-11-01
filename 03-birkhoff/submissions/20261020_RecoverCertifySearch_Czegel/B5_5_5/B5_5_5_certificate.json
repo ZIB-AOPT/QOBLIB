@@ -1,0 +1,7 @@
+{
+  "bound": 5,
+  "instance": "B5_5_5",
+  "line": "column 4",
+  "method": "degree",
+  "valid_for": "real weights"
+}

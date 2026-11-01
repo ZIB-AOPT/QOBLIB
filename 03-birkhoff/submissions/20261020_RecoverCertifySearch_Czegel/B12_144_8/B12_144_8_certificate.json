@@ -1,0 +1,43 @@
+{
+  "block_number_at_most": 2,
+  "block_number_proof": "exact",
+  "bound": 22,
+  "equal_pairs": 0,
+  "instance": "B12_144_8",
+  "lines": [
+    "row 6",
+    "row 7"
+  ],
+  "method": "two-line",
+  "unmatched": [
+    [
+      2950,
+      3328,
+      4433,
+      5319,
+      7091,
+      7488,
+      9680,
+      10510,
+      11303,
+      11840,
+      12772,
+      13286
+    ],
+    [
+      3404,
+      5409,
+      5476,
+      5996,
+      6955,
+      8028,
+      8534,
+      8720,
+      9707,
+      10939,
+      11992,
+      14840
+    ]
+  ],
+  "valid_for": "real weights"
+}

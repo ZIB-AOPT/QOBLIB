@@ -1,0 +1,37 @@
+{
+  "block_number_at_most": 2,
+  "block_number_proof": "exact",
+  "bound": 16,
+  "equal_pairs": 0,
+  "instance": "B9_81_7",
+  "lines": [
+    "column 7",
+    "column 9"
+  ],
+  "method": "two-line",
+  "unmatched": [
+    [
+      467,
+      893,
+      900,
+      929,
+      1069,
+      1071,
+      1356,
+      1411,
+      1904
+    ],
+    [
+      522,
+      774,
+      979,
+      1033,
+      1047,
+      1084,
+      1116,
+      1374,
+      2071
+    ]
+  ],
+  "valid_for": "real weights"
+}

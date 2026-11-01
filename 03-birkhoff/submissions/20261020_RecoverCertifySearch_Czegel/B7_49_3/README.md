@@ -10,7 +10,7 @@ This directory contains the submission for the problem **B7_49_3**.
 | Date | 2026-10-20 |
 | Reference | https://arxiv.org/abs/2610.25837 (article), https://github.com/tg90000/rcs-birkhoff (code) |
 | Best Objective Value | 25 |
-| Optimality Bound | 15 |
+| Optimality Bound | 13 |
 | Modeling Approach | Exact decomposition, weights with the precision of the data. Solution chain: weights from the frequency rule, placed by fixing by unique subset sums (sparse); Birkhoff algorithm with the zeroing rule, beam search over zeroing steps, SAT re-optimization of the tail, large neighborhood search (dense). Bound chain in the same run: degree, two-line bound, SAT certificates |
 | # Decision Variables | 50 |
 | # Binary Variables | 49 |
@@ -27,10 +27,10 @@ This directory contains the submission for the problem **B7_49_3**.
 | # Successful Runs | 5 |
 | Success Threshold | 0 |
 | Hardware Specifications | Apple MacBook Pro, M4 Pro (8 performance + 4 efficiency cores), 24 GB RAM |
-| Total Runtime | 600.051 |
-| Time to Solution | 270.766 |
-| CPU Runtime | 2962.144 |
+| Total Runtime | 660.084 |
+| Time to Solution | 330.798 |
+| CPU Runtime | 3255.979 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
-| Remarks | Exact decomposition (no tolerance), with weights of the precision of the data (integers at the given scale). Proofs of optimality by the degree or two-line bound hold for real weights too; proofs by SAT certificates (small dense instances) hold for weights of this precision. 5 independent runs with the seeds 0, 1, 2, 3, 4. A run: 60 s per instance; without a proof of optimality, a second round of 600 s; the result of the run is the shorter decomposition of the two rounds, with the runtime and time to solution of its round. Best Objective Value: the shortest decomposition over the runs. Optimality Bound: the largest lower bound over the runs. Total Runtime and Time to Solution: means over the 5 runs; the time to solution of a run is the time at which it found its own final decomposition. CPU Runtime: the measured CPU time of all threads, mean over the runs with the seeds 1 to 4 (the CPU time of the run with seed 0 was not measured). The objective time series has one entry per run. Length over the runs (seeds 0 to 4): 25, 25, 25, 25, 25; mean 25.0, median 25, std 0.00. Total runtime [s]: 600.0519, 600.0501, 600.0612, 600.0486, 600.0413; median 600.050, std 0.007. Time to solution [s]: 213.4975, 272.4968, 202.7295, 95.6753, 569.4288; median 213.498, std 178.723. The planted decomposition in the instance file is never read. |
+| Remarks | Exact decomposition (no tolerance), with weights of the precision of the data (integers at the given scale). The Optimality Bound holds for real weights (degree or two-line bound); its certificate is B7_49_3_certificate.json. For weights with the precision of the data, a SAT certificate of the runs proves the lower bound 15. This bound does not hold for real weights and is not used as Optimality Bound; no proof file is included. 5 independent runs with the seeds 0, 1, 2, 3, 4. A run: 60 s per instance; without a proof of optimality, a second round of 600 s that starts from scratch; the result of the run is the shorter decomposition of the two rounds. Best Objective Value: the shortest decomposition over the runs. Optimality Bound: the largest lower bound over the runs that holds for real weights. Total Runtime: the time of the whole run (both rounds). Time to Solution: the time from the start of the run until it first found a decomposition of its final length (the second round counts from the end of the first). Both are means over the 5 runs. CPU Runtime: the measured CPU time of all threads in both rounds, mean over the runs with the seeds 1 to 4 (the CPU time of the run with seed 0 was not measured). The objective time series has one element per run: the incumbent of the run over both rounds, the second round shifted by the runtime of the first. Length over the runs (seeds 0 to 4): 25, 25, 25, 25, 25; mean 25.0, median 25, std 0.00. Total runtime [s]: 660.0920, 660.0866, 660.0900, 660.0804, 660.0689; median 660.087, std 0.009. Time to solution [s]: 273.5376, 332.5333, 262.7583, 155.7071, 629.4564; median 273.538, std 178.721. The planted decomposition in the instance file is never read. |

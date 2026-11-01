@@ -19,7 +19,7 @@ This directory contains the submission for the problem **B13_169_10**.
 | # Non-Zero Coefficients | 26 |
 | Coefficients Type | Binary |
 | Coefficients Range | 1 |
-| Workflow | Parallel run (6 threads): solution chain and bound chain in one run, stopping when they meet; final solution found by: SAT re-optimization of the tail |
+| Workflow | Parallel run (6 threads): solution chain and bound chain in one run, stopping when they meet; final solution found by: beam search over zeroing steps |
 | Algorithm Type | Stochastic |
 | Paradigm | Classical |
 | # Runs | 5 |
@@ -27,10 +27,10 @@ This directory contains the submission for the problem **B13_169_10**.
 | # Successful Runs | 4 |
 | Success Threshold | 0 |
 | Hardware Specifications | Apple MacBook Pro, M4 Pro (8 performance + 4 efficiency cores), 24 GB RAM |
-| Total Runtime | 384.019 |
-| Time to Solution | 172.090 |
-| CPU Runtime | 1591.681 |
+| Total Runtime | 660.035 |
+| Time to Solution | 208.097 |
+| CPU Runtime | 3193.796 |
 | GPU Runtime | 0 |
 | QPU Runtime | 0 |
 | Other HW Runtime | 0 |
-| Remarks | Exact decomposition (no tolerance), with weights of the precision of the data (integers at the given scale). Proofs of optimality by the degree or two-line bound hold for real weights too; proofs by SAT certificates (small dense instances) hold for weights of this precision. 5 independent runs with the seeds 0, 1, 2, 3, 4. A run: 60 s per instance; without a proof of optimality, a second round of 600 s; the result of the run is the shorter decomposition of the two rounds, with the runtime and time to solution of its round. Best Objective Value: the shortest decomposition over the runs. Optimality Bound: the largest lower bound over the runs. Total Runtime and Time to Solution: means over the 5 runs; the time to solution of a run is the time at which it found its own final decomposition. CPU Runtime: the measured CPU time of all threads, mean over the runs with the seeds 1 to 4 (the CPU time of the run with seed 0 was not measured). The objective time series has one entry per run. Length over the runs (seeds 0 to 4): 61, 61, 62, 61, 61; mean 61.2, median 61, std 0.45. Total runtime [s]: 600.0169, 600.0226, 60.0050, 600.0322, 60.0201; median 600.017, std 295.776. Time to solution [s]: 259.9204, 262.8368, 30.7570, 270.5243, 36.4139; median 259.920, std 126.512. The planted decomposition in the instance file is never read. |
+| Remarks | Exact decomposition (no tolerance), with weights of the precision of the data (integers at the given scale). The Optimality Bound holds for real weights (degree or two-line bound); its certificate is B13_169_10_certificate.json. 5 independent runs with the seeds 0, 1, 2, 3, 4. A run: 60 s per instance; without a proof of optimality, a second round of 600 s that starts from scratch; the result of the run is the shorter decomposition of the two rounds. Best Objective Value: the shortest decomposition over the runs. Optimality Bound: the largest lower bound over the runs that holds for real weights. Total Runtime: the time of the whole run (both rounds). Time to Solution: the time from the start of the run until it first found a decomposition of its final length (the second round counts from the end of the first). Both are means over the 5 runs. CPU Runtime: the measured CPU time of all threads in both rounds, mean over the runs with the seeds 1 to 4 (the CPU time of the run with seed 0 was not measured). The objective time series has one element per run: the incumbent of the run over both rounds, the second round shifted by the runtime of the first. Length over the runs (seeds 0 to 4): 61, 61, 62, 61, 61; mean 61.2, median 61, std 0.45. Total runtime [s]: 660.0245, 660.0334, 660.0287, 660.0455, 660.0423; median 660.033, std 0.009. Time to solution [s]: 319.9280, 322.8476, 30.7570, 330.5376, 36.4139; median 319.928, std 159.366. The planted decomposition in the instance file is never read. |
