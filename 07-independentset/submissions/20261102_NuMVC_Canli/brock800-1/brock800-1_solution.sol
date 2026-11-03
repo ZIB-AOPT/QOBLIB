@@ -1,5 +1,5 @@
 # Objective value = 21
-# Stable set for brock800-1 found by qob_numvc (vertex cover local search), seed 1, 0.3 s
+# Stable set for brock800-1 found by qob_numvc (vertex cover local search), seed 1, 0.2 s CPU
 37
 73
 193

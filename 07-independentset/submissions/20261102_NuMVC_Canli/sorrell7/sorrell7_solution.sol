@@ -1,5 +1,5 @@
 # Objective value = 198
-# Stable set for sorrell7 found by qob_numvc (vertex cover local search), seed 1, 27.8 s
+# Stable set for sorrell7 found by qob_numvc (vertex cover local search), seed 1, 12.2 s CPU
 1
 13
 31

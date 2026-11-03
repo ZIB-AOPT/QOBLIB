@@ -1,5 +1,5 @@
 # Objective value = 15
-# Stable set for johnson16-2-4 found by qob_numvc (vertex cover local search), seed 1, 0.0 s
+# Stable set for johnson16-2-4 found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
 7
 8
 9

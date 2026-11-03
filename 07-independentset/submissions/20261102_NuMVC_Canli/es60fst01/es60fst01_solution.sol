@@ -1,5 +1,5 @@
 # Objective value = 60
-# Stable set for es60fst01 found by qob_numvc (vertex cover local search), seed 1, 0.0 s
+# Stable set for es60fst01 found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
 1
 2
 3

@@ -1,5 +1,5 @@
 # Objective value = 44
-# Stable set for gen200_p0-9_44 found by qob_numvc (vertex cover local search), seed 1, 0.0 s
+# Stable set for gen200_p0-9_44 found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
 13
 20
 29

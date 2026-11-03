@@ -1,5 +1,5 @@
 # Objective value = 45
-# Stable set for frb45-21-3 found by qob_numvc (vertex cover local search), seed 1, 11.5 s
+# Stable set for frb45-21-3 found by qob_numvc (vertex cover local search), seed 1, 4.7 s CPU
 17
 35
 45

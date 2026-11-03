@@ -1,5 +1,5 @@
 # Objective value = 20
-# Stable set for karate found by qob_numvc (vertex cover local search), seed 1, 0.0 s
+# Stable set for karate found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
 8
 10
 11

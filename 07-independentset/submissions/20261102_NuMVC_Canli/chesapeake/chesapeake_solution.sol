@@ -1,5 +1,5 @@
 # Objective value = 17
-# Stable set for chesapeake found by qob_numvc (vertex cover local search), seed 1, 0.0 s
+# Stable set for chesapeake found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
 3
 4
 6

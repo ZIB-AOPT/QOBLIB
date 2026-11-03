@@ -1,5 +1,5 @@
 # Objective value = 499
-# Stable set for socfb-trinity100 found by qob_numvc (vertex cover local search), seed 1, 0.2 s
+# Stable set for socfb-trinity100 found by qob_numvc (vertex cover local search), seed 1, 0.2 s CPU
 9
 14
 19

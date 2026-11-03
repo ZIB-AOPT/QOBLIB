@@ -1,5 +1,5 @@
 # Objective value = 12
-# Stable set for p_hat1500-1 found by qob_numvc (vertex cover local search), seed 1, 5.7 s
+# Stable set for p_hat1500-1 found by qob_numvc (vertex cover local search), seed 1, 2.3 s CPU
 444
 485
 566

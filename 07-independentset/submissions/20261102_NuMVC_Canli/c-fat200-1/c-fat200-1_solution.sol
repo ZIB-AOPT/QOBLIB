@@ -1,5 +1,5 @@
 # Objective value = 18
-# Stable set for c-fat200-1 found by qob_numvc (vertex cover local search), seed 1, 0.0 s
+# Stable set for c-fat200-1 found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
 13
 17
 25

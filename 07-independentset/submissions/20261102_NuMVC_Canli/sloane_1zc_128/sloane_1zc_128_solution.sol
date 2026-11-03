@@ -1,5 +1,5 @@
 # Objective value = 18
-# Stable set for sloane_1zc_128 found by qob_numvc (vertex cover local search), seed 1, 0.0 s
+# Stable set for sloane_1zc_128 found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
 1
 4
 15

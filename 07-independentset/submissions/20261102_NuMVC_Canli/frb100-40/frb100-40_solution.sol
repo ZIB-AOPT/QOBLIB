@@ -1,5 +1,5 @@
 # Objective value = 97
-# Stable set for frb100-40 found by qob_numvc (vertex cover local search), seed 1, 2517.2 s
+# Stable set for frb100-40 found by qob_numvc (vertex cover local search), seed 1, 1157.2 s CPU
 33
 45
 92

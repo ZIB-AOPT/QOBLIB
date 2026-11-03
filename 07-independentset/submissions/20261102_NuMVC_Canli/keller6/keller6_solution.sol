@@ -1,5 +1,5 @@
 # Objective value = 59
-# Stable set for keller6 found by qob_numvc (vertex cover local search), seed 1, 3.6 s
+# Stable set for keller6 found by qob_numvc (vertex cover local search), seed 1, 1.6 s CPU
 16
 29
 37

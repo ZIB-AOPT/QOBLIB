@@ -10,7 +10,7 @@ This directory contains the submission for the problem **brock800-1**.
 | Date | 2026-11-02 |
 | Reference | https://github.com/arhancanli/quantavane-qoblib |
 | Best Objective Value | 21 |
-| Optimality Bound | N/A |
+| Optimality Bound | 117 |
 | Modeling Approach | Direct search (no MIP or QUBO model): minimum vertex cover local search, the stable set is the complement of the cover |
 | # Decision Variables | 800 |
 | # Binary Variables | 800 |
@@ -19,18 +19,18 @@ This directory contains the submission for the problem **brock800-1**.
 | # Non-Zero Coefficients | N/A |
 | Coefficients Type | N/A |
 | Coefficients Range | N/A |
-| Workflow | Greedy vertex cover, then NuMVC local search (Cai et al. 2013): two-stage exchange, edge weighting with forgetting (gamma = n/2, rho = 0.3), configuration checking; every cover found is recorded and one vertex removed to look for a smaller one; each run ends at its wall-clock limit; stable set = complement of the best cover, re-checked by an independent program. |
+| Workflow | Greedy clique cover (upper bound UB, computed in the run), greedy vertex cover, then NuMVC local search (Cai et al. 2013): two-stage exchange, edge weighting with forgetting (gamma = n/2, rho = 0.3), configuration checking; every cover found is recorded and one vertex removed to look for a smaller one; a run stops when the stable set reaches UB (proven optimal) or at its CPU budget; stable set = complement of the best cover, re-checked by an independent program. |
 | Algorithm Type | Stochastic |
 | Paradigm | Classical |
 | # Runs | 5 |
 | # Feasible Runs | 5 |
 | # Successful Runs | 5 |
 | Success Threshold | 0 |
-| Hardware Specifications | Apple M5 Pro (18 cores: 6 performance, 12 efficiency), 24 GB RAM, macOS 26.6.2; one single-threaded process per run at nice 10 on a machine shared with other jobs (load about 70-80) |
-| Total Runtime | 30.0 |
-| Time to Solution | 0.3 |
-| CPU Runtime | 12.4 |
+| Hardware Specifications | Apple M5 Pro (18 cores: 6 performance, 12 efficiency), 24 GB RAM, macOS 26.6.2; one single-threaded process per run at nice 10 on a machine shared with other jobs; all times are the process CPU time |
+| Total Runtime | 30.00 |
+| Time to Solution | 0.19 |
+| CPU Runtime | 30.00 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
-| Remarks | 30 s runs, seeds 1-5: Best stable set 21 over these 5 runs (listed best known 23: ours is below it). seed 1 (limit 30 s): 21, first reached at 0.3 s, run ended at 30.0 s wall / 12.3 s CPU; seed 2 (limit 30 s): 21, first reached at 0.1 s, run ended at 30.0 s wall / 12.6 s CPU; seed 3 (limit 30 s): 21, first reached at 0.5 s, run ended at 30.0 s wall / 12.2 s CPU; seed 4 (limit 30 s): 21, first reached at 0.2 s, run ended at 30.0 s wall / 12.3 s CPU; seed 5 (limit 30 s): 21, first reached at 0.2 s, run ended at 30.0 s wall / 12.5 s CPU. Total Runtime is the mean wall-clock time per run and CPU Runtime the mean process CPU time; the machine was shared, so a run waited for a free core part of the time and its CPU time is below its wall-clock time. Time to Solution is the mean wall-clock time at which each run first reached its own best. Optimality Bound N/A: the method computes no bound. |
+| Remarks | Runs of 30 s CPU, seeds 1-5: Best stable set 21 over these 5 runs (listed best known 23: ours is below it). Optimality Bound 117 is the greedy clique-cover upper bound computed by the method. seed 1: 21, reached at 0.20 s, run ended at 30.00 s; seed 2: 21, reached at 0.13 s, run ended at 30.00 s; seed 3: 21, reached at 0.28 s, run ended at 30.00 s; seed 4: 21, reached at 0.16 s, run ended at 30.00 s; seed 5: 21, reached at 0.17 s, run ended at 30.00 s. All times are the single-threaded process's own CPU time (user + system), which excludes any time spent waiting for a core on the shared machine; Total Runtime and CPU Runtime are the mean time per run, Time to Solution the mean time at which each run first reached its own best. |

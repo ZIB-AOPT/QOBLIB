@@ -1,5 +1,5 @@
 # Objective value = 16
-# Stable set for football found by qob_numvc (vertex cover local search), seed 1, 0.0 s
+# Stable set for football found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
 1
 4
 5

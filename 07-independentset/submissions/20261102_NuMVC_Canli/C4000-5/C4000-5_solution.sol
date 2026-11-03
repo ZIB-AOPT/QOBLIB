@@ -1,5 +1,5 @@
 # Objective value = 17
-# Stable set for C4000-5 found by qob_numvc (vertex cover local search), seed 1, 6.1 s
+# Stable set for C4000-5 found by qob_numvc (vertex cover local search), seed 1, 2.7 s CPU
 71
 135
 197

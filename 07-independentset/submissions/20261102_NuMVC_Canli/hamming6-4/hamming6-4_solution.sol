@@ -1,5 +1,5 @@
 # Objective value = 12
-# Stable set for hamming6-4 found by qob_numvc (vertex cover local search), seed 1, 0.0 s
+# Stable set for hamming6-4 found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
 23
 31
 39

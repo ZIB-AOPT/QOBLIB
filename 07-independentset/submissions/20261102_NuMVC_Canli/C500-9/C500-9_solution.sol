@@ -1,5 +1,5 @@
 # Objective value = 57
-# Stable set for C500-9 found by qob_numvc (vertex cover local search), seed 1, 0.0 s
+# Stable set for C500-9 found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
 13
 22
 45

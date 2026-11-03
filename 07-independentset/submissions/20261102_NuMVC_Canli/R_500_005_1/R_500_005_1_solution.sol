@@ -1,5 +1,5 @@
 # Objective value = 91
-# Stable set for R_500_005_1 found by qob_numvc (vertex cover local search), seed 1, 0.5 s
+# Stable set for R_500_005_1 found by qob_numvc (vertex cover local search), seed 1, 0.3 s CPU
 3
 6
 7

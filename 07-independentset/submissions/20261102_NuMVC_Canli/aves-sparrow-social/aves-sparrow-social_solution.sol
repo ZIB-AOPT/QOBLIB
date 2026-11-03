@@ -1,5 +1,5 @@
 # Objective value = 13
-# Stable set for aves-sparrow-social found by qob_numvc (vertex cover local search), seed 1, 0.0 s
+# Stable set for aves-sparrow-social found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
 7
 18
 21
