@@ -1,5 +1,5 @@
 c Undirected graph with diameter 5 (n = 4855, max degree 15)
-c Found by qob_topo (simulated annealing over degree-preserving edge switches), seed 1, 0.1 s
+c Found by qob_topo (simulated annealing over degree-preserving edge switches), seed 1, 0.1 s CPU
 p edge 4855 36412
 e 1275 3912
 e 877 3123

@@ -1,5 +1,5 @@
 c Undirected graph with diameter 4 (n = 50, max degree 4)
-c Found by qob_topo (simulated annealing over degree-preserving edge switches), seed 1, 0.0 s
+c Found by qob_topo (simulated annealing over degree-preserving edge switches), seed 1, 0.0 s CPU
 p edge 50 100
 e 43 27
 e 42 2

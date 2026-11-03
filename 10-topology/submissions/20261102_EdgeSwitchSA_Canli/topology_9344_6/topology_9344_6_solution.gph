@@ -1,5 +1,5 @@
 c Undirected graph with diameter 8 (n = 9344, max degree 6)
-c Found by qob_topo (simulated annealing over degree-preserving edge switches), seed 1, 0.1 s
+c Found by qob_topo (simulated annealing over degree-preserving edge switches), seed 1, 0.1 s CPU
 p edge 9344 28032
 e 4876 559
 e 7586 5325

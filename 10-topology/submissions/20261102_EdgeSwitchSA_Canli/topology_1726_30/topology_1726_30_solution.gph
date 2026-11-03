@@ -1,5 +1,5 @@
 c Undirected graph with diameter 3 (n = 1726, max degree 30)
-c Found by qob_topo (simulated annealing over degree-preserving edge switches), seed 1, 0.1 s
+c Found by qob_topo (simulated annealing over degree-preserving edge switches), seed 1, 0.0 s CPU
 p edge 1726 25890
 e 1273 1526
 e 562 1487

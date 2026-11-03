@@ -1,5 +1,5 @@
 c Undirected graph with diameter 2 (n = 25, max degree 6)
-c Found by qob_topo (simulated annealing over degree-preserving edge switches), seed 1, 3.7 s
+c Found by qob_topo (simulated annealing over degree-preserving edge switches), seed 1, 1.7 s CPU
 p edge 25 75
 e 9 11
 e 16 8
