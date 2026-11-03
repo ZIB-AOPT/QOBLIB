@@ -8,9 +8,9 @@ This directory contains the submission for the problem **topology_35_5**.
 | Submitter | Arhan Canli |
 | Affiliation | Quantavane |
 | Date | 2026-11-02 |
-| Reference | https://github.com/ZIB-AOPT/QOBLIB/tree/main/10-topology/submissions/20261102_EdgeSwitchSA_Canli |
+| Reference | https://github.com/arhancanli/quantavane-qoblib |
 | Best Objective Value | 3 |
-| Optimality Bound | 3 |
+| Optimality Bound | N/A |
 | Modeling Approach | Direct search over graphs (no MIP or QUBO model): fixed degree sequence, degree-preserving edge switches |
 | # Decision Variables | 595 |
 | # Binary Variables | 595 |
@@ -19,18 +19,18 @@ This directory contains the submission for the problem **topology_35_5**.
 | # Non-Zero Coefficients | N/A |
 | Coefficients Type | N/A |
 | Coefficients Range | N/A |
-| Workflow | Start from a circulant graph with every degree d (one node at d-1 when n*d is odd), scrambled by random degree-preserving switches; simulated annealing over switches (edges ab, ce become ac, be) on cost = (ordered pairs further apart than the target diameter) + (sum over k < target of pairs further apart than k); geometric cooling 8 -> 0.5 over 10,000,000 moves per round, reheating from the round best; stop at the first graph of diameter <= target; graph re-checked by an independent BFS program. |
+| Workflow | Start: circulant graph with every degree d (one node at d-1 when n*d is odd), scrambled by 20\|E\| random degree-preserving switches; its diameter is the first incumbent. Then simulated annealing over switches (edges ab, ce become ac, be) towards diameter incumbent-1, cost = (ordered pairs further apart than the target) + (sum over k < target of pairs further apart than k), geometric cooling 8 -> 0.5 over 10000000 moves per round, reheating from the round best; each graph meeting the target becomes the incumbent and the target drops by one. Run ends at 150 s CPU or after 60 s CPU without a new incumbent; no bound or known value is used. Graphs re-checked by an independent BFS program. |
 | Algorithm Type | Stochastic |
 | Paradigm | Classical |
-| # Runs | 10 |
-| # Feasible Runs | 10 |
-| # Successful Runs | 10 |
+| # Runs | 5 |
+| # Feasible Runs | 5 |
+| # Successful Runs | 5 |
 | Success Threshold | 0 |
-| Hardware Specifications | Apple M5 Pro (18 cores: 6 performance, 12 efficiency), 24 GB RAM, macOS 26.6.2; one single-threaded process per run on a shared machine (nice 10) |
-| Total Runtime | 0.01 |
-| Time to Solution | 0.01 |
-| CPU Runtime | 0.00 |
+| Hardware Specifications | Apple M5 Pro (18 cores: 6 performance, 12 efficiency), 24 GB RAM, macOS 26.6.2; one single-threaded process per run at nice 10 on a machine shared with other jobs (load about 70-80) |
+| Total Runtime | 146.20 |
+| Time to Solution | 0.00 |
+| CPU Runtime | 60.00 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
-| Remarks | Diameter 3 (previous best known 4). Lower bound 3: Moore bound: with maximum degree 5 a graph of diameter 2 has at most 1 + 5 + 20 = 26 nodes. 10 of 10 seeded runs (seeds 1-10) reached diameter 3; the solution file is the graph of seed 1 (143 moves). Runtimes are means over the 10 runs (wall clock and user+system CPU time, measured with /usr/bin/time). |
+| Remarks | Best diameter 3 over 5 seeded runs (listed best known 4: ours is below it). seed 1: diameter 3 (start 4) first reached at 0.0 s wall / 0.0 s CPU, run ended at 147.4 s wall / 60.0 s CPU; seed 2: diameter 3 (start 4) first reached at 0.0 s wall / 0.0 s CPU, run ended at 145.9 s wall / 60.0 s CPU; seed 3: diameter 3 (start 4) first reached at 0.0 s wall / 0.0 s CPU, run ended at 145.6 s wall / 60.0 s CPU; seed 4: diameter 3 (start 4) first reached at 0.0 s wall / 0.0 s CPU, run ended at 146.3 s wall / 60.0 s CPU; seed 5: diameter 3 (start 4) first reached at 0.0 s wall / 0.0 s CPU, run ended at 145.8 s wall / 60.0 s CPU. Total Runtime and CPU Runtime are means per run (wall clock and process CPU time; the machine was shared, so a run waited for a free core part of the time and its CPU time is below its wall-clock time). Time to Solution is the mean wall-clock time at which each run first reached its own final diameter. The solution file is the graph of seed 1. Objective time series: all 5 runs, seeds 1-5 in order. |
