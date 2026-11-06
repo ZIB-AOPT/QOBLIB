@@ -1,42 +1,51 @@
 # Negotiated congestion routing for the Steiner tree packing instances
 
-A PathFinder style rip up and reroute router, the standard method for switchbox
-and channel routing in VLSI. Each net is routed as a greedy Steiner tree; nodes
-used by more than one net accumulate a congestion penalty that grows every
-iteration until the nets separate. Three cost polish passes follow; see the re-run section for the exact polish added later.
+All 190 instances, each from five independent runs on a laptop. The rows replace
+the earlier ones in this folder, which mixed machines and continued earlier runs.
 
-No optimisation model is built. The reference formulation for this class is a
-multicommodity flow MIP with millions of variables, which is why most instances
-had no solution on record; the graphs themselves are small for a router, and
-every instance here routes in seconds.
+The method has three parts. A PathFinder style rip up and reroute router, the
+standard method for switchbox routing in VLSI, routes each net as a greedy
+Steiner tree; nodes used by more than one net get a congestion penalty that grows
+every iteration until the nets separate. An exact polish then replaces each net
+in turn by a minimum Steiner tree of the grid with the other nets' nodes removed,
+computed with the Dreyfus Wagner recursion (nets have at most six terminals),
+until no net improves. Last, a large neighbourhood search rips up two to four
+adjacent nets and re-inserts them exactly in every order, with small random node
+costs on the earlier nets and occasional random kicks, for a fixed time budget.
 
-Every reported solution was verified with 04-steiner/check. Runs that do not
-improve on a published value are included so the method stays comparable.
+No optimisation model is built, so the variable fields are N/A. No published
+solution is read at any point.
 
-Code: https://github.com/mnn31/qoblib-solvers/tree/main/steiner
+## Runs
 
-## Re-run of 2026-10-25: exact polish and neighbourhood search
+Every row has five runs, seeds 0 to 4, each starting from nothing. The search
+budget is 600 s per run, or 120 s for the 29 instances with the smallest arc
+files. Runs never stop early and are not given any target value. Five single
+threaded runs went at a time on an Apple M3 Pro laptop (18 GB, macOS 26.3) on AC
+power with nothing else running. Total Runtime and CPU Runtime are means over all
+five runs, and Time to Solution is the mean time to the best value over the runs
+that reach it. The objective time series of every run is in each row, and every
+solution was verified with 04-steiner/check.
 
-142 rows were re-run on 2026-10-25 with two additions to the router. First, an
-exact polish: each net in turn is replaced by a minimum Steiner tree of the grid
-with the other nets' nodes removed, computed exactly with the Dreyfus Wagner
-recursion driven by Dijkstra (nets have at most six terminals), until no net
-improves. Second, a large neighbourhood search that rips up a few adjacent nets
-and re-inserts them exactly in every order, with small random node costs on the
-earlier nets. The first stage takes two to three nets with no kicks, later stages
-take two to four nets and add occasional kicks. The re-run rows carry the later date,
-the cloud hardware string, the two stage run protocol in their remarks and the
-new workflow text; the 19 rows the re-run did not improve are unchanged. Eleven
-of the re-run rows now reach the published best known value exactly.
+## Results against the current table
 
-## Follow up of 2026-10-30
+- 147 instances have no value in the table.
+- 26 rows reach a value the table lists as optimal and 12 reach a best known value.
+- stp_s070_l4_t6_h0_rs97531: 374 against the best known 375, in all five runs.
+- stp_s030_l3_t5_h1_rs24098: 475, while the table lists 476 as optimal. One of
+  the five runs found it. The packing passes 04-steiner/check, and we also checked
+  separately that every net is a tree holding all its terminals and that no two
+  nets share a node, which is all the node disjoint model asks. The optimal label
+  on 476 may need a second look.
+- Three rows miss the table value and are included anyway:
+  stp_s020_l3_t3_h2_rs24098 (357 against the optimal 355),
+  stp_s020_l3_t4_h2_rs97531 (265 against the optimal 264) and
+  stp_s020_l5_t4_h0_rs24098 (243 against the best known 242).
 
-Fifteen rows got one or two more passes on a laptop, continuing the best packing
-with 900 s of neighbourhood search per run. Four rows improved (stp_s080_l3_t5,
-stp_s090_l2_t3_h2, stp_s090_l3_t4 and stp_s090_l3_t6) and carry the later date, the
-extra runs and both hardware strings. The other rows did not improve and keep their
-value, solution and date. The workflow text was also corrected to separate what the
-first stage did from the later ones.
+Code: https://github.com/mnn31/qoblib-solvers/tree/95485bfe2108f3666e3472bfeb5f3e4c55edc4d7/steiner
+
+Run records (one json per run with times, CPU time and every incumbent, plus the
+solution and log of each run): https://github.com/mnn31/qoblib-solvers/tree/b644713d94ff18f6960cf5a9587eb426d325d5c6/steiner/runs_2026-11
 
 ## AI disclosure
 
