@@ -2,7 +2,7 @@
 instance po_a050_t15_s01
 budget 20
 lambda 0.00001
-objective -626699
+objective -626762
 # period symbol long short
 0 TSLA 0 3
 0 AVGO 0 3
@@ -32,8 +32,7 @@ objective -626699
 3 ISRG 0 3
 3 GE 3 0
 3 AMD 0 3
-3 ADBE 1 0
-3 CAT 1 0
+3 ADBE 2 0
 4 NVDA 0 1
 4 AVGO 0 3
 4 UNH 0 1
@@ -42,8 +41,7 @@ objective -626699
 4 CRM 3 0
 4 NOW 0 3
 4 PEP 3 0
-4 ADBE 1 0
-4 CAT 1 0
+4 ADBE 2 0
 5 AAPL 3 0
 5 AVGO 0 3
 5 LLY 2 0

@@ -2,7 +2,7 @@
 instance po_a050_t10_orig
 budget 20
 lambda 0.0005
-objective -254807
+objective -254842
 # period symbol long short
 0 AAPL 0 1
 0 MSFT 1 0
@@ -97,16 +97,14 @@ objective -254807
 7 NVDA 1 0
 7 AMZN 1 0
 7 WMT 3 0
-7 HD 0 1
 7 PG 1 0
-7 BAC 0 1
-7 ACN 0 1
 7 NOW 0 2
 7 TMO 0 2
-7 BX 0 1
+7 BX 0 2
 7 LIN 0 3
-7 IBM 0 1
+7 IBM 0 2
 7 GE 1 0
+7 PM 0 1
 7 ADBE 1 0
 8 AAPL 3 0
 8 NVDA 1 0

@@ -2,7 +2,7 @@
 instance po_a400_t10_s01
 budget 100
 lambda 0.00001
-objective -2955290
+objective -2955294
 # period symbol long short
 0 TSLA 0 3
 0 ORCL 0 3
@@ -40,7 +40,6 @@ objective -2955290
 0 JBHT 0 3
 0 SMCI 3 0
 1 NVDA 3 0
-1 ABT 0 2
 1 AMD 3 0
 1 ADBE 0 3
 1 ANET 2 0
@@ -73,7 +72,8 @@ objective -2955290
 1 FSLR 0 2
 1 IP 0 3
 1 LUV 0 3
-1 PODD 0 1
+1 ULTA 0 1
+1 PODD 0 2
 1 STLD 3 0
 1 SMCI 3 0
 1 JBL 0 3

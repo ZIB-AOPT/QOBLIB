@@ -2,7 +2,7 @@
 instance po_a200_t10_orig
 budget 50
 lambda 0.0001
-objective -1031411
+objective -1031499
 # period symbol long short
 0 GOOG 2 0
 0 GOOGL 3 0
@@ -73,26 +73,26 @@ objective -1031411
 2 PSX 2 0
 3 GOOGL 0 3
 3 META 3 0
-3 TSLA 1 0
+3 TSLA 2 0
 3 COST 2 0
 3 ABBV 0 3
+3 CRM 0 1
 3 AXP 0 2
 3 GE 1 0
 3 AMD 0 3
 3 BKNG 0 1
 3 RTX 3 0
-3 SPGI 1 0
-3 PFE 0 1
 3 NEE 3 0
 3 LMT 3 0
+3 CEG 0 1
 3 ABNB 3 0
-3 CTAS 0 1
+3 CTAS 0 2
 3 AON 0 3
 3 ZTS 3 0
 3 ORLY 0 3
-3 VST 0 2
+3 VST 0 1
 3 GM 0 3
-3 CPRT 0 2
+3 CPRT 0 1
 4 TSLA 0 3
 4 NOW 3 0
 4 IBM 0 2

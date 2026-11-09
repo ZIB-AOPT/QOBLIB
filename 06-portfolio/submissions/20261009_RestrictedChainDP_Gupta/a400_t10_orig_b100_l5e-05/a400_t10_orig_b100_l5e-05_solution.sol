@@ -2,7 +2,7 @@
 instance po_a400_t10_orig
 budget 100
 lambda 0.00005
-objective -2266011
+objective -2266065
 # period symbol long short
 0 GOOG 3 0
 0 GOOGL 3 0
@@ -165,11 +165,11 @@ objective -2266011
 4 MCD 0 2
 4 GE 3 0
 4 ADBE 0 3
-4 BKNG 1 0
+4 BKNG 2 0
 4 RTX 3 0
 4 T 0 3
 4 UBER 3 0
-4 ETN 3 0
+4 ETN 2 0
 4 MU 0 3
 4 MMC 3 0
 4 CEG 3 0
@@ -179,7 +179,7 @@ objective -2266011
 4 VST 3 0
 4 OXY 3 0
 4 NEM 3 0
-4 D 0 2
+4 KR 0 1
 4 ODFL 3 0
 4 F 0 2
 4 ACGL 3 0
@@ -189,14 +189,14 @@ objective -2266011
 4 HPQ 0 3
 4 CSGP 3 0
 4 AWK 0 3
-4 NTAP 0 1
 4 WBD 0 3
 4 WDC 3 0
 4 DRI 0 3
 4 FSLR 3 0
+4 CMS 0 1
 4 IP 0 3
 4 PODD 1 0
-4 COO 0 2
+4 COO 0 3
 4 SMCI 0 1
 4 JBL 2 0
 5 TSLA 3 0

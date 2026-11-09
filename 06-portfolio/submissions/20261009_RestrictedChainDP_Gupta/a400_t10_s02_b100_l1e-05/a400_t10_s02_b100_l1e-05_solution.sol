@@ -2,7 +2,7 @@
 instance po_a400_t10_s02
 budget 100
 lambda 0.00001
-objective -2656259
+objective -2656267
 # period symbol long short
 0 NVDA 0 3
 0 LLY 3 0
@@ -219,9 +219,9 @@ objective -2656259
 5 BLDR 3 0
 6 ORCL 3 0
 6 CSCO 0 3
-6 GE 2 0
-6 PLTR 2 0
-6 PANW 0 3
+6 GE 3 0
+6 PLTR 1 0
+6 PANW 0 2
 6 CEG 3 0
 6 INTC 0 3
 6 SNPS 3 0
@@ -230,9 +230,10 @@ objective -2656259
 6 FDX 0 3
 6 CVS 0 3
 6 CARR 3 0
+6 TGT 1 0
 6 VST 3 0
 6 FICO 1 0
-6 DFS 3 0
+6 DFS 2 0
 6 D 0 3
 6 LULU 3 0
 6 FIS 3 0
@@ -247,7 +248,7 @@ objective -2656259
 6 SYF 3 0
 6 NTAP 3 0
 6 WDC 2 0
-6 SBAC 0 2
+6 SBAC 0 3
 6 NRG 3 0
 6 DRI 0 3
 6 LUV 0 3

@@ -2,7 +2,7 @@
 instance po_a200_t15_s02
 budget 50
 lambda 0.000001
-objective -2174729
+objective -2174805
 # period symbol long short
 0 CRM 3 0
 0 AMD 3 0
@@ -132,10 +132,10 @@ objective -2174729
 7 HD 3 0
 7 NFLX 0 3
 7 ABBV 0 3
-7 CRM 0 2
+7 CRM 0 3
 7 BX 3 0
 7 ADBE 0 3
-7 PLTR 0 3
+7 PLTR 0 2
 7 LOW 3 0
 7 SCHW 3 0
 7 MU 3 0
@@ -144,8 +144,8 @@ objective -2174729
 7 CMI 3 0
 8 AAPL 0 3
 8 NVDA 0 1
-8 CRM 0 2
-8 NOW 0 3
+8 CRM 0 3
+8 NOW 0 2
 8 ABT 0 3
 8 ADBE 0 3
 8 BKNG 0 3

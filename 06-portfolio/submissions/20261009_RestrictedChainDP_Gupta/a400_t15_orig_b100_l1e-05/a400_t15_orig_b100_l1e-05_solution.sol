@@ -2,7 +2,7 @@
 instance po_a400_t15_orig
 budget 100
 lambda 0.00001
-objective -3898570
+objective -3898640
 # period symbol long short
 0 GOOG 3 0
 0 GOOGL 3 0
@@ -45,7 +45,6 @@ objective -3898570
 1 UNH 0 3
 1 BX 0 3
 1 ISRG 0 3
-1 ANET 0 1
 1 COP 3 0
 1 CEG 1 0
 1 ELV 0 3
@@ -61,23 +60,21 @@ objective -3898570
 1 VLO 3 0
 1 KR 3 0
 1 FIS 3 0
-1 XEL 1 0
-1 LEN 0 1
+1 XEL 2 0
 1 UAL 0 3
 1 HUM 0 3
 1 CCL 0 3
 1 CNC 0 3
-1 DECK 0 2
+1 DECK 0 3
 1 HSY 2 0
 1 DOW 3 0
-1 GDDY 1 0
 1 LYB 3 0
 1 PHM 0 3
 1 WBD 0 2
 1 ON 0 3
 1 BIIB 0 3
 1 MKC 3 0
-1 LUV 0 1
+1 LUV 0 2
 2 PG 0 3
 2 JNJ 0 3
 2 ABBV 0 3
@@ -441,12 +438,11 @@ objective -3898570
 11 SMCI 3 0
 12 UNH 3 0
 12 ABT 0 3
-12 GS 1 0
 12 AMD 0 3
 12 AMAT 0 3
-12 C 2 0
+12 C 1 0
 12 NEE 3 0
-12 MU 0 3
+12 MU 0 2
 12 PLD 0 3
 12 LRCX 0 3
 12 KLAC 0 3
@@ -456,7 +452,7 @@ objective -3898570
 12 ADSK 0 3
 12 VST 3 0
 12 TRV 0 3
-12 AEP 2 0
+12 AEP 3 0
 12 D 3 0
 12 LULU 2 0
 12 DAL 3 0
@@ -468,7 +464,8 @@ objective -3898570
 12 RMD 0 3
 12 HUM 1 0
 12 ED 3 0
-12 WAT 0 2
+12 WEC 1 0
+12 WAT 0 3
 12 FSLR 3 0
 12 CMS 3 0
 12 IP 0 3

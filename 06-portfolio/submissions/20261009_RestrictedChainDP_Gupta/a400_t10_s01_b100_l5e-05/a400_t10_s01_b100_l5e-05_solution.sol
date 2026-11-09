@@ -2,7 +2,7 @@
 instance po_a400_t10_s01
 budget 100
 lambda 0.00005
-objective -2561302
+objective -2561380
 # period symbol long short
 0 TSLA 0 3
 0 ORCL 0 1
@@ -47,6 +47,7 @@ objective -2561302
 1 ISRG 3 0
 1 ABT 0 3
 1 ADBE 0 3
+1 ANET 1 0
 1 BMY 2 0
 1 NKE 0 3
 1 CEG 2 0
@@ -61,23 +62,20 @@ objective -2561302
 1 PWR 3 0
 1 PSX 3 0
 1 MPC 1 0
-1 MNST 1 0
 1 LULU 0 3
 1 VLO 3 0
 1 XEL 0 3
 1 LEN 3 0
 1 RMD 3 0
-1 EXR 0 1
 1 DXCM 3 0
 1 HPE 1 0
 1 CSGP 3 0
 1 WBD 0 3
 1 IP 0 3
 1 LUV 0 3
-1 ULTA 0 2
-1 PODD 0 2
+1 ULTA 0 3
+1 PODD 0 3
 1 STLD 3 0
-1 COO 0 1
 1 SMCI 2 0
 1 TRMB 3 0
 1 JBL 0 3
@@ -166,15 +164,16 @@ objective -2561302
 4 AVGO 3 0
 4 ORCL 1 0
 4 NFLX 3 0
-4 ACN 0 3
+4 ACN 0 2
 4 NOW 3 0
-4 AMD 0 2
+4 AMD 0 1
 4 BKNG 3 0
 4 ANET 3 0
 4 UBER 2 0
 4 LRCX 3 0
 4 KLAC 3 0
 4 PYPL 3 0
+4 TT 1 0
 4 CMG 3 0
 4 ZTS 0 3
 4 FDX 3 0
@@ -183,16 +182,16 @@ objective -2561302
 4 URI 3 0
 4 D 0 3
 4 LULU 0 3
-4 LEN 0 1
-4 EQT 0 2
+4 LEN 0 2
+4 EQT 0 3
 4 LVS 0 3
-4 HPE 0 3
+4 HPE 0 2
 4 EL 0 1
 4 WST 2 0
 4 NTAP 3 0
 4 HUBB 2 0
+4 SBAC 0 1
 4 DRI 0 3
-4 BIIB 0 1
 4 FSLR 0 3
 4 CBOE 0 3
 4 CLX 0 3

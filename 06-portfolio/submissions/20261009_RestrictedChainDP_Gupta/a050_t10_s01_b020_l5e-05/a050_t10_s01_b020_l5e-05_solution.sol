@@ -2,7 +2,7 @@
 instance po_a050_t10_s01
 budget 20
 lambda 0.00005
-objective -342025
+objective -342074
 # period symbol long short
 0 TSLA 0 3
 0 AVGO 0 3
@@ -41,11 +41,13 @@ objective -342025
 3 AMD 0 1
 3 ADBE 1 0
 3 CAT 2 0
-4 MSFT 0 3
+4 MSFT 0 1
+4 GOOGL 0 1
 4 AVGO 0 3
 4 UNH 0 1
 4 COST 0 3
 4 CRM 3 0
+4 NOW 0 1
 4 PEP 3 0
 4 AMD 1 0
 4 ADBE 1 0

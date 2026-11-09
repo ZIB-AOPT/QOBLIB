@@ -286,6 +286,7 @@ objective -4444712
 8 BX 3 0
 8 AMD 0 3
 8 ADBE 0 3
+8 NEE 1 0
 8 LOW 3 0
 8 UPS 3 0
 8 CEG 0 3
@@ -296,7 +297,7 @@ objective -4444712
 8 CVS 0 3
 8 FCX 3 0
 8 MPC 3 0
-8 BKR 3 0
+8 BKR 2 0
 8 VLO 3 0
 8 CBRE 3 0
 8 HUM 0 3

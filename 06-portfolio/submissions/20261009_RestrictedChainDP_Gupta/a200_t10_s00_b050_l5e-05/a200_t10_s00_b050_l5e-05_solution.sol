@@ -2,7 +2,7 @@
 instance po_a200_t10_s00
 budget 50
 lambda 0.00005
-objective -1187547
+objective -1187641
 # period symbol long short
 0 NVDA 1 0
 0 GOOGL 1 0
@@ -155,6 +155,7 @@ objective -1187547
 6 MPC 2 0
 7 TSLA 3 0
 7 ABBV 0 3
+7 ISRG 3 0
 7 GE 3 0
 7 AMD 0 3
 7 ADBE 0 1
@@ -162,18 +163,17 @@ objective -1187547
 7 PLTR 0 2
 7 PFE 0 3
 7 WM 3 0
-7 DELL 1 0
-7 MMM 0 2
-7 APD 0 3
+7 CDNS 1 0
+7 MMM 0 1
+7 APD 0 2
 7 FDX 3 0
 7 TGT 0 3
 7 DLR 1 0
-7 VST 0 2
+7 VST 0 3
 7 SLB 3 0
 7 FCX 2 0
-7 PSA 1 0
 7 URI 3 0
-7 MPC 0 2
+7 MPC 0 1
 8 TSLA 3 0
 8 ACN 0 3
 8 PEP 1 0

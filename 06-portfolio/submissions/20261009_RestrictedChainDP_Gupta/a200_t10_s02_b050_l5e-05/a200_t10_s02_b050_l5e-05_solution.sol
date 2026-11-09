@@ -2,7 +2,7 @@
 instance po_a200_t10_s02
 budget 50
 lambda 0.00005
-objective -1095908
+objective -1096031
 # period symbol long short
 0 NVDA 0 3
 0 CRM 3 0
@@ -89,23 +89,21 @@ objective -1095908
 3 DLR 0 3
 3 VST 1 0
 3 FCX 3 0
-4 NVDA 0 2
-4 ORCL 0 1
+4 NVDA 0 1
+4 ORCL 0 2
 4 COST 0 3
 4 HD 0 3
 4 GE 3 0
-4 AMD 0 2
+4 AMD 0 3
 4 BKNG 3 0
 4 PFE 3 0
 4 ANET 0 3
 4 LOW 0 3
-4 BA 0 1
-4 CRWD 1 0
-4 PYPL 1 0
-4 CMG 3 0
-4 EOG 2 0
+4 CRWD 2 0
+4 PYPL 2 0
+4 CMG 1 0
+4 EOG 3 0
 4 DELL 3 0
-4 AJG 1 0
 4 FDX 0 3
 4 TGT 0 1
 4 VST 0 2

@@ -2,7 +2,7 @@
 instance po_a200_t15_s01
 budget 50
 lambda 0.00005
-objective -1682335
+objective -1682524
 # period symbol long short
 0 NVDA 1 0
 0 GOOG 0 3
@@ -87,7 +87,7 @@ objective -1682335
 3 TGT 0 3
 3 GM 3 0
 3 SRE 0 2
-4 GOOGL 0 2
+4 GOOGL 0 1
 4 AVGO 0 3
 4 UNH 0 1
 4 NOW 0 3
@@ -98,11 +98,12 @@ objective -1682335
 4 MU 0 2
 4 GILD 0 3
 4 UPS 3 0
-4 NKE 0 2
+4 NKE 0 3
 4 LRCX 3 0
-4 APO 0 2
+4 APO 0 1
 4 EQIX 1 0
 4 CTAS 3 0
+4 SNPS 0 1
 4 DELL 0 1
 4 MMM 0 2
 4 FDX 3 0
@@ -117,13 +118,13 @@ objective -1682335
 5 DIS 3 0
 5 ADBE 0 3
 5 PLTR 0 1
-5 LOW 2 0
+5 LOW 3 0
 5 BSX 0 3
-5 ADI 1 0
+5 NKE 1 0
 5 CEG 3 0
 5 MO 3 0
 5 DELL 0 1
-5 MMM 2 0
+5 MMM 1 0
 5 FDX 0 3
 5 CARR 1 0
 5 TGT 2 0
@@ -138,10 +139,9 @@ objective -1682335
 6 ISRG 0 1
 6 GE 3 0
 6 TXN 3 0
-6 BLK 0 2
+6 BLK 0 3
 6 AMGN 0 2
 6 UPS 3 0
-6 ADI 1 0
 6 CTAS 3 0
 6 SNPS 0 2
 6 AON 0 3
@@ -152,25 +152,23 @@ objective -1682335
 6 NXPI 3 0
 6 FANG 1 0
 7 GOOG 2 0
-7 TSLA 0 2
+7 TSLA 0 3
 7 COST 0 3
 7 HD 0 3
-7 AXP 1 0
+7 AXP 2 0
 7 ABT 0 3
-7 AMD 2 0
+7 AMD 3 0
 7 ADBE 0 3
 7 PLTR 0 2
-7 KKR 1 0
-7 ETN 3 0
-7 UPS 2 0
-7 MO 0 2
+7 KKR 2 0
+7 UPS 1 0
 7 MMM 3 0
 7 RCL 3 0
 7 CARR 0 1
-7 TGT 0 1
+7 TGT 0 2
 7 VST 3 0
-7 FCX 2 0
-7 NSC 1 0
+7 FCX 1 0
+7 NSC 3 0
 7 FANG 1 0
 7 PSX 3 0
 7 MPC 3 0

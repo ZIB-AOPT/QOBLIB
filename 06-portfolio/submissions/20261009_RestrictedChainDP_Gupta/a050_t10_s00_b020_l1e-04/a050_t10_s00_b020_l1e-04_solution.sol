@@ -2,7 +2,7 @@
 instance po_a050_t10_s00
 budget 20
 lambda 0.0001
-objective -355520
+objective -355530
 # period symbol long short
 0 GOOG 1 0
 0 META 1 0
@@ -57,10 +57,10 @@ objective -355520
 4 ADBE 1 0
 5 AAPL 1 0
 5 NVDA 0 2
-5 AMZN 1 0
-5 UNH 0 2
+5 META 1 0
+5 UNH 0 1
 5 ORCL 0 2
-5 COST 0 1
+5 COST 0 2
 5 CRM 1 0
 5 MS 0 3
 5 GE 3 0

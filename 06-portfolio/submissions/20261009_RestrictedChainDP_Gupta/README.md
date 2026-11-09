@@ -8,26 +8,36 @@ relaxation roundings, runs the exact chain dynamic program over the pools, and
 polishes by coordinate descent. The method is a heuristic and claims no
 optimality.
 
-Validation before any of this was produced: it matches the proven optimum on all
-160 instances of the a003 to a010 families, and on a050 it is within a few
-hundredths of a percent of the published values at low lambda and clearly worse
-at the two highest lambdas, where the published values come from a MIP solver.
-Those a050 runs are included here so the gap is on record.
+## Runs
 
-The a200 and a400 families had no feasible solution on record. Every solution
-here was verified with 06-portfolio/check as it was produced.
+Every row is built directly from the records of independent runs on one machine
+with code at a fixed commit. Each run starts from the instance alone, uses one
+search setting for every row, and searches until it stops on its own, with no time
+limit and no target. Each instance has ten runs (seeds 1 to 10). The 46 instances
+where another open submission reported a value at least as good as this method's
+earlier one have 23 more (seeds 11 to 33). The runs were made five at a time,
+single threaded, on an Apple M3 Pro laptop on AC power with nothing else running.
 
-Code: https://github.com/mnn31/qoblib-solvers/tree/main/portfolio
+Total Runtime and CPU Runtime are means over all runs, Time to Solution is the mean
+time to the best value over the runs that reach it, and every row has the objective
+time series of all its runs. No optimisation model is built, so the variable and
+coefficient fields are N/A. No published solution is used anywhere.
 
-## Re-run of 2026-10-25
+## Results against the best known table
 
-Twenty rows were re-run on 2026-10-25 with 33 seeds each and a larger search
-budget (more restarts, kicks and neighbourhood iterations) on a 32 thread cloud
-container. Those rows carry the later date, the new hardware string and the
-seed count in their summaries; everything else is unchanged. Three of the a050
-rows now improve the published value (a050_t10_s00 at lambda 1e-2 and 5e-4,
-a050_t15_orig at 5e-4), the rest of the re-run rows are small improvements on
-this method's own earlier values.
+- 128 instances (a200 and a400) had no value on record. All of them have one now.
+- 5 a050 rows improve the table value: a050_t10_s00 at lambda 1e-2 and 5e-4,
+  a050_t15_orig at 1e-2 and 5e-4, and a050_t15_s02 at 1e-2.
+- 37 a050 rows reach the table value, 8 of them listed as optimal.
+- 22 a050 rows, all at lambda 5e-5 or above, do not reach the table value. They
+  are included so the gap is on record.
+
+Every solution was verified with 06-portfolio/check.
+
+Code at the commit that ran: https://github.com/mnn31/qoblib-solvers/tree/7d5de733df73b639d2bb8534a62de4b38f2a6486/portfolio
+
+Run records (json and solution for all 2978 runs, the run log, the settings and the
+build script): https://github.com/mnn31/qoblib-solvers/tree/e2946eb2de9cbf38961c3b4a828f081bc947a7a2/portfolio/runs_2026-11
 
 ## AI disclosure
 
