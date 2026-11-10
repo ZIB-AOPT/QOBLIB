@@ -44,7 +44,7 @@ In particular, the standard GUROBI `.sol` format (one `x#<index> <value>` line p
 | frb45-21-3 | 45 | optimal | reference | — |
 | frb50-23-3 | 50 | optimal | reference | — |
 | frb53-24-1 | 53 | best known | [20260806_ParallelILS_Hegade](../submissions/20260806_ParallelILS_Hegade) | 2026-08-06 |
-| frb59-26-2 | 59 | optimal | [20261102_NuMVC_Canli](../submissions/20261102_NuMVC_Canli) | 2026-11-02 |
+| frb59-26-2 | 59 | optimal | reference | — |
 | gen200_p0-9_44 | 44 | optimal | reference | — |
 | hamming10-4 | 40 | best known | [20250715_Abs2_Schicker](../submissions/20250715_Abs2_Schicker) | 2025-07-15 |
 | hamming6-2 | 2 | optimal | reference | — |

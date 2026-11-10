@@ -13,7 +13,7 @@
 | topology_1024_4 | 7 | best known | reference | — |
 | topology_15_3 | 3 | optimal | reference | — |
 | topology_15_4 | 2 | optimal | reference | — |
-| topology_1726_30 | 3 | best known | reference | — |
+| topology_1726_30 | 3 | optimal | [20261102_EdgeSwitchSA_Canli](../submissions/20261102_EdgeSwitchSA_Canli) | 2026-11-02 |
 | topology_20_3 | 3 | optimal | reference | — |
 | topology_20_4 | 3 | optimal | reference | — |
 | topology_20_5 | 2 | optimal | reference | — |
@@ -23,14 +23,14 @@
 | topology_25_6 | 2 | optimal | reference | — |
 | topology_30_4 | 3 | optimal | reference | — |
 | topology_30_5 | 3 | optimal | reference | — |
-| topology_30_6 | 3 | best known | [20241206_MIP-Seidel-Linear_Schicker](../submissions/20241206_MIP-Seidel-Linear_Schicker) | 2024-12-06 |
-| topology_35_5 | 4 | best known | [20241206_MIP-Seidel-Linear_Schicker](../submissions/20241206_MIP-Seidel-Linear_Schicker) | 2024-12-06 |
+| topology_30_6 | 2 | optimal | [20261102_EdgeSwitchSA_Canli](../submissions/20261102_EdgeSwitchSA_Canli) | 2026-11-02 |
+| topology_35_5 | 3 | optimal | [20261102_EdgeSwitchSA_Canli](../submissions/20261102_EdgeSwitchSA_Canli) | 2026-11-02 |
 | topology_35_6 | 3 | best known | [20241206_MIP-Seidel-Linear_Schicker](../submissions/20241206_MIP-Seidel-Linear_Schicker) | 2024-12-06 |
 | topology_40_6 | 3 | optimal | reference | — |
 | topology_4855_15 | 4 | best known | reference | — |
-| topology_50_4 | 5 | best known | [20241206_MIP-Seidel-Quadratic_Schicker](../submissions/20241206_MIP-Seidel-Quadratic_Schicker) | 2024-12-06 |
+| topology_50_4 | 4 | best known | [20261102_EdgeSwitchSA_Canli](../submissions/20261102_EdgeSwitchSA_Canli) | 2026-11-02 |
 | topology_512_4 | 6 | best known | reference | — |
-| topology_512_6 | 5 | best known | reference | — |
+| topology_512_6 | 5 | best known | [20261102_EdgeSwitchSA_Canli](../submissions/20261102_EdgeSwitchSA_Canli) | 2026-11-02 |
 | topology_65536_6 | 9 | best known | reference | — |
 | topology_9344_6 | 7 | best known | reference | — |
 
