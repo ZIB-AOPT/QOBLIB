@@ -1,0 +1,37 @@
+[
+  {
+    "run": 1,
+    "candidate_found": true,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false
+  },
+  {
+    "run": 2,
+    "candidate_found": true,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false
+  },
+  {
+    "run": 3,
+    "candidate_found": true,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false
+  },
+  {
+    "run": 4,
+    "candidate_found": true,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false
+  },
+  {
+    "run": 5,
+    "candidate_found": true,
+    "kenji_status": "RELEASED",
+    "validator_status": "PASS",
+    "classical_final_repair": false
+  }
+]
