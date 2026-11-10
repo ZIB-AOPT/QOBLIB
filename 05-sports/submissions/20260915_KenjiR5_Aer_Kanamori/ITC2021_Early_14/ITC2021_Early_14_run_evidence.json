@@ -1,0 +1,52 @@
+[
+  {
+    "run": 1,
+    "kenji_status": "RELEASED",
+    "official_validator_status": "PASS",
+    "official_infeasibility": 0,
+    "official_objective": 3139,
+    "reference_access_before_estimator_release": false,
+    "classical_solver_used": false,
+    "classical_final_repair": false
+  },
+  {
+    "run": 2,
+    "kenji_status": "RELEASED",
+    "official_validator_status": "PASS",
+    "official_infeasibility": 0,
+    "official_objective": 2569,
+    "reference_access_before_estimator_release": false,
+    "classical_solver_used": false,
+    "classical_final_repair": false
+  },
+  {
+    "run": 3,
+    "kenji_status": "RELEASED",
+    "official_validator_status": "PASS",
+    "official_infeasibility": 0,
+    "official_objective": 2571,
+    "reference_access_before_estimator_release": false,
+    "classical_solver_used": false,
+    "classical_final_repair": false
+  },
+  {
+    "run": 4,
+    "kenji_status": "RELEASED",
+    "official_validator_status": "PASS",
+    "official_infeasibility": 0,
+    "official_objective": 3218,
+    "reference_access_before_estimator_release": false,
+    "classical_solver_used": false,
+    "classical_final_repair": false
+  },
+  {
+    "run": 5,
+    "kenji_status": "RELEASED",
+    "official_validator_status": "PASS",
+    "official_infeasibility": 0,
+    "official_objective": 3028,
+    "reference_access_before_estimator_release": false,
+    "classical_solver_used": false,
+    "classical_final_repair": false
+  }
+]
