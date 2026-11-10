@@ -1,0 +1,10 @@
+# Independent set solution for instance: sloane_1dc_64
+# |V|=64  |E|=543  IS size=8
+0
+7
+10
+17
+28
+48
+51
+61

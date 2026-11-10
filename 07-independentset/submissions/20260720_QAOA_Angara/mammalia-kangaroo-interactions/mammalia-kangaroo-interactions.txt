@@ -1,0 +1,6 @@
+# Independent set solution for instance: mammalia-kangaroo-interactions
+# |V|=17  |E|=91  IS size=4
+1
+4
+6
+7

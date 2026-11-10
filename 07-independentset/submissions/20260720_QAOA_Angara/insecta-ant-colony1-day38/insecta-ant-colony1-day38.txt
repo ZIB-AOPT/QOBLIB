@@ -1,0 +1,7 @@
+# Independent set solution for instance: insecta-ant-colony1-day38
+# |V|=56  |E|=1134  IS size=5
+7
+21
+25
+31
+46
