@@ -1,0 +1,18 @@
+{
+  "scope": "Current-source local submission and solution validation",
+  "date": "2026-10-20",
+  "submission_instances_checked": 1,
+  "submission_instances_passed": 1,
+  "solution_files_checked": 1,
+  "exit_code": 0,
+  "checker_repository": "https://github.com/ZIB-AOPT/QOBLIB",
+  "checker_source_path": "03-birkhoff/check/src/bin/check_birkhoff.rs",
+  "checker_source_git_blob": "abe0771cc25832ed688946ffeb5f5ff24f1a4bfa",
+  "submission_check_source_git_blob": "62818c556adf9280de6364ec440f3485bf8b1f0d",
+  "original_run_records": {
+    "independent_acquisitions": 5,
+    "saved_official_checker_passes": 5,
+    "all_solution_file_sha256": "2cb38a24d814725f1b94b28c9b1d1eed9cf1e2b877fc769f9128bcdb9fa34737"
+  },
+  "limitations": "Local checks validate the solution file and submission format. They are not maintainer acceptance, independent estimator/speed verification, or confirmation that reporting omissions satisfy all venue requirements."
+}

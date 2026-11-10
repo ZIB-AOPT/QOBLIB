@@ -1,0 +1,51 @@
+{
+  "instance": "B3_3_1",
+  "estimator": "S77",
+  "independent_acquisitions": 5,
+  "released_outputs": 5,
+  "no_output_runs": 0,
+  "best_objective_value": 2,
+  "local_saved_official_checker_version": "1.2",
+  "local_saved_official_checker_passes": 5,
+  "solution_sha256": "2cb38a24d814725f1b94b28c9b1d1eed9cf1e2b877fc769f9128bcdb9fa34737",
+  "reference_comparison": {
+    "estimator": "R5",
+    "same_problem_target_measurements": true,
+    "local_checker_passes": 5,
+    "equal_problem_output_runs": 5,
+    "reference_and_auxiliary_resources_identical": false
+  },
+  "rows": [
+    {
+      "run": 1,
+      "objective": 2,
+      "feasible": true,
+      "local_saved_checker_exit": 0
+    },
+    {
+      "run": 2,
+      "objective": 2,
+      "feasible": true,
+      "local_saved_checker_exit": 0
+    },
+    {
+      "run": 3,
+      "objective": 2,
+      "feasible": true,
+      "local_saved_checker_exit": 0
+    },
+    {
+      "run": 4,
+      "objective": 2,
+      "feasible": true,
+      "local_saved_checker_exit": 0
+    },
+    {
+      "run": 5,
+      "objective": 2,
+      "feasible": true,
+      "local_saved_checker_exit": 0
+    }
+  ],
+  "acceptance_status": "Not submitted to or accepted by QOBLIB maintainers as of preparation."
+}
