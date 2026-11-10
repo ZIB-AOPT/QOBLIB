@@ -1,0 +1,36 @@
+# Objective value = 34
+# Stable set for C125-9 found by qob_numvc (vertex cover local search), seed 1, 0.0 s CPU
+1
+2
+5
+7
+9
+11
+17
+18
+19
+25
+29
+31
+34
+40
+44
+45
+48
+49
+70
+71
+77
+79
+80
+91
+98
+99
+101
+110
+114
+115
+117
+121
+122
+125
