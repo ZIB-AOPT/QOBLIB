@@ -241,6 +241,109 @@ def write_partial_solution_file(filename, partial_solution):
         partial_sol_f.write("{:d} {:d} {:d}\n".format(*partial))
     partial_sol_f.close()
 
+def read_solution_file(filename, size, num_layers):
+    """ filename: file containing solution
+        size: number of nodes on one edge of the square grid
+        num_layers: how many square grids stacked
+
+        Returns: (bool, set, set)
+        True if solution is available, False if an error occurs;
+        set of arcs in the solution;
+        set of neighboring arcs.
+
+    """
+    # In Cplex, the solution file is an .xml. It is not
+    # created if there is no solution.
+    try:
+        tree = ET.parse(filename)
+        root = tree.getroot()
+    except FileNotFoundError:
+        return (False, set(), set())
+                
+    if (root[0].tag != 'header'):
+        print('Error reading solution xml')
+        return (False, set(), set())
+    if (root[0].attrib['solutionStatusValue'] != '101'):
+        # Solution is not optimal
+        print('*** Steiner tree not optimal, we can still continue')
+
+    solution_arcs = set()
+    neighbor_arcs = set()
+
+    # Get arcs in the solution and block them out
+    if (root[3].tag != 'variables'):
+        print('Error reading solution xml')
+        return (False, set(), set())
+    for var in root[3]:                
+        if (round(float(var.attrib['value'])) == 1 and
+            var.attrib['name'][0] == 'y'):
+            # This is one of the arcs in the solution. Identify the
+            # endpoints of the arc. The variable names are of the form
+            # y#i#j#k where i,j are node ids, and k is the net.
+            fields = var.attrib['name'].split('#')
+            tail = int(fields[1])
+            head = int(fields[2])
+            solution_arcs.add((tail, head))
+            solution_arcs.add((head, tail))
+            # Also compute adjacent arcs since we use a node-disjoint
+            # model, so this information is often helpful
+            tail_neighbors = node_neighbors(tail, size, num_layers)
+            for j in tail_neighbors:
+                if ((tail, j) not in neighbor_arcs):
+                    neighbor_arcs.add((tail, j))
+                    neighbor_arcs.add((j, tail))
+            head_neighbors = node_neighbors(head, size, num_layers)
+            for j in head_neighbors:
+                if ((head, j) not in neighbor_arcs):
+                    neighbor_arcs.add((head, j))
+                    neighbor_arcs.add((j, head))
+    return (True, solution_arcs, neighbor_arcs)
+
+def generate_terminals(size, num_layers, max_attempt, num_terminals, force_diff_side, nets):
+    """ size: number of nodes on one edge of the square grid
+        num_layers: how many square grids stacked
+        num_terminals: how many terminals in the generated net
+        max_attempt: how many times we try to generate before we decide that we failed
+        force_diff_side: if True, the second terminal in each net will be on a different side of the square
+        nets: previously generated nets, if any
+
+        returns: list of terminal IDs
+    """
+    terminal_id = []
+    # Keep generating at random until we have desired
+    # number. Make sure we do not run for ever.
+    while_iter = 0
+    while (len(terminal_id) < num_terminals and while_iter < 10000):
+        # Generate terminals on the edges (border) of the
+        # grid. All terminals are on the first (top) layer.
+        duplicate = True
+        count_duplicate = 0
+        while (duplicate and count_duplicate < max_attempt):
+            term = random_node_on_edge(size, num_layers)
+            # Check for duplicates among terminals in this
+            # net, or previously generated nets
+            duplicate = False
+            if (term in terminal_id or
+                any(term in net for net in nets)):
+                duplicate = True
+            # If this is the second terminal, make sure it is
+            # not on the same edge as the first one; this
+            # ensures not all terminals in the net are on the
+            # same edge of the box
+            if (force_diff_side and len(terminal_id) == 1):
+                x1, y1, z1 = coord_from_node(terminal_id[0], size, num_layers)
+                x2, y2, z2 = coord_from_node(term, size, num_layers)
+                if ((x1 == 1 and x2 == 1) or
+                    (x1 == size and x2 == size) or
+                    (y1 == 1 and y2 == 1) or
+                    (y1 == size and y2 == size)):
+                    duplicate = True
+            count_duplicate += int(duplicate)
+        if (count_duplicate < max_attempt):
+            terminal_id.append(term)
+        while_iter += 1
+    return terminal_id
+
 def generate_feasible_instance(size, num_layers, max_terminals,
                                num_holes = 0, max_attempt = 5,
                                max_generated_nets = float('inf'),
@@ -270,46 +373,17 @@ def generate_feasible_instance(size, num_layers, max_terminals,
     # Partial y solution for feasibility
     partial_solution = []
     print('*** INITIAL NUMBER OF TERMINALS {:d}***'.format(current_terminals))
-    # Stop if we are generating nets with too few terminls    
+    # Stop if we are generating nets with too few terminals    
     while (current_terminals >= max_terminals//2 and current_terminals >= 2
            and len(nets) <= max_generated_nets):
         # Consecutive number of failed attempts
         attempt = 0
         while (attempt < max_attempt):
             print('Attempt:', attempt)
-            terminal_id = []
-            # Keep generating at random until we have desired
-            # number. Make sure we do not run for ever.
-            while_iter = 0
-            while (len(terminal_id) < current_terminals and while_iter < 10000):
-                # Generate terminals on the edges (border) of the
-                # grid. All terminals are on the first (top) layer.
-                duplicate = True
-                count_duplicate = 0
-                while (duplicate and count_duplicate < max_attempt):
-                    term = random_node_on_edge(size, num_layers)
-                    # Check for duplicates among terminals in this
-                    # net, or previously generated nets
-                    duplicate = False
-                    if (term in terminal_id or
-                        any(term in net for net in nets)):
-                        duplicate = True
-                    # If this is the second terminal, make sure it is
-                    # not on the same edge as the first one; this
-                    # ensures not all terminals in the net are on the
-                    # same edge.
-                    if (force_diff_side and len(terminal_id) == 1):
-                        x1, y1, z1 = coord_from_node(terminal_id[0], size, num_layers)
-                        x2, y2, z2 = coord_from_node(term, size, num_layers)
-                        if ((x1 == 1 and x2 == 1) or
-                            (x1 == size and x2 == size) or
-                            (y1 == 1 and y2 == 1) or
-                            (y1 == size and y2 == size)):
-                            duplicate = True
-                    count_duplicate += int(duplicate)
-                if (count_duplicate < max_attempt):
-                    terminal_id.append(term)
-                while_iter += 1
+            terminal_id = generate_terminals(size, num_layers, max_attempt, current_terminals, force_diff_side, nets)
+            if (len(terminal_id) < current_terminals):
+                # Go to end of while
+                break
             root_id = terminal_id[random.randint(0, len(terminal_id))]
             # Write terminals file and roots file.
             write_terminals_file("terms.dat", [terminal_id])
@@ -325,29 +399,15 @@ def generate_feasible_instance(size, num_layers, max_terminals,
             # Solve instance to get Steiner tree, if it exists.
             current_dir = os.getcwd()
             subprocess.call(['rm', '-f', 'stp.sol', 'stp.lp'], cwd=current_dir)
-            subprocess.run([zimpl_path, '-t', 'lp', '-o', 'stp', 'stp3d6_blocked.zpl'], cwd=current_dir, capture_output=True)
+            subprocess.run([zimpl_path, '-t', 'lp', '-o', 'stp', 'stp_gen_blocked.zpl'], cwd=current_dir, capture_output=True)
             subprocess.run([cplex_path, '-c', 'set timelimit 600', 'read stp.lp', 'mipopt', 'write stp.sol'], cwd=current_dir, capture_output=True)
 
-            solution_found = True
-            # In Cplex, the solution file is an .xml. It is not
-            # created if there is no solution.
-            try:
-                tree = ET.parse('stp.sol')
-                root = tree.getroot()
-            except FileNotFoundError:
-                solution_found = False
+            solution_found, solution_arcs, neighbor_arcs = read_solution_file('stp.sol', size, num_layers)
 
             if (not solution_found):
                 attempt += 1
                 continue
                 
-            if (root[0].tag != 'header'):
-                print('Error reading solution xml')
-                exit()
-            if (root[0].attrib['solutionStatusValue'] != '101'):
-                # Solution is not optimal
-                print('*** Steiner tree not optimal, we can still continue')
-
             # Reset consecutive number of failed attempts
             attempt = 0
             # We have a new net, store it
@@ -355,39 +415,12 @@ def generate_feasible_instance(size, num_layers, max_terminals,
             roots.append(root_id)
             print('Generated', len(nets), 'nets')
 
-            # Get arcs in the solution and block them out
-            if (root[3].tag != 'variables'):
-                print('Error reading solution xml')
-                exit()
-            for var in root[3]:                
-                if (round(float(var.attrib['value'])) == 1 and
-                    var.attrib['name'][0] == 'y'):
-                    # This is one of the arcs that we should
-                    # block. Identify the endpoints of the arc. The
-                    # variable names are of the form y#i#j#k where i,j
-                    # are node ids, and k is the net.
-                    fields = var.attrib['name'].split('#')
-                    tail = int(fields[1])
-                    head = int(fields[2])
-                    if ((tail, head) not in blocked_arcs):
-                        blocked_arcs.add((tail, head))
-                        blocked_arcs.add((head, tail))
-                    # Also block adjacent arcs since we use a
-                    # node-disjoint model
-                    tail_neighbors = node_neighbors(tail, size, num_layers)
-                    for j in tail_neighbors:
-                        if ((tail, j) not in blocked_arcs and
-                            (tail, j) not in holes):
-                            blocked_arcs.add((tail, j))
-                            blocked_arcs.add((j, tail))
-                    head_neighbors = node_neighbors(head, size, num_layers)
-                    for j in head_neighbors:
-                        if ((head, j) not in blocked_arcs and
-                            (head, j) not in holes):
-                            blocked_arcs.add((head, j))
-                            blocked_arcs.add((j, head))
-                    # Add to partial solution
-                    partial_solution.append([tail, head, len(nets)])
+            blocked_arcs.update(solution_arcs, neighbor_arcs)
+            blocked_arcs -= holes
+
+            # Add to partial solution
+            for (tail, head) in (solution_arcs | neighbor_arcs):
+                partial_solution.append([tail, head, len(nets)])
         # Closes 'while (attempt < max_attempt)'
         current_terminals -= 1
         print('*** DECREASING NUMBER OF TERMINALS TO {:d}***'.format(current_terminals))
