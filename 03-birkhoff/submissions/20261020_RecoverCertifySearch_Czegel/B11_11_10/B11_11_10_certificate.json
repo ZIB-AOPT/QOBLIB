@@ -1,0 +1,33 @@
+{
+  "block_number_at_most": 4,
+  "block_number_proof": "quick",
+  "bound": 11,
+  "equal_pairs": 1,
+  "instance": "B11_11_10",
+  "lines": [
+    "column 6",
+    "column 9"
+  ],
+  "method": "two-line",
+  "unmatched": [
+    [
+      2030,
+      2290,
+      3147,
+      6659,
+      21874,
+      26288,
+      33097
+    ],
+    [
+      2528,
+      5177,
+      6266,
+      8949,
+      9149,
+      30569,
+      32747
+    ]
+  ],
+  "valid_for": "real weights"
+}

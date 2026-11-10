@@ -1,0 +1,247 @@
+[
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 68,
+      "Time": 0.000260583
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 65,
+      "Time": 0.00055125
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 64,
+      "Time": 0.024773583
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 63,
+      "Time": 0.709683708
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 63,
+      "Time": 60.0134
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 62,
+      "Time": 143.436675583
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 61,
+      "Time": 316.348646292
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 60,
+      "Time": 331.737932125
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 60,
+      "Time": 660.034
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 68,
+      "Time": 0.000243042
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 67,
+      "Time": 0.000582042
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 66,
+      "Time": 0.00108125
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 65,
+      "Time": 0.010884417
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 64,
+      "Time": 0.026202333
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 63,
+      "Time": 3.18719775
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 62,
+      "Time": 31.94090975
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 62,
+      "Time": 60.0021
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 61,
+      "Time": 340.2766315
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 61,
+      "Time": 660.0295
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 68,
+      "Time": 0.000245291
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 66,
+      "Time": 0.000538708
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 65,
+      "Time": 0.01731125
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 64,
+      "Time": 0.017673291
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 63,
+      "Time": 0.578988625
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 62,
+      "Time": 50.759958708
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 62,
+      "Time": 60.0068
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 61,
+      "Time": 323.578729084
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 61,
+      "Time": 660.0367
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 68,
+      "Time": 0.000242083
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 66,
+      "Time": 0.000531042
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 65,
+      "Time": 0.001906542
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 64,
+      "Time": 0.015219417
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 63,
+      "Time": 1.303394625
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 63,
+      "Time": 60.0195
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 62,
+      "Time": 141.909591083
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 61,
+      "Time": 300.588023125
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 60,
+      "Time": 323.47978408299997
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 60,
+      "Time": 660.0291
+    }
+  ],
+  [
+    {
+      "Error": 0.0,
+      "Incumbent": 68,
+      "Time": 0.000239958
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 66,
+      "Time": 0.000513083
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 65,
+      "Time": 0.004458
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 64,
+      "Time": 0.01513175
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 63,
+      "Time": 0.248261333
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 63,
+      "Time": 60.0021
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 62,
+      "Time": 121.002269458
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 61,
+      "Time": 325.138385625
+    },
+    {
+      "Error": 0.0,
+      "Incumbent": 61,
+      "Time": 660.0361
+    }
+  ]
+]

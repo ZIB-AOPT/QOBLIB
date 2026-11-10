@@ -1,0 +1,27 @@
+{
+  "block_number_at_most": 1,
+  "block_number_proof": "exact",
+  "bound": 7,
+  "equal_pairs": 0,
+  "instance": "B4_16_2",
+  "lines": [
+    "column 3",
+    "column 4"
+  ],
+  "method": "two-line",
+  "unmatched": [
+    [
+      977,
+      1480,
+      3227,
+      4316
+    ],
+    [
+      896,
+      1762,
+      3014,
+      4328
+    ]
+  ],
+  "valid_for": "real weights"
+}

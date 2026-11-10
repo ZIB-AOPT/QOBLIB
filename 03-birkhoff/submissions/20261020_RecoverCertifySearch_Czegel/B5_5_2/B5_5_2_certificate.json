@@ -1,0 +1,26 @@
+{
+  "block_number_at_most": 2,
+  "block_number_proof": "quick",
+  "bound": 5,
+  "equal_pairs": 0,
+  "instance": "B5_5_2",
+  "lines": [
+    "column 4",
+    "column 5"
+  ],
+  "method": "two-line",
+  "unmatched": [
+    [
+      2486,
+      2788,
+      4726
+    ],
+    [
+      279,
+      1301,
+      2509,
+      5911
+    ]
+  ],
+  "valid_for": "real weights"
+}
