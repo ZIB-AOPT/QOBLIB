@@ -1,8 +1,5 @@
 # Market split via lattice sieving (1 GPU, 5 runs)
 
-<!-- DRAFT: not submitted. Copy to 01-marketsplit/submissions/<YYYYMMDD>_<tag>/README.md
-     before opening a pull request (by the submitter, not by an agent). -->
-
 Submitter: Tsukasa Ishiguro (Toyota Motor Corporation)
 
 ## Method
