@@ -7,9 +7,9 @@ This directory contains the submission for the problem **ITC2021_Late_15**.
 | Problem | ITC2021_Late_15 |
 | Submitter | Manan Gupta |
 | Affiliation | The Harker School |
-| Date | 2026-10-11 |
+| Date | 2026-11-14 |
 | ====== |  |
-| Reference | https://github.com/mnn31/qoblib-solvers/tree/main/sports |
+| Reference | https://github.com/mnn31/qoblib-solvers/tree/c83703b5de3b9c998407b3f4375b7034f7394382/sports |
 | Best Objective Value | 0 |
 | Optimality Bound | 0 |
 | ====== |  |
@@ -22,21 +22,21 @@ This directory contains the submission for the problem **ITC2021_Late_15**.
 | Coefficients Type | N/A |
 | Coefficients Range | N/A |
 | ====== |  |
-| Workflow | Constraint programming. The hard constraints of the instance (round robin structure, phases, CA1 to CA4, GA1, BR1, BR2) are posted directly on binary game variables x[home,away,slot] plus home and break indicators, with no objective. OR-Tools CP-SAT runs its default portfolio of 16 workers until a feasible timetable is found or the time limit expires. Soft constraints are ignored, as the benchmark specifies. Every timetable is verified by an independent checker before being reported. |
-| Algorithm Type | Deterministic |
+| Workflow | Constraint programming. The hard constraints of the instance (round robin structure, phases, CA1 to CA4, GA1, BR1, BR2) are posted directly on binary game variables x[home,away,slot] plus home and break indicators, with no objective. OR-Tools CP-SAT runs its default portfolio with 8 workers and a fixed seed until a feasible timetable is found or the time limit of 600 s expires. Soft constraints are ignored, as the benchmark specifies. Every timetable is checked by an independent checker before it is reported. |
+| Algorithm Type | Stochastic |
 | Paradigm | Classical |
-| # Runs | 1 |
-| # Feasible Runs | 1 |
-| # Successful Runs | 1 |
+| # Runs | 5 |
+| # Feasible Runs | 5 |
+| # Successful Runs | 5 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | RunPod cloud CPU pod on an AMD EPYC 9655 host (96 cores, 192 threads). The container is pinned by cpuset to 16 hardware threads, which are the two SMT siblings of 8 physical cores, with a 64 GB memory limit; Ubuntu 24.04, x86_64, Python 3.12, OR-Tools 9.15. One instance at a time with 16 CP-SAT workers and nothing else running in the container. The host is shared with other tenants, so wall clock times carry some noise. |
+| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, arm64, macOS 26.3, on AC power; Python 3.11.7, OR-Tools 9.14.6206. Runs executed strictly one at a time; 40 runs that overlapped other work on the machine were discarded and run again with the same seed. With 8 workers and 5 performance cores, part of the work runs on the efficiency cores. |
 | ====== |  |
-| Total Runtime | 0.69 |
-| Time to Solution | 0.69 |
-| CPU Runtime | 0.69 |
+| Total Runtime | 0.49 |
+| Time to Solution | 0.49 |
+| CPU Runtime | 1.11 |
 | GPU Runtime | N/A |
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | This instance had no entry in the best known table before this submission. A feasible competition timetable for it does exist in 05-sports/solutions/ITC2021 (see the submission README); the timetable here was computed from scratch and reports the CP-SAT time to feasibility. Pure feasibility problem: the objective is 0 for any timetable that satisfies all hard constraints, so 0 is also the bound. 20 teams, 38 slots, not phased, 51 hard constraints. Single run with fixed CP-SAT seed 0; the 16 worker portfolio search is not bitwise reproducible, so repeated runs can differ in time. Time limit 600 s; runtime is wall clock including model build. Verified with an independent checker and with the official RobinX validator (infeasibility 0, soft penalty 7250, not part of the benchmark objective); a RobinX XML copy is included. |
+| Remarks | This instance has no entry in the best known table. Pure feasibility problem: the objective is 0 for any timetable that satisfies all hard constraints, so 0 is also the bound. 20 teams, 38 slots, not phased, 51 hard constraints. 5 independent runs, CP-SAT seeds 0, 1, 2, 3, 4, 8 workers and a 600 s limit each, strictly one run at a time; 5 of 5 found a timetable. Wall clock per run, model build included: 0.5 s, 0.4 s, 0.4 s, 0.6 s, 0.6 s. Time to Solution is the mean wall clock time of the runs that found a timetable. Total Runtime is the mean wall clock time and CPU Runtime the mean process CPU time over all runs; CPU time adds up all CP-SAT worker threads, so with 8 workers it is up to about 8 times the wall clock time. Runtimes are rounded to 0.01 s here and to 0.1 s in the list above (runs without a timetable to 1 s). The solution file is the timetable of the fastest run. Checked with an independent checker that accepts all 249 reference solutions in 05-sports/solutions. |
