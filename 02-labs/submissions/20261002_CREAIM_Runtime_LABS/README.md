@@ -24,18 +24,18 @@ Submitter information
 
 CREAIM Inc develops proprietary Runtime Computing™ technology for computation, state-based data processing, storage, optimization, and execution validation.
 
-AI Use Disclosure
+## Retained run information and validation
 
+See [RUN_RECORD_AND_VALIDATION.md](RUN_RECORD_AND_VALIDATION.md) for the retained run protocol, unavailable measurements, checksum preservation, and current validation scope. Original solution files and summary CSVs are unchanged.
 
-Classification: generated (conservative classification for the QOBLIB-specific implementation and submission material).
+## AI disclosure
 
+**generated** — conservative classification retained for the QOBLIB-specific implementation and submission material.
 
-AI tools and contribution: OpenAI ChatGPT supported technical reasoning, problem-specific software implementation and adaptation, and portions of the submission documentation. GPT-5.6 was used in development discussions; the exact model/version used in the original code-generation session cannot be established from the retained records.
+OpenAI ChatGPT assisted technical discussions, problem-specific implementation and adaptation, and portions of the documentation, as disclosed by the submitter in the retained PR discussion. The exact model/version for the original code-generation and discussion sessions cannot be verified from the retained records and is **not recorded / N/A**. No specific historical model name is asserted here.
 
+This documentation supplement was prepared with OpenAI Codex; the exact underlying model/version is not established by the retained project records. Codex assisted the repository audit, documentation edits, and execution of the existing checks. This maintenance work does not constitute a new optimization run.
 
-CREAIM contribution and method: The approach builds on CREAIM's pre-existing proprietary Runtime Computing™ research and optimization technology. CREAIM directed the work, performed the classical optimization computations, and verified the reported solutions with QOBLIB's official checkers. ChatGPT was not a live solution-generating component of the reported runs.
+The approach builds on CREAIM's pre-existing proprietary Runtime Computing™ research and optimization technology. CREAIM directed the original work, performed the classical optimization computations, and verified the reported solutions with QOBLIB's official checkers. ChatGPT was not a live solution-generating component of the reported optimization runs.
 
-
-Responsible submitter: Sun Myon Hwang, Founder & CEO, CREAIM Inc., accepts responsibility for the submission and its reported results.
-
-
+Responsible submitter: Sun Myon Hwang, Founder & CEO, CREAIM Inc., remains the named person responsible for the submission and its reported results. Missing historical model identifiers are disclosed explicitly; maintainer acceptance of this limitation remains outstanding.
