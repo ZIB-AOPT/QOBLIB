@@ -77,11 +77,11 @@ If we did not find the optimal or currently best solution ourselves, we provide 
 | labs065 | 240 | optimal | reference | — |
 | labs066 | 257 | optimal | reference | — |
 | labs067 | 241 | best known | reference | — |
-| labs068 | 250 | best known | reference | — |
-| labs069 | 274 | best known | reference | — |
-| labs070 | 295 | best known | reference | — |
+| labs068 | 250 | best known | [20260815_Quicopt_Bode](../submissions/20260815_Quicopt_Bode) | 2026-08-15 |
+| labs069 | 274 | best known | [20260815_Quicopt_Bode](../submissions/20260815_Quicopt_Bode) | 2026-08-15 |
+| labs070 | 295 | best known | [20260815_Quicopt_Bode](../submissions/20260815_Quicopt_Bode) | 2026-08-15 |
 | labs071 | 275 | best known | reference | — |
-| labs072 | 300 | best known | reference | — |
+| labs072 | 300 | best known | [20260815_Quicopt_Bode](../submissions/20260815_Quicopt_Bode) | 2026-08-15 |
 | labs073 | 308 | best known | reference | — |
 | labs074 | 341 | best known | reference | — |
 | labs075 | 329 | best known | reference | — |
