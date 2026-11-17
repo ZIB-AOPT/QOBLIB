@@ -1,0 +1,59 @@
+{
+  "instance": "labs014",
+  "n": 14,
+  "bound": 19,
+  "valid_for": "every binary sequence of length n",
+  "method": "branch and bound with a closed search tree",
+  "lattice_step": 8,
+  "threshold": 11,
+  "argument": "Every energy of length n lies on the lattice bound + lattice_step * Z. The run evaluated nodes until no open node had a lower bound at most threshold; the children of a node partition its completions and the lower bounds are valid, so no sequence has energy at most threshold, and hence none has energy below bound. The argument holds for every sampler, since samples enter only as incumbents and in the choice of the branching spin.",
+  "settings": {
+    "boundary_spins_per_end": 7,
+    "branching_candidates": "the two outermost free spins",
+    "sampler": "fixed-angle QAOA, p=12, exact noiseless statevector emulation",
+    "shots_per_node": 1000,
+    "max_qubits": 26
+  },
+  "runs": [
+    {
+      "seed": 1,
+      "lower_bound": 19,
+      "proven": true,
+      "nodes": 1,
+      "sampler_calls": 1,
+      "reproduce": "qcbb labs solve 14 --sampler qaoa --p 12 --shots 1000 --seed 1"
+    },
+    {
+      "seed": 2,
+      "lower_bound": 19,
+      "proven": true,
+      "nodes": 1,
+      "sampler_calls": 1,
+      "reproduce": "qcbb labs solve 14 --sampler qaoa --p 12 --shots 1000 --seed 2"
+    },
+    {
+      "seed": 3,
+      "lower_bound": 19,
+      "proven": true,
+      "nodes": 1,
+      "sampler_calls": 1,
+      "reproduce": "qcbb labs solve 14 --sampler qaoa --p 12 --shots 1000 --seed 3"
+    },
+    {
+      "seed": 4,
+      "lower_bound": 19,
+      "proven": true,
+      "nodes": 1,
+      "sampler_calls": 1,
+      "reproduce": "qcbb labs solve 14 --sampler qaoa --p 12 --shots 1000 --seed 4"
+    },
+    {
+      "seed": 5,
+      "lower_bound": 19,
+      "proven": true,
+      "nodes": 1,
+      "sampler_calls": 1,
+      "reproduce": "qcbb labs solve 14 --sampler qaoa --p 12 --shots 1000 --seed 5"
+    }
+  ]
+}
