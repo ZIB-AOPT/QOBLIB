@@ -7,9 +7,9 @@ This directory contains the submission for the problem **network24**.
 | Problem | network24 |
 | Submitter | Manan Gupta |
 | Affiliation | The Harker School |
-| Date | 2026-11-22 |
+| Date | 2026-11-23 |
 | ====== |  |
-| Reference | https://github.com/mnn31/qoblib-solvers/tree/5b959cbb50c464a02cfee93575f02de4d966094a/network |
+| Reference | https://github.com/mnn31/qoblib-solvers/tree/ebb9d76c343accef20c53b72e9f8ae2e8ba68a0c/network |
 | Best Objective Value | 694584 |
 | Optimality Bound | N/A |
 | ====== |  |
@@ -30,7 +30,7 @@ This directory contains the submission for the problem **network24**.
 | # Successful Runs | 1 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, arm64, macOS 26.3, on AC power; Python 3.11.7, HiGHS 1.15.1. Runs executed strictly one at a time, each on a single thread; one run that overlapped another process on the machine was discarded and run again with the same seed. |
+| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, arm64, macOS 26.3, on AC power; Python 3.11.7, HiGHS 1.15.1. Runs executed strictly one at a time, each on a single thread. The laptop was not kept otherwise idle: the search evaluation rate of a run is 86% to 100% of the fastest run of the same instance. One run that overlapped a leftover benchmark process was discarded and run again with the same seed. |
 | ====== |  |
 | Total Runtime | 7200.6 |
 | Time to Solution | 4186.4 |
@@ -39,4 +39,4 @@ This directory contains the submission for the problem **network24**.
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | Does not reach the table value 663688 (best known); included so the method stays comparable. Heuristic, so the optimality bound is N/A. 5 independent runs from scratch, seeds 0, 1, 2, 3, 4, each with 8 replicas and 7200 s of search followed by the integral routing, strictly one run at a time. Run values: 694681, 694584, 696688, 699929, 703447. Time to Solution is the mean time from the start of the run until the best topology was found, over the 1 successful run (runs reaching the reported value); its integral routing is computed at the end of the run and takes under a second. Total Runtime is the mean wall clock time and CPU Runtime the mean process CPU time over all runs, both including the integral routing. Each run is single threaded, so CPU time stays just under wall time. The declared objective is recomputed from the flows rather than taken from the solver's z variable, which the model only bounds from below. Verified with 08-network/check. |
+| Remarks | Does not reach the table value 663688 (best known); included so the method stays comparable. Heuristic, so the optimality bound is N/A. 5 independent runs from scratch, seeds 0, 1, 2, 3, 4, each with 8 replicas and 7200 s of search followed by the integral routing, strictly one run at a time. The seeds are those of the 2026-08-18 runs, and on this machine the search repeats itself for a given seed, so each run retraces the 1800 s run of its seed and then continues. Run values: 694681, 694584, 696688, 699929, 703447. Time to Solution is the mean time from the start of the run until the best topology was found, over the 1 successful run (runs reaching the reported value); its integral routing is computed at the end of the run and takes under a second. Total Runtime is the mean wall clock time and CPU Runtime the mean process CPU time over all runs, both including the integral routing. Each run is single threaded, so CPU time stays just under wall time. The declared objective is recomputed from the flows rather than taken from the solver's z variable, which the model only bounds from below. Verified with 08-network/check. |
