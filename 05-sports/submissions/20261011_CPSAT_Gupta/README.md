@@ -15,7 +15,7 @@ directly and no matrix form is built, so the coefficient fields are N/A.
 ## Runs
 
 Every instance was run five times, with CP-SAT seeds 0 to 4, 8 workers and a
-600 s limit per run, strictly one run at a time on one laptop on AC power. 40
+600 s limit per run, strictly one run at a time on one laptop on AC power. 43
 runs that overlapped other work on the laptop were discarded and run again with
 the same seed, and one kept run ended about 2 s after the laptop was unplugged
 (Addition_046_Medium, seed 0, no timetable in 600 s; that instance has no row).
@@ -58,7 +58,7 @@ into the CPU field. Those rows are replaced by these.
 
 Code, run records (json, timetable and checker result of every run, run log,
 settings) and the script that builds these rows from them:
-https://github.com/mnn31/qoblib-solvers/tree/c83703b5de3b9c998407b3f4375b7034f7394382/sports
+https://github.com/mnn31/qoblib-solvers/tree/5b959cbb50c464a02cfee93575f02de4d966094a/sports
 
 ## Existing timetables for the ITC2021 instances
 

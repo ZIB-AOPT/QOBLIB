@@ -7,9 +7,9 @@ This directory contains the submission for the problem **Addition_111_Medium**.
 | Problem | Addition_111_Medium |
 | Submitter | Manan Gupta |
 | Affiliation | The Harker School |
-| Date | 2026-11-14 |
+| Date | 2026-11-22 |
 | ====== |  |
-| Reference | https://github.com/mnn31/qoblib-solvers/tree/c83703b5de3b9c998407b3f4375b7034f7394382/sports |
+| Reference | https://github.com/mnn31/qoblib-solvers/tree/5b959cbb50c464a02cfee93575f02de4d966094a/sports |
 | Best Objective Value | 0 |
 | Optimality Bound | 0 |
 | ====== |  |
@@ -30,7 +30,7 @@ This directory contains the submission for the problem **Addition_111_Medium**.
 | # Successful Runs | 2 |
 | Success Threshold | 0 |
 | ====== |  |
-| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, arm64, macOS 26.3, on AC power; Python 3.11.7, OR-Tools 9.14.6206. Runs executed strictly one at a time; 40 runs that overlapped other work on the machine were discarded and run again with the same seed. With 8 workers and 5 performance cores, part of the work runs on the efficiency cores. |
+| Hardware Specifications | Apple M3 Pro (Mac15,6), 11 cores (5 performance + 6 efficiency), 18 GB unified memory, arm64, macOS 26.3, on AC power; Python 3.11.7, OR-Tools 9.14.6206. Runs executed strictly one at a time; 43 runs that overlapped other work on the machine were discarded and run again with the same seed. With 8 workers and 5 performance cores, part of the work runs on the efficiency cores. |
 | ====== |  |
 | Total Runtime | 539.9 |
 | Time to Solution | 449.41 |

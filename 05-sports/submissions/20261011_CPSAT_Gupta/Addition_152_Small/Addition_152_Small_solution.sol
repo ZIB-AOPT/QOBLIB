@@ -1,6 +1,6 @@
 # Objective value = 0
 # instance Addition_152_Small
-# CP-SAT feasibility, seed 1, 8 workers
+# CP-SAT feasibility, seed 0, 8 workers
 x#0#5#0 1
 x#2#6#0 1
 x#3#7#0 1
