@@ -17,8 +17,12 @@ directly and no matrix form is built, so the coefficient fields are N/A.
 Every instance was run five times, with CP-SAT seeds 0 to 4, 8 workers and a
 600 s limit per run, strictly one run at a time on one laptop on AC power. 43
 runs that overlapped other work on the laptop were discarded and run again with
-the same seed, and one kept run ended about 2 s after the laptop was unplugged
-(Addition_046_Medium, seed 0, no timetable in 600 s; that instance has no row).
+the same seed. On 2026-11-13 the power went off for about 2 s at the end of
+one kept run (Addition_046_Medium, seed 0, no timetable in 600 s; that instance
+has no row). Four runs of about 0.1 s (seed 0 of Addition_028_Small,
+Addition_029_Small, Addition_107_Small and Addition_130_Small) ran in the
+seconds after that, when the power was back, before the laptop was unplugged
+and the sweep stopped.
 CP-SAT with several workers is not deterministic, so these are reported as
 independent stochastic runs. With 8 workers and only 5 performance cores, part
 of the work runs on the efficiency cores; the setting is the same for every
@@ -27,9 +31,9 @@ run.
 Total Runtime is the mean wall clock time over the five runs, model build
 included, and a run that found no timetable counts with its full time. CPU
 Runtime is the mean process CPU time, which adds up all CP-SAT worker threads
-and is therefore up to about eight times the wall clock time. A few runs of a
-fraction of a second show CPU time below wall clock time, since such a run is
-partly idle (for example while the worker threads start and stop). Time to
+and is therefore up to about eight times the wall clock time. Of the 865 runs,
+219 show CPU time below wall clock time. All of them take under 0.2 s, and such
+a run is partly idle (for example while the worker threads start and stop). Time to
 Solution is the mean wall clock time of the runs that found a timetable.
 Runtimes in the rows are rounded to 0.01 s, the per run times in the remarks to
 0.1 s (1 s for runs without a timetable). Each row lists the time of every run
@@ -58,7 +62,7 @@ into the CPU field. Those rows are replaced by these.
 
 Code, run records (json, timetable and checker result of every run, run log,
 settings) and the script that builds these rows from them:
-https://github.com/mnn31/qoblib-solvers/tree/5b959cbb50c464a02cfee93575f02de4d966094a/sports
+https://github.com/mnn31/qoblib-solvers/tree/ebb9d76c343accef20c53b72e9f8ae2e8ba68a0c/sports
 
 ## Existing timetables for the ITC2021 instances
 
