@@ -1,4 +1,4 @@
-# MIS-QAOA independent-set hardware results
+# MIS-QAOA with exact reductions and clique-cover encoding
 
 This pull request contributes quantum-hardware results for 22 QOBLIB maximum independent set instances, using QAOA at depth $p=2$ on IBM Quantum's `ibm_boston` backend.
 
