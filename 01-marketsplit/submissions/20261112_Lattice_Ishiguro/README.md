@@ -35,7 +35,7 @@ feasible solution in every instance.
 | --- | --- |
 | Reduction | LLL, then BKZ block size 40 |
 | Sieve | G6K GPU sieve, target saturation 0.425, no dimensions for free, up to 8 densification passes at full rank |
-| Search | 512 starting points in parallel; each step adds the single short vector that shortens the current vector the most; budget 3,000,000 restarts |
+| Search | 512 starting points in parallel; each step adds the single short vector that shortens the current vector the most; budget 100,000,000 restarts (never reached; runs end when a solution is found) |
 | Seeds | 3, 4, 5, 6, 7 for the search in step 5 (one run each; the sieve is not seeded) |
 
 ## Hardware

@@ -10,7 +10,7 @@ This directory contains the submission for the problem **ms_14_100_002**.
 | Date | 2026-11-12 |
 | ====== |  |
 | Reference |  |
-| Best Objective Value | N/A |
+| Best Objective Value | 0.0 |
 | Optimality Bound | N/A |
 | ====== |  |
 | Modeling Approach | Lattice |
@@ -39,4 +39,4 @@ This directory contains the submission for the problem **ms_14_100_002**.
 | QPU Runtime | N/A |
 | Other HW Runtime | N/A |
 | ====== |  |
-| Remarks | 5 independent runs (seeds 3-7), all feasible; each run runs the sieve from scratch. Solved by the search over combinations of the short vectors. Runtime = wall clock incl. all stages, mean of 5 runs (min 1,386 s, max 1,835 s). Sieve reached target saturation in 5/5 runs. Distinct solutions: solution_0 from seed 3; solution_1 from seed 4; solution_2 from seed 5; solution_3 from seed 6; solution_4 from seed 7. CPU (32 threads) and GPU (1) are used concurrently throughout the run; CPU Runtime and GPU Runtime are the same wall-clock time, not busy time. |
+| Remarks | 5 independent runs (seeds 3-7), all feasible; each run runs the sieve from scratch. Solved by the search over combinations of the short vectors. Runtime = wall clock incl. all stages, mean of 5 runs; the individual runs (seeds 3, 4, 5, 6, 7) took 1,386 / 1,389 / 1,429 / 1,835 / 1,401 s. Sieve reached target saturation in 5/5 runs. Distinct solutions: solution_0 from seed 3; solution_1 from seed 4; solution_2 from seed 5; solution_3 from seed 6; solution_4 from seed 7. CPU (32 threads) and GPU (1) are reserved exclusively for the whole run and are used concurrently during the sieve; they do not run simultaneously for the entire run (the LLL/BKZ basis reduction does not use the GPU, which is negligible in the total wall clock, and the CPU also waits on the GPU at times). CPU Runtime and GPU Runtime are therefore the same wall-clock time, not busy time. |
